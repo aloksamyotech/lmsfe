@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -28,21 +29,21 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     position: 'relative',
     zIndex: 5
   },
-  '&:after': {
-    content: '""',
-    position: 'absolute',
-    width: 210,
-    height: 210,
-    background: theme.palette.primary[800],
-    borderRadius: '50%',
-    zIndex: 1,
-    top: -85,
-    right: -95,
-    [theme.breakpoints.down('sm')]: {
-      top: -105,
-      right: -140
-    }
-  },
+  // '&:after': {
+  //   content: '""',
+  //   position: 'absolute',
+  //   width: 210,
+  //   height: 210,
+  //   background: theme.palette.primary[800],
+  //   borderRadius: '50%',
+  //   zIndex: 1,
+  //   top: -85,
+  //   right: -95,
+  //   [theme.breakpoints.down('sm')]: {
+  //     top: -105,
+  //     right: -140
+  //   }
+  // },
   '&:before': {
     content: '""',
     position: 'absolute',
@@ -66,11 +67,24 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const TotalOrderLineChartCardd = ({ isLoading }) => {
   const theme = useTheme();
 
+  const [bookCount, setBookCount] = useState(0);
   const [timeValue, setTimeValue] = useState(false);
   const handleChangeTime = (event, newValue) => {
     setTimeValue(newValue);
   };
 
+  useEffect(() => {
+    const fetchBookCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:4300/user/getVenderCount');
+        setBookCount(response.data.count);
+      } catch (error) {
+        console.error('Error fetching book count:', error);
+      }
+    };
+
+    fetchBookCount();
+  }, []);
   return (
     <>
       {isLoading ? (
@@ -82,7 +96,7 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
               <Grid item>
                 <Grid container justifyContent="space-between">
                   <Grid item>
-                    <Avatar
+                    {/* <Avatar
                       variant="rounded"
                       sx={{
                         ...theme.typography.commonAvatar,
@@ -93,9 +107,9 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
                       }}
                     >
                       <LocalMallOutlinedIcon fontSize="inherit" />
-                    </Avatar>
+                    </Avatar> */}
                   </Grid>
-                  <Grid item>
+                  {/* <Grid item>
                     <Button
                       disableElevation
                       variant={timeValue ? 'contained' : 'text'}
@@ -114,41 +128,46 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
                     >
                       Year
                     </Button>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </Grid>
               <Grid item sx={{ mb: 0.75 }}>
-                <Grid container alignItems="center">
-                  <Grid item xs={6}>
+                {/* <Grid container alignItems="center"> */}
+                  {/* <Grid item xs={6}> */}
                     <Grid container alignItems="center">
                       <Grid item>
                         {timeValue ? (
-                          <Typography sx={{ fontSize: '1.525rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}> Books </Typography>
+                          <Typography sx={{ fontSize: '1.525rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}> {bookCount} </Typography>
                         ) : (
-                          <Typography sx={{ fontSize: '1.525rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}> Books </Typography>
+                          <Typography sx={{ fontSize: '1.525rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}> {bookCount}</Typography>
                         )}
                       </Grid>
                       <Grid item>
-                        <Avatar
+                        {/* <Avatar
                           sx={{
                             ...theme.typography.smallAvatar,
                             cursor: 'pointer',
-                            backgroundColor: theme.palette.primary[200],      
+                            backgroundColor: theme.palette.primary[200],
                             color: theme.palette.primary.dark
                           }}
                         >
                           <ArrowDownwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
-                        </Avatar>
+                        </Avatar> */}
                       </Grid>
                       <Grid item xs={12}>
                         <Typography
                           sx={{
-                            fontSize: '1rem',
+                            // fontSize: '1rem',
+                            // fontWeight: 500,
+                            // color: theme.palette.secondary[200]
+                            fontSize: '1.525rem',
                             fontWeight: 500,
-                            color: theme.palette.primary[200]
+                            mr: 1,
+                            mt: 1.75,
+                            mb: 0.75
                           }}
                         >
-                        Returned Time
+                          {`Total Vendors  `}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -156,8 +175,8 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
                   {/* <Grid item xs={6}>
                     {timeValue ? <Chart {...ChartDataMonth} /> : <Chart {...ChartDataYear} />}
                   </Grid> */}
-                </Grid>
-              </Grid>
+                {/* </Grid> */}
+              {/* </Grid> */}
             </Grid>
           </Box>
         </CardWrapper>

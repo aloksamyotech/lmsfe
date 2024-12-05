@@ -6,6 +6,8 @@ import Loadable from 'ui-component/Loadable';
 import FinePerDay from 'views/Books/fine';
 import BookAlloment from 'views/BookAllotment';
 import View from 'views/view/view';
+import PurchaseBook from 'views/purchaseBook/index';
+import Profile from 'views/Profile';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -20,7 +22,9 @@ const EmailTemplates = Loadable(lazy(() => import('views/EmailTemplates')));
 const Document = Loadable(lazy(() => import('views/Documents')));
 const Calender = Loadable(lazy(() => import('views/Calender')));
 const AddTemplates = Loadable(lazy(() => import('views/EmailTemplates/AddTemplates')));
-
+const AddPurchaseBook = Loadable(lazy(() => import('views/purchaseBook/index')));
+// const SubscriptionPage = Loadable(lazy(() => import('views/Subscription')));
+const SubscriptionType = Loadable(lazy(() => import('views/subscriptionType/index')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -74,6 +78,15 @@ const MainRoutes = {
         {
           path: 'contact',
           element: <ContactManagement />
+        }
+      ]
+    },
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'purchase',
+          element: <PurchaseBook />
         }
       ]
     },
@@ -173,6 +186,33 @@ const MainRoutes = {
         {
           path: 'emailtemplate/addTemplates',
           element: <AddTemplates />
+        }
+      ]
+    },
+    // {
+    //   path: 'dashboard',
+    //   children: [
+    //     {
+    //       path: 'subscription',
+    //       element: <SubscriptionPage />
+    //     }
+    //   ]
+    // },
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'subscriptionType',
+          element: <SubscriptionType />
+        }
+      ]
+    },
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'profile',
+          element: <Profile />
         }
       ]
     }

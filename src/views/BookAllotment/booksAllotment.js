@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { FormLabel, Grid, TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { FormLabel, Grid, TextField, MenuItem, Select, InputLabel, FormHelperText, FormControl } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -19,22 +19,24 @@ const AddAllotment = (props) => {
   const { open, handleClose, fetchData } = props;
   const [bookData, setBookData] = useState([]);
   const [studentData, setStudentData] = useState([]);
+  const [allData, setAllData] = useState([]);
+  const [borrowedBooksCount, setBorrowedBooksCount] = useState(0);
 
   const validationSchema = yup.object({
-    bookId: yup.string().required('Book Name is required'),
+    bookId: yup.array().of(yup.string().required('Each Book Name is required')),
+    // bookId: yup.required('Book Title is required'),
+    // .required('At least one Book Name is required'),
     studentId: yup.string().required('Book Title is required'),
     submissionDate: yup.date().required('Submit Date is required'),
     bookIssueDate: yup.date().required('Book Issue date is required'),
-    // publisherName: yup.string().required('Publisher Name is required'),
     paymentType: yup.string().required('Payment Type is required')
-    // returnPrice: yup.number().required('Return Price is required').typeError('Must be a number'),
-    // bookDistribution: yup.string().required('Distribution is required')
   });
 
   const formik = useFormik({
     initialValues: {
-      bookId: '',
+      bookId: [],
       studentId: '',
+      // title: '',
       submissionDate: '',
       bookIssueDate: new Date().toISOString().split('T')[0],
       // publisherName: '',
@@ -44,16 +46,18 @@ const AddAllotment = (props) => {
     },
     validationSchema,
     onSubmit: async (values) => {
+      // handleStudentChange();
       console.log('Submitted values', values);
       try {
         const response = await axios.post('http://localhost:4300/user/bookAllotment', values);
         console.log('Form submitted successfully:', response);
+        toast.success('Book details added successfully');
         fetchData();
         handleClose();
       } catch (error) {
-        console.error('Error submitting form:', error);
+        toast.error(error?.response?.data?.message);
+        console.error('Error submitting form:============>', error);
       }
-      toast.success('Book details added successfully');
       formik.resetForm();
       handleClose();
     }
@@ -74,23 +78,52 @@ const AddAllotment = (props) => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/registerManagement');
-        console.log('Student Data', response);
-        setStudentData(response.data?.RegisterManagement);
+        console.log('Student Data---->', response?.data?.RegisterManagement[0]?.student_Name);
+        // console.log('Student >>>>>>>>>', response?.data?.RegisterManagement?.student_Name);
+        setAllData(response?.data?.RegisterManagement);
+        // setStudentData(response.data.RegisterManagement || []);
         // setStudents(response.data);
       } catch (error) {
         console.error('Error fetching students:', error);
       }
     };
 
+    const fetchSubscription = async () => {
+      try {
+        const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+        console.log('SubscriptionType Data', response);
+        setStudentData(response.data?.SubscriptionType);
+        // setStudents(response.data);
+      } catch (error) {
+        console.error('Error fetching SubscriptionType', error);
+      }
+    };
+
     fetchBooks();
     fetchStudents();
+    fetchSubscription();
   }, []);
+  const handleStudentChange = async (event) => {
+    console.log('event', event);
+
+    const studentId = event.target.value;
+    console.log('studentId', studentId);
+
+    formik.setFieldValue('studentId', studentId);
+    try {
+      const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
+      setBorrowedBooksCount(response.data.count);
+    } catch (error) {
+      console.error('Error fetching borrowed books count:', error);
+    }
+  };
+  console.log(`studentData______{{{{{{{{{}}}}}}}}}`, studentData);
 
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
         <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6">Add New Books</Typography>
+          <Typography variant="h6">Allotment New Book</Typography>
           <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
         </DialogTitle>
         <DialogContent dividers>
@@ -101,52 +134,49 @@ const AddAllotment = (props) => {
               </Typography> */}
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
                 <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Book Name</FormLabel>
+                  <FormLabel>Student</FormLabel>
+                  <FormControl fullWidth error={formik.touched.studentId && Boolean(formik.errors.studentId)}>
+                    <Select
+                      id="studentId"
+                      name="studentId"
+                      value={formik.values.studentId}
+                      onChange={handleStudentChange}
+                      error={formik.touched.studentId && Boolean(formik.errors.studentId)}
+                    >
+                      {allData.map((item) => (
+                        <MenuItem key={item._id} value={item._id}>
+                          {item.student_Name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={5} md={5}>
+                  <FormLabel>Book </FormLabel>
                   <FormControl fullWidth>
                     <Select
+                      multiple
                       id="bookId"
                       name="bookId"
                       value={formik.values.bookId}
                       onChange={formik.handleChange}
                       error={formik.touched.bookId && Boolean(formik.errors.bookId)}
+                      disabled={borrowedBooksCount >= 5}
                     >
-                      {/* <MenuItem value="Book1">Book1</MenuItem>
-                      <MenuItem value="Book2">Book2</MenuItem>
-                      <MenuItem value="Book3">Book3</MenuItem> */}
                       {bookData.map((item) => (
                         <MenuItem key={item._id} value={item._id}>
                           {item.bookName}
                         </MenuItem>
                       ))}
                     </Select>
+                    <FormHelperText>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
                   </FormControl>
                 </Grid>
 
                 <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Student Name</FormLabel>
-                  <FormControl fullWidth>
-                    <Select
-                      id="studentId"
-                      name="studentId"
-                      value={formik.values.studentId}
-                      onChange={formik.handleChange}
-                      error={formik.touched.studentId && Boolean(formik.errors.studentId)}
-                    >
-                      {studentData.map((item) => (
-                        <MenuItem key={item._id} value={item._id}>
-                          {item.student_Name}
-                        </MenuItem>
-                      ))}
-                      {/* <MenuItem value="Student1">Student1</MenuItem>
-                      <MenuItem value="Student2">Student2</MenuItem>
-                      <MenuItem value="Student3">Student3</MenuItem> */}
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Payment Type</FormLabel>
-                  <FormControl fullWidth>
+                  <FormLabel>Subscription Type</FormLabel>
+                  <FormControl fullWidth error={formik.touched.paymentType && Boolean(formik.errors.paymentType)}>
                     <Select
                       id="paymentType"
                       name="paymentType"
@@ -154,8 +184,11 @@ const AddAllotment = (props) => {
                       onChange={formik.handleChange}
                       error={formik.touched.paymentType && Boolean(formik.errors.paymentType)}
                     >
-                      <MenuItem value="Monthly">Monthly</MenuItem>
-                      <MenuItem value="One Day">One Day</MenuItem>
+                      {studentData.map((item) => (
+                        <MenuItem key={item._id} value={item.title}>
+                          {item.title}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -171,6 +204,12 @@ const AddAllotment = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.bookIssueDate && Boolean(formik.errors.bookIssueDate)}
                     helperText={formik.touched.bookIssueDate && formik.errors.bookIssueDate}
+                    InputProps={{
+                      style: {
+                        // fontSize: '1rem',
+                        height: '50px'
+                      }
+                    }}
                   />
                 </Grid>
 
@@ -185,6 +224,12 @@ const AddAllotment = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.submissionDate && Boolean(formik.errors.submissionDate)}
                     helperText={formik.touched.submissionDate && formik.errors.submissionDate}
+                    InputProps={{
+                      style: {
+                        // fontSize: '1rem',
+                        height: '50px'
+                      }
+                    }}
                   />
                 </Grid>
               </Grid>

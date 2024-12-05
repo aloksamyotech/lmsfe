@@ -24,6 +24,9 @@ import EarningCardd from './EarningCardd';
 import BookIssued from './BookIssued';
 import ListedCategories from './ListedCategories';
 import FinePerDay from './FinePerDay';
+import App from 'views/Card';
+import TrandingBook from 'views/Card/trandingBook';
+import Book2 from 'views/Card/book2';
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
@@ -35,25 +38,7 @@ const Dashboard = () => {
 
   return (
     <Grid container spacing={gridSpacing}>
-      <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item lg={3} md={6} sm={6} xs={12}>
-            <TotalOrderLineChartCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={3} md={6} sm={6} xs={12}>
-            <EarningCard isLoading={isLoading} />
-          </Grid>
-          <Grid item sm={6} xs={12} md={6} lg={3}>
-            <TotalOrderLineChartCardd isLoading={isLoading} />
-          </Grid>
-
-          <Grid item sm={6} xs={12} md={6} lg={3}>
-            <EarningCardd isLoading={isLoading} />
-          </Grid>
-        </Grid>
-      </Grid>
-
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item lg={3} md={6} sm={6} xs={12}>
             <BookIssued isLoading={isLoading} />
@@ -69,53 +54,9 @@ const Dashboard = () => {
             <TotalOrderLineChartCard isLoading={isLoading} />
           </Grid>
         </Grid>
-      </Grid>
-      
+      </Grid> */}
+
       {/* <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={12} md={8}>
-            <TotalGrowthBarChart isLoading={isLoading} />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <PopularCard isLoading={isLoading} />
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={12} md={6} lg={6}>
-            <AppConversionRates
-              title="Conversion Rates"
-              subheader="(+43%) than last year"
-              chartData={[
-                { label: 'Italy', value: 400 },
-                { label: 'Japan', value: 430 },
-                { label: 'China', value: 448 },
-                { label: 'Canada', value: 470 },
-                { label: 'France', value: 540 },
-                { label: 'Germany', value: 580 },
-                { label: 'South Korea', value: 690 },
-                { label: 'Netherlands', value: 1100 },
-                { label: 'United States', value: 1200 },
-                { label: 'United Kingdom', value: 1380 }
-              ]}
-            />
-          </Grid>
-          <Grid item xs={12} md={4} lg={6}>
-            <AppCurrentVisits
-              title="Current Visits"
-              chartData={[
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 }
-              ]}
-              chartColors={[theme.palette.primary.main, theme.palette.info.main, theme.palette.warning.main, theme.palette.error.main]}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={12} md={6} lg={5}>
             <AppTrafficBySite
@@ -158,10 +99,87 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Grid> */}
-    </Grid>
 
-    
-    
+      <Grid item xs={12}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item lg={3} md={6} sm={6} xs={12}>
+            <TotalOrderLineChartCard isLoading={isLoading} />
+          </Grid>
+          <Grid item lg={3} md={6} sm={6} xs={12}>
+            <EarningCard isLoading={isLoading} />
+          </Grid>
+          <Grid item sm={6} xs={12} md={6} lg={3}>
+            <TotalOrderLineChartCardd isLoading={isLoading} />
+          </Grid>
+
+          <Grid item sm={6} xs={12} md={6} lg={3}>
+            <EarningCardd isLoading={isLoading} />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={12} md={8}>
+            <TotalGrowthBarChart isLoading={isLoading} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <PopularCard isLoading={isLoading} />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={12} md={12}>
+            <TrandingBook isLoading={isLoading} />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid item xs={12} md={12}>
+          <App isLoading={isLoading} />
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid item xs={12} md={12}>
+          <Book2 isLoading={isLoading} />
+        </Grid>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Grid container spacing={gridSpacing}>
+          {/* <Grid item xs={12} md={6} lg={6}>
+            <AppConversionRates
+              title="Conversion Rates"
+              subheader="(+43%) than last year"
+              chartData={[
+                { label: 'Italy', value: 400 },
+                { label: 'Japan', value: 430 },
+                { label: 'China', value: 448 },
+                { label: 'Canada', value: 470 },
+                { label: 'France', value: 540 },
+                { label: 'Germany', value: 580 },
+                { label: 'South Korea', value: 690 },
+                { label: 'Netherlands', value: 1100 },
+                { label: 'United States', value: 1200 },
+                { label: 'United Kingdom', value: 1380 }
+              ]}
+            />
+          </Grid> */}
+          {/* <Grid item xs={12} md={4} lg={6}>
+            <AppCurrentVisits
+              title="Current Visits"
+              chartData={[
+                { label: 'America', value: 4344 },
+                { label: 'Asia', value: 5435 },
+                { label: 'Europe', value: 1443 },
+                { label: 'Africa', value: 4443 }
+              ]}
+              chartColors={[theme.palette.primary.main, theme.palette.info.main, theme.palette.warning.main, theme.palette.error.main]}
+            />
+          </Grid> */}
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

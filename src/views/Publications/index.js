@@ -10,6 +10,9 @@ import { useEffect, use } from 'react';
 import { Dialog, TextField } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+
+import { Breadcrumbs, Link } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
 // ----------------------------------------------------------------------
 
 const meetingData = [
@@ -37,39 +40,58 @@ const Publications = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
 
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    console.log('Breadcrumb clicked');
+  };
+
+  const [studentId, setStudentId] = useState(null);
+
+  useEffect(() => {
+    const url = window.location.href;
+    const parts = url.split('/');
+    const extractedId = parts[parts.length - 1];
+    setStudentId(extractedId);
+  }, []);
+
   const columns = [
     {
-      field: 'name',
-      headerName: 'Name',
+      field: 'publisherName',
+      headerName: 'Publisher Name',
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
-    {
-      field: 'title',
-      headerName: 'Title',
-      flex: 1
-    },
-    {
-      field: 'author',
-      headerName: 'Author',
-      flex: 1
-    },
+    // {
+    //   field: 'bookName',
+    //   headerName: 'Book Name',
+    //   flex: 1
+    // },
+    // {
+    //   field: 'title',
+    //   headerName: 'Title',
+    //   flex: 1
+    // },
+    // {
+    //   field: 'author',
+    //   headerName: 'Author',
+    //   flex: 1
+    // },
 
-    {
-      field: 'startDate',
-      headerName: ' Start Date',
-      flex: 1
-    },
+    // {
+    //   field: 'startDate',
+    //   headerName: ' Start Date',
+    //   flex: 1
+    // },
     {
       field: 'address',
       headerName: 'Address',
       flex: 1
     },
-    // {
-    //   field: 'endDate',
-    //   headerName: 'End Date',
-    //   flex: 1
-    // },
+    {
+      field: 'description',
+      headerName: 'Description',
+      flex: 1
+    },
     // {
     //   field: 'duration',
     //   headerName: 'Duration',
@@ -126,11 +148,13 @@ const Publications = () => {
         console.log(item);
         return {
           id: item._id,
-          name: item.name,
-          title: item.title,
-          author: item.author,
+          publisherName: item.publisherName,
+          // bookName: item.bookName,
+          // title: item.title,
+          // author: item.author,
           address: item.address,
-          startDate: formatDate(item.startDate),
+          // startDate: formatDate(item.startDate),
+          description: item.description,
           action: item.action
         };
       });
@@ -149,11 +173,28 @@ const Publications = () => {
   const handleEdit = (publications) => {
     setEditData(publications);
   };
+  // const handleSaveEdit = async () => {
+  //   try {
+  //     const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, editData);
+  //     const updatedPublications = response.data;
+  //     setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
+  //     setEditData(null);
+  //   } catch (error) {
+  //     console.error('Error updating Publications:', error);
+  //   }
+  // };
+
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, editData);
-      const updatedPublications = response.data;
+      // Ensure you're passing the correct data
+      const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; // Make sure the startDate is a valid Date
+
+      const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, updatedPublications);
+
+      // After successful edit, update your data array
       setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
+
+      // Close the edit dialog
       setEditData(null);
     } catch (error) {
       console.error('Error updating Publications:', error);
@@ -169,7 +210,9 @@ const Publications = () => {
     try {
       await axios.delete(`http://localhost:4300/user/deletePublications/${bookToDelete}`);
 
-      setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
+      // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
+      setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
+      console.log('Deleting book with ID:', bookToDelete);
     } catch (error) {
       console.error('Error deleting publication:', error);
     }
@@ -183,14 +226,44 @@ const Publications = () => {
     <>
       <AddMeetings open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
-        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
+        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
           <Typography variant="h4">Publications List</Typography>
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               New Publications
             </Button>
           </Stack>
-        </Stack>
+        </Stack> */}
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            padding: '10px 20px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            height: '50px',
+            justifyContent: 'space-between',
+            marginBottom: '-18px'
+          }}
+        >
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
+              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+            </Link>
+            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
+              <h4>Publications List</h4>
+            </Link>
+          </Breadcrumbs>
+
+          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+              New Publications
+            </Button>
+          </Stack>
+        </Box>
+
+        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -211,33 +284,19 @@ const Publications = () => {
             <Box p={3}>
               <Typography variant="h6">Edit Publications</Typography>
               <TextField
-                label="Name"
-                value={editData.name}
-                onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                label="Publisher Name"
+                value={editData.publisherName}
+                onChange={(e) => setEditData({ ...editData, publisherName: e.target.value })}
                 fullWidth
                 margin="normal"
               />
-              <TextField
-                label="Title"
-                value={editData.title}
-                onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+              {/* <TextField
+                label="Book Name"
+                value={editData.bookName}
+                onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
                 fullWidth
                 margin="normal"
-              />
-              <TextField
-                label="Author"
-                value={editData.author}
-                onChange={(e) => setEditData({ ...editData, author: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="date"
-                value={editData.date}
-                onChange={(e) => setEditData({ ...editData, date: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
+              /> */}
               <TextField
                 label="Address"
                 value={editData.address}
@@ -245,6 +304,35 @@ const Publications = () => {
                 fullWidth
                 margin="normal"
               />
+              <TextField
+                label="Description"
+                value={editData.description}
+                onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+              {/* <TextField
+                label="date"
+                value={editData.date}
+                onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+                fullWidth
+                margin="normal"
+              /> */}
+              {/* <TextField
+                label="Start Date"
+                value={editData.startDate}
+                onChange={(e) => setEditData({ ...editData, startDate: e.target.value })}
+                fullWidth
+                margin="normal"
+              /> */}
+
+              {/* <TextField
+                label="Address"
+                value={editData.address}
+                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                fullWidth
+                margin="normal"
+              /> */}
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save
               </Button>

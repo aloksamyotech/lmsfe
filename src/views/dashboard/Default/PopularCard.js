@@ -43,7 +43,7 @@ const PopularCard = ({ isLoading }) => {
               <Grid item xs={12}>
                 <Grid container alignContent="center" justifyContent="space-between">
                   <Grid item>
-                    <Typography variant="h4">Popular Stocks</Typography>
+                    <Typography variant="h4">Popular Books</Typography>
                   </Grid>
                   <Grid item>
                     <MoreHorizOutlinedIcon
@@ -72,9 +72,9 @@ const PopularCard = ({ isLoading }) => {
                         horizontal: 'right'
                       }}
                     >
-                      <MenuItem onClick={handleClose}> Today</MenuItem>
+                      {/* <MenuItem onClick={handleClose}> Today</MenuItem>
                       <MenuItem onClick={handleClose}> This Month</MenuItem>
-                      <MenuItem onClick={handleClose}> This Year </MenuItem>
+                      <MenuItem onClick={handleClose}> This Year </MenuItem> */}
                     </Menu>
                   </Grid>
                 </Grid>
@@ -88,7 +88,7 @@ const PopularCard = ({ isLoading }) => {
                     <Grid container alignItems="center" justifyContent="space-between">
                       <Grid item>
                         <Typography variant="subtitle1" color="inherit">
-                          Bajaj Finery
+                          A Story of Yest
                         </Typography>
                       </Grid>
                       <Grid item>
@@ -119,7 +119,7 @@ const PopularCard = ({ isLoading }) => {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle2" sx={{ color: 'success.dark' }}>
-                      10% Profit
+                      By Anita Desaii
                     </Typography>
                   </Grid>
                 </Grid>
@@ -129,7 +129,7 @@ const PopularCard = ({ isLoading }) => {
                     <Grid container alignItems="center" justifyContent="space-between">
                       <Grid item>
                         <Typography variant="subtitle1" color="inherit">
-                          TTML
+                          The Alchemist
                         </Typography>
                       </Grid>
                       <Grid item>
@@ -160,7 +160,7 @@ const PopularCard = ({ isLoading }) => {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle2" sx={{ color: theme.palette.orange.dark }}>
-                      10% loss
+                      By J.K. Rowling
                     </Typography>
                   </Grid>
                 </Grid>
@@ -170,7 +170,7 @@ const PopularCard = ({ isLoading }) => {
                     <Grid container alignItems="center" justifyContent="space-between">
                       <Grid item>
                         <Typography variant="subtitle1" color="inherit">
-                          Reliance
+                          1984
                         </Typography>
                       </Grid>
                       <Grid item>
@@ -201,7 +201,7 @@ const PopularCard = ({ isLoading }) => {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle2" sx={{ color: theme.palette.success.dark }}>
-                      10% Profit
+                      By George Orwell
                     </Typography>
                   </Grid>
                 </Grid>
@@ -211,7 +211,7 @@ const PopularCard = ({ isLoading }) => {
                     <Grid container alignItems="center" justifyContent="space-between">
                       <Grid item>
                         <Typography variant="subtitle1" color="inherit">
-                          TTML
+                          Harry Potter
                         </Typography>
                       </Grid>
                       <Grid item>
@@ -242,7 +242,7 @@ const PopularCard = ({ isLoading }) => {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle2" sx={{ color: theme.palette.orange.dark }}>
-                      10% loss
+                      By Ramanujann
                     </Typography>
                   </Grid>
                 </Grid>
@@ -252,7 +252,7 @@ const PopularCard = ({ isLoading }) => {
                     <Grid container alignItems="center" justifyContent="space-between">
                       <Grid item>
                         <Typography variant="subtitle1" color="inherit">
-                          Stolon
+                          A Story
                         </Typography>
                       </Grid>
                       <Grid item>
@@ -283,19 +283,61 @@ const PopularCard = ({ isLoading }) => {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle2" sx={{ color: theme.palette.orange.dark }}>
-                      10% loss
+                      By Nayak Publishers
                     </Typography>
                   </Grid>
                 </Grid>
+                <Divider sx={{ my: 1.5 }} />
+                <Grid container direction="column">
+                  <Grid item>
+                    <Grid container alignItems="center" justifyContent="space-between">
+                      <Grid item>
+                        <Typography variant="subtitle1" color="inherit">
+                          1984
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Grid container alignItems="center" justifyContent="space-between">
+                          <Grid item>
+                            <Typography variant="subtitle1" color="inherit">
+                              $200.00
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Avatar
+                              variant="rounded"
+                              sx={{
+                                width: 16,
+                                height: 16,
+                                borderRadius: '5px',
+                                backgroundColor: theme.palette.success.light,
+                                color: theme.palette.success.dark,
+                                ml: 2
+                              }}
+                            >
+                              <KeyboardArrowUpOutlinedIcon fontSize="small" color="inherit" />
+                            </Avatar>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="subtitle2" sx={{ color: theme.palette.success.dark }}>
+                      By George Orwell
+                    </Typography>
+                  </Grid>
+                </Grid>
+                
               </Grid>
             </Grid>
           </CardContent>
-          <CardActions sx={{ p: 1.25, pt: 0, justifyContent: 'center' }}>
+          {/* <CardActions sx={{ p: 1.25, pt: 0, justifyContent: 'center' }}>
             <Button size="small" disableElevation>
               View All
               <ChevronRightOutlinedIcon />
             </Button>
-          </CardActions>
+          </CardActions> */}
         </MainCard>
       )}
     </>

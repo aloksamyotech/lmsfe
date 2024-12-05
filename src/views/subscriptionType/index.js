@@ -4,16 +4,16 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
 // import AddLead from './AddBooks.js';
-import AddLead from './booksAllotment';
 import axios from 'axios';
-
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 
-const Allotment = () => {
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddSubscription from './addSubscriptionType';
+
+const SubscriptType = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
   const [editData, setEditData] = useState(null);
@@ -35,32 +35,29 @@ const Allotment = () => {
 
   const columns = [
     {
-      field: 'bookName',
-      headerName: 'Book Name',
+      field: 'title',
+      headerName: 'Title',
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
+
     {
-      field: 'student_Name',
-      headerName: 'Student Name',
+      field: 'amount',
+      headerName: 'Amount',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
     {
-      field: 'paymentType',
-      headerName: 'Subscription Type',
+      field: 'discount',
+      headerName: 'Discount',
       flex: 1
     },
     {
-      field: 'bookIssueDate',
-      headerName: 'Book Issue Date',
+      field: 'numberOfDays',
+      headerName: 'Number Of Days',
       flex: 1
     },
-    {
-      field: 'submissionDate',
-      headerName: 'Submission Date',
-      flex: 1
-    },
+
     {
       field: 'action',
       headerName: 'Action',
@@ -78,35 +75,27 @@ const Allotment = () => {
     }
   ];
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   const fetchData = async () => {
     try {
-      console.log('Api Start........');
+      const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+      // console.log('response : ', response.data.BookManagement[0].upload_Book);
+      // console.log('image url : ', `http://localhost:4300/${response.data.BookManagement[0].upload_Book}`);
+      console.log('response>>>>>>>>>', response);
 
-      const response = await axios.get('http://localhost:4300/user/allotmentManagement');
-      console.log('response---------', response);
-
-      const fetchedData = response?.data?.map((item) => ({
+      const fetchedData = response?.data?.SubscriptionType?.map((item) => ({
         id: item._id,
-        bookName: item.bookName,
-        student_Name: item.student_Name,
-        paymentType: item.paymentType,
-        bookIssueDate: formatDate(item.bookIssueDate),
-        submissionDate: formatDate(item.submissionDate)
+        title: item.title,
+        amount: item.amount,
+        discount: item.discount,
+        desc: item.desc,
+        numberOfDays: item.numberOfDays
       }));
       setData(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-  useState(() => {
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -119,15 +108,15 @@ const Allotment = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editBookAllotment/${editData.id}`, editData);
+      const response = await axios.put(`http://localhost:4300/user/editSubscriptionType/${editData.id}`, editData);
       console.log('Data', response);
-
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
     } catch (error) {
       console.error('Error updating book:', error);
     }
+    fetchData();
   };
 
   const handleDelete = (id) => {
@@ -138,7 +127,8 @@ const Allotment = () => {
   const confirmDelete = async () => {
     try {
       console.log('delete API...');
-      await axios.delete(`http://localhost:4300/user/deleteAllotmentBook/${bookToDelete}`);
+
+      await axios.delete(`http://localhost:4300/user/deleteSubscriptionType/${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);
@@ -154,11 +144,9 @@ const Allotment = () => {
     setBookToDelete(null);
   };
 
-  console.log(`editData`, editData);
-
   return (
     <>
-      <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
+      <AddSubscription open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
         <Box
           sx={{
@@ -178,29 +166,17 @@ const Allotment = () => {
               <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
             </Link>
             <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Allotment Management</h4>
+              <h4>Subscription Type</h4>
             </Link>
           </Breadcrumbs>
 
-          {/* <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}> */}
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Allotted New Book
+              Add Subscription
             </Button>
           </Stack>
-          {/* </Stack> */}
         </Box>
-
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
-
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-          <Typography variant="h4"> Allotment Management</Typography>
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Allotted New Book
-            </Button>
-          </Stack>
-        </Stack> */}
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -219,39 +195,39 @@ const Allotment = () => {
         {editData && (
           <Dialog open={true} onClose={() => setEditData(null)}>
             <Box p={3}>
-              <Typography variant="h6">Edit Book</Typography>
+              <Typography variant="h6">Edit Subscription</Typography>
               <TextField
-                label="Book Name"
-                value={editData.bookName}
-                onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
+                label="Title"
+                value={editData.title}
+                onChange={(e) => setEditData({ ...editData, title: e.target.value })}
                 fullWidth
                 margin="normal"
               />
               <TextField
-                label="Student Name"
-                value={editData.student_Name}
-                onChange={(e) => setEditData({ ...editData, student_Name: e.target.value })}
+                label="Amount"
+                value={editData.amount}
+                onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
                 fullWidth
                 margin="normal"
               />
               <TextField
-                label="Payment Type"
-                value={editData.paymentType}
-                onChange={(e) => setEditData({ ...editData, paymentType: e.target.value })}
+                label="Discount"
+                value={editData.discount}
+                onChange={(e) => setEditData({ ...editData, discount: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Number Of Days"
+                value={editData.numberOfDays}
+                onChange={(e) => setEditData({ ...editData, numberOfDays: e.target.value })}
                 fullWidth
                 margin="normal"
               />
               {/* <TextField
-                label="Book Issue Date"
-                value={editData.bookIssueDate}
-                onChange={(e) => setEditData({ ...editData, bookIssueDate: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
-              {/* <TextField
-                label="Submission Date"
-                value={editData.submissionDate}
-                onChange={(e) => setEditData({ ...editData, submissionDate: e.target.value })}
+                label="Return Price"
+                value={editData.returnPrice}
+                onChange={(e) => setEditData({ ...editData, returnPrice: e.target.value })}
                 fullWidth
                 margin="normal"
               /> */}
@@ -280,4 +256,4 @@ const Allotment = () => {
   );
 };
 
-export default Allotment;
+export default SubscriptType;

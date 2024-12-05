@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Avatar, Stack, EditIcon, Paper, Typography, Button, CardContent, Box, Card, Dialog, TextField } from '@mui/material';
-
+import { Container, Avatar, Typography, Paper, Link, Breadcrumbs, Box, Card, Stack } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
 import { Icon } from '@iconify/react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TableStyle from '../../ui-component/TableStyle';
@@ -40,6 +40,22 @@ const View = () => {
     register_Date: ''
     // address: ''
   });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = () => {
+    console.log('Form Data Submitted:', formData);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    console.log('Breadcrumb clicked');
+  };
 
   const columns = [
     {
@@ -68,22 +84,22 @@ const View = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 1
-    },
-    {
-      field: 'action',
-      headerName: 'Action',
-      flex: 1
-      // renderCell: (params) => (
-      //   <div>
-      //     <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
-      //       <EditIcon />
-      //     </Button>
-      //     <Button color="secondary" onClick={() => handleDelete(params.row.id)} style={{ margin: '-9px' }}>
-      //       <DeleteIcon />
-      //     </Button>
-      //   </div>
-      // )
     }
+    // {
+    //   field: 'action',
+    //   headerName: 'Action',
+    //   flex: 1
+    // }
+    // renderCell: (params) => (
+    //   <div>
+    //     <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
+    //       <EditIcon />
+    //     </Button>
+    //     <Button color="secondary" onClick={() => handleDelete(params.row.id)} style={{ margin: '-9px' }}>
+    //       <DeleteIcon />
+    //     </Button>
+    //   </div>
+    // )
   ];
 
   const formatDate = (dateString) => {
@@ -250,17 +266,41 @@ const View = () => {
   console.log(`allData`, allData?.user?.email);
   return (
     <>
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          height: '50px',
+          width: '96%',
+          marginBottom: '-6px',
+          marginLeft: '2%'
+        }}
+      >
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
+            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+          </Link>
+          <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
+            <h4>Student Profile</h4>
+          </Link>
+        </Breadcrumbs>
+      </Box>
       <AddRegister open={openAdd} handleClose={handleCloseAdd} />
       <Container>
         <Card></Card>
         <Paper
-          elevation={3}
+          elevation={4}
           style={{
             padding: '20px',
             display: 'flex',
-            alignItems: 'center',
+            // alignItems: 'center',
             maxWidth: '500px',
-            margin: '20px'
+            margin: '20px',
+            // marginRight: '-5%'
           }}
         >
           {/* Student Logo / Avatar */}
@@ -290,6 +330,28 @@ const View = () => {
             </Typography>
           </Box>
         </Paper>
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            padding: '10px 20px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            height: '50px',
+            marginBottom: '-18px'
+          }}
+        >
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
+              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+            </Link>
+            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
+              <h4>Student Allotted Books</h4>
+            </Link>
+          </Breadcrumbs>
+        </Box>
+        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>

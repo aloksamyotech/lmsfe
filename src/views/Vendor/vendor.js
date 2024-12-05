@@ -21,7 +21,7 @@ import Palette from '../../ui-component/ThemePalette.js';
 import { hasShrinkWidth } from '@fullcalendar/core/internal';
 
 const AddPolicy = (props) => {
-  const { open, handleClose,fetchData } = props;
+  const { open, handleClose, fetchData } = props;
 
   //   const [contactList, setContactList] = useState([]);
   //   const userid = localStorage.getItem('user_id');
@@ -29,15 +29,13 @@ const AddPolicy = (props) => {
 
   // -----------  validationSchema
   const validationSchema = yup.object({
-    companyName: yup
-      .string()
-      .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-      .required('Book Title is required'),
+    vendorName: yup.string().required('Book Title is required'),
+    // .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
+    companyName: yup.string().required('Book Title is required'),
+    // .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
     address: yup.string().required('Address is required'),
-    cityName: yup
-      .string()
-      .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-      .required('Book Title is required'),
+    // cityName: yup.string().required('City Name is required'),
+    // .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
     date: yup.date().required('Policy Start Date is required'),
     phoneNumber: yup
       .string()
@@ -49,9 +47,10 @@ const AddPolicy = (props) => {
   // -----------   initialValues
   const formik = useFormik({
     initialValues: {
+      vendorName: '',
       companyName: '',
       address: '',
-      cityName: '',
+      // cityName: '',
       date: '',
       phoneNumber: '',
       email: ''
@@ -117,10 +116,24 @@ const AddPolicy = (props) => {
         <DialogContent dividers>
           <form>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-              <Typography style={{ marginBottom: '15px' }} variant="h6">
+              {/* <Typography style={{ marginBottom: '15px' }} variant="h6">
                 Vendor
-              </Typography>
+              </Typography> */}
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
+                <Grid item xs={12} sm={6} md={6}>
+                  <FormLabel>Vendor Name</FormLabel>
+                  <TextField
+                    id="vendorName"
+                    name="vendorName"
+                    size="small"
+                    fullWidth
+                    value={formik.values.vendorName}
+                    onChange={formik.handleChange}
+                    error={formik.touched.vendorName && Boolean(formik.errors.vendorName)}
+                    helperText={formik.touched.vendorName && formik.errors.vendorName}
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Company</FormLabel>
                   <TextField
@@ -132,10 +145,10 @@ const AddPolicy = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.companyName && Boolean(formik.errors.companyName)}
                     helperText={formik.touched.companyName && formik.errors.companyName}
-                    inputProps={{ maxLength: 15 }}
+                    inputProps={{ maxLength: 50 }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={6}>
+                {/* <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>City</FormLabel>
                   <TextField
                     id="cityName"
@@ -146,9 +159,9 @@ const AddPolicy = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.cityName && Boolean(formik.errors.cityName)}
                     helperText={formik.cityName && formik.errors.cityName}
-                    inputProps={{ maxLength: 15 }}
+                    inputProps={{ maxLength: 50 }}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Date</FormLabel>
                   <TextField
@@ -201,6 +214,7 @@ const AddPolicy = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.address && Boolean(formik.errors.address)}
                     helperText={formik.touched.address && formik.errors.address}
+                    inputProps={{ maxLength: 100 }}
                   />
                 </Grid>
               </Grid>
@@ -208,15 +222,17 @@ const AddPolicy = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={formik.handleSubmit} variant="contained" color="primary">
+          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
             Save
           </Button>
           <Button
+            type="reset"
+            variant="outlined"
+            style={{ textTransform: 'capitalize' }}
             onClick={() => {
               formik.resetForm();
               handleClose();
             }}
-            variant="outlined"
             color="error"
           >
             Cancel

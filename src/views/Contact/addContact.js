@@ -93,7 +93,7 @@ const AddContact = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.firstName && Boolean(formik.errors.firstName)}
                   helperText={formik.touched.firstName && formik.errors.firstName}
-                  inputProps={{ maxLength: 15 }}
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -107,7 +107,7 @@ const AddContact = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.lastName && Boolean(formik.errors.lastName)}
                   helperText={formik.touched.lastName && formik.errors.lastName}
-                  inputProps={{ maxLength: 15 }}
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -180,6 +180,7 @@ const AddContact = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.address && Boolean(formik.errors.address)}
                   helperText={formik.touched.address && formik.errors.address}
+                  inputProps={{ maxLength: 100 }}
                 />
               </Grid>
             </Grid>

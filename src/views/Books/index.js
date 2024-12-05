@@ -6,6 +6,9 @@ import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './AddBooks.js';
 import axios from 'axios';
 
+import { Breadcrumbs, Link } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -16,6 +19,19 @@ const Lead = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
 
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    console.log('Breadcrumb clicked');
+  };
+  const [studentId, setStudentId] = useState(null);
+
+  useEffect(() => {
+    const url = window.location.href;
+    const parts = url.split('/');
+    const extractedId = parts[parts.length - 1];
+    setStudentId(extractedId);
+  }, []);
+
   const columns = [
     {
       field: 'bookName',
@@ -24,7 +40,20 @@ const Lead = () => {
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
-      field: 'bookTitle',
+      field: 'upload_Book',
+      headerName: 'Book Image',
+      flex: 1,
+      renderCell: (params) => {
+        console.log(`params`, params.row);
+
+        const imageUrl = `http://localhost:4300/${params?.row?.upload_Book}`;
+        console.log(`imageUrl`, imageUrl);
+
+        return <img src={imageUrl} alt="Book" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />;
+      }
+    },
+    {
+      field: 'title',
       headerName: 'Book Title',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
@@ -35,27 +64,17 @@ const Lead = () => {
       flex: 1
     },
     {
-      field: 'authorName',
+      field: 'author',
       headerName: 'Author Name',
       flex: 1
     },
-    {
-      field: 'returnPrice',
-      headerName: 'Return Price',
-      flex: 1
-    },
-    {
-      field: 'quantity',
-      headerName: 'Available Quantity',
-      flex: 1
-    },
+
     {
       field: 'action',
       headerName: 'Action',
       flex: 1,
       renderCell: (params) => (
         <div>
-         
           <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
             <EditIcon />
           </Button>
@@ -70,14 +89,16 @@ const Lead = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:4300/user/bookManagement');
+      console.log('response : ', response.data.BookManagement[0].upload_Book);
+      console.log('image url : ', `http://localhost:4300/${response.data.BookManagement[0].upload_Book}`);
+
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
         bookName: item.bookName,
-        bookTitle: item.bookTitle,
+        upload_Book: item.upload_Book,
+        title: item.title,
         publisherName: item.publisherName,
-        authorName: item.authorName,
-        returnPrice: item.returnPrice,
-        quantity: item.quantity
+        author: item.author
       }));
       setData(fetchedData);
     } catch (error) {
@@ -137,14 +158,35 @@ const Lead = () => {
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
-        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-          <Typography variant="h4">Books Management</Typography>
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            padding: '10px 20px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            height: '50px',
+            justifyContent: 'space-between',
+            marginBottom: '-18px'
+          }}
+        >
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
+              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+            </Link>
+            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
+              <h4>Books Management</h4>
+            </Link>
+          </Breadcrumbs>
+
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               Add New Book
             </Button>
           </Stack>
-        </Stack>
+        </Box>
+        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -173,8 +215,8 @@ const Lead = () => {
               />
               <TextField
                 label="Book Title"
-                value={editData.bookTitle}
-                onChange={(e) => setEditData({ ...editData, bookTitle: e.target.value })}
+                value={editData.title}
+                onChange={(e) => setEditData({ ...editData, title: e.target.value })}
                 fullWidth
                 margin="normal"
               />
@@ -187,18 +229,18 @@ const Lead = () => {
               />
               <TextField
                 label="Author Name"
-                value={editData.authorName}
-                onChange={(e) => setEditData({ ...editData, authorName: e.target.value })}
+                value={editData.author}
+                onChange={(e) => setEditData({ ...editData, author: e.target.value })}
                 fullWidth
                 margin="normal"
               />
-              <TextField
+              {/* <TextField
                 label="Return Price"
                 value={editData.returnPrice}
                 onChange={(e) => setEditData({ ...editData, returnPrice: e.target.value })}
                 fullWidth
                 margin="normal"
-              />
+              /> */}
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save
               </Button>

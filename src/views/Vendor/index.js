@@ -9,6 +9,9 @@ import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import { Breadcrumbs, Link } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+
 const PolicyManagement = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -18,22 +21,28 @@ const PolicyManagement = () => {
 
   const columns = [
     {
-      field: 'companyName',
-      headerName: 'Company Name',
+      field: 'vendorName',
+      headerName: 'Vendor Name',
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
-      field: 'address',
-      headerName: 'Address',
+      field: 'companyName',
+      headerName: 'Company Name',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
-    {
-      field: 'cityName',
-      headerName: 'City',
-      flex: 1
-    },
+    // {
+    //   field: 'address',
+    //   headerName: 'Address',
+    //   flex: 1,
+    //   cellClassName: 'name-column--cell--capitalize'
+    // },
+    // {
+    //   field: 'cityName',
+    //   headerName: 'City',
+    //   flex: 1
+    // },
     {
       field: 'date',
       headerName: 'Date',
@@ -61,6 +70,20 @@ const PolicyManagement = () => {
     }
   ];
 
+  
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    console.log('Breadcrumb clicked');
+  };
+  const [studentId, setStudentId] = useState(null);
+
+  useEffect(() => {
+    const url = window.location.href;
+    const parts = url.split('/');
+    const extractedId = parts[parts.length - 1];
+    setStudentId(extractedId);
+  }, []);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -73,9 +96,10 @@ const PolicyManagement = () => {
       const response = await axios.get('http://localhost:4300/user/venderManagement');
       const fetchedData = response?.data?.VenderManagement?.map((item) => ({
         id: item._id,
+        vendorName: item.vendorName,
         companyName: item.companyName,
         email: item.email,
-        cityName: item.cityName,
+        // cityName: item.cityName,
         date: formatDate(item.date),
         phoneNumber: item.phoneNumber,
         address: item.address
@@ -102,44 +126,74 @@ const PolicyManagement = () => {
       const updatedVender = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedVender.id ? updatedVender : item)));
       setEditData(null);
+      fetchData();
     } catch (error) {
       console.error('Error updating book:', error);
     }
   };
-
+  const handleDelete = (id) => {
+    console.log('Selected ID for deletion:', id);
+    setBookToDelete(id);
+    setOpenDeleteDialog(true);
+  };
   const confirmDelete = async () => {
     try {
       await axios.delete(`http://localhost:4300/user/deleteVender/${bookToDelete}`);
 
+      // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
-      setOpenDeleteDialog(false);
-      setBookToDelete(null);
+      console.log('Deleting book with ID:', bookToDelete);
     } catch (error) {
-      console.error('Error deleting vendor:', error);
+      console.error('Error deleting Vender:', error);
     }
   };
-
   const cancelDelete = () => {
     setOpenDeleteDialog(false);
     setBookToDelete(null);
-  };
-  const handleDelete = (id) => {
-    setBookToDelete(id);
-    setOpenDeleteDialog(true);
   };
 
   return (
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
-        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
+        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
           <Typography variant="h4">Vendor Management</Typography>
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Add New Book
+              Add New Vendor
             </Button>
           </Stack>
-        </Stack>
+        </Stack> */}
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            padding: '10px 20px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            height: '50px',
+            justifyContent: 'space-between',
+             marginBottom: '-18px'
+          }}
+        >
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
+              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+            </Link>
+            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
+              <h4>Vendor Management</h4>
+            </Link>
+          </Breadcrumbs>
+
+          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+              Add New Vendor
+            </Button>
+          </Stack>
+          </Box>
+        
+        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -160,6 +214,13 @@ const PolicyManagement = () => {
             <Box p={3}>
               <Typography variant="h6">Edit Book</Typography>
               <TextField
+                label="Vendor Name"
+                value={editData.vendorName}
+                onChange={(e) => setEditData({ ...editData, vendorName: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
                 label="Company Name"
                 value={editData.companyName}
                 onChange={(e) => setEditData({ ...editData, companyName: e.target.value })}
@@ -173,13 +234,13 @@ const PolicyManagement = () => {
                 fullWidth
                 margin="normal"
               />
-              <TextField
+              {/* <TextField
                 label="City Name"
                 value={editData.cityName}
                 onChange={(e) => setEditData({ ...editData, cityName: e.target.value })}
                 fullWidth
                 margin="normal"
-              />
+              /> */}
               <TextField
                 label="Phone Number"
                 value={editData.phoneNumber}

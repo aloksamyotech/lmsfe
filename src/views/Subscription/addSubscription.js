@@ -113,7 +113,7 @@ const AddRegister = (props) => {
           justifyContent: 'space-between'
         }}
       >
-        <Typography variant="h6">Add New Student</Typography>
+        <Typography variant="h6">Add New Subscription</Typography>
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
 
@@ -136,16 +136,16 @@ const AddRegister = (props) => {
                 />
               </Grid> */}
               <Grid item xs={12} sm={6} md={6}>
-                <FormLabel>Student Name</FormLabel>
+                <FormLabel>Title</FormLabel>
                 <TextField
-                  id="student_Name"
-                  name="student_Name"
+                  id="title"
+                  name="title"
                   size="small"
                   fullWidth
-                  value={formik.values.student_Name}
+                  value={formik.values.title}
                   onChange={formik.handleChange}
-                  error={formik.touched.student_Name && Boolean(formik.errors.student_Name)}
-                  helperText={formik.touched.student_Name && formik.errors.student_Name}
+                  error={formik.touched.title && Boolean(formik.errors.title)}
+                  helperText={formik.touched.title && formik.errors.title}
                   inputProps={{ maxLength: 50 }}
                   InputProps={{
                     style: {
@@ -155,7 +155,7 @@ const AddRegister = (props) => {
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
-                <FormLabel>Email Address</FormLabel>
+                <FormLabel></FormLabel>
                 <TextField
                   id="email"
                   name="email"

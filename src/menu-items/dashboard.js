@@ -1,4 +1,5 @@
 // assets
+
 import {
   IconHome,
   IconCalendarEvent,
@@ -12,7 +13,12 @@ import {
   IconPhoneCheck,
   IconUsers,
   // AddTaskIcon,
-  IconPlus
+  IconPlus,
+  IconBook,
+  IconBookmark,
+  IconUserCheck,
+  IconUser,
+  IconCreditCard
 } from '@tabler/icons';
 
 // constant
@@ -29,7 +35,12 @@ const icons = {
   IconPhoneCheck,
   IconUsers,
   // AddTaskIcon,
-  IconPlus
+  IconPlus,
+  IconBook,
+  IconBookmark,
+  IconUserCheck,
+  IconUser,
+  IconCreditCard
 };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
@@ -60,7 +71,7 @@ const dashboard = {
           type: 'item',
           url: '/dashboard/lead',
           breadcrumbs: false
-        },
+        }
         // {
         //   id: 'manage-Books',
         //   title: 'Manage Books',
@@ -68,32 +79,49 @@ const dashboard = {
         //   url: '/dashboard/lead',
         //   breadcrumbs: false
         // },
-        {
-          id: 'update-Fine',
-          title: 'Manage Fine',
-          type: 'item',
-          url: '/dashboard/fine',
-          breadcrumbs: false
-        }
+        // {
+        //   id: 'update-Fine',
+        //   title: 'Manage Fine',
+        //   type: 'item',
+        //   url: '/dashboard/fine',
+        //   breadcrumbs: false
+        // }
       ]
     },
     {
       id: '02',
-      title: 'Book Allotment',
+      title: 'Student Management',
       type: 'item',
-      url: '/dashboard/bookAllotment',
-      icon: icons.IconPlus
+      url: '/dashboard/call',
+      icon: icons.IconUserCheck,
+      breadcrumbs: false
     },
     {
       id: '03',
-      title: 'Contact Management',
+      title: 'Book Allotment',
+      type: 'item',
+      url: '/dashboard/bookAllotment',
+      // icon: icons.IconPlus
+      icon: icons.IconBookmark
+    },
+    {
+      id: '04',
+      title: 'Favorite Contact',
       type: 'item',
       url: '/dashboard/contact',
       icon: icons.IconPhoneCheck,
       breadcrumbs: false
     },
     {
-      id: '04',
+      id: '05',
+      title: 'Purchase Books',
+      type: 'item',
+      url: '/dashboard/purchase',
+      icon: icons.IconBook,
+      breadcrumbs: false
+    },
+    {
+      id: '06',
       title: ' Vendor Management',
       type: 'item',
       url: '/dashboard/policy',
@@ -124,7 +152,7 @@ const dashboard = {
     //   ]
     // },
     {
-      id: '05',
+      id: '07',
       title: 'Publications',
       // type: 'collapse',
       type: 'item',
@@ -148,30 +176,31 @@ const dashboard = {
       //   }
       // ]
     },
-    {
-      id: '06',
-      title: 'Register Student',
-      type: 'item',
-      url: '/dashboard/call',
-      icon: icons.IconPhoneCall,
-      breadcrumbs: false
-    },
-    {
-      id: '07',
-      title: 'Emails',
-      type: 'item',
-      url: '/dashboard/email',
-      icon: icons.IconMail,
-      breadcrumbs: false
-    },
-    {
-      id: '08',
-      title: 'Calender',
-      type: 'item',
-      url: '/dashboard/calender',
-      icon: icons.IconCalendarEvent,
-      breadcrumbs: false
-    },
+
+    // {
+    //   id: '07',
+    //   title: 'Emails',
+    //   type: 'item',
+    //   url: '/dashboard/email',
+    //   icon: icons.IconMail,
+    //   breadcrumbs: false
+    // },
+    // {
+    //   id: '08',
+    //   title: 'Reports',
+    //   type: 'item',
+    //   url: '/dashboard/report',
+    //   icon: icons.IconCalendarEvent,
+    //   breadcrumbs: false
+    // },
+    // {
+    //   id: '09',
+    //   title: 'Calender',
+    //   type: 'item',
+    //   url: '/dashboard/calender',
+    //   icon: icons.IconCalendarEvent,
+    //   breadcrumbs: false
+    // }
     // {
     //   id: '09',
     //   title: 'Document Management',
@@ -190,10 +219,34 @@ const dashboard = {
     // },
     {
       id: '10',
-      title: 'Email Template',
+      title: 'Reports',
       type: 'item',
       url: '/dashboard/emailtemplate',
       icon: icons.IconFileInvoice,
+      breadcrumbs: false
+    },
+    // {
+    //   id: '11',
+    //   title: 'Subscription',
+    //   type: 'item',
+    //   url: '/dashboard/Subscription',
+    //   icon: IconCreditCard,
+    //   breadcrumbs: false
+    // },
+    {
+      id: '11',
+      title: 'Subscription Type',
+      type: 'item',
+      url: '/dashboard/SubscriptionType',
+      icon: IconCreditCard,
+      breadcrumbs: false
+    },
+    {
+      id: '12',
+      title: 'Profile',
+      type: 'item',
+      url: '/dashboard/profile',
+      icon: icons.IconUser,
       breadcrumbs: false
     }
   ]

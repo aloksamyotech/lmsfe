@@ -21,7 +21,7 @@ import axios from 'axios';
 // import { apiget, apipost } from '../../service/api';
 
 const AddPublications = (props) => {
-  const { open, handleClose,fetchData } = props;
+  const { open, handleClose, fetchData } = props;
   //   const [leadData, setLeadData] = useState([]);
   //   const [contactData, setContactData] = useState([]);
 
@@ -30,22 +30,13 @@ const AddPublications = (props) => {
 
   // -----------  validationSchema
   const validationSchema = yup.object({
-    name: yup
-    .string()
-    .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-    .required('Book Title is required'),
-    title: yup
-    .string()
-    .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-    .required('Book Title is required'),
-    author: yup
-    .string()
-    .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-    .required('Book Title is required'),
+    publisherName: yup.string().required('Book Title is required'),
+    // bookName: yup.string().required('Book Title is required'),
+    // title: yup.string().required('Book Title is required'),
+    // author: yup.string().required('Book Title is required'),
     address: yup.string().required('Address is required'),
-    startDate: yup.string().required('Start Date is required'),
+    // startDate: yup.string().required('Start Date is required'),
     description: yup.string().required('Description is required')
- 
   });
 
   // -----------   initialValues
@@ -112,16 +103,17 @@ const AddPublications = (props) => {
   //     // formik.values.meetingAttendes = data?.emailAddress
   //   }, [open, data]);
 
-  const initialValues = yup.object({
-    subject: yup.string().required('').typeError('Publications')
-  });
+  // const initialValues = yup.object({
+  //   subject: yup.string().required('').typeError('Publications')
+  // });
   const formik = useFormik({
     initialValues: {
-      name: '',
-      title: '',
-      author: '',
+      publisherName: '',
+      // bookName: '',
+      // title: '',
+      // author: '',
       address: '',
-      startDate: '',
+      // startDate: '',
       description: ''
     },
     validationSchema,
@@ -146,41 +138,56 @@ const AddPublications = (props) => {
   return (
     <div>
       <Dialog open={open} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle
-          id="scroll-dialog-title"
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between'
-            // backgroundColor: "#2b4054",
-            // color: "white",
-          }}
-        >
-          <Typography variant="h6">Add Publications </Typography>
-          <Typography>
-            <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
-          </Typography>
-        </DialogTitle>
+        <form>
+          <DialogTitle
+            id="scroll-dialog-title"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between'
+              // backgroundColor: "#2b4054",
+              // color: "white",
+            }}
+          >
+            <Typography variant="h6">Add Publications </Typography>
+            <Typography>
+              <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
+            </Typography>
+          </DialogTitle>
 
-        <DialogContent dividers>
-          <form>
+          <DialogContent dividers>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
                 <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Publisher Name</FormLabel>
                   <TextField
-                    id="name"
-                    name="name"
+                    id="publisherName"
+                    name="publisherName"
                     size="small"
                     maxRows={10}
                     fullWidth
-                    value={formik.values.name}
+                    value={formik.values.publisherName}
                     onChange={formik.handleChange}
-                    error={formik.touched.name && Boolean(formik.errors.name)}
-                    helperText={formik.touched.name && formik.errors.name}
-                    inputProps={{ maxLength: 15 }}
+                    error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}
+                    helperText={formik.touched.publisherName && formik.errors.publisherName}
+                    inputProps={{ maxLength: 50 }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={6}>
+                {/* <Grid item xs={12} sm={6} md={6}>
+                  <FormLabel>Book Name</FormLabel>
+                  <TextField
+                    id="bookName"
+                    name="bookName"
+                    size="small"
+                    maxRows={10}
+                    fullWidth
+                    value={formik.values.bookName}
+                    onChange={formik.handleChange}
+                    error={formik.touched.bookName && Boolean(formik.errors.bookName)}
+                    helperText={formik.touched.bookName && formik.errors.bookName}
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </Grid> */}
+                {/* <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Title</FormLabel>
                   <TextField
                     id="title"
@@ -192,10 +199,10 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.title && Boolean(formik.errors.title)}
                     helperText={formik.touched.title && formik.errors.title}
-                    inputProps={{ maxLength: 25 }}
+                    inputProps={{ maxLength: 50 }}
                   />
-                </Grid>
-                <Grid item xs={12} sm={6} md={6}>
+                </Grid> */}
+                {/* <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Author</FormLabel>
                   <TextField
                     id="author"
@@ -207,10 +214,10 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.author && Boolean(formik.errors.author)}
                     helperText={formik.touched.author && formik.errors.author}
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 50 }}
                   />
-                </Grid>
-                <Grid item xs={12} sm={6} md={6}>
+                </Grid> */}
+                {/* <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Start Date</FormLabel>
                   <TextField
                     name="startDate"
@@ -222,9 +229,9 @@ const AddPublications = (props) => {
                     error={formik.touched.startDate && Boolean(formik.errors.startDate)}
                     helperText={formik.touched.startDate && formik.errors.startDate}
                   />
-                </Grid>
+                </Grid> */}
 
-                <Grid item xs={12} sm={12} md={12}>
+                <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Address</FormLabel>
                   <TextField
                     id="address"
@@ -236,8 +243,9 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.address && Boolean(formik.errors.address)}
                     helperText={formik.touched.address && formik.errors.address}
+                    inputProps={{ maxLength: 100 }}
                   />
-                </Grid> 
+                </Grid>
                 <Grid item xs={12} sm={12} md={12}>
                   <FormLabel>Description</FormLabel>
                   <TextField
@@ -250,30 +258,36 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.description && Boolean(formik.errors.description)}
                     helperText={formik.touched.description && formik.errors.description}
-                    inputProps={{ maxLength: 70 }}
+                    inputProps={{ maxLength: 300 }}
                   />
                 </Grid>
-               </Grid>
+              </Grid>
             </DialogContentText>
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-            Save
-          </Button>
-          <Button
-            type="reset"
-            variant="outlined"
-            style={{ textTransform: 'capitalize' }}
-            onClick={() => {
-              formik.resetForm();
-              handleClose();
-            }}
-            color="error"
-          >
-            Cancel
-          </Button>
-        </DialogActions>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              type="submit"
+              variant="contained"
+              onClick={formik.handleSubmit}
+              style={{ textTransform: 'capitalize' }}
+              color="secondary"
+            >
+              Save
+            </Button>
+            <Button
+              type="reset"
+              variant="outlined"
+              style={{ textTransform: 'capitalize' }}
+              onClick={() => {
+                formik.resetForm();
+                handleClose();
+              }}
+              color="error"
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </div>
   );
