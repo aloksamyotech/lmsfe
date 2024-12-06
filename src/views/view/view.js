@@ -201,13 +201,7 @@ const View = () => {
     setId(extractedId);
     const fetchData = async () => {
       try {
-        console.log('findHistoryBookAllotmentUser');
-
-        // const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/673b20e1b1eb688cbb03f464`);
-
-        // const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/:id`);
-
-        const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+        console.log('findHistoryBookAllotmentUser');   const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
         console.log('findHistoryBookAllotmentUser----------', response);
         const fetchedData = response?.data?.map((item) => ({
           id: item._id,

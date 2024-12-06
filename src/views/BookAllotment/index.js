@@ -7,6 +7,9 @@ import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './booksAllotment';
 import axios from 'axios';
 
+import IconButton from '@mui/material/IconButton'; // Import IconButton
+import VisibilityIcon from '@mui/icons-material/Visibility'; // Import VisibilityIcon
+
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -34,32 +37,53 @@ const Allotment = () => {
   }, []);
 
   const columns = [
-    {
-      field: 'bookName',
-      headerName: 'Book Name',
+    // {
+    //   field: 'bookName',
+    //   headerName: 'Book Name',
+    //   flex: 1,
+    //   cellClassName: 'name-column--cell name-column--cell--capitalize'
+    // },
+     {
+      field: 'studentEmail',
+      headerName: 'Email',
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
-      field: 'student_Name',
+      field: 'studentName',
       headerName: 'Student Name',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
+
+     
+    // {
+    //   field: 'paymentType',
+    //   headerName: 'Subscription Type',
+    //   flex: 1
+    // },
+    // {
+    //   field: 'bookIssueDate',
+    //   headerName: 'Book Issue Date',
+    //   flex: 1
+    // },
+    // {
+    //   field: 'submissionDate',
+    //   headerName: 'Submission Date',
+    //   flex: 1
+    // },
     {
-      field: 'paymentType',
-      headerName: 'Subscription Type',
-      flex: 1
-    },
-    {
-      field: 'bookIssueDate',
-      headerName: 'Book Issue Date',
-      flex: 1
-    },
-    {
-      field: 'submissionDate',
-      headerName: 'Submission Date',
-      flex: 1
+      field: 'Books',
+      headerName: 'Allotted Books',
+      flex: 1,
+      renderCell: (params) => (
+        <div>
+          <Button onClick={() => handleView(params.row)} color="secondary" style={{ margin: '-15px' }}>
+            <VisibilityIcon />
+          </Button>
+           
+        </div>
+      )
     },
     {
       field: 'action',
@@ -67,6 +91,9 @@ const Allotment = () => {
       flex: 1,
       renderCell: (params) => (
         <div>
+          {/* <Button onClick={() => handleView(params.row)} color="secondary" style={{ margin: '-15px' }}>
+            <VisibilityIcon />
+          </Button> */}
           <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
             <EditIcon />
           </Button>
@@ -77,7 +104,6 @@ const Allotment = () => {
       )
     }
   ];
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -85,21 +111,25 @@ const Allotment = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
+  const handleView = (row) => {
+    console.log('Viewing', row);
+    window.location.href = `/dashboard/viewBookAllotment/${row.id}`;
+  };
   const fetchData = async () => {
     try {
       console.log('Api Start........');
 
-      const response = await axios.get('http://localhost:4300/user/allotmentManagement');
-      console.log('response---------', response);
+      const response = await axios.get('http://localhost:4300/user/reBookAllotment');
+      console.log('response--------->>>>>>>>>>>>', response);
 
       const fetchedData = response?.data?.map((item) => ({
         id: item._id,
-        bookName: item.bookName,
-        student_Name: item.student_Name,
-        paymentType: item.paymentType,
-        bookIssueDate: formatDate(item.bookIssueDate),
-        submissionDate: formatDate(item.submissionDate)
+        // bookName: item.bookName,
+        studentName: item.studentName,
+        studentEmail:item.studentEmail
+        // paymentType: item.paymentType,
+        // bookIssueDate: formatDate(item.bookIssueDate),
+        // submissionDate: formatDate(item.submissionDate)
       }));
       setData(fetchedData);
     } catch (error) {

@@ -74,7 +74,6 @@ const AddAllotment = (props) => {
         console.error('Error fetching books:', error);
       }
     };
-
     const fetchStudents = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/registerManagement');
@@ -185,7 +184,7 @@ const AddAllotment = (props) => {
                       error={formik.touched.paymentType && Boolean(formik.errors.paymentType)}
                     >
                       {studentData.map((item) => (
-                        <MenuItem key={item._id} value={item.title}>
+                        <MenuItem key={item._id} value={item._id}>
                           {item.title}
                         </MenuItem>
                       ))}

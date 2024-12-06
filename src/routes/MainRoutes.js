@@ -8,6 +8,7 @@ import BookAlloment from 'views/BookAllotment';
 import View from 'views/view/view';
 import PurchaseBook from 'views/purchaseBook/index';
 import Profile from 'views/Profile';
+import ViewBookAllotment from 'views/view/view.bookAllotment';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -159,6 +160,15 @@ const MainRoutes = {
         {
           path: 'view/:id',
           element: <View />
+        }
+      ]
+    },
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'viewBookAllotment/:id',
+          element: <ViewBookAllotment />
         }
       ]
     },
