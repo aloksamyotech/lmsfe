@@ -213,6 +213,7 @@ const Publications = () => {
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
       console.log('Deleting book with ID:', bookToDelete);
+      setOpenDeleteDialog(false);
     } catch (error) {
       console.error('Error deleting publication:', error);
     }

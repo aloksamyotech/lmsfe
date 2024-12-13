@@ -169,10 +169,13 @@ const AddPolicy = (props) => {
                     type="date"
                     size="small"
                     fullWidth
-                    value={formik.values.date}
+                    value={formik.values.date || new Date().toISOString().slice(0, 10)}
                     onChange={formik.handleChange}
                     error={formik.touched.date && Boolean(formik.errors.date)}
                     helperText={formik.touched.date && formik.errors.date}
+                    inputProps={{
+                      min: new Date().toISOString().slice(0, 10)
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>

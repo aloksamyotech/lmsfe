@@ -8,6 +8,8 @@ import axios from 'axios';
 import AddRegister from 'views/Register/Addregister';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
+const moment = require('moment');
+
 import EmailIcon from '@mui/icons-material/Email';
 import IconButton from '@mui/material/IconButton'; // Import IconButton
 import VisibilityIcon from '@mui/icons-material/Visibility'; // Import VisibilityIcon
@@ -26,7 +28,7 @@ const ViewBookAllotment = () => {
   const [allbookData, setAllbookData] = useState([]);
   const [submissionDate, setSubmissionDate] = useState([]);
   const [amount, setAmount] = useState([]);
- 
+
   // Initial profile data
   const [profile, setProfile] = useState({
     student_Name: '',
@@ -54,7 +56,6 @@ const ViewBookAllotment = () => {
   const handleEdit = (register) => {
     setEditData(register);
   };
-  
 
   useEffect(() => {
     const url = window.location.href;
@@ -89,13 +90,12 @@ const ViewBookAllotment = () => {
         setAllData(response?.data[0].studentDetails[0]);
         setAllbookData(response?.data);
         setAmount(response?.data[0].paymentType[0]);
- 
 
-        console.log('formattedSubmissionDate', formattedSubmissionDate)
+        const SubmissionDate = response?.data[0].submissionDate;
+        console.log('Submission Date', SubmissionDate);
 
         console.log('student', student_Name);
         console.log('upload_Book', upload_Book);
-        console.log('submissionDate', formattedSubmissionDate);
         console.log('currentDate', currentDate);
       } catch (error) {
         console.error('Error sending ID to backend:', error);
@@ -106,7 +106,7 @@ const ViewBookAllotment = () => {
       sendIdToBackend();
     }
   }, []);
-  console.log(`allbookData`, allbookData);
+  console.log(`allbookData---->>>>>>>>>>`, allbookData);
 
   return (
     <>
@@ -204,7 +204,7 @@ const ViewBookAllotment = () => {
                       </Grid>
                       <Grid item xs={12}>
                         <Typography sx={{ color: '#2A2A2A', fontWeight: '500' }}>
-                          <strong>Submission Date -: </strong> {book?.bookDetails?.[0]?.formattedSubmissionDate || 'Loading...'}
+                          <strong>Submission Date -: </strong> {moment(book?.submissionDate).format('DD-MM-YYYY') || 'Loading...'}
                         </Typography>
                       </Grid>
                     </Grid>

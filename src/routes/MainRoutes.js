@@ -9,6 +9,7 @@ import View from 'views/view/view';
 import PurchaseBook from 'views/purchaseBook/index';
 import Profile from 'views/Profile';
 import ViewBookAllotment from 'views/view/view.bookAllotment';
+import ReceiveBook from 'views/ReceiveBook/index';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -26,6 +27,7 @@ const AddTemplates = Loadable(lazy(() => import('views/EmailTemplates/AddTemplat
 const AddPurchaseBook = Loadable(lazy(() => import('views/purchaseBook/index')));
 // const SubscriptionPage = Loadable(lazy(() => import('views/Subscription')));
 const SubscriptionType = Loadable(lazy(() => import('views/subscriptionType/index')));
+const Receive = Loadable(lazy(() => import('views/ReceiveBook/index')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -51,6 +53,15 @@ const MainRoutes = {
         {
           path: 'lead',
           element: <LeadManagement />
+        }
+      ]
+    },
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'receive',
+          element: <ReceiveBook/>
         }
       ]
     },

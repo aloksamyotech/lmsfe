@@ -70,7 +70,6 @@ const PolicyManagement = () => {
     }
   ];
 
-  
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     console.log('Breadcrumb clicked');
@@ -142,6 +141,7 @@ const PolicyManagement = () => {
 
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
+      cancelDelete();
       console.log('Deleting book with ID:', bookToDelete);
     } catch (error) {
       console.error('Error deleting Vender:', error);
@@ -174,7 +174,7 @@ const PolicyManagement = () => {
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
             height: '50px',
             justifyContent: 'space-between',
-             marginBottom: '-18px'
+            marginBottom: '-18px'
           }}
         >
           <Breadcrumbs aria-label="breadcrumb">
@@ -191,8 +191,8 @@ const PolicyManagement = () => {
               Add New Vendor
             </Button>
           </Stack>
-          </Box>
-        
+        </Box>
+
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
@@ -227,13 +227,13 @@ const PolicyManagement = () => {
                 fullWidth
                 margin="normal"
               />
-              <TextField
+              {/* <TextField
                 label="Email"
                 value={editData.email}
                 onChange={(e) => setEditData({ ...editData, email: e.target.value })}
                 fullWidth
                 margin="normal"
-              />
+              /> */}
               {/* <TextField
                 label="City Name"
                 value={editData.cityName}

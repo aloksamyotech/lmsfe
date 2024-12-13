@@ -38,6 +38,9 @@ const SubscriptType = () => {
       field: 'title',
       headerName: 'Title',
       flex: 1,
+      
+      align: 'center',
+      headerAlign: 'center',
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
 
@@ -45,15 +48,22 @@ const SubscriptType = () => {
       field: 'amount',
       headerName: 'Amount',
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize'
+      cellClassName: 'name-column--cell--capitalize',
+      align: 'center',
+      headerAlign: 'center'
     },
     {
       field: 'discount',
       headerName: 'Discount',
-      flex: 1
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center'
     },
     {
       field: 'numberOfDays',
+      
+      align: 'center',
+      headerAlign: 'center',
       headerName: 'Number Of Days',
       flex: 1
     },
@@ -61,6 +71,9 @@ const SubscriptType = () => {
     {
       field: 'action',
       headerName: 'Action',
+      
+      align: 'center',
+      headerAlign: 'center',
       flex: 1,
       renderCell: (params) => (
         <div>

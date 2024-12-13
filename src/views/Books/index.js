@@ -49,7 +49,7 @@ const Lead = () => {
         const imageUrl = `http://localhost:4300/${params?.row?.upload_Book}`;
         console.log(`imageUrl`, imageUrl);
 
-        return <img src={imageUrl} alt="Book" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />;
+        return <img src={imageUrl} alt="Book" style={{ width: '60px', height: '43px', objectFit: 'contain' }} />;
       }
     },
     {

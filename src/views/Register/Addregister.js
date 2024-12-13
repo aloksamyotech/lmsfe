@@ -179,7 +179,7 @@ const AddRegister = (props) => {
                   id="mobile_Number"
                   name="mobile_Number"
                   size="small"
-                  type="number"
+                  // type="number"
                   fullWidth
                   value={formik.values.mobile_Number}
                   onChange={formik.handleChange}
@@ -218,19 +218,21 @@ const AddRegister = (props) => {
                   id="register_Date"
                   name="register_Date"
                   size="small"
-                  type="datetime-local"
+                  type="date"
                   fullWidth
-                  value={formik.values.register_Date}
+                  value={formik.values.register_Date || new Date().toISOString().slice(0, 10)} // default to today's date
                   onChange={formik.handleChange}
                   error={formik.touched.register_Date && Boolean(formik.errors.register_Date)}
                   helperText={formik.touched.register_Date && formik.errors.register_Date}
-                  InputProps={{
+                  inputProps={{
+                    min: new Date().toISOString().slice(0, 10), // ensures the user can only select today's date or a future date
                     style: {
-                      height: '50px'
+                      height: '25px'
                     }
                   }}
                 />
               </Grid>
+
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Upload Identity</FormLabel>
                 <FormControl fullWidth>
@@ -238,7 +240,7 @@ const AddRegister = (props) => {
                   {/* <input type="file" name="profilePic" onChange={handleFileChange} style={{ width: '100%' }} /> */}
 
                   {formik.touched.upload_identity && formik.errors.upload_identity && (
-                    <div style={{ color: 'red', fontSize: '12px'  }}>{formik.errors.upload_identity}</div>
+                    <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.upload_identity}</div>
                   )}
                 </FormControl>
               </Grid>

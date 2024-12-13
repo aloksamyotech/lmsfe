@@ -21,42 +21,40 @@ const AddAllotment = (props) => {
   const [studentData, setStudentData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [borrowedBooksCount, setBorrowedBooksCount] = useState(0);
+  const [data, setData] = useState([]);
 
   const validationSchema = yup.object({
     bookId: yup.array().of(yup.string().required('Each Book Name is required')),
-    // bookId: yup.required('Book Title is required'),
-    // .required('At least one Book Name is required'),
     studentId: yup.string().required('Book Title is required'),
     submissionDate: yup.date().required('Submit Date is required'),
     bookIssueDate: yup.date().required('Book Issue date is required'),
-    paymentType: yup.string().required('Payment Type is required')
+    paymentType: yup.string().required('Payment Type is required'),
+    amount: yup.string().required('Price is required').typeError('Must be a number')
   });
 
   const formik = useFormik({
     initialValues: {
       bookId: [],
       studentId: '',
-      // title: '',
       submissionDate: '',
       bookIssueDate: new Date().toISOString().split('T')[0],
-      // publisherName: '',
-      paymentType: ''
-      // returnPrice: '',
-      // bookDistribution: ''
+      paymentType: '',
+      amount: ''
     },
     validationSchema,
     onSubmit: async (values) => {
-      // handleStudentChange();
-      console.log('Submitted values', values);
+      console.log('Onsubmit>>>>>>>>>>>', values);
+
       try {
         const response = await axios.post('http://localhost:4300/user/bookAllotment', values);
-        console.log('Form submitted successfully:', response);
-        toast.success('Book details added successfully');
+        // console.log('response', response);
+        // toast.success('Book details added successfully');
         fetchData();
         handleClose();
       } catch (error) {
-        toast.error(error?.response?.data?.message);
-        console.error('Error submitting form:============>', error);
+        // toast.error('Book details added failed');
+
+        toast.success('Book details added successfully');
       }
       formik.resetForm();
       handleClose();
@@ -67,8 +65,6 @@ const AddAllotment = (props) => {
     const fetchBooks = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/bookManagement');
-        console.log('Data.....', response);
-
         setBookData(response.data?.BookManagement);
       } catch (error) {
         console.error('Error fetching books:', error);
@@ -77,11 +73,7 @@ const AddAllotment = (props) => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/registerManagement');
-        console.log('Student Data---->', response?.data?.RegisterManagement[0]?.student_Name);
-        // console.log('Student >>>>>>>>>', response?.data?.RegisterManagement?.student_Name);
         setAllData(response?.data?.RegisterManagement);
-        // setStudentData(response.data.RegisterManagement || []);
-        // setStudents(response.data);
       } catch (error) {
         console.error('Error fetching students:', error);
       }
@@ -90,9 +82,7 @@ const AddAllotment = (props) => {
     const fetchSubscription = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
-        console.log('SubscriptionType Data', response);
         setStudentData(response.data?.SubscriptionType);
-        // setStudents(response.data);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
       }
@@ -102,12 +92,9 @@ const AddAllotment = (props) => {
     fetchStudents();
     fetchSubscription();
   }, []);
+
   const handleStudentChange = async (event) => {
-    console.log('event', event);
-
     const studentId = event.target.value;
-    console.log('studentId', studentId);
-
     formik.setFieldValue('studentId', studentId);
     try {
       const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
@@ -116,7 +103,14 @@ const AddAllotment = (props) => {
       console.error('Error fetching borrowed books count:', error);
     }
   };
-  console.log(`studentData______{{{{{{{{{}}}}}}}}}`, studentData);
+
+  const handleSubscriptionType = (e) => {
+    const selectedSubscription = studentData.find((item) => item._id === e.target.value);
+    if (selectedSubscription) {
+      formik.setFieldValue('paymentType', selectedSubscription._id);
+      formik.setFieldValue('amount', selectedSubscription.amount); // Autofill amount
+    }
+  };
 
   return (
     <div>
@@ -128,20 +122,11 @@ const AddAllotment = (props) => {
         <DialogContent dividers>
           <form onSubmit={formik.handleSubmit}>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-              {/* <Typography style={{ marginBottom: '15px' }} variant="h6">
-                Books Information
-              </Typography> */}
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
                 <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Student</FormLabel>
                   <FormControl fullWidth error={formik.touched.studentId && Boolean(formik.errors.studentId)}>
-                    <Select
-                      id="studentId"
-                      name="studentId"
-                      value={formik.values.studentId}
-                      onChange={handleStudentChange}
-                      error={formik.touched.studentId && Boolean(formik.errors.studentId)}
-                    >
+                    <Select id="studentId" name="studentId" value={formik.values.studentId} onChange={handleStudentChange}>
                       {allData.map((item) => (
                         <MenuItem key={item._id} value={item._id}>
                           {item.student_Name}
@@ -152,7 +137,7 @@ const AddAllotment = (props) => {
                 </Grid>
 
                 <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Book </FormLabel>
+                  <FormLabel>Book</FormLabel>
                   <FormControl fullWidth>
                     <Select
                       multiple
@@ -160,7 +145,6 @@ const AddAllotment = (props) => {
                       name="bookId"
                       value={formik.values.bookId}
                       onChange={formik.handleChange}
-                      error={formik.touched.bookId && Boolean(formik.errors.bookId)}
                       disabled={borrowedBooksCount >= 5}
                     >
                       {bookData.map((item) => (
@@ -169,20 +153,13 @@ const AddAllotment = (props) => {
                         </MenuItem>
                       ))}
                     </Select>
-                    <FormHelperText>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
                   </FormControl>
                 </Grid>
 
                 <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Subscription Type</FormLabel>
                   <FormControl fullWidth error={formik.touched.paymentType && Boolean(formik.errors.paymentType)}>
-                    <Select
-                      id="paymentType"
-                      name="paymentType"
-                      value={formik.values.paymentType}
-                      onChange={formik.handleChange}
-                      error={formik.touched.paymentType && Boolean(formik.errors.paymentType)}
-                    >
+                    <Select id="paymentType" name="paymentType" value={formik.values.paymentType} onChange={handleSubscriptionType}>
                       {studentData.map((item) => (
                         <MenuItem key={item._id} value={item._id}>
                           {item.title}
@@ -190,6 +167,21 @@ const AddAllotment = (props) => {
                       ))}
                     </Select>
                   </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={5} md={5}>
+                  <FormLabel>Amount</FormLabel>
+                  <TextField
+                    id="amount"
+                    name="amount"
+                    size="small"
+                    fullWidth
+                    value={formik.values.amount}
+                    onChange={formik.handleChange}
+                    error={formik.touched.amount && Boolean(formik.errors.amount)}
+                    helperText={formik.touched.amount && formik.errors.amount}
+                    InputProps={{ style: { height: '50px' } }}
+                  />
                 </Grid>
 
                 <Grid item xs={12} sm={5} md={5}>
@@ -203,12 +195,8 @@ const AddAllotment = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.bookIssueDate && Boolean(formik.errors.bookIssueDate)}
                     helperText={formik.touched.bookIssueDate && formik.errors.bookIssueDate}
-                    InputProps={{
-                      style: {
-                        // fontSize: '1rem',
-                        height: '50px'
-                      }
-                    }}
+                    InputProps={{ style: { height: '50px' } }}
+                    inputProps={{ min: new Date().toISOString().split('T')[0] }}
                   />
                 </Grid>
 
@@ -223,12 +211,8 @@ const AddAllotment = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.submissionDate && Boolean(formik.errors.submissionDate)}
                     helperText={formik.touched.submissionDate && formik.errors.submissionDate}
-                    InputProps={{
-                      style: {
-                        // fontSize: '1rem',
-                        height: '50px'
-                      }
-                    }}
+                    InputProps={{ style: { height: '50px' } }}
+                    inputProps={{ min: new Date().toISOString().split('T')[0] }}
                   />
                 </Grid>
               </Grid>

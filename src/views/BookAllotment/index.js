@@ -72,34 +72,32 @@ const Allotment = () => {
     //   headerName: 'Submission Date',
     //   flex: 1
     // },
-    {
-      field: 'Books',
-      headerName: 'Allotted Books',
-      flex: 1,
-      renderCell: (params) => (
-        <div>
-          <Button onClick={() => handleView(params.row)} color="secondary" style={{ margin: '-15px' }}>
-            <VisibilityIcon />
-          </Button>
+    // {
+    //   field: 'Books',
+    //   headerName: 'Allotted Books',
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <div>
            
-        </div>
-      )
-    },
+           
+    //     </div>
+    //   )
+    // },
     {
       field: 'action',
       headerName: 'Action',
       flex: 1,
       renderCell: (params) => (
         <div>
-          {/* <Button onClick={() => handleView(params.row)} color="secondary" style={{ margin: '-15px' }}>
+          <Button onClick={() => handleView(params.row)} color="secondary" style={{ margin: '-15px' }}>
             <VisibilityIcon />
-          </Button> */}
-          <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
+          </Button>
+          {/* <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
             <EditIcon />
           </Button>
           <Button color="secondary" onClick={() => handleDelete(params.row.id)} style={{ margin: '-9px' }}>
             <DeleteIcon />
-          </Button>
+          </Button> */}
         </div>
       )
     }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { FormLabel, Grid, TextField, MenuItem, Select, InputLabel, FormHelperText, FormControl } from '@mui/material';
+import { FormLabel, Grid, TextField, MenuItem, Select, FormControl } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -20,27 +20,25 @@ const AddPurchaseBook = (props) => {
   const [bookData, setBookData] = useState([]);
   const [studentData, setStudentData] = useState([]);
   const [publisherData, setPublisherData] = useState([]);
-  const [borrowedBooksCount, setBorrowedBooksCount] = useState(0);
 
   const validationSchema = yup.object({
     bookIssueDate: yup.date().required('Book Issue date is required'),
     quantity: yup.number().required('Quantity is required').typeError('Must be a number'),
-    bookComment: yup.string(),
-    discount: yup.string().required('Discount is required:'),
-    price: yup.string().required('Price is required')
+    bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters'),
+    discount: yup.number().required('Discount is required:').typeError('Discount must be a number'),
+    price: yup.number().required('Price is required').typeError('Price must be a number'),
+    totalPrice: yup.number().required('Price is required').typeError('Price must be a number')
   });
 
   const formik = useFormik({
     initialValues: {
-      bookName: '',
-      vendorId: '',
       bookIssueDate: new Date().toISOString().split('T')[0],
       quantity: '',
       bookComment: '',
       discount: '',
-      price: ''
+      price: '',
+      totalPrice: ''
     },
-    validationSchema,
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
       try {
@@ -57,17 +55,6 @@ const AddPurchaseBook = (props) => {
       handleClose();
     }
   });
-
-  // Handle the change for quantity and price to dynamically calculate total price
-  const handlePriceCalculation = (field, value) => {
-    formik.setFieldValue(field, value);
-
-    // If quantity and price are set, calculate the total price
-    if (formik.values.quantity && formik.values.price) {
-      const totalPrice = formik.values.quantity * formik.values.price;
-      formik.setFieldValue('price', totalPrice.toString());
-    }
-  };
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -104,6 +91,18 @@ const AddPurchaseBook = (props) => {
     fetchVendor();
     fetchPublisher();
   }, []);
+  const handleQuantityPriceChange = (field, value) => {
+    const newValue = value === '' ? '' : value.replace(/[^0-9.]/g, '');
+    formik.setFieldValue(field, newValue);
+
+    if (field === 'quantity' || field === 'price') {
+      const quantity = parseFloat(formik.values.quantity) || 0;
+      const price = parseFloat(formik.values.price) || 0;
+
+      const totalPrice = quantity * price;
+      formik.setFieldValue('totalPrice', totalPrice);
+    }
+  };
 
   return (
     <div>
@@ -159,10 +158,9 @@ const AddPurchaseBook = (props) => {
                     fullWidth
                     value={formik.values.bookIssueDate}
                     onChange={formik.handleChange}
-                    InputProps={{
-                      style: {
-                        height: '50px'
-                      }
+                    inputProps={{
+                      min: new Date().toISOString().slice(0, 10),
+                      style: { height: '30px' }
                     }}
                   />
                 </Grid>
@@ -175,15 +173,11 @@ const AddPurchaseBook = (props) => {
                     size="small"
                     fullWidth
                     value={formik.values.quantity}
-                    onChange={(e) => handlePriceCalculation('quantity', e.target.value)}
+                    onChange={(e) => handleQuantityPriceChange('quantity', e.target.value)}
                     error={formik.touched.quantity && Boolean(formik.errors.quantity)}
                     helperText={formik.touched.quantity && formik.errors.quantity}
                     inputProps={{ maxLength: 5 }}
-                    InputProps={{
-                      style: {
-                        height: '50px'
-                      }
-                    }}
+                    InputProps={{ style: { height: '50px' } }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={5} md={5}>
@@ -194,28 +188,29 @@ const AddPurchaseBook = (props) => {
                     size="small"
                     fullWidth
                     value={formik.values.price}
-                    onChange={(e) => handlePriceCalculation('price', e.target.value)}
+                    onChange={(e) => handleQuantityPriceChange('price', e.target.value)}
                     error={formik.touched.price && Boolean(formik.errors.price)}
                     helperText={formik.touched.price && formik.errors.price}
                     inputProps={{ maxLength: 5 }}
-                    InputProps={{
-                      style: {
-                        height: '50px'
-                      }
-                    }}
+                    InputProps={{ style: { height: '50px' } }}
                   />
                 </Grid>
-                {/* <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Total Discount</FormLabel>
+                <Grid item xs={12} sm={5} md={5}>
+                  <FormLabel>Total Amount</FormLabel>
                   <TextField
-                    id="discount"
-                    name="discount"
+                    id="totalPrice"
+                    name="totalPrice"
                     size="small"
                     fullWidth
-                    value={formik.values.discount}
-                    onChange={(event) => formik.setFieldValue('discount', event.target.value)}
+                    value={formik.values.price * formik.values.quantity}
+                    error={formik.touched.totalPrice && Boolean(formik.errors.totalPrice)}
+                    helperText={formik.touched.totalPrice && formik.errors.totalPrice}
+                    inputProps={{ maxLength: 5 }}
+                    InputProps={{ style: { height: '50px' } }}
+                    disabled
                   />
-                </Grid> */}
+                </Grid>
+
                 <Grid item xs={12} sm={12} md={12}>
                   <FormLabel>Comment</FormLabel>
                   <TextField
@@ -232,7 +227,13 @@ const AddPurchaseBook = (props) => {
               </Grid>
             </DialogContentText>
             <DialogActions>
-              <Button type="submit" variant="contained" color="primary">
+              <Button
+                type="submit"
+                variant="contained"
+                onClick={formik.handleSubmit}
+                style={{ textTransform: 'capitalize' }}
+                color="secondary"
+              >
                 Save
               </Button>
               <Button

@@ -259,7 +259,7 @@ const EmailTemplates = () => {
       </Box>
 
       <Card style={{ paddingTop: '10px' }}>
-        <Formik
+        <Formik 
           initialValues={{
             startDate: yesterday,
             endDate: today

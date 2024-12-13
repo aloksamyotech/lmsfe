@@ -71,14 +71,23 @@ const dashboard = {
           type: 'item',
           url: '/dashboard/lead',
           breadcrumbs: false
+        },
+        {
+          id: 'book-Allotment',
+          title: 'Books Allotment',
+          type: 'item',
+          url: '/dashboard/bookAllotment',
+          // icon: icons.IconPlus
+          // icon: icons.IconBookmark
+          breadcrumbs: false
+        },
+        {
+          id: 'receive-Books',
+          title: 'Receive Books',
+          type: 'item',
+          url: '/dashboard/receive',
+          breadcrumbs: false
         }
-        // {
-        //   id: 'manage-Books',
-        //   title: 'Manage Books',
-        //   type: 'item',
-        //   url: '/dashboard/lead',
-        //   breadcrumbs: false
-        // },
         // {
         //   id: 'update-Fine',
         //   title: 'Manage Fine',
@@ -96,14 +105,14 @@ const dashboard = {
       icon: icons.IconUserCheck,
       breadcrumbs: false
     },
-    {
-      id: '03',
-      title: 'Book Allotment',
-      type: 'item',
-      url: '/dashboard/bookAllotment',
-      // icon: icons.IconPlus
-      icon: icons.IconBookmark
-    },
+    // {
+    //   id: '03',
+    //   title: 'Book Allotment',
+    //   type: 'item',
+    //   url: '/dashboard/bookAllotment',
+    //   // icon: icons.IconPlus
+    //   icon: icons.IconBookmark
+    // },
     {
       id: '04',
       title: 'Favorite Contact',
@@ -217,14 +226,7 @@ const dashboard = {
     //   icon: icons.IconFileUpload,
     //   breadcrumbs: false
     // },
-    {
-      id: '10',
-      title: 'Reports',
-      type: 'item',
-      url: '/dashboard/emailtemplate',
-      icon: icons.IconFileInvoice,
-      breadcrumbs: false
-    },
+
     // {
     //   id: '11',
     //   title: 'Subscription',
@@ -239,6 +241,14 @@ const dashboard = {
       type: 'item',
       url: '/dashboard/SubscriptionType',
       icon: IconCreditCard,
+      breadcrumbs: false
+    },
+    {
+      id: '10',
+      title: 'Reports',
+      type: 'item',
+      url: '/dashboard/emailtemplate',
+      icon: icons.IconFileInvoice,
       breadcrumbs: false
     },
     {

@@ -126,7 +126,6 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.bookName && Boolean(formik.errors.bookName)}
                   helperText={formik.touched.bookName && formik.errors.bookName}
-                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
 
@@ -196,7 +195,8 @@ const AddLead = (props) => {
                     name="publisherName"
                     value={formik.values.publisherName}
                     onChange={formik.handleChange}
-                    displayEmpty
+                    sx={{ height: '40px' }}
+                    // displayEmpty
                   >
                     {publisherData.map((item) => (
                       <MenuItem key={item._id} value={item.publisherName}>
@@ -249,10 +249,13 @@ const AddLead = (props) => {
                   type="date"
                   size="small"
                   fullWidth
-                  value={formik.values.bookIssueDate}
+                  value={formik.values.bookIssueDate || new Date().toISOString().split('T')[0]}  
                   onChange={formik.handleChange}
                   error={formik.touched.bookIssueDate && Boolean(formik.errors.bookIssueDate)}
                   helperText={formik.touched.bookIssueDate && formik.errors.bookIssueDate}
+                  inputProps={{
+                    min: new Date().toISOString().split('T')[0] 
+                  }}
                 />
               </Grid>
 

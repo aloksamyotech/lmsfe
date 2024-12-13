@@ -73,9 +73,9 @@ const PurchaseBook = () => {
       flex: 1,
       renderCell: (params) => (
         <div>
-          <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
+          {/* <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
             <EditIcon />
-          </Button>
+          </Button> */}
 
           <Button color="secondary" onClick={() => handleDelete(params?.row)} style={{ margin: '-9px' }}>
             <DeleteIcon />
@@ -119,6 +119,8 @@ const PurchaseBook = () => {
   };
 
   const handleSaveEdit = async () => {
+    console.log('satrt>>>>>>>>>>>>>>');
+
     console.log(`id `, editData.id);
     console.log(`editData`, editData);
 
@@ -128,6 +130,7 @@ const PurchaseBook = () => {
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
+      fetchData();
     } catch (error) {
       console.error('Error updating book:', error);
     }

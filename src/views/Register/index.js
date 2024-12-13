@@ -381,13 +381,6 @@ const Call = () => {
                 margin="normal"
               /> */}
               <TextField
-                label="Student Name"
-                value={editData.student_Name}
-                onChange={(e) => setEditData({ ...editData, student_Name: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
                 label=" Email"
                 value={editData.email}
                 onChange={(e) => setEditData({ ...editData, email: e.target.value })}
@@ -395,19 +388,27 @@ const Call = () => {
                 margin="normal"
               />
               <TextField
+                label="Student Name"
+                value={editData.student_Name}
+                onChange={(e) => setEditData({ ...editData, student_Name: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+
+              <TextField
                 label="Mobile Number"
                 value={editData.mobile_Number}
                 onChange={(e) => setEditData({ ...editData, mobile_Number: e.target.value })}
                 fullWidth
                 margin="normal"
               />
-              <TextField
+              {/* <TextField
                 label="Register Date"
                 value={editData.register_Date}
                 onChange={(e) => setEditData({ ...editData, register_Date: e.target.value })}
                 fullWidth
                 margin="normal"
-              />
+              /> */}
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save
               </Button>

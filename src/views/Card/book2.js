@@ -52,9 +52,9 @@ const ProfileCard = ({ name, role, status, img, avatar }) => {
           <LinkedIn sx={{ color: '#0077b5', cursor: 'pointer' }} />
         </Box>
 
-        <Button variant="contained" sx={{ m: 2 }}>
+        {/* <Button variant="contained" sx={{ m: 2 }}>
           View More
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );

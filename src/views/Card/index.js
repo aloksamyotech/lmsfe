@@ -96,9 +96,9 @@ const ProfileCard = ({ name, role, status, img }) => {
         {/* <Button variant="contained" sx={{ m: 2 }}>
           View  More
         </Button> */}
-        <Button variant="contained" sx={{ m: 2 }} >
+        {/* <Button variant="contained" sx={{ m: 2 }} >
           View More
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );
