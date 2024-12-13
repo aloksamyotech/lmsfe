@@ -5,23 +5,13 @@ import axios from 'axios';
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
 import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
-
-// third-party
-import Chart from 'react-apexcharts';
-
+import GroupsIcon from '@mui/icons-material/Groups'; // Import the GroupsIcon
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
 
-import ChartDataMonth from './chart-data/total-order-month-line-chart';
-import ChartDataYear from './chart-data/total-order-year-line-chart';
-
-// assets
-import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.dark,
+  backgroundColor: theme.palette.warning.dark,
   color: '#fff',
   overflow: 'hidden',
   position: 'relative',
@@ -29,28 +19,14 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     position: 'relative',
     zIndex: 5
   },
-  // '&:after': {
-  //   content: '""',
-  //   position: 'absolute',
-  //   width: 210,
-  //   height: 210,
-  //   background: theme.palette.primary[800],
-  //   borderRadius: '50%',
-  //   zIndex: 1,
-  //   top: -85,
-  //   right: -95,
-  //   [theme.breakpoints.down('sm')]: {
-  //     top: -105,
-  //     right: -140
-  //   }
-  // },
+
   '&:before': {
     content: '""',
     position: 'absolute',
     zIndex: 1,
     width: 210,
     height: 210,
-    background: theme.palette.primary[800],
+    background: theme.palette.warning.main,
     borderRadius: '50%',
     top: -125,
     right: -15,
@@ -85,6 +61,7 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
 
     fetchBookCount();
   }, []);
+
   return (
     <>
       {isLoading ? (
@@ -95,88 +72,34 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
             <Grid container direction="column">
               <Grid item>
                 <Grid container justifyContent="space-between">
-                  <Grid item>
-                    {/* <Avatar
-                      variant="rounded"
-                      sx={{
-                        ...theme.typography.commonAvatar,
-                        ...theme.typography.largeAvatar,
-                        backgroundColor: theme.palette.primary[800],
-                        color: '#fff',
-                        mt: 1
-                      }}
-                    >
-                      <LocalMallOutlinedIcon fontSize="inherit" />
-                    </Avatar> */}
-                  </Grid>
-                  {/* <Grid item>
-                    <Button
-                      disableElevation
-                      variant={timeValue ? 'contained' : 'text'}
-                      size="small"
-                      sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, true)}
-                    >
-                      Month
-                    </Button>
-                    <Button
-                      disableElevation
-                      variant={!timeValue ? 'contained' : 'text'}
-                      size="small"
-                      sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, false)}
-                    >
-                      Year
-                    </Button>
-                  </Grid> */}
+                  <Grid item></Grid>
                 </Grid>
               </Grid>
               <Grid item sx={{ mb: 0.75 }}>
-                {/* <Grid container alignItems="center"> */}
-                  {/* <Grid item xs={6}> */}
-                    <Grid container alignItems="center">
-                      <Grid item>
-                        {timeValue ? (
-                          <Typography sx={{ fontSize: '1.525rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}> {bookCount} </Typography>
-                        ) : (
-                          <Typography sx={{ fontSize: '1.525rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}> {bookCount}</Typography>
-                        )}
-                      </Grid>
-                      <Grid item>
-                        {/* <Avatar
-                          sx={{
-                            ...theme.typography.smallAvatar,
-                            cursor: 'pointer',
-                            backgroundColor: theme.palette.primary[200],
-                            color: theme.palette.primary.dark
-                          }}
-                        >
-                          <ArrowDownwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
-                        </Avatar> */}
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography
-                          sx={{
-                            // fontSize: '1rem',
-                            // fontWeight: 500,
-                            // color: theme.palette.secondary[200]
-                            fontSize: '1.525rem',
-                            fontWeight: 500,
-                            mr: 1,
-                            mt: 1.75,
-                            mb: 0.75
-                          }}
-                        >
-                          {`Total Vendors  `}
-                        </Typography>
-                      </Grid>
-                    </Grid>
+                <Grid container alignItems="center">
+                  <Grid item sx={{ ml: 1 }}>
+                    <GroupsIcon sx={{ fontSize: 35, verticalAlign: 'middle', marginRight: 1 }} />
                   </Grid>
-                  {/* <Grid item xs={6}>
-                    {timeValue ? <Chart {...ChartDataMonth} /> : <Chart {...ChartDataYear} />}
-                  </Grid> */}
-                {/* </Grid> */}
-              {/* </Grid> */}
+                  <Grid item>
+                    <Typography sx={{ fontSize: '1.825rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{bookCount}</Typography>
+                  </Grid>
+
+                  <Grid item></Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      sx={{
+                        fontSize: '1.525rem',
+                        fontWeight: 500,
+                        mr: 1,
+                        mt: 1.75,
+                        mb: 0.75
+                      }}
+                    >
+                      {`Total Vendors  `}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
           </Box>
         </CardWrapper>

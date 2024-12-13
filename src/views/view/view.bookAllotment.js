@@ -195,7 +195,7 @@ const ViewBookAllotment = () => {
                         <Grid container sx={{ marginTop: '10px' }}>
                           <Grid item xs={8}>
                             <Typography sx={{ fontSize: '10px', marginTop: '3px' }}>
-                              <strong>Amount -: </strong> {book?.amount ? `${book?.bookDetails?.[0]?.amount} Rs` : 'Loading...'}
+                              <strong>Amount -: </strong> {book?.paymentType?.[0]?.amount || 'Loading...'}
                             </Typography>
                           </Grid>
                         </Grid>

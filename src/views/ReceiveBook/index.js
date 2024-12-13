@@ -281,12 +281,12 @@ const ReceiveBook = () => {
                         </Typography>
                       </Grid>
                       <Grid item xs={4}>
-                        <Typography sx={{ fontSize: '17px', marginTop: '3px' }}>
+                        <Typography sx={{ fontSize: '16px', marginTop: '3px' }}>
                           <strong>Student Name -: </strong> {book?.studentDetails?.student_Name || 'Loading...'}
                         </Typography>
                       </Grid>
                       <Grid item xs={4}>
-                        <Typography sx={{ fontSize: '17px', marginTop: '3px' }}>
+                        <Typography sx={{ fontSize: '15px', marginTop: '3px' }}>
                           <strong>Subscription Type -: </strong> {book?.subscriptionDetails?.title || 'Loading...'}
                         </Typography>
                       </Grid>
@@ -298,12 +298,12 @@ const ReceiveBook = () => {
                         </Typography>
                       </Grid>
                       <Grid item xs={4}>
-                        <Typography sx={{ fontSize: '17px', marginTop: '3px' }}>
+                        <Typography sx={{ fontSize: '16px', marginTop: '3px' }}>
                           <strong>Email -: </strong> {book?.studentDetails?.email || 'Loading...'}
                         </Typography>
                       </Grid>
                       <Grid item xs={4}>
-                        <Typography sx={{ fontSize: '17px', marginTop: '3px' }}>
+                        <Typography sx={{ fontSize: '15px', marginTop: '3px' }}>
                           <strong>Number Of Days -: </strong> {book?.subscriptionDetails?.numberOfDays || 'Loading...'}
                         </Typography>
                       </Grid>
@@ -311,12 +311,12 @@ const ReceiveBook = () => {
 
                     <Grid container>
                       <Grid item xs={4}>
-                        <Typography sx={{ fontSize: '16px', marginTop: '3px' }}>
+                        <Typography sx={{ fontSize: '15px', marginTop: '3px' }}>
                           <strong>Book Issue Date -: </strong> {formatDate(book?.bookIssueDate) || 'Loading...'}
                         </Typography>
                       </Grid>
                       <Grid item xs={4}>
-                        <Typography sx={{ fontSize: '16px', marginTop: '3px' }}>
+                        <Typography sx={{ fontSize: '15px', marginTop: '3px' }}>
                           <strong> Phone Number -: </strong> {book?.studentDetails?.mobile_Number || 'Loading...'}
                         </Typography>
                       </Grid>

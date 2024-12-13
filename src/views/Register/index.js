@@ -317,14 +317,6 @@ const Call = () => {
     <>
       <AddRegister open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-          <Typography variant="h4">Register Students</Typography>
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              New Register Student
-            </Button>
-          </Stack>
-        </Stack> */}
         <Box
           sx={{
             backgroundColor: 'white',
@@ -373,13 +365,7 @@ const Call = () => {
           <Dialog open={true} onClose={() => setEditData(null)}>
             <Box p={3}>
               <Typography variant="h6">Edit Register</Typography>
-              {/* <TextField
-                label="Student ID"
-                value={editData.student_id}
-                onChange={(e) => setEditData({ ...editData, student_id: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
+
               <TextField
                 label=" Email"
                 value={editData.email}
@@ -402,15 +388,12 @@ const Call = () => {
                 fullWidth
                 margin="normal"
               />
-              {/* <TextField
-                label="Register Date"
-                value={editData.register_Date}
-                onChange={(e) => setEditData({ ...editData, register_Date: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
+
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save
+              </Button>
+              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
+                Cancel
               </Button>
             </Box>
           </Dialog>
@@ -428,19 +411,6 @@ const Call = () => {
             </Stack>
           </Box>
         </Dialog>
-        {/* <Dialog open={openFavoriteDialog} onClose={cancelFavorite}>
-          <Box p={3}>
-            <Typography variant="h6">Are you sure you want to mark {favoriteStudent?.student_Name} as a favorite?</Typography>
-            <Stack direction="row" spacing={2} justifyContent="flex-end" mt={3}>
-              <Button onClick={cancelFavorite} variant="outlined" color="secondary">
-                Cancel
-              </Button>
-              <Button onClick={confirmFavorite} variant="contained" color="primary">
-                OK
-              </Button>
-            </Stack>
-          </Box>
-        </Dialog> */}
       </Container>
     </>
   );

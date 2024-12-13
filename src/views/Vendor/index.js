@@ -258,6 +258,9 @@ const PolicyManagement = () => {
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save
               </Button>
+              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
+                Cancel
+              </Button>
             </Box>
           </Dialog>
         )}

@@ -312,32 +312,16 @@ const Publications = () => {
                 fullWidth
                 margin="normal"
               />
-              {/* <TextField
-                label="date"
-                value={editData.date}
-                onChange={(e) => setEditData({ ...editData, date: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
-              {/* <TextField
-                label="Start Date"
-                value={editData.startDate}
-                onChange={(e) => setEditData({ ...editData, startDate: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
-
-              {/* <TextField
-                label="Address"
-                value={editData.address}
-                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
+               
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save
               </Button>
+              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary"
+                 style={{ marginLeft: '16px' }} >
+                Cancel
+              </Button>
             </Box>
+            
           </Dialog>
         )}
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>

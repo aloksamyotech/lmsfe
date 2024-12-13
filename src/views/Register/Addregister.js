@@ -24,7 +24,7 @@ const AddRegister = (props) => {
     // student_id: yup.string().required('Student is required'),
     student_Name: yup
       .string()
-      // .matches(/^[a-zA-Z]+$/, 'Only characters are allowed')
+      .matches(/^[a-zA-Z]+$/, 'Only characters are allowed')
       .required('Student Name is required'),
     email: yup.string().email('Invalid email').required('Email is required'),
     mobile_Number: yup

@@ -234,15 +234,12 @@ const Lead = () => {
                 fullWidth
                 margin="normal"
               />
-              {/* <TextField
-                label="Return Price"
-                value={editData.returnPrice}
-                onChange={(e) => setEditData({ ...editData, returnPrice: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
+
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save
+              </Button>
+              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
+                Cancel
               </Button>
             </Box>
           </Dialog>

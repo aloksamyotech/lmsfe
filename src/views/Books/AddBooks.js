@@ -8,26 +8,27 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 import ClearIcon from '@mui/icons-material/Clear';
-import { useFormik } from 'formik';
+import { Field, useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
+const validationSchema = yup.object({
+  bookName: yup.string().required('Book Name is required').max(100, 'Book Name must be less than or equal to 100 characters'),
+  title: yup.string().required('Title is required').max(50, 'Title must be less than or equal to 50 characters'),
+  author: yup.string().required('Author is required').max(50, 'Author Name must be less than or equal to 50 characters'),
+  publisherName: yup.string().required('Publisher is required'),
+  upload_Book: yup.mixed().required('Book Image is required'),
+  bookDistribution: yup
+    .string()
+    .required('Book Description is required')
+    .max(400, 'Description must be less than or equal to 400 characters')
+});
+
 const AddLead = (props) => {
   const { open, handleClose, fetchData } = props;
   const [publisherData, setPublisherData] = useState([]);
-  const [borrowedBooksCount, setBorrowedBooksCount] = useState(0);
-
-  const validationSchema = yup.object({
-    bookName: yup.string().required('Book Title is required'),
-    title: yup.string().required('Book Title is required'),
-    author: yup.string().required('Author name is required'),
-    bookIssueDate: yup.date().required('Book Issue date is required'),
-    publisherName: yup.string().required('Publisher name is required'),
-    upload_Book: yup.mixed().required('Select a file to upload'),
-    bookDistribution: yup.string().required('Description is required')
-  });
 
   const formik = useFormik({
     initialValues: {
@@ -39,8 +40,9 @@ const AddLead = (props) => {
       upload_Book: null,
       bookDistribution: ''
     },
-    // validationSchema,
+    validationSchema,
     onSubmit: async (values) => {
+      console.log('Submitting form with values:', values);
       const formData = new FormData();
 
       Object.keys(values).forEach((key) => {
@@ -101,20 +103,6 @@ const AddLead = (props) => {
         <form onSubmit={formik.handleSubmit}>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-              {/* <Grid item xs={12} sm={4} md={4}>
-                <FormLabel>Book Name</FormLabel>
-                <FormControl fullWidth error={formik.touched.bookName && Boolean(formik.errors.bookName)}>
-                  <Select id="bookName" name="bookName" value={formik.values.bookName} onChange={formik.handleChange} displayEmpty>
-                    {publisherData.map((item) => (
-                      <MenuItem key={item._id} value={item.bookName}>
-                        {item.bookName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{formik.touched.bookName && formik.errors.bookName}</FormHelperText>
-                </FormControl>
-              </Grid> */}
-
               <Grid item xs={12} sm={4} md={4}>
                 <FormLabel>Book Name</FormLabel>
                 <TextField
@@ -128,20 +116,6 @@ const AddLead = (props) => {
                   helperText={formik.touched.bookName && formik.errors.bookName}
                 />
               </Grid>
-
-              {/* <Grid item xs={12} sm={4} md={4}>
-                <FormLabel>Book Title</FormLabel>
-                <FormControl fullWidth error={formik.touched.title && Boolean(formik.errors.title)}>
-                  <Select id="title" name="title" value={formik.values.title} onChange={formik.handleChange} displayEmpty>
-                    {publisherData.map((item) => (
-                      <MenuItem key={item._id} value={item.title}>
-                        {item.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{formik.touched.title && formik.errors.title}</FormHelperText>
-                </FormControl>
-              </Grid> */}
 
               <Grid item xs={12} sm={4} md={4}>
                 <FormLabel>Book Title</FormLabel>
@@ -157,20 +131,6 @@ const AddLead = (props) => {
                   inputProps={{ maxLength: 50 }}
                 />
               </Grid>
-
-              {/* <Grid item xs={12} sm={4} md={4}>
-                <FormLabel>Author Name</FormLabel>
-                <FormControl fullWidth error={formik.touched.author && Boolean(formik.errors.author)}>
-                  <Select id="author" name="author" value={formik.values.author} onChange={formik.handleChange} displayEmpty>
-                    {publisherData.map((item) => (
-                      <MenuItem key={item._id} value={item.author}>
-                        {item.author}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{formik.touched.author && formik.errors.author}</FormHelperText>
-                </FormControl>
-              </Grid> */}
 
               <Grid item xs={12} sm={4} md={4}>
                 <FormLabel>Author Name</FormLabel>
@@ -196,7 +156,6 @@ const AddLead = (props) => {
                     value={formik.values.publisherName}
                     onChange={formik.handleChange}
                     sx={{ height: '40px' }}
-                    // displayEmpty
                   >
                     {publisherData.map((item) => (
                       <MenuItem key={item._id} value={item.publisherName}>
@@ -207,16 +166,6 @@ const AddLead = (props) => {
                   <FormHelperText>{formik.touched.publisherName && formik.errors.publisherName}</FormHelperText>
                 </FormControl>
               </Grid>
-
-              {/* <Grid item xs={12} sm={4} md={4}>
-                <FormLabel>Upload Book Image</FormLabel>
-                <FormControl fullWidth>
-                  <input type="file" accept="image/*" onChange={handleFileChange} style={{ width: '100%' }} />
-                  {formik.touched.upload_Book && formik.errors.upload_Book && (
-                    <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.upload_Book}</div>
-                  )}
-                </FormControl>
-              </Grid> */}
 
               <Grid item xs={12} sm={4} md={4}>
                 <FormLabel>Upload Book Image</FormLabel>
@@ -242,23 +191,6 @@ const AddLead = (props) => {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={4} md={4}>
-                <FormLabel>Date</FormLabel>
-                <TextField
-                  name="bookIssueDate"
-                  type="date"
-                  size="small"
-                  fullWidth
-                  value={formik.values.bookIssueDate || new Date().toISOString().split('T')[0]}  
-                  onChange={formik.handleChange}
-                  error={formik.touched.bookIssueDate && Boolean(formik.errors.bookIssueDate)}
-                  helperText={formik.touched.bookIssueDate && formik.errors.bookIssueDate}
-                  inputProps={{
-                    min: new Date().toISOString().split('T')[0] 
-                  }}
-                />
-              </Grid>
-
               <Grid item xs={12} sm={12} md={12}>
                 <FormLabel>Book Description</FormLabel>
                 <TextField
@@ -278,7 +210,7 @@ const AddLead = (props) => {
             </Grid>
           </DialogContentText>
           <DialogActions>
-            <Button type="submit" variant="contained" color="primary" disabled={!formik.isValid || formik.isSubmitting}>
+            <Button type="submit" variant="contained" color="primary" disabled={formik.isSubmitting}>
               Save
             </Button>
             <Button

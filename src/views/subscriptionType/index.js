@@ -3,7 +3,6 @@ import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField } fr
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
-// import AddLead from './AddBooks.js';
 import axios from 'axios';
 
 import { Breadcrumbs, Link } from '@mui/material';
@@ -38,7 +37,7 @@ const SubscriptType = () => {
       field: 'title',
       headerName: 'Title',
       flex: 1,
-      
+
       align: 'center',
       headerAlign: 'center',
       cellClassName: 'name-column--cell name-column--cell--capitalize'
@@ -61,7 +60,7 @@ const SubscriptType = () => {
     },
     {
       field: 'numberOfDays',
-      
+
       align: 'center',
       headerAlign: 'center',
       headerName: 'Number Of Days',
@@ -71,7 +70,7 @@ const SubscriptType = () => {
     {
       field: 'action',
       headerName: 'Action',
-      
+
       align: 'center',
       headerAlign: 'center',
       flex: 1,
@@ -91,8 +90,6 @@ const SubscriptType = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
-      // console.log('response : ', response.data.BookManagement[0].upload_Book);
-      // console.log('image url : ', `http://localhost:4300/${response.data.BookManagement[0].upload_Book}`);
       console.log('response>>>>>>>>>', response);
 
       const fetchedData = response?.data?.SubscriptionType?.map((item) => ({
@@ -237,15 +234,13 @@ const SubscriptType = () => {
                 fullWidth
                 margin="normal"
               />
-              {/* <TextField
-                label="Return Price"
-                value={editData.returnPrice}
-                onChange={(e) => setEditData({ ...editData, returnPrice: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
-              <Button onClick={handleSaveEdit} variant="contained" color="primary">
+              <Button onClick={handleSaveEdit} variant="contained" color="primary"
+              style={{ marginLeft: '16px' }} >
                 Save
+              </Button>
+              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary"
+                 style={{ marginLeft: '16px' }} >
+                Cancel
               </Button>
             </Box>
           </Dialog>

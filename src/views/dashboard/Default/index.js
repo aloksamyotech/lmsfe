@@ -27,6 +27,7 @@ import FinePerDay from './FinePerDay';
 import App from 'views/Card';
 import TrandingBook from 'views/Card/trandingBook';
 import Book2 from 'views/Card/book2';
+import NewBook from 'views/Card/trandingBook';
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
@@ -111,19 +112,8 @@ const Dashboard = () => {
           <Grid item sm={6} xs={12} md={6} lg={3}>
             <TotalOrderLineChartCardd isLoading={isLoading} />
           </Grid>
-
           <Grid item sm={6} xs={12} md={6} lg={3}>
             <EarningCardd isLoading={isLoading} />
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={12} md={8}>
-            <TotalGrowthBarChart isLoading={isLoading} />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <PopularCard isLoading={isLoading} />
           </Grid>
         </Grid>
       </Grid>
@@ -142,6 +132,11 @@ const Dashboard = () => {
       <Grid item xs={12}>
         <Grid item xs={12} md={12}>
           <Book2 isLoading={isLoading} />
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid item xs={12} md={12}>
+          <App isLoading={isLoading} />
         </Grid>
       </Grid>
 

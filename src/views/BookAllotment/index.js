@@ -43,20 +43,23 @@ const Allotment = () => {
     //   flex: 1,
     //   cellClassName: 'name-column--cell name-column--cell--capitalize'
     // },
-     {
+    {
       field: 'studentEmail',
       headerName: 'Email',
       flex: 1,
+      align: 'center',
+      headerAlign: 'center',
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'studentName',
       headerName: 'Student Name',
       flex: 1,
+      align: 'center',
+      headerAlign: 'center',
       cellClassName: 'name-column--cell--capitalize'
     },
 
-     
     // {
     //   field: 'paymentType',
     //   headerName: 'Subscription Type',
@@ -78,14 +81,15 @@ const Allotment = () => {
     //   flex: 1,
     //   renderCell: (params) => (
     //     <div>
-           
-           
+
     //     </div>
     //   )
     // },
     {
       field: 'action',
       headerName: 'Action',
+      align: 'center',
+      headerAlign: 'center',
       flex: 1,
       renderCell: (params) => (
         <div>
@@ -124,7 +128,7 @@ const Allotment = () => {
         id: item._id,
         // bookName: item.bookName,
         studentName: item.studentName,
-        studentEmail:item.studentEmail
+        studentEmail: item.studentEmail
         // paymentType: item.paymentType,
         // bookIssueDate: formatDate(item.bookIssueDate),
         // submissionDate: formatDate(item.submissionDate)
