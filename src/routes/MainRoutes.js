@@ -10,6 +10,10 @@ import PurchaseBook from 'views/purchaseBook/index';
 import Profile from 'views/Profile';
 import ViewBookAllotment from 'views/view/view.bookAllotment';
 import ReceiveBook from 'views/ReceiveBook/index';
+import StudentInvoice from 'views/view/invoiceStudent';
+import ReceiveInvoice from 'views/view/receiveInvoiice';
+import PurchaseInvoice from 'views/purchaseBook/purchaseInvoice';
+import ImageGallery from 'views/Card/openImage';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -28,6 +32,8 @@ const AddPurchaseBook = Loadable(lazy(() => import('views/purchaseBook/index')))
 // const SubscriptionPage = Loadable(lazy(() => import('views/Subscription')));
 const SubscriptionType = Loadable(lazy(() => import('views/subscriptionType/index')));
 const Receive = Loadable(lazy(() => import('views/ReceiveBook/index')));
+const Invoice = Loadable(lazy(() => import('views/view/invoiceStudent')));
+// const ReceiveInvoice = Loadable(lazy(() => import('views/view/receiveInvoiice')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -61,7 +67,7 @@ const MainRoutes = {
       children: [
         {
           path: 'receive',
-          element: <ReceiveBook/>
+          element: <ReceiveBook />
         }
       ]
     },
@@ -174,6 +180,34 @@ const MainRoutes = {
         }
       ]
     },
+
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'invoice/:id',
+          element: <StudentInvoice />
+        }
+      ]
+    },
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'receiveInvoice/:id',
+          element: <ReceiveInvoice />
+        }
+      ]
+    },
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'purchaseInvoice/:id',
+          element: <PurchaseInvoice />
+        }
+      ]
+    },
     {
       path: 'dashboard',
       children: [
@@ -183,6 +217,16 @@ const MainRoutes = {
         }
       ]
     },
+    {
+      path: 'dashboard',
+      children: [
+        {
+          path: 'imageGallery/:id',
+          element: <ImageGallery />
+        }
+      ]
+    },
+
     {
       path: 'dashboard',
       children: [

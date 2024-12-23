@@ -79,9 +79,9 @@ const View = () => {
       refreshPage();
     } catch (error) {
       console.error('Profile Update Failed:', error);
-      toast.error(' Profile Update Failed:');
+      // toast.error(' Profile Update Failed:');
     }
-    fetchData();
+    // fetchData();
   };
 
   const [studentId, setStudentId] = useState(null);

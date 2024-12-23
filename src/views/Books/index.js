@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
@@ -18,6 +18,12 @@ const Lead = () => {
   const [editData, setEditData] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
+  const [excelData, setExcelData] = useState([]);
+  const fileInput = useRef([]);
+
+  const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
+
+  const XLSX = require('xlsx');
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
@@ -70,6 +76,13 @@ const Lead = () => {
     },
 
     {
+      field: 'quantity',
+      headerName: 'Total Quantity',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
       field: 'action',
       headerName: 'Action',
       flex: 1,
@@ -89,7 +102,7 @@ const Lead = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:4300/user/bookManagement');
-      console.log('response : ', response.data.BookManagement[0].upload_Book);
+      console.log('response <<<<<>>>>>>>> : ', response.data);
       console.log('image url : ', `http://localhost:4300/${response.data.BookManagement[0].upload_Book}`);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
@@ -98,7 +111,8 @@ const Lead = () => {
         upload_Book: item.upload_Book,
         title: item.title,
         publisherName: item.publisherName,
-        author: item.author
+        author: item.author,
+        quantity: item.quantity || 0
       }));
       setData(fetchedData);
     } catch (error) {
@@ -154,6 +168,38 @@ const Lead = () => {
     setBookToDelete(null);
   };
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const binaryStr = event.target.result;
+      const workbook = XLSX.read(binaryStr, { type: 'binary' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(worksheet);
+      setExcelData(data);
+      console.log('Parsed Excel Data:', data);
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  const handleBulkUpload = async () => {
+    try {
+      if (!excelData || excelData.length === 0) {
+        alert('No data to upload');
+        return;
+      } 
+ 
+      console.log('formData>>>>>>', excelData);
+      const response = await axios.post('http://localhost:4300/user/addManyBooks', excelData); 
+      alert(response.data.message);
+    } catch (error) {
+      console.error('Error uploading data:', error);
+      alert('Error uploading data');
+    }
+  };
+
   return (
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
@@ -181,6 +227,9 @@ const Lead = () => {
           </Breadcrumbs>
 
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
+              Bulk Upload
+            </Button>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               Add New Book
             </Button>
@@ -256,6 +305,15 @@ const Lead = () => {
                 OK
               </Button>
             </Stack>
+          </Box>
+        </Dialog>
+        <Dialog open={openBulkUploadDialog} onClose={() => setOpenBulkUploadDialog(false)}>
+          <Box p={3}>
+            <Typography variant="h6">Upload Excel File</Typography>
+            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
+            <Button variant="contained" color="primary" onClick={handleBulkUpload} sx={{ mt: 2 }}>
+              Upload Data
+            </Button>
           </Box>
         </Dialog>
       </Container>

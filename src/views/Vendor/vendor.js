@@ -36,7 +36,7 @@ const AddPolicy = (props) => {
     address: yup.string().required('Address is required'),
     // cityName: yup.string().required('City Name is required'),
     // .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-    date: yup.date().required('Policy Start Date is required'),
+    // date: yup.date().required('Policy Start Date is required'),
     phoneNumber: yup
       .string()
       .matches(/^[0-9]{10}$/, 'Phone number is invalid')

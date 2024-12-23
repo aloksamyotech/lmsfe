@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import { useNavigate } from 'react-router-dom';
 
 const PurchaseBook = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -19,6 +21,7 @@ const PurchaseBook = () => {
   const [editData, setEditData] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
+  const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
@@ -66,7 +69,18 @@ const PurchaseBook = () => {
       align: 'center',
       headerAlign: 'center'
     },
-
+    {
+      field: 'invoice',
+      headerName: 'Invoice',
+      flex: 1,
+      renderCell: (params) => (
+        <div>
+          <Button color="primary" onClick={() => handleInvoice(params.row)} style={{ margin: '-9px' }}>
+            <ReceiptIcon />
+          </Button>
+        </div>
+      )
+    },
     {
       field: 'action',
       headerName: 'Action',
@@ -135,6 +149,10 @@ const PurchaseBook = () => {
       console.error('Error updating book:', error);
     }
     // fetchData();
+  };
+
+  const handleInvoice = (row) => {
+    navigate(`/dashboard/purchaseInvoice/${row.id}`, { state: { rowData: row } });
   };
 
   const handleDelete = (row) => {

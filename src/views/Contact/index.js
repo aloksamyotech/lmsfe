@@ -34,6 +34,9 @@ const Contact = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [contactToDelete, setContactToDelete] = useState(null);
 
+  const [openFavoriteDialog, setOpenFavoriteDialog] = useState(false);
+  const [favoriteStudent, setFavoriteStudent] = useState(null);
+
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     console.log('Breadcrumb clicked');
@@ -68,22 +71,24 @@ const Contact = () => {
       field: 'register_Date',
       headerName: 'Register Date',
       flex: 1
+    },
+    {
+      field: 'action',
+      headerName: 'Action',
+      flex: 1,
+      renderCell: (params) => (
+        <Box>
+          <Button
+            onClick={() => handleFavorite(params.row.id)}
+            variant="contained"
+            color="error"
+            style={{ padding: '5px 10px', fontSize: '14px' }}
+          >
+            Remove
+          </Button>
+        </Box>
+      )
     }
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   flex: 1,
-    //   renderCell: (params) => (
-    //     <div>
-    //       {/* <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
-    //         <EditIcon />
-    //       </Button> */}
-    //       <Button color="secondary" onClick={() => handleDelete(params.row.id)} style={{ margin: '-9px' }}>
-    //         <DeleteIcon />
-    //       </Button>
-    //     </div>
-    //   )
-    // }
   ];
 
   const formatDate = (dateString) => {
@@ -123,23 +128,6 @@ const Contact = () => {
     setEditData(contact);
   };
 
-  const handleSaveEdit = async () => {
-    try {
-      const response = await axios.put(`http://localhost:4300/user/editContact/${editData.id}`, editData);
-      const updatedContact = response.data;
-      setData((prevData) => prevData.map((item) => (item.id === updatedContact.id ? updatedContact : item)));
-      setEditData(null);
-      fetchData();
-    } catch (error) {
-      console.error('Error updating contact:', error);
-    }
-  };
-
-  const handleDelete = (contact) => {
-    setContactToDelete(contact);
-    setOpenDeleteDialog(true);
-  };
-
   const handleConfirmDelete = async () => {
     try {
       if (contactToDelete) {
@@ -158,6 +146,30 @@ const Contact = () => {
     setOpenDeleteDialog(false);
   };
 
+  const handleFavorite = async (student) => {
+    console.log(`click on like`);
+    try {
+      console.log('Student ID', student);
+
+      const response = await axios.post(`http://localhost:4300/user/markFavorite/${student}`);
+      console.log('Favorite response-------', response);
+      const updatedStudent = response.data.student;
+
+      setData((prevData) => prevData.map((item) => (item.id === updatedStudent.id ? updatedStudent : item)));
+
+      if (response) {
+        fetchData();
+      }
+      if (response?.data?.student?.favorite == true) {
+        toast.success('add to Favorite successfully');
+        // cancelFavorite();
+      } else {
+        toast.error('Remove to Favorite successfully');
+      }
+    } catch (error) {
+      console.error('Error marking as favorite:', error);
+    }
+  };
   return (
     <>
       <AddContact open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
@@ -204,67 +216,6 @@ const Contact = () => {
             </Card>
           </Box>
         </TableStyle>
-
-        {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3}>
-              <Typography variant="h6">Edit Contact</Typography>
-              <TextField
-                label="First Name"
-                value={editData.firstName}
-                onChange={(e) => setEditData({ ...editData, firstName: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Last Name"
-                value={editData.lastName}
-                onChange={(e) => setEditData({ ...editData, lastName: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Date Of Birth"
-                value={editData.dateOfBirth}
-                onChange={(e) => setEditData({ ...editData, dateOfBirth: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Phone Number"
-                value={editData.phoneNumber}
-                onChange={(e) => setEditData({ ...editData, phoneNumber: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Email"
-                value={editData.email}
-                onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Gender"
-                value={editData.gender}
-                onChange={(e) => setEditData({ ...editData, gender: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Address"
-                value={editData.address}
-                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary">
-                Save
-              </Button>
-            </Box>
-          </Dialog>
-        )}
-
         <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
           <Box p={3}>
             <Typography variant="h6">Are you sure you want to delete this contact?</Typography>

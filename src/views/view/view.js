@@ -1,24 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Avatar, Typography, Paper, Link, Breadcrumbs, Box, Card, Stack } from '@mui/material';
+import { Container, Avatar, Typography, Paper, Link, Breadcrumbs, Box, Card, Stack, Button } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Icon } from '@iconify/react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TableStyle from '../../ui-component/TableStyle';
 import axios from 'axios';
 import AddRegister from 'views/Register/Addregister';
+// import StudentInvoice from './invoiceStudent';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import { useNavigate } from 'react-router-dom';
 
-// const callData = [
-//   {
-//     id: 1,
-//     student_id: 'Task Testing',
-//     student_Name: 'HRitik',
-//     email: 'test@example.com',
-//     mobile_Number: '1111111111',
-//     register_Date: '10/02/2015',
-//     status: 'Active',
-//     action: 'Inactive'
-//   }
-// ];
+// import PaymentReceipt from './berry';
 
 const View = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -30,8 +22,8 @@ const View = () => {
   const [currentUrl, setCurrentUrl] = useState('');
   const [id, setId] = useState(null);
   const [allData, setAllData] = useState([]);
+  const navigate = useNavigate();
 
-  // Initial profile data
   const [profile, setProfile] = useState({
     student_Name: '',
 
@@ -76,6 +68,11 @@ const View = () => {
       flex: 1
     },
     {
+      field: 'amount',
+      headerName: 'Amount',
+      flex: 1
+    },
+    {
       field: 'bookIssueDate',
       headerName: 'Book Issue Date',
       flex: 1
@@ -84,24 +81,46 @@ const View = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 1
-    }
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   flex: 1
-    // }
-    // renderCell: (params) => (
-    //   <div>
-    //     <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
-    //       <EditIcon />
-    //     </Button>
-    //     <Button color="secondary" onClick={() => handleDelete(params.row.id)} style={{ margin: '-9px' }}>
-    //       <DeleteIcon />
-    //     </Button>
-    //   </div>
-    // )
-  ];
+    },
 
+    {
+      field: 'invoice',
+      headerName: 'Invoice',
+      flex: 1,
+      renderCell: (params) => (
+        <div>
+          <Button color="primary" onClick={() => handleInvoice(params.row)} style={{ margin: '-9px' }}>
+            <ReceiptIcon />
+          </Button>
+        </div>
+      )
+    }
+  ];
+  const handleInvoice = (row) => {
+    navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
+
+    const fetchStudent = async () => {
+      try {
+        // console.log('Student');
+
+        const response = await axios.get('/user/viewBookAllotmentUser/:id');
+        console.log('data API------------', response);
+        const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
+          id: item._id,
+          student_id: item.student_id,
+          student_Name: item.student_Name,
+          email: item.email,
+          mobile_Number: item.mobile_Number,
+          register_Date: formatDate(item.register_Date)
+        }));
+        setData(fetchedData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchStudent();
+  };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -201,13 +220,15 @@ const View = () => {
     setId(extractedId);
     const fetchData = async () => {
       try {
-        console.log('findHistoryBookAllotmentUser');   const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+        console.log('findHistoryBookAllotmentUser');
+        const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
         console.log('findHistoryBookAllotmentUser----------', response);
         const fetchedData = response?.data?.map((item) => ({
           id: item._id,
           bookName: item.bookName,
           student_Name: item.student_Name,
           paymentType: item.paymentType,
+          amount: item.amount,
           bookIssueDate: formatDate(item.bookIssueDate),
           submissionDate: formatDate(item.submissionDate)
         }));
@@ -293,7 +314,7 @@ const View = () => {
             display: 'flex',
             // alignItems: 'center',
             maxWidth: '500px',
-            margin: '20px',
+            margin: '20px'
             // marginRight: '-5%'
           }}
         >
@@ -304,7 +325,7 @@ const View = () => {
             sx={{
               width: 100,
               height: 100,
-              marginRight: '20px'
+              marginRight: '40px'
             }}
           />
 
@@ -324,7 +345,7 @@ const View = () => {
             </Typography>
           </Box>
         </Paper>
-        <Box
+        {/* <Box
           sx={{
             backgroundColor: 'white',
             padding: '10px 20px',
@@ -344,8 +365,8 @@ const View = () => {
               <h4>Student Allotted Books</h4>
             </Link>
           </Breadcrumbs>
-        </Box>
-        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
+        </Box> */}
+        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack> */}
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -360,6 +381,8 @@ const View = () => {
             </Card>
           </Box>
         </TableStyle>
+        {/* <StudentInvoice />
+        <PaymentReceipt /> */}
       </Container>
     </>
   );

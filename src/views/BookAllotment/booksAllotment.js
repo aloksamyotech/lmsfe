@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 import ClearIcon from '@mui/icons-material/Clear';
-import { useFormik } from 'formik';
+import { Field, useFormik } from 'formik';
 import { useEffect } from 'react';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
@@ -18,18 +18,19 @@ import { useState } from 'react';
 const AddAllotment = (props) => {
   const { open, handleClose, fetchData } = props;
   const [bookData, setBookData] = useState([]);
+  const [addBook, setAddBook] = useState([]); // State to store the added books
   const [studentData, setStudentData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [borrowedBooksCount, setBorrowedBooksCount] = useState(0);
-  const [data, setData] = useState([]);
+
+  const [selectedAllotmentData, setSelectedAllotmentData] = useState(null); // New state to save selected data
 
   const validationSchema = yup.object({
-    bookId: yup.array().of(yup.string().required('Each Book Name is required')),
-    studentId: yup.string().required('Book Title is required'),
-    submissionDate: yup.date().required('Submit Date is required'),
-    bookIssueDate: yup.date().required('Book Issue date is required'),
-    paymentType: yup.string().required('Payment Type is required'),
-    amount: yup.string().required('Price is required').typeError('Must be a number')
+    studentId: yup.string().required('Student is required'),
+    bookId: yup.array().min(1, 'At least one book must be selected').required('Book is required'),
+    paymentType: yup.string().required('Subscription type is required'),
+    amount: yup.number().positive('Amount must be greater than 0').required('Amount is required'),
+    submissionDate: yup.date().required('Submission date is required').min(new Date(), 'Submission date cannot be in the past')
   });
 
   const formik = useFormik({
@@ -47,17 +48,14 @@ const AddAllotment = (props) => {
 
       try {
         const response = await axios.post('http://localhost:4300/user/bookAllotment', values);
-        // console.log('response', response);
-        // toast.success('Book details added successfully');
         fetchData();
         handleClose();
       } catch (error) {
-        // toast.error('Book details added failed');
-
-        toast.success('Book details added successfully');
+        toast.error('Book details added failed');
       }
       formik.resetForm();
       handleClose();
+      fetchData();
     }
   });
 
@@ -65,11 +63,13 @@ const AddAllotment = (props) => {
     const fetchBooks = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/bookManagement');
-        setBookData(response.data?.BookManagement);
+        const filteredBooks = response.data?.BookManagement.filter((book) => book.quantity > 0);
+        setBookData(filteredBooks);
       } catch (error) {
         console.error('Error fetching books:', error);
       }
     };
+
     const fetchStudents = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/registerManagement');
@@ -108,8 +108,40 @@ const AddAllotment = (props) => {
     const selectedSubscription = studentData.find((item) => item._id === e.target.value);
     if (selectedSubscription) {
       formik.setFieldValue('paymentType', selectedSubscription._id);
-      formik.setFieldValue('amount', selectedSubscription.amount); // Autofill amount
+      formik.setFieldValue('amount', selectedSubscription.amount);
     }
+  };
+
+  // Handle "Add Book" button click
+  const handleAddBookClick = () => {
+    // Get selected values from the form fields
+    const selectedBooks = formik.values.bookId;
+    const studentId = formik.values.studentId;
+    const submissionDate = formik.values.submissionDate;
+    const bookIssueDate = formik.values.bookIssueDate;
+    const paymentType = formik.values.paymentType;
+    const amount = formik.values.amount;
+
+    console.log('Selected Data:');
+    console.log('Student:', studentId);
+    console.log('Books:', selectedBooks);
+    console.log('Submission Date:', submissionDate);
+    console.log('Book Issue Date:', bookIssueDate);
+    console.log('Payment Type:', paymentType);
+    console.log('Amount:', amount);
+
+    setSelectedAllotmentData({
+      studentId,
+      books: selectedBooks,
+      submissionDate,
+      bookIssueDate,
+      paymentType,
+      amount
+    });
+
+    setAddBook([...addBook, ...selectedBooks]);
+
+    console.log('Updated Added Books:', [...addBook, ...selectedBooks]);
   };
 
   return (
@@ -133,12 +165,23 @@ const AddAllotment = (props) => {
                         </MenuItem>
                       ))}
                     </Select>
+                    <FormHelperText>{formik.touched.studentId && formik.errors.studentId}</FormHelperText>
                   </FormControl>
                 </Grid>
 
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{ marginLeft: '50px', marginTop: '50px', height: '40px' }}
+                  disabled={!formik.isValid || !formik.dirty}
+                  onClick={handleAddBookClick}
+                >
+                  Add Book
+                </Button>
+
                 <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Book</FormLabel>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth error={formik.touched.bookId && Boolean(formik.errors.bookId)}>
                     <Select
                       multiple
                       id="bookId"
@@ -153,6 +196,7 @@ const AddAllotment = (props) => {
                         </MenuItem>
                       ))}
                     </Select>
+                    <FormHelperText>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
                   </FormControl>
                 </Grid>
 
@@ -166,6 +210,7 @@ const AddAllotment = (props) => {
                         </MenuItem>
                       ))}
                     </Select>
+                    <FormHelperText>{formik.touched.paymentType && formik.errors.paymentType}</FormHelperText>
                   </FormControl>
                 </Grid>
 
@@ -181,22 +226,6 @@ const AddAllotment = (props) => {
                     error={formik.touched.amount && Boolean(formik.errors.amount)}
                     helperText={formik.touched.amount && formik.errors.amount}
                     InputProps={{ style: { height: '50px' } }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Book Issue Date</FormLabel>
-                  <TextField
-                    name="bookIssueDate"
-                    type="date"
-                    size="small"
-                    fullWidth
-                    value={formik.values.bookIssueDate}
-                    onChange={formik.handleChange}
-                    error={formik.touched.bookIssueDate && Boolean(formik.errors.bookIssueDate)}
-                    helperText={formik.touched.bookIssueDate && formik.errors.bookIssueDate}
-                    InputProps={{ style: { height: '50px' } }}
-                    inputProps={{ min: new Date().toISOString().split('T')[0] }}
                   />
                 </Grid>
 

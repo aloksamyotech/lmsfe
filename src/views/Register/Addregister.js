@@ -24,7 +24,7 @@ const AddRegister = (props) => {
     // student_id: yup.string().required('Student is required'),
     student_Name: yup
       .string()
-      .matches(/^[a-zA-Z]+$/, 'Only characters are allowed')
+      // .matches(/^[a-zA-Z]+$/, 'Only characters are allowed')
       .required('Student Name is required'),
     email: yup.string().email('Invalid email').required('Email is required'),
     mobile_Number: yup
@@ -35,7 +35,7 @@ const AddRegister = (props) => {
     select_identity: yup.string().required('Select Identity is required'),
     // upload_identity: yup.mixed().required('Student identity image is required'),
     //  yup.string(),
-    register_Date: yup.string().required('Register Date is required'),
+    // register_Date: yup.string().required('Register Date is required'),
     upload_identity: yup.mixed().required('Select a file to upload')
   });
 

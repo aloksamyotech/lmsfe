@@ -1,7 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardMedia, Avatar, Typography, Button, Box } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Box } from '@mui/material';
 import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
-import TrandingBook from './trandingBook';
 
 const profiles = [
   {
@@ -9,34 +8,42 @@ const profiles = [
     role: ' THE ALCHEMIST ',
     status: 'Active',
     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6_G-a3LG6oKgubC158kAGS8TeRDG3F291cQ&s'
-    // avatar: 'https://via.placeholder.com/50' //
   },
   {
     name: 'Novel by Edward P. Jones',
     role: 'The Known World',
     status: 'Active',
     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSduFXOoU2VD-1gc1jCl03gsoHYzeKNyaKJOA&s'
-    // avatar: 'https://via.placeholder.com/50' //
   },
   {
     name: 'Charles Darwin',
     role: 'THE ORIGIN OF SPECIES',
     status: 'Active',
     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeI3YP5JmaQ4_YDCFmljuPIggK1-7_aAb70A&s'
-    // avatar: 'https://via.placeholder.com/50' //
   },
   {
     name: 'Sally Hepworth',
     role: 'THE GOOD SISTER ',
     status: 'Active',
     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5DOPTv9dZFILkYSoi2AkxeME3-eGXK1H93A&s'
-    // avatar: 'https://via.placeholder.com/50' //
   }
 ];
 
-const ProfileCard = ({ name, role, status, img, avatar }) => {
+const ProfileCard = ({ name, role, status, img }) => {
   return (
-    <Card sx={{ width: 300, borderRadius: 2, overflow: 'hidden', boxShadow: 3 }}>
+    <Card
+      sx={{
+        width: 300,
+        borderRadius: 2,
+        overflow: 'hidden',
+        boxShadow: 3,
+        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', // smooth transition for zoom effect
+        '&:hover': {
+          transform: 'scale(1.05)', // zoom in the card on hover
+          boxShadow: 6 // increase shadow on hover
+        }
+      }}
+    >
       <CardMedia component="img" height="250" image={img} alt={`${name} background`} />
       <CardContent sx={{ textAlign: 'center' }}>
         <Typography variant="h6" component="div">
@@ -51,10 +58,6 @@ const ProfileCard = ({ name, role, status, img, avatar }) => {
           <Twitter sx={{ color: '#1da1f2', cursor: 'pointer' }} />
           <LinkedIn sx={{ color: '#0077b5', cursor: 'pointer' }} />
         </Box>
-
-        {/* <Button variant="contained" sx={{ m: 2 }}>
-          View More
-        </Button> */}
       </CardContent>
     </Card>
   );

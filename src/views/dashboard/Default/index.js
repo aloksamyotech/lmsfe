@@ -129,16 +129,16 @@ const Dashboard = () => {
           <App isLoading={isLoading} />
         </Grid>
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <Grid item xs={12} md={12}>
           <Book2 isLoading={isLoading} />
         </Grid>
-      </Grid>
-      <Grid item xs={12}>
+      </Grid> */}
+      {/* <Grid item xs={12}>
         <Grid item xs={12} md={12}>
           <App isLoading={isLoading} />
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>

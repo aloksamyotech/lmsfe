@@ -59,7 +59,14 @@ const Allotment = () => {
       headerAlign: 'center',
       cellClassName: 'name-column--cell--capitalize'
     },
-
+    {
+      field: 'mobile_Number',
+      headerName: 'Mobile Number',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      cellClassName: 'name-column--cell--capitalize'
+    },
     // {
     //   field: 'paymentType',
     //   headerName: 'Subscription Type',
@@ -128,7 +135,8 @@ const Allotment = () => {
         id: item._id,
         // bookName: item.bookName,
         studentName: item.studentName,
-        studentEmail: item.studentEmail
+        studentEmail: item.studentEmail,
+        mobile_Number: item.mobile_Number
         // paymentType: item.paymentType,
         // bookIssueDate: formatDate(item.bookIssueDate),
         // submissionDate: formatDate(item.submissionDate)

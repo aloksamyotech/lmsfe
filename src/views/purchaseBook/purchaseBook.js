@@ -15,20 +15,28 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState } from 'react';
 
+// Validation schema for the form
+const validationSchema = yup.object({
+  bookId: yup.string().required('Book is required'),
+  vendorId: yup.string().required('Vendor is required'),
+  bookIssueDate: yup.date().required('Issue Date is required').max(new Date(), 'Issue date cannot be in the future'),
+  quantity: yup
+    .number()
+    .required('Quantity is required')
+    .positive('Quantity must be a positive number')
+    .integer('Quantity must be an integer')
+    .min(1, 'Minimum quantity is 1')
+    .max(1000, 'Quantity cannot exceed 1000'),
+  price: yup.number().required('Price is required').positive('Price must be a positive number').min(0.1, 'Price must be at least 0.1'),
+  // totalPrice: yup.number().required('Total Price is required').positive('Total price must be positive'),
+  bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters')
+});
+
 const AddPurchaseBook = (props) => {
   const { open, handleClose, fetchData } = props;
   const [bookData, setBookData] = useState([]);
   const [studentData, setStudentData] = useState([]);
   const [publisherData, setPublisherData] = useState([]);
-
-  const validationSchema = yup.object({
-    bookIssueDate: yup.date().required('Book Issue date is required'),
-    quantity: yup.number().required('Quantity is required').typeError('Must be a number'),
-    bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters'),
-    discount: yup.number().required('Discount is required:').typeError('Discount must be a number'),
-    price: yup.number().required('Price is required').typeError('Price must be a number'),
-    totalPrice: yup.number().required('Price is required').typeError('Price must be a number')
-  });
 
   const formik = useFormik({
     initialValues: {
@@ -39,6 +47,7 @@ const AddPurchaseBook = (props) => {
       price: '',
       totalPrice: ''
     },
+    validationSchema,
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
       try {
@@ -91,6 +100,7 @@ const AddPurchaseBook = (props) => {
     fetchVendor();
     fetchPublisher();
   }, []);
+
   const handleQuantityPriceChange = (field, value) => {
     const newValue = value === '' ? '' : value.replace(/[^0-9.]/g, '');
     formik.setFieldValue(field, newValue);
@@ -131,6 +141,7 @@ const AddPurchaseBook = (props) => {
                     </Select>
                   </FormControl>
                 </Grid>
+
                 <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Vendor</FormLabel>
                   <FormControl fullWidth>
@@ -195,6 +206,7 @@ const AddPurchaseBook = (props) => {
                     InputProps={{ style: { height: '50px' } }}
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Total Amount</FormLabel>
                   <TextField
@@ -202,7 +214,7 @@ const AddPurchaseBook = (props) => {
                     name="totalPrice"
                     size="small"
                     fullWidth
-                    value={formik.values.price * formik.values.quantity}
+                    value={formik.values.totalPrice || formik.values.price * formik.values.quantity}
                     error={formik.touched.totalPrice && Boolean(formik.errors.totalPrice)}
                     helperText={formik.touched.totalPrice && formik.errors.totalPrice}
                     inputProps={{ maxLength: 5 }}
@@ -222,6 +234,8 @@ const AddPurchaseBook = (props) => {
                     fullWidth
                     value={formik.values.bookComment}
                     onChange={formik.handleChange}
+                    error={formik.touched.bookComment && Boolean(formik.errors.bookComment)}
+                    helperText={formik.touched.bookComment && formik.errors.bookComment}
                   />
                 </Grid>
               </Grid>
