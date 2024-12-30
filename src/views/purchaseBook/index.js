@@ -6,7 +6,7 @@ import TableStyle from '../../ui-component/TableStyle';
 // import AddLead from './AddBooks.js';
 import axios from 'axios';
 import AddPurchaseBook from './purchaseBook';
-
+import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -177,17 +177,19 @@ const PurchaseBook = () => {
 
   const confirmDelete = async () => {
     const id = bookToDelete?.id;
-    console.log(`bookToDelete`, bookToDelete);
+    console.log(`bookToDelete>>>>>>>>>>>`, bookToDelete);
 
     console.log(`id`, id);
 
     try {
       await axios.delete(`http://localhost:4300/user/deletePurchaseBook/${id}`);
       setData((prevData) => prevData.filter((book) => book.id !== id));
+       toast.success('Purchase Book add  successfully');
       setOpenDeleteDialog(false);
       setBookToDelete(null);
     } catch (error) {
       console.error('Error deleting book:', error);
+      toast.error('Purchase Book deleted  successfully');
       setOpenDeleteDialog(false);
       setBookToDelete(null);
     }

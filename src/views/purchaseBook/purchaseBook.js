@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { FormLabel, Grid, TextField, MenuItem, Select, FormControl } from '@mui/material';
+import { FormLabel, Grid, TextField, MenuItem, Select, FormControl, FormHelperText } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -45,23 +45,25 @@ const AddPurchaseBook = (props) => {
       bookComment: '',
       discount: '',
       price: '',
-      totalPrice: ''
+      totalPrice: '',
+      bookId: '',
+      vendorId: ''
     },
     validationSchema,
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
-      try {
-        const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
-        console.log('Form submitted successfully>>>>>>>:', response);
-        toast.success('Purchase Book details added successfully');
-        fetchData();
-        handleClose();
-      } catch (error) {
-        toast.error(error?.response?.data?.message);
-        console.error('Error submitting form:', error);
-      }
-      formik.resetForm();
-      handleClose();
+      // try {
+      //   const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
+      //   console.log('Form submitted successfully>>>>>>>:', response);
+      //   toast.success('Purchase Book details added successfully');
+      //   fetchData();
+      //   handleClose();
+      // } catch (error) {
+      //   toast.error(error?.response?.data?.message);
+      //   console.error('Error submitting form:', error);
+      // }
+      // formik.resetForm();
+      // handleClose();
     }
   });
 
@@ -128,7 +130,14 @@ const AddPurchaseBook = (props) => {
                 <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Books</FormLabel>
                   <FormControl fullWidth>
-                    <Select id="bookId" name="bookId" value={formik.values.bookId} onChange={formik.handleChange}>
+                    <Select
+                      id="bookId"
+                      name="bookId"
+                      value={formik.values.bookId}
+                      error={formik.touched.bookId && Boolean(formik.errors.bookId)}
+                      helperText={formik.touched.bookId && formik.errors.bookId}
+                      onChange={formik.handleChange}
+                    >
                       {bookData && bookData.length > 0 ? (
                         bookData.map((item) => (
                           <MenuItem key={item._id} value={item._id}>
@@ -139,6 +148,7 @@ const AddPurchaseBook = (props) => {
                         <MenuItem disabled>No books available</MenuItem>
                       )}
                     </Select>
+                    <FormHelperText style={{ color: 'red' }}>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
                   </FormControl>
                 </Grid>
 
@@ -149,6 +159,8 @@ const AddPurchaseBook = (props) => {
                       id="vendorId"
                       name="vendorId"
                       value={formik.values.vendorId}
+                      error={formik.touched.vendorId && Boolean(formik.errors.vendorId)}
+                      // helperText={formik.touched.vendorId && formik.errors.vendorId}
                       onChange={(event) => formik.setFieldValue('vendorId', event.target.value)}
                     >
                       {studentData.map((item) => (
@@ -157,6 +169,7 @@ const AddPurchaseBook = (props) => {
                         </MenuItem>
                       ))}
                     </Select>
+                    <FormHelperText style={{ color: 'red' }}>{formik.touched.vendorId && formik.errors.vendorId}</FormHelperText>
                   </FormControl>
                 </Grid>
 

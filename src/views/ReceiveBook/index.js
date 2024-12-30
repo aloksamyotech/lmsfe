@@ -1,5 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Stack, Button, Container, Typography, Box, Card, Divider, Avatar, Dialog, TextField } from '@mui/material';
+import {
+  Stack,
+  Button,
+  Container,
+  Typography,
+  Box,
+  Card,
+  Divider,
+  Avatar,
+  Dialog,
+  TextField,
+  DialogActions,
+  DialogContent,
+  DialogTitle
+} from '@mui/material';
 import { Grid, FormLabel, FormControl, Select, MenuItem, FormHelperText } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TableStyle from 'ui-component/TableStyle';
@@ -18,7 +32,7 @@ const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear().toString().slice(-2);
   return `${day}/${month}/${year}`;
 };
@@ -26,7 +40,6 @@ const paymentTypeMapping = {
   1: 'Credit Card',
   2: 'Cash',
   3: 'Bank Transfer'
-  // Add other payment types here as necessary
 };
 
 const ReceiveBook = () => {
@@ -40,6 +53,12 @@ const ReceiveBook = () => {
   const [loading, setLoading] = useState(false);
   const [studentId, setStudentId] = useState(null);
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [amount, setAmount] = useState('');
+  const [reason, setReason] = useState('');
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const columns = [
     {
@@ -105,12 +124,33 @@ const ReceiveBook = () => {
   }, []);
 
   useEffect(() => {
+    const getAllSubmitBookDetails = async () => {
+      try {
+        const submitResponse = await axios.get(`http://localhost:4300/user/getAllSubmitBookDetails`);
+        console.log(`submitResponse`, submitResponse);
+
+        const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
+          id: item._id,
+          student_Name: item?.studentDetails?.[0]?.student_Name,
+          bookName: item?.bookDetails?.[0]?.bookName,
+          title: item?.paymentDetails?.[0]?.title,
+          amount: item?.paymentDetails?.[0]?.amount,
+          bookIssueDate: formatDate(item?.bookIssueDate),
+          submissionDate: formatDate(item?.submissionDate)
+        }));
+
+        setData(fetchedData);
+      } catch (error) {
+        console.error('Error fetching submit book data:', error);
+      }
+    };
+
+    getAllSubmitBookDetails();
+
     const fetchSubscription = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
         setStudentData(response.data?.SubscriptionType);
-
-        console.log('Subscription Type......>>>>', response?.data);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
       }
@@ -129,7 +169,6 @@ const ReceiveBook = () => {
       try {
         const response = await axios.get('http://localhost:4300/user/registerManagement');
         setAllData(response?.data?.RegisterManagement);
-        console.log('response data', response?.data);
       } catch (error) {
         console.error('Error fetching students:', error);
       }
@@ -157,24 +196,25 @@ const ReceiveBook = () => {
       bookId: []
     },
     onSubmit: async (values) => {
-      console.log('Submitting form with values:', values);
       try {
         const response = await axios.post('http://localhost:4300/user/postReceiveBook', values);
-        console.log('Form submitted successfully:', response);
         toast.success('Details Book successfully');
         fetchData();
         handleClose();
+        handleStudentChange({
+          target: { value: values.studentId }
+        });
       } catch (error) {
         toast.error('Error submitting form:');
         console.error('Error submitting form:', error);
       }
-      // formik.resetForm();
-      handleStudentChange();
     }
   });
 
   const handleStudentChange = async (event) => {
     const selectedStudentId = event.target.value;
+    console.log(`selectedStudentId`, selectedStudentId);
+
     setSelectedStudentId(selectedStudentId);
     formik.setFieldValue('studentId', selectedStudentId);
 
@@ -182,9 +222,11 @@ const ReceiveBook = () => {
     if (selectedStudent) {
       formik.setFieldValue('email', selectedStudent.email);
     }
+
     try {
       const submitResponse = await axios.get(`http://localhost:4300/user/getSubmitBookDetails/${selectedStudentId}`);
-      console.log('Submit Book Data:', submitResponse.data.submittedBooks);
+      console.log(`submitResponse`, submitResponse);
+
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
@@ -194,43 +236,65 @@ const ReceiveBook = () => {
         bookIssueDate: formatDate(item?.bookIssueDate),
         submissionDate: formatDate(item?.submissionDate)
       }));
-      console.log(`fetchedData`, fetchedData);
 
       setData(fetchedData);
     } catch (error) {
       console.error('Error fetching submit book data:', error);
     }
+
+    formik.handleChange(event);
   };
 
-  console.log(`data ...........///`, data);
-
-  // function refreshPage() {
-  //   window.location.reload();
-  // }
+  function refreshPage() {
+    window.location.reload();
+  }
   useEffect(() => {
     if (selectedStudentId) {
       const filteredBooks = fetchReceiveBook.filter((receiveBookItem) => receiveBookItem.studentId === selectedStudentId);
-      console.log('Filtered Books:', filteredBooks);
+
       setBookData(filteredBooks);
     }
   }, [selectedStudentId, fetchReceiveBook]);
 
-  console.log(`book>>>>>>>>>>>>>Data`, bookData);
   const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book._id));
-
   const handleInvoice = (row) => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
   };
 
+  const handleFineSubmit = async () => {
+    // console.log(`formik.values.bookId`, formik.values.bookId[0]);
+    const idBook = formik.values.bookId[0];
+    try {
+      const data = {
+        amount: amount,
+        reason: reason,
+        bookId: idBook,
+        studentId: selectedStudentId
+      };
+
+      console.log('values', data);
+
+      const response = await axios.post('http://localhost:4300/user/addFineBook', data);
+
+      toast.success('Fine Book successfully added');
+    } catch (error) {
+      toast.error('Error Fine submitting form');
+      console.error('Error Fine submitting form:', error);
+    }
+
+    setOpen(false);
+  };
   const handleRemove = async (bookId) => {
+    console.log('submit click>>>>>', bookId);
+
     try {
       setLoading(true);
-
       const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
-      console.log('get response >>........<<:', removeResponse.status);
+      console.log('removeResponse', removeResponse);
+
       toast.success('Book removed successfully');
 
-      // refreshPage();
+      window.location.reload();
       setLoading(false);
     } catch (error) {
       console.error('Error:', error);
@@ -239,10 +303,10 @@ const ReceiveBook = () => {
     }
 
     const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
-    console.log('Submit response:', submitResponse.status);
+    console.log('submitResponse', submitResponse);
+
     toast.success('Book submitted successfully');
   };
-
   return (
     <Container>
       <Box
@@ -263,7 +327,6 @@ const ReceiveBook = () => {
             <h4>Books Management / Receive Book</h4>
           </Link>
         </Breadcrumbs>
-
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
@@ -317,7 +380,7 @@ const ReceiveBook = () => {
         </Grid>
       </Box>
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
-      <Grid container spacing={2}>
+      {/* <Grid container spacing={2}>
         {filteredBooks?.map((book, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Card
@@ -374,8 +437,111 @@ const ReceiveBook = () => {
             </Card>
           </Grid>
         ))}
-      </Grid>
+      </Grid> */}
+      <Grid container spacing={2}>
+        {filteredBooks?.map((book, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Card
+              sx={{
+                borderRadius: '12px',
+                background: '#F8FAFC',
+                padding: '20px',
+                boxShadow: 3,
+                transition: 'transform 0.3s, box-shadow 0.3s',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: 6
+                }
+              }}
+            >
+              <Typography variant="h4" sx={{ fontSize: '22px', textAlign: 'center', mb: 2, color: 'text.primary' }}>
+                {book?.bookDetails?.bookName || 'Loading...'}
+              </Typography>
+              <Divider sx={{ marginY: 2 }} />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography variant="body1">
+                    <strong>Author:</strong> {book?.bookDetails?.author || 'Loading...'}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Student Name:</strong> {book?.studentDetails?.student_Name || 'Loading...'}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Email:</strong> {book?.studentDetails?.email || 'Loading...'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body1">
+                    <strong>Subscription:</strong> {book?.subscriptionDetails?.title || 'Loading...'}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Phone:</strong> {book?.studentDetails?.mobile_Number || 'Loading...'}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Amount:</strong> {book?.subscriptionDetails?.amount || 'Loading...'}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Divider sx={{ marginY: 2 }} />
+              <Typography variant="body1">
+                <strong>Issue Date:</strong> {formatDate(book?.bookIssueDate) || 'Loading...'}
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: new Date(book?.submissionDate) > new Date() ? 'red' : 'inherit'
+                }}
+              >
+                <strong>Expiry Date:</strong> {formatDate(book?.submissionDate) || 'Loading...'}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ marginTop: 2, width: '40%', marginRight: 2 }}
+                  onClick={() => handleRemove(book._id)}
+                >
+                  Submit
+                </Button>
+                <Button variant="contained" color="primary" sx={{ marginTop: 2, width: '40%' }} onClick={handleOpen}>
+                  Pay Fine
+                </Button>
 
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Book Fine</DialogTitle>
+                  <DialogContent>
+                    <p>You are late, Pay Fine</p>
+                    <TextField
+                      label="Amount"
+                      variant="outlined"
+                      fullWidth
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      sx={{ marginBottom: 2 }}
+                    />
+                    <TextField
+                      label="Reason"
+                      variant="outlined"
+                      fullWidth
+                      value={reason}
+                      onChange={(e) => setReason(e.target.value)}
+                      sx={{ marginBottom: 2 }}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                      Cancel
+                    </Button>
+                    <Button onClick={handleFineSubmit} color="primary">
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </Box>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
       <Box
         sx={{
           backgroundColor: 'white',
@@ -407,5 +573,4 @@ const ReceiveBook = () => {
     </Container>
   );
 };
-
 export default ReceiveBook;
