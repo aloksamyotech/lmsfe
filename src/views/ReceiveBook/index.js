@@ -54,8 +54,13 @@ const ReceiveBook = () => {
   const [studentId, setStudentId] = useState(null);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
   const [amount, setAmount] = useState('');
   const [reason, setReason] = useState('');
+  const [amountError, setAmountError] = useState(false);
+  const [reasonError, setReasonError] = useState(false);
+  const [amountHelperText, setAmountHelperText] = useState('');
+  const [reasonHelperText, setReasonHelperText] = useState('');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -107,6 +112,48 @@ const ReceiveBook = () => {
       )
     }
   ];
+
+  const validateAmount = (value) => {
+    if (!value) {
+      setAmountError(true);
+      setAmountHelperText('Amount is required');
+    } else if (isNaN(value) || value <= 0) {
+      setAmountError(true);
+      setAmountHelperText('Please enter a valid amount greater than 0');
+    } else {
+      setAmountError(false);
+      setAmountHelperText('');
+    }
+  };
+
+  // Validation handler for reason
+  const validateReason = (value) => {
+    if (!value) {
+      setReasonError(true);
+      setReasonHelperText('Reason is required');
+    } else {
+      setReasonError(false);
+      setReasonHelperText('');
+    }
+  };
+
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    setAmount(value);
+    validateAmount(value);
+  };
+
+  const handleReasonChange = (e) => {
+    const value = e.target.value;
+    setReason(value);
+    validateReason(value);
+  };
+
+  const handleSubmit = () => {
+    if (!amountError && !reasonError) {
+      handleFineSubmit(); // Proceed with form submission logic
+    }
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -516,7 +563,9 @@ const ReceiveBook = () => {
                       variant="outlined"
                       fullWidth
                       value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
+                      onChange={handleAmountChange}
+                      error={amountError}
+                      helperText={amountHelperText}
                       sx={{ marginBottom: 2 }}
                     />
                     <TextField
@@ -524,7 +573,9 @@ const ReceiveBook = () => {
                       variant="outlined"
                       fullWidth
                       value={reason}
-                      onChange={(e) => setReason(e.target.value)}
+                      onChange={handleReasonChange}
+                      error={reasonError}
+                      helperText={reasonHelperText}
                       sx={{ marginBottom: 2 }}
                     />
                   </DialogContent>
@@ -532,7 +583,7 @@ const ReceiveBook = () => {
                     <Button onClick={handleClose} color="primary">
                       Cancel
                     </Button>
-                    <Button onClick={handleFineSubmit} color="primary">
+                    <Button onClick={handleSubmit} color="primary">
                       Submit
                     </Button>
                   </DialogActions>

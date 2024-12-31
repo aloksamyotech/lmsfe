@@ -6,6 +6,7 @@ import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './vendor.js';
 import axios from 'axios';
 
+import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -126,6 +127,7 @@ const PolicyManagement = () => {
       setData((prevData) => prevData.map((item) => (item.id === updatedVender.id ? updatedVender : item)));
       setEditData(null);
       fetchData();
+       toast.success('Vender details added successfully');
     } catch (error) {
       console.error('Error updating book:', error);
     }
@@ -143,6 +145,7 @@ const PolicyManagement = () => {
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
       cancelDelete();
       console.log('Deleting book with ID:', bookToDelete);
+       toast.success('Vender details Deleted successfully');
     } catch (error) {
       console.error('Error deleting Vender:', error);
     }

@@ -52,18 +52,18 @@ const AddPurchaseBook = (props) => {
     validationSchema,
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
-      // try {
-      //   const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
-      //   console.log('Form submitted successfully>>>>>>>:', response);
-      //   toast.success('Purchase Book details added successfully');
-      //   fetchData();
-      //   handleClose();
-      // } catch (error) {
-      //   toast.error(error?.response?.data?.message);
-      //   console.error('Error submitting form:', error);
-      // }
-      // formik.resetForm();
-      // handleClose();
+      try {
+        const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
+        console.log('Form submitted successfully>>>>>>>:', response);
+        toast.success('Purchase Book details added successfully');
+        fetchData();
+        handleClose();
+      } catch (error) {
+        toast.error(error?.response?.data?.message);
+        console.error('Error submitting form:', error);
+      }
+      formik.resetForm();
+      handleClose();
     }
   });
 

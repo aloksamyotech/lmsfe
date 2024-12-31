@@ -7,7 +7,7 @@ import axios from 'axios';
 
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-
+import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddSubscription from './addSubscriptionType';
@@ -123,6 +123,8 @@ const SubscriptType = () => {
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
+
+      toast.success('Subscription details Edit successfully');
     } catch (error) {
       console.error('Error updating book:', error);
     }
@@ -142,6 +144,8 @@ const SubscriptType = () => {
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);
+
+      toast.success('Subscription details Deleted successfully');
     } catch (error) {
       console.error('Error deleting book:', error);
       setOpenDeleteDialog(false);
@@ -234,12 +238,10 @@ const SubscriptType = () => {
                 fullWidth
                 margin="normal"
               />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary"
-              style={{ marginLeft: '16px' }} >
+              <Button onClick={handleSaveEdit} variant="contained" color="primary" style={{ marginLeft: '16px' }}>
                 Save
               </Button>
-              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary"
-                 style={{ marginLeft: '16px' }} >
+              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
                 Cancel
               </Button>
             </Box>

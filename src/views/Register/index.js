@@ -138,6 +138,7 @@ const Call = () => {
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
       setEditData(null);
       fetchData();
+       toast.success('Register details Edit successfully');
     } catch (error) {
       console.error('Error updating Register:', error);
     }
@@ -151,6 +152,7 @@ const Call = () => {
     try {
       await axios.delete(`http://localhost:4300/user/deleteRegister/${bookToDelete}`);
       setData((prevData) => prevData.filter((register) => register.id !== bookToDelete));
+       toast.success('Register details Deleted successfully');
       cancelDelete();
     } catch (error) {
       console.error('Error deleting Register:', error);

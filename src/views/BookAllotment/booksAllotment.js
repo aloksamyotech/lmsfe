@@ -56,7 +56,7 @@ const AddAllotment = (props) => {
         toast.error('Book details addition failed');
       }
       formik.resetForm();
-      // window.location.reload();
+      window.location.reload();
     }
   });
 

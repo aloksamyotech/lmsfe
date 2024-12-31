@@ -6,7 +6,7 @@ import AddMeetings from './addPublications';
 import axios from 'axios';
 import Iconify from '../../ui-component/iconify';
 import { useEffect, use } from 'react';
-
+import { toast } from 'react-toastify';
 import { Dialog, TextField } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -196,6 +196,7 @@ const Publications = () => {
 
       // Close the edit dialog
       setEditData(null);
+      toast.success('Publication details Edit successfully');
     } catch (error) {
       console.error('Error updating Publications:', error);
     }
@@ -213,7 +214,9 @@ const Publications = () => {
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
       console.log('Deleting book with ID:', bookToDelete);
+       toast.success('Publication details Deleted successfully');
       setOpenDeleteDialog(false);
+      
     } catch (error) {
       console.error('Error deleting publication:', error);
     }
@@ -259,7 +262,7 @@ const Publications = () => {
 
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              New Publications
+              New Publication
             </Button>
           </Stack>
         </Box>

@@ -5,7 +5,7 @@ import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './AddBooks.js';
 import axios from 'axios';
-
+import { toast } from 'react-toastify';
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 
@@ -137,6 +137,7 @@ const Lead = () => {
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
+       toast.success('Book details Edit successfully');
     } catch (error) {
       console.error('Error updating book:', error);
     }
@@ -156,6 +157,7 @@ const Lead = () => {
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);
+       toast.success('Book details Deleted successfully');
     } catch (error) {
       console.error('Error deleting book:', error);
       setOpenDeleteDialog(false);
