@@ -14,6 +14,8 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState } from 'react';
+import CancelIcon from '@mui/icons-material/Cancel';
+import IconButton from '@mui/material/IconButton';
 
 const AddAllotment = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -45,18 +47,32 @@ const AddAllotment = (props) => {
         return;
       }
 
+      // if (values.bookId) {
       setAddBook((prevBooks) => [...prevBooks, values]);
 
+      const dataToSend = addBook && Object.keys(addBook).length > 0 ? addBook : [values];
+
       try {
-        const response = await axios.post('http://localhost:4300/user/manyBookAllotment', addBook);
-        toast.success('Book details added successfully');
-        fetchData();
-        handleClose();
+        const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
+
+        if (response) {
+          console.log(`response---->>>>`, response);
+
+          toast.success('Book details added successfully');
+          fetchData();
+
+          handleClose();
+          setAddBook([]);
+          formik.resetForm();
+        } else {
+          toast.error('please add book');
+        }
+        // window.location.reload();
       } catch (error) {
-        toast.error('Book details addition failed');
+        setAddBook([]);
+        formik.resetForm();
+        toast.error('Book details addition failed!!! Please Add Book');
       }
-      formik.resetForm();
-      window.location.reload();
     }
   });
 
@@ -101,16 +117,16 @@ const AddAllotment = (props) => {
       return;
     }
     formik.setFieldValue('studentId', studentId);
-
     try {
       const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
+      console.log('HRititk', response?.data?.allotmentsCount);
+
       setBookNumber(response?.data?.allotmentsCount);
       setBorrowedBooksCount(response.data.count);
     } catch (error) {
       console.error('Error fetching borrowed books count:', error);
     }
   };
-
   const handleSubscriptionType = (e) => {
     const selectedSubscription = studentData.find((item) => item._id === e.target.value);
     if (selectedSubscription) {
@@ -118,16 +134,13 @@ const AddAllotment = (props) => {
       formik.setFieldValue('amount', selectedSubscription.amount);
     }
   };
-
   const handleAddBookClick = () => {
     const { bookId, studentId, submissionDate, bookIssueDate, paymentType, amount } = formik.values;
 
-    // Prevent duplicate books from being added
     if (addBook.some((book) => book.bookId === bookId)) {
       toast.error('This book has already been added.');
       return;
     }
-
     const bookData = {
       studentId,
       bookId,
@@ -147,6 +160,7 @@ const AddAllotment = (props) => {
       amount: ''
     });
   };
+  console.log(`addBook`, addBook);
 
   const handleRemoveBook = (bookId) => {
     setAddBook((prevBooks) => prevBooks.filter((book) => book.bookId !== bookId));
@@ -163,7 +177,7 @@ const AddAllotment = (props) => {
           <form onSubmit={formik.handleSubmit}>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-                <Grid item xs={12} sm={5} md={5}>
+                <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 2 }}>
                   <FormLabel>Student</FormLabel>
                   <FormControl fullWidth error={formik.touched.studentId && Boolean(formik.errors.studentId)}>
                     <Select id="studentId" name="studentId" value={formik.values.studentId} onChange={handleStudentChange}>
@@ -179,7 +193,6 @@ const AddAllotment = (props) => {
                     </FormLabel>
                   </FormControl>
                 </Grid>
-
                 <Button
                   variant="outlined"
                   color="primary"
@@ -189,47 +202,47 @@ const AddAllotment = (props) => {
                 >
                   Add Book
                 </Button>
-
                 <Grid
                   container
                   spacing={1}
                   style={{ border: '1px solid #ddd', padding: '10px', borderRadius: '5px', marginLeft: '20px', marginTop: '15px' }}
                 >
-                  <Grid item xs={12} sm={5} md={5}>
-                    <FormLabel>Book</FormLabel>
-                    <FormControl fullWidth error={formik.touched.bookId && Boolean(formik.errors.bookId)}>
-                      <Select
-                        id="bookId"
-                        name="bookId"
-                        value={formik.values.bookId}
-                        onChange={formik.handleChange}
-                        disabled={borrowedBooksCount >= 5}
-                      >
-                        {bookData.map((item) => (
-                          <MenuItem key={item._id} value={item._id}>
-                            {item.bookName}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
-                    </FormControl>
+                  <Grid container>
+                    <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
+                      {' '}
+                      <FormLabel>Book</FormLabel>
+                      <FormControl fullWidth error={formik.touched.bookId && Boolean(formik.errors.bookId)}>
+                        <Select
+                          id="bookId"
+                          name="bookId"
+                          value={formik.values.bookId}
+                          onChange={formik.handleChange}
+                          disabled={borrowedBooksCount >= 5}
+                        >
+                          {bookData.map((item) => (
+                            <MenuItem key={item._id} value={item._id}>
+                              {item.bookName}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        <FormHelperText>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 4 }}>
+                      <FormLabel>Subscription Type</FormLabel>
+                      <FormControl fullWidth error={formik.touched.paymentType && Boolean(formik.errors.paymentType)}>
+                        <Select id="paymentType" name="paymentType" value={formik.values.paymentType} onChange={handleSubscriptionType}>
+                          {studentData.map((item) => (
+                            <MenuItem key={item._id} value={item._id}>
+                              {item.title}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        <FormHelperText>{formik.touched.paymentType && formik.errors.paymentType}</FormHelperText>
+                      </FormControl>
+                    </Grid>
                   </Grid>
-
-                  <Grid item xs={12} sm={5} md={5}>
-                    <FormLabel>Subscription Type</FormLabel>
-                    <FormControl fullWidth error={formik.touched.paymentType && Boolean(formik.errors.paymentType)}>
-                      <Select id="paymentType" name="paymentType" value={formik.values.paymentType} onChange={handleSubscriptionType}>
-                        {studentData.map((item) => (
-                          <MenuItem key={item._id} value={item._id}>
-                            {item.title}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>{formik.touched.paymentType && formik.errors.paymentType}</FormHelperText>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item xs={12} sm={5} md={5}>
+                  <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
                     <FormLabel>Amount</FormLabel>
                     <TextField
                       id="amount"
@@ -243,8 +256,7 @@ const AddAllotment = (props) => {
                       InputProps={{ style: { height: '50px' } }}
                     />
                   </Grid>
-
-                  <Grid item xs={12} sm={5} md={5}>
+                  <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 4 }}>
                     <FormLabel>Submission Date</FormLabel>
                     <TextField
                       name="submissionDate"
@@ -262,7 +274,6 @@ const AddAllotment = (props) => {
                 </Grid>
               </Grid>
             </DialogContentText>
-
             <Grid container spacing={2} style={{ marginTop: '20px' }}>
               <Grid item xs={12}>
                 {addBook.length > 0 ? (
@@ -272,9 +283,15 @@ const AddAllotment = (props) => {
                         <Grid
                           container
                           spacing={1}
-                          style={{ border: '1px solid #ddd', padding: '10px', borderRadius: '5px', marginLeft: '-10px ' }}
+                          style={{
+                            border: '1px solid #ddd',
+                            padding: '10px',
+                            borderRadius: '5px',
+                            marginLeft: '-10px ',
+                            position: 'relative' // Added relative positioning
+                          }}
                         >
-                          <Grid item xs={12} sm={5} md={5}>
+                          <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
                             <FormLabel>Book</FormLabel>
                             <TextField
                               name="submissionDate"
@@ -285,7 +302,7 @@ const AddAllotment = (props) => {
                               InputProps={{ style: { height: '50px' } }}
                             />
                           </Grid>
-                          <Grid item xs={12} sm={5} md={5}>
+                          <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 4 }}>
                             <FormLabel>Submission Date</FormLabel>
                             <TextField
                               name="submissionDate"
@@ -298,7 +315,7 @@ const AddAllotment = (props) => {
                               inputProps={{ min: new Date().toISOString().split('T')[0] }}
                             />
                           </Grid>
-                          <Grid item xs={12} sm={5} md={5}>
+                          <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
                             <FormLabel>Amount</FormLabel>
                             <TextField
                               name="submissionDate"
@@ -309,7 +326,7 @@ const AddAllotment = (props) => {
                               InputProps={{ style: { height: '50px' } }}
                             />
                           </Grid>
-                          <Grid item xs={12} sm={5} md={5}>
+                          <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 4 }}>
                             <FormLabel>Subscription Type</FormLabel>
                             <TextField
                               name="paymentType"
@@ -320,10 +337,10 @@ const AddAllotment = (props) => {
                               InputProps={{ style: { height: '50px' } }}
                             />
                           </Grid>
-                          <Grid item>
-                            <Button onClick={() => handleRemoveBook(book.bookId)} color="secondary">
-                              Remove
-                            </Button>
+                          <Grid item style={{ position: 'absolute', top: '-5px', right: '-4px' }}>
+                            <IconButton onClick={() => handleRemoveBook(book.bookId)} size="small" color="error">
+                              <CancelIcon />
+                            </IconButton>
                           </Grid>
                         </Grid>
                       </Grid>

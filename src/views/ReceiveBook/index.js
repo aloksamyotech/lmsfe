@@ -125,8 +125,7 @@ const ReceiveBook = () => {
       setAmountHelperText('');
     }
   };
-
-  // Validation handler for reason
+ 
   const validateReason = (value) => {
     if (!value) {
       setReasonError(true);
@@ -151,7 +150,7 @@ const ReceiveBook = () => {
 
   const handleSubmit = () => {
     if (!amountError && !reasonError) {
-      handleFineSubmit(); // Proceed with form submission logic
+      handleFineSubmit();  
     }
   };
 
@@ -349,10 +348,10 @@ const ReceiveBook = () => {
       setLoading(false);
     }
 
-    const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
-    console.log('submitResponse', submitResponse);
+    // const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
+    // console.log('submitResponse', submitResponse);
 
-    toast.success('Book submitted successfully');
+    // toast.success('Book submitted successfully');
   };
   return (
     <Container>
@@ -551,7 +550,7 @@ const ReceiveBook = () => {
                   Submit
                 </Button>
                 <Button variant="contained" color="primary" sx={{ marginTop: 2, width: '40%' }} onClick={handleOpen}>
-                  Pay Fine
+                  Add Fine
                 </Button>
 
                 <Dialog open={open} onClose={handleClose}>
