@@ -12,6 +12,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'; // Import Visibilit
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from 'react-router-dom';
 
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
@@ -19,6 +20,7 @@ import HomeIcon from '@mui/icons-material/Home';
 const Allotment = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
   const [editData, setEditData] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
@@ -45,14 +47,14 @@ const Allotment = () => {
     // },
     {
       field: 'studentEmail',
-      headerName: 'Email',
+      headerName: 'Student Email',
       flex: 1,
       align: 'center',
       headerAlign: 'center',
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
-      field: 'studentName',
+      field: 'student_Name',
       headerName: 'Student Name',
       flex: 1,
       align: 'center',
@@ -72,11 +74,13 @@ const Allotment = () => {
     //   headerName: 'Subscription Type',
     //   flex: 1
     // },
-    // {
-    //   field: 'bookIssueDate',
-    //   headerName: 'Book Issue Date',
-    //   flex: 1
-    // },
+    {
+      field: 'bookIssueDate',
+      headerName: 'Book Issue Date',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center'
+    },
     // {
     //   field: 'submissionDate',
     //   headerName: 'Submission Date',
@@ -122,25 +126,28 @@ const Allotment = () => {
   };
   const handleView = (row) => {
     console.log('Viewing', row);
-    window.location.href = `/dashboard/viewBookAllotment/${row.id}`;
+
+    navigate(`/dashboard/viewBookAllotment/${row.id}`);
   };
   const fetchData = async () => {
     try {
       console.log('Api Start........');
 
-      const response = await axios.get('http://localhost:4300/user/reBookAllotment');
-      console.log('response--------->>>>>>>>>>>>', response);
+      // const response = await axios.get('http://localhost:4300/user/reBookAllotment');
+      // console.log('response--------->>>>>>>>>>>>', response?.data);
 
-      const fetchedData = response?.data?.map((item) => ({
+      const response = await axios.get('http://localhost:4300/user/getBookAllotmentHistory');
+      console.log('response--------->>>>>>>>>>>>', response?.data);
+
+      const fetchedData = response?.data?.histories.map((item) => ({
         id: item._id,
-        // bookName: item.bookName,
-        studentName: item.studentName,
-        studentEmail: item.studentEmail,
-        mobile_Number: item.mobile_Number
-        // paymentType: item.paymentType,
-        // bookIssueDate: formatDate(item.bookIssueDate),
-        // submissionDate: formatDate(item.submissionDate)
+        student_Name: item.studentDetails[0]?.student_Name,
+        studentEmail: item.studentDetails[0]?.email,
+        mobile_Number: item.studentDetails[0]?.mobile_Number,
+        bookIssueDate: formatDate(item.bookIssueDate)
       }));
+      console.log(' student_Name', fetchedData);
+
       setData(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);

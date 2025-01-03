@@ -69,7 +69,10 @@ const ViewBookAllotment = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        const response = await axios.get(`http://localhost:4300/user/getBookAllotmentById/${extractedId}`);
+        // const response = await axios.get(`http://localhost:4300/user/getBookAllotmentById/${extractedId}`);
+        
+        const response = await axios.get(`http://localhost:4300/user/getBookDetailHistoryStudentId/${extractedId}`);
+        
         console.log(`response----->>>>`, response?.data);
 
         const student_Name = response?.data[0].studentDetails[0].student_Name;

@@ -348,10 +348,10 @@ const ReceiveBook = () => {
       setLoading(false);
     }
 
-    // const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
-    // console.log('submitResponse', submitResponse);
+    const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
+    console.log('submitResponse', submitResponse);
 
-    // toast.success('Book submitted successfully');
+    toast.success('Book submitted successfully');
   };
   return (
     <Container>
