@@ -70,29 +70,29 @@ const ViewBookAllotment = () => {
     const sendIdToBackend = async () => {
       try {
         // const response = await axios.get(`http://localhost:4300/user/getBookAllotmentById/${extractedId}`);
-        
+
         const response = await axios.get(`http://localhost:4300/user/getBookDetailHistoryStudentId/${extractedId}`);
-        
-        console.log(`response----->>>>`, response?.data);
 
-        const student_Name = response?.data[0].studentDetails[0].student_Name;
-        const mobile_Number = response?.data[0].studentDetails[0].mobile_Number;
-        const register_Date = response?.data[0].studentDetails[0].register_Date;
-        const email = response?.data[0].studentDetails[0].email;
+        console.log(`response---from all history api-->>>>`, response?.data?.allotmentDetails[0]?.bookDetails?.bookName);
 
-        const upload_Book = response?.data[0].bookDetails[0].upload_Book;
-        const bookName = response?.data[0].bookDetails[0].bookName;
-        const publisherName = response?.data[0].bookDetails[0].publisherName;
-        const author = response?.data[0].bookDetails[0].author;
-        const title = response?.data[0].bookDetails[0].title;
-        const bookIssueDate = response?.data[0].bookDetails[0].bookIssueDate;
-        const submissionDate = response?.data[0].submissionDate;
+        const student_Name = response?.data?.studentDetails?.student_Name;
+        const mobile_Number = response?.data?.studentDetails?.mobile_Number;
+        const register_Date = response?.data?.studentDetails?.register_Date;
+        const email = response?.data?.studentDetails?.email;
+
+        const upload_Book = response?.data?.allotmentDetails[0]?.bookDetails?.upload_Book;
+        const bookName = response?.data?.allotmentDetails[0]?.bookDetails?.bookName;
+        const publisherName = response?.data?.allotmentDetails[0]?.bookDetails?.publisherName;
+        const author = response?.data?.allotmentDetails[0]?.bookDetails?.author;
+        const title = response?.data?.allotmentDetails[0]?.bookDetails?.title;
+        const bookIssueDate = response?.data?.allotmentDetails[0]?.bookDetails?.bookIssueDate;
+        const submissionDate = response?.data?.allotmentDetails[0]?.bookDetails?.submissionDate;
 
         // const amount = response?.data[0].paymentType[0].amount;
 
-        setAllData(response?.data[0].studentDetails[0]);
-        setAllbookData(response?.data);
-        setAmount(response?.data[0].paymentType[0]);
+        setAllData(response?.data?.studentDetails);
+        setAllbookData(response?.data?.allotmentDetails);
+        setAmount(response?.data?.allotmentDetails);
 
         const SubmissionDate = response?.data[0].submissionDate;
         console.log('Submission Date', SubmissionDate);
@@ -170,35 +170,35 @@ const ViewBookAllotment = () => {
             <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
             {/* Grid for Cards */}
             <Grid container spacing={3}>
-              {allbookData?.map((book, index) => (
+              {allbookData?.map((bookDetails, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Card sx={{ borderRadius: '10px', background: '#F8FAFC', padding: '10px', boxShadow: 1 }}>
                     <Grid container spacing={2}>
                       <Grid item xs={4}>
                         <Avatar
-                          src={book?.bookDetails?.[0]?.upload_Book || 'Loading...'}
+                          src={bookDetails?.upload_Book || 'Loading...'}
                           sx={{ borderRadius: '10px', height: '90px', width: '70px' }}
                         />
                       </Grid>
                       <Grid item xs={8}>
                         <Typography variant="h4" sx={{ fontSize: '21px' }}>
-                          {book?.bookDetails?.[0]?.bookName || 'Loading...'}
+                          {bookDetails?.bookDetails?.bookName || 'Loading...'}
                         </Typography>
                         <Divider sx={{ marginY: '10px' }} />
                         <Typography sx={{ fontSize: '10px', marginTop: '3px' }}>
-                          <strong>Title -: </strong> {book?.bookDetails?.[0]?.title || 'Loading...'}
+                          <strong>Title -: </strong> {bookDetails?.bookDetails?.title || 'Loading...'}
                         </Typography>
                         <Typography sx={{ fontSize: '10px', marginTop: '3px' }}>
-                          <strong>Author -: </strong> {book?.bookDetails?.[0]?.author || 'Loading...'}
+                          <strong>Author -: </strong> {bookDetails?.bookDetails?.author || 'Loading...'}
                         </Typography>
                         <Typography sx={{ fontSize: '10px', marginTop: '3px' }}>
-                          <strong>Publisher Name -: </strong> {book?.bookDetails?.[0]?.publisherName || 'Loading...'}
+                          <strong>Publisher Name -: </strong> {bookDetails?.bookDetails?.publisherName || 'Loading...'}
                         </Typography>
 
                         <Grid container sx={{ marginTop: '10px' }}>
                           <Grid item xs={8}>
                             <Typography sx={{ fontSize: '10px', marginTop: '3px' }}>
-                              <strong>Amount -: </strong> {book?.paymentType?.[0]?.amount || 'Loading...'}
+                              <strong>Amount -: </strong> {bookDetails?.paymentDetails?.amount || 'Loading...'}
                             </Typography>
                           </Grid>
                         </Grid>
@@ -207,7 +207,7 @@ const ViewBookAllotment = () => {
                       </Grid>
                       <Grid item xs={12}>
                         <Typography sx={{ color: '#2A2A2A', fontWeight: '500' }}>
-                          <strong>Submission Date -: </strong> {moment(book?.submissionDate).format('DD-MM-YYYY') || 'Loading...'}
+                          <strong>Submission Date -: </strong> {moment(bookDetails?.bookDetails?.submissionDate).format('DD-MM-YYYY') || 'Loading...'}
                         </Typography>
                       </Grid>
                     </Grid>

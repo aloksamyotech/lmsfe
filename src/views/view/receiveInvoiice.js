@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import invoice from '../view/invoice.png';
+import invoice from '../view/invoice.png'; 
+const html2pdf = require('html2pdf.js');
+
 import {
   Stack,
   Button,
@@ -118,6 +120,19 @@ const ReceiveInvoice = () => {
     setAllItemData(allBookingData?.items);
   }, [allBookingData?.items]);
 
+  // const handlePrint = () => {
+  //   const element = containerRef.current;
+  //   const options = {
+  //     margin: 10,
+  //     filename: `invoice_${allBookingData?.bookingData?.[0]?.customer?.[0]?.name}${moment().format('DD-MM_YYYY')}.pdf`,
+  //     image: { type: 'jpeg', quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  //   };
+
+  //   html2pdf().set(options).from(element).save();
+  // };
+
   const handlePrint = () => {
     const element = containerRef.current;
     const options = {
@@ -130,6 +145,7 @@ const ReceiveInvoice = () => {
 
     html2pdf().set(options).from(element).save();
   };
+
   return (
     <>
       {loading && (
@@ -168,7 +184,7 @@ const ReceiveInvoice = () => {
               </Typography>
             </Box>
           </Box>
-          <Typography variant="h3" fontWeight="bold"  mt={3} >
+          <Typography variant="h3" fontWeight="bold" mt={3}>
             Invoice
           </Typography>
 

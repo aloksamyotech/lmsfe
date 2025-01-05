@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import {
   Stack,
   Button,
@@ -125,7 +126,7 @@ const ReceiveBook = () => {
       setAmountHelperText('');
     }
   };
- 
+
   const validateReason = (value) => {
     if (!value) {
       setReasonError(true);
@@ -150,7 +151,7 @@ const ReceiveBook = () => {
 
   const handleSubmit = () => {
     if (!amountError && !reasonError) {
-      handleFineSubmit();  
+      handleFineSubmit();
     }
   };
 
@@ -426,64 +427,6 @@ const ReceiveBook = () => {
         </Grid>
       </Box>
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
-      {/* <Grid container spacing={2}>
-        {filteredBooks?.map((book, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card
-              sx={{
-                borderRadius: '12px',
-                background: '#F8FAFC',
-                padding: '20px',
-                boxShadow: 3,
-                transition: 'transform 0.3s, box-shadow 0.3s',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                  boxShadow: 6
-                }
-              }}
-            >
-              <Typography variant="h4" sx={{ fontSize: '22px', textAlign: 'center', mb: 2, color: 'text.primary' }}>
-                {book?.bookDetails?.bookName || 'Loading...'}
-              </Typography>
-              <Divider sx={{ marginY: 2 }} />
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Typography variant="body1">
-                    <strong>Author:</strong> {book?.bookDetails?.author || 'Loading...'}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Student Name:</strong> {book?.studentDetails?.student_Name || 'Loading...'}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Email:</strong> {book?.studentDetails?.email || 'Loading...'}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body1">
-                    <strong>Subscription:</strong> {book?.subscriptionDetails?.title || 'Loading...'}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Phone:</strong> {book?.studentDetails?.mobile_Number || 'Loading...'}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Amount:</strong> {book?.subscriptionDetails?.amount || 'Loading...'}
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Divider sx={{ marginY: 2 }} />
-              <Typography variant="body1">
-                <strong>Issue Date:</strong> {formatDate(book?.bookIssueDate) || 'Loading...'}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Expiry Date:</strong> {formatDate(book?.submissionDate) || 'Loading...'}
-              </Typography>
-              <Button variant="contained" color="primary" sx={{ marginTop: 2, width: '100%' }} onClick={() => handleRemove(book._id)}>
-                Submit
-              </Button>
-            </Card>
-          </Grid>
-        ))}
-      </Grid> */}
       <Grid container spacing={2}>
         {filteredBooks?.map((book, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
@@ -552,11 +495,10 @@ const ReceiveBook = () => {
                 <Button variant="contained" color="primary" sx={{ marginTop: 2, width: '40%' }} onClick={handleOpen}>
                   Add Fine
                 </Button>
-
                 <Dialog open={open} onClose={handleClose}>
                   <DialogTitle>Book Fine</DialogTitle>
                   <DialogContent>
-                    <p>You are late, Pay Fine</p>
+                    <p>Please Pay Fine</p>
                     <TextField
                       label="Amount"
                       variant="outlined"
@@ -592,6 +534,7 @@ const ReceiveBook = () => {
           </Grid>
         ))}
       </Grid>
+
       <Box
         sx={{
           backgroundColor: 'white',
