@@ -46,32 +46,22 @@ const AddAllotment = (props) => {
         toast.error('This book has already been added.');
         return;
       }
-rr
-      // if (values.bookId) {
+
       setAddBook((prevBooks) => [...prevBooks, values]);
 
       const dataToSend = addBook && Object.keys(addBook).length > 0 ? addBook : [values];
-      console.log(`dataToSend`, dataToSend);
-      const data = {
-        studentId: dataToSend[0].studentId,
-        bookDetails: dataToSend.map((item) => ({
-          bookId: item.bookId,
-          paymentId: item.paymentType,
-          submissionDate: item.submissionDate,
-          amount: item.amount
-        }))
+      console.log('Gopal>>>>>>>>>>', dataToSend);
+      const newData = {
+        studentId: dataToSend?.[0]?.studentId,
+        bookDetails: dataToSend
       };
-      console.log(`data`, data);
-
       try {
         const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
-        console.log('response >>>', response);
-
-        const bookAllotmentHistory = await axios.post('http://localhost:4300/user/bookAllotmentHistory', data);
-        console.log('bookAllotmentHistory>>>>>.', bookAllotmentHistory);
 
         if (response) {
-          console.log(`response---->>>>`, response);
+          console.log(`response  Gopal ---->>>>`, response);
+          const Bookresponse = await axios.post('http://localhost:4300/user/bookAllotmentHistory', newData);
+          console.log('Bookresponse', Bookresponse);
 
           toast.success('Book details added successfully');
           fetchData();
@@ -125,25 +115,6 @@ rr
     fetchSubscription();
   }, []);
 
-  // const handleStudentChange = async (event) => {
-  //   const studentId = event.target.value;
-  //   if (!studentId) {
-  //     toast.error('Please select a valid student.');
-  //     return;
-  //   }
-  //   formik.setFieldValue('studentId', studentId);
-  //   try {
-  //     const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
-  //     console.log('HRititk', response?.data?.allotmentsCount);
-  //     console.log('Verma ', response?.data?.allotmentsCount);
-
-  //     setBookNumber(response?.data?.allotmentsCount);
-  //     setBorrowedBooksCount(response?.data?.allotmentsCount);
-  //   } catch (error) {
-  //     console.error('Error fetching borrowed books count:', error);
-  //   }
-  // };
-
   const handleStudentChange = async (event) => {
     const studentId = event.target.value;
     if (!studentId) {
@@ -161,7 +132,6 @@ rr
       console.error('Error fetching borrowed books count:', error);
     }
   };
-
   const handleSubscriptionType = (e) => {
     const selectedSubscription = studentData.find((item) => item._id === e.target.value);
     if (selectedSubscription) {
@@ -176,6 +146,10 @@ rr
       toast.error('This book has already been added.');
       return;
     }
+    // if (!bookId || !submissionDate || !bookIssueDate || !paymentType) {
+    //   toast.error('Book details addition failed!!! Please Add Book');
+    //   return;
+    // }
     const bookData = {
       studentId,
       bookId,
@@ -195,6 +169,7 @@ rr
       amount: ''
     });
   };
+
   console.log(`addBook`, addBook);
 
   const handleRemoveBook = (bookId) => {
@@ -323,7 +298,7 @@ rr
                             padding: '10px',
                             borderRadius: '5px',
                             marginLeft: '-10px ',
-                            position: 'relative'
+                            position: 'relative' // Added relative positioning
                           }}
                         >
                           <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>

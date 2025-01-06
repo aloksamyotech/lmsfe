@@ -50,19 +50,7 @@ const AddRegister = (props) => {
       register_Date: ''
     },
     validationSchema,
-    // onSubmit: async (values) => {
-    //   console.log('Submitted values', values);
-    //   try {
-    //     const response = await axios.post('http://localhost:4300/user/addRegister', values);
-    //     console.log('Form submitted successfully:', response);
-    //     toast.success('Register details added successfully');
-    //     handleClose();
-    //     formik.resetForm();
-    //   } catch (error) {
-    //     console.error('Error submitting form:', error);
-    //     toast.error('Failed to add register details');
-    //   }
-    // }
+ 
     onSubmit: async (values) => {
       console.log('on submit');
       console.log(`values`, values);
@@ -75,10 +63,7 @@ const AddRegister = (props) => {
       formData.append('select_identity', values.select_identity);
       formData.append('upload_identity', values.upload_identity);
       formData.append('register_Date', values.register_Date);
-
-      // for (let [key, value] of formData.entries()) {
-      //   console.log(`${key}: ${value}`);
-      // }
+ 
       try {
         console.log('try bolck');
 

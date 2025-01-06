@@ -39,12 +39,7 @@ const Allotment = () => {
   }, []);
 
   const columns = [
-    // {
-    //   field: 'bookName',
-    //   headerName: 'Book Name',
-    //   flex: 1,
-    //   cellClassName: 'name-column--cell name-column--cell--capitalize'
-    // },
+ 
     {
       field: 'studentEmail',
       headerName: 'Student Email',
@@ -68,12 +63,7 @@ const Allotment = () => {
       align: 'center',
       headerAlign: 'center',
       cellClassName: 'name-column--cell--capitalize'
-    },
-    // {
-    //   field: 'paymentType',
-    //   headerName: 'Subscription Type',
-    //   flex: 1
-    // },
+    }, 
     {
       field: 'bookIssueDate',
       headerName: 'Book Issue Date',
@@ -81,21 +71,7 @@ const Allotment = () => {
       align: 'center',
       headerAlign: 'center'
     },
-    // {
-    //   field: 'submissionDate',
-    //   headerName: 'Submission Date',
-    //   flex: 1
-    // },
-    // {
-    //   field: 'Books',
-    //   headerName: 'Allotted Books',
-    //   flex: 1,
-    //   renderCell: (params) => (
-    //     <div>
-
-    //     </div>
-    //   )
-    // },
+    
     {
       field: 'action',
       headerName: 'Action',

@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
-import TableStyle from '../../ui-component/TableStyle';
-// import AddLead from './AddBooks.js';
+import TableStyle from '../../ui-component/TableStyle'; 
 import axios from 'axios';
 import AddPurchaseBook from './purchaseBook';
 import { toast } from 'react-toastify';
@@ -48,12 +47,7 @@ const PurchaseBook = () => {
       headerName: 'Vendor',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
-    },
-    // {
-    //   field: 'publisherId',
-    //   headerName: 'Publisher Name',
-    //   flex: 1
-    // },
+    }, 
     {
       field: 'quantity',
       headerName: 'Available Quantity',
@@ -64,7 +58,7 @@ const PurchaseBook = () => {
 
     {
       field: 'price',
-      headerName: 'Total Price',
+      headerName: 'Book Price',
       flex: 1,
       align: 'center',
       headerAlign: 'center'
@@ -160,21 +154,6 @@ const PurchaseBook = () => {
     setOpenDeleteDialog(true);
   };
 
-  // const confirmDelete = async () => {
-  //   try {
-  //     console.log('delete API...');
-
-  //     await axios.delete(`http://localhost:4300/user/deleteBook/${bookToDelete}`);
-  //     setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
-  //     setOpenDeleteDialog(false);
-  //     setBookToDelete(null);
-  //   } catch (error) {
-  //     console.error('Error deleting book:', error);
-  //     setOpenDeleteDialog(false);
-  //     setBookToDelete(null);
-  //   }
-  // };
-
   const confirmDelete = async () => {
     const id = bookToDelete?.id;
     console.log(`bookToDelete>>>>>>>>>>>`, bookToDelete);
@@ -184,7 +163,7 @@ const PurchaseBook = () => {
     try {
       await axios.delete(`http://localhost:4300/user/deletePurchaseBook/${id}`);
       setData((prevData) => prevData.filter((book) => book.id !== id));
-       toast.success('Purchase Book add  successfully');
+      toast.success('Purchase Book add  successfully');
       setOpenDeleteDialog(false);
       setBookToDelete(null);
     } catch (error) {
