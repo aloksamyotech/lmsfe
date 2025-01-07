@@ -102,7 +102,7 @@ const AddSubscription = (props) => {
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
       <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">Subscript Type Information</Typography>
+        <Typography variant="h6">Subscription Type Information</Typography>
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
       <DialogContent dividers>

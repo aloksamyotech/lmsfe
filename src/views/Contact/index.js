@@ -53,7 +53,7 @@ const Contact = () => {
   const columns = [
     {
       field: 'email',
-      headerName: 'Email',
+      headerName: 'Student Email',
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
@@ -152,23 +152,18 @@ const Contact = () => {
       console.log('Student ID', student);
 
       const response = await axios.post(`http://localhost:4300/user/markFavorite/${student}`);
-      console.log('Favorite response-------', response);
+      console.log('Favorite response>>>>>>>-------', response);
       const updatedStudent = response.data.student;
-
-      setData((prevData) => prevData.map((item) => (item.id === updatedStudent.id ? updatedStudent : item)));
 
       if (response) {
         fetchData();
-      }
-      if (response?.data?.student?.favorite == true) {
-        toast.success('add to Favorite successfully');
-        // cancelFavorite();
       } else {
         toast.error('Remove to Favorite successfully');
       }
     } catch (error) {
       console.error('Error marking as favorite:', error);
     }
+    handleClick(); 
   };
   return (
     <>
@@ -196,7 +191,7 @@ const Contact = () => {
               <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
             </Link>
             <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Favorite Contact</h4>
+              <h4>Favorite Students</h4>
             </Link>
           </Breadcrumbs>
         </Box>

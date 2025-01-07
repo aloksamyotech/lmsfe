@@ -58,7 +58,7 @@ const PurchaseBook = () => {
 
     {
       field: 'price',
-      headerName: 'Book Price',
+      headerName: 'Par Book Price',
       flex: 1,
       align: 'center',
       headerAlign: 'center'

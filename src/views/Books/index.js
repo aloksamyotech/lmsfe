@@ -77,7 +77,7 @@ const Lead = () => {
 
     {
       field: 'quantity',
-      headerName: 'Total Quantity',
+      headerName: 'Available Quantity',
       flex: 1,
       align: 'center',
       headerAlign: 'center'

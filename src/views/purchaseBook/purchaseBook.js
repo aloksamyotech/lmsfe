@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { FormLabel, Grid, TextField, MenuItem, Select, FormControl, FormHelperText } from '@mui/material';
+import { FormLabel, Grid, TextField, MenuItem, Select, FormControl, FormHelperText, Autocomplete } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -55,7 +55,7 @@ const AddPurchaseBook = (props) => {
       try {
         const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
         console.log('Form submitted successfully>>>>>>>:', response);
-        toast.success('Purchase Book details added successfully');
+        toast.success('Purchase Book added successfully');
         fetchData();
         handleClose();
       } catch (error) {
@@ -127,7 +127,7 @@ const AddPurchaseBook = (props) => {
           <form onSubmit={formik.handleSubmit}>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-                <Grid item xs={12} sm={5} md={5}>
+                {/* <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Books</FormLabel>
                   <FormControl fullWidth>
                     <Select
@@ -150,9 +150,34 @@ const AddPurchaseBook = (props) => {
                     </Select>
                     <FormHelperText style={{ color: 'red' }}>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
                   </FormControl>
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12} sm={5} md={5}>
+                  <FormLabel>Books</FormLabel>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      id="bookId"
+                      name="bookId"
+                      value={bookData.find((book) => book._id === formik.values.bookId) || null}
+                      onChange={(event, newValue) => formik.setFieldValue('bookId', newValue ? newValue._id : '')}
+                      options={bookData}
+                      getOptionLabel={(option) => option.bookName}
+                      isOptionEqualToValue={(option, value) => option._id === value._id}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          error={formik.touched.bookId && Boolean(formik.errors.bookId)}
+                          helperText={formik.touched.bookId && formik.errors.bookId}
+                        />
+                      )}
+                    />
+                    {/* {formik.touched.bookId && formik.errors.bookId && (
+                      <FormHelperText style={{ color: 'red' }}>{formik.errors.bookId}</FormHelperText>
+                    )} */}
+                  </FormControl>
+                </Grid>
+
+                {/* <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Vendor</FormLabel>
                   <FormControl fullWidth>
                     <Select
@@ -170,6 +195,29 @@ const AddPurchaseBook = (props) => {
                       ))}
                     </Select>
                     <FormHelperText style={{ color: 'red' }}>{formik.touched.vendorId && formik.errors.vendorId}</FormHelperText>
+                  </FormControl>
+                </Grid> */}
+                <Grid item xs={12} sm={5} md={5}>
+                  <FormLabel>Vendor</FormLabel>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      id="vendorId"
+                      name="vendorId"
+                      value={studentData.find((item) => item._id === formik.values.vendorId) || null}  
+                      onChange={(event, newValue) => formik.setFieldValue('vendorId', newValue?._id || '')} 
+                      options={studentData}
+                      getOptionLabel={(option) => option.vendorName}  
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                       
+                          error={formik.touched.vendorId && Boolean(formik.errors.vendorId)}
+                          helperText={formik.touched.vendorId && formik.errors.vendorId}
+                        />
+                      )}
+                      isOptionEqualToValue={(option, value) => option._id === value}  
+                    />
+                    {/* <FormHelperText style={{ color: 'red' }}>{formik.touched.vendorId && formik.errors.vendorId}</FormHelperText> */}
                   </FormControl>
                 </Grid>
 
@@ -205,7 +253,7 @@ const AddPurchaseBook = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>Price Par Book</FormLabel>
                   <TextField
                     id="price"
                     name="price"
@@ -227,7 +275,7 @@ const AddPurchaseBook = (props) => {
                     name="totalPrice"
                     size="small"
                     fullWidth
-                    value={formik.values.totalPrice || formik.values.price * formik.values.quantity}
+                    value={formik.values.price * formik.values.quantity}
                     error={formik.touched.totalPrice && Boolean(formik.errors.totalPrice)}
                     helperText={formik.touched.totalPrice && formik.errors.totalPrice}
                     inputProps={{ maxLength: 5 }}

@@ -115,7 +115,7 @@ const dashboard = {
     // },
     {
       id: '04',
-      title: 'Favorite Contact',
+      title: 'Favorite Students',
       type: 'item',
       url: '/dashboard/contact',
       icon: icons.IconPhoneCheck,

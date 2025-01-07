@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { FormLabel, Grid, TextField, FormControl, Select, MenuItem, FormHelperText, InputAdornment } from '@mui/material';
+import { FormLabel, Grid, TextField, FormControl, Autocomplete, Select, MenuItem, FormHelperText, InputAdornment } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -147,7 +147,7 @@ const AddLead = (props) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={4} md={4}>
+              {/* <Grid item xs={12} sm={4} md={4}>
                 <FormLabel>Publisher Name</FormLabel>
                 <FormControl fullWidth error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}>
                   <Select
@@ -165,7 +165,53 @@ const AddLead = (props) => {
                   </Select>
                   <FormHelperText>{formik.touched.publisherName && formik.errors.publisherName}</FormHelperText>
                 </FormControl>
+              </Grid> */}
+
+              <Grid item xs={12} sm={4} md={4}>
+                <FormLabel>Publisher Name</FormLabel>
+                <FormControl fullWidth error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}>
+                  <Autocomplete
+                    id="publisherName"
+                    name="publisherName"
+                    value={formik.values.publisherName}
+                    onChange={(event, newValue) => formik.setFieldValue('publisherName', newValue)}
+                    options={publisherData.map((item) => item.publisherName)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}
+                        helperText={formik.touched.publisherName && formik.errors.publisherName}
+                        // sx={{ height: '10px', input: { padding: '8px' } }}
+                      />
+                    )}
+                    sx={{ height: '40px' }}
+                  />
+                </FormControl>
               </Grid>
+
+              {/* <Grid item xs={12} sm={4} md={4}>
+                <FormLabel>Upload Book Image</FormLabel>
+                <FormControl fullWidth error={formik.touched.upload_Book && Boolean(formik.errors.upload_Book)}>
+                  <TextField
+                    id="upload_Book"
+                    name="upload_Book"
+                    size="small"
+                    fullWidth
+                    value={formik.values.upload_Book ? formik.values.upload_Book.name : ''}
+                    onClick={() => document.getElementById('file-input').click()}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Button sx={{ marginRight: '25px' }}>Choose File</Button>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                  <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
+                  {formik.touched.upload_Book && formik.errors.upload_Book && <FormHelperText>{formik.errors.upload_Book}</FormHelperText>}
+                </FormControl>
+              </Grid> */}
 
               <Grid item xs={12} sm={4} md={4}>
                 <FormLabel>Upload Book Image</FormLabel>
@@ -188,6 +234,13 @@ const AddLead = (props) => {
                   />
                   <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
                   {formik.touched.upload_Book && formik.errors.upload_Book && <FormHelperText>{formik.errors.upload_Book}</FormHelperText>}
+
+                  {/* Display file path below the input */}
+                  {formik.values.upload_Book && formik.values.upload_Book.name && (
+                    <Typography variant="body2" color="textSecondary" sx={{ marginTop: 1 }}>
+                      {formik.values.upload_Book.name}
+                    </Typography>
+                  )}
                 </FormControl>
               </Grid>
 

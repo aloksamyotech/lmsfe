@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import invoice from '../view/invoice.png';
 const html2pdf = require('html2pdf.js');
+import HomeIcon from '@mui/icons-material/Home';
 
 import {
   Stack,
@@ -17,7 +18,9 @@ import {
   Paper,
   Grid,
   Backdrop,
-  CircularProgress
+  CircularProgress,
+  Breadcrumbs,
+  Link
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
@@ -139,6 +142,29 @@ const PurchaseInvoice = () => {
   };
   return (
     <>
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          height: '50px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          marginBottom: '-18px',
+          marginLeft:'2.5%',
+          width: '95%'
+        }}
+      >
+        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '-12px' }}>
+          <Link href="/" underline="hover" color="inherit">
+            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+          </Link>
+          <Link href="/account-profile" underline="hover" color="inherit">
+            <h4>Purchase Books Invoice</h4>
+          </Link>
+        </Breadcrumbs>
+        <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
+      </Box>
+      <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
       {loading && (
         <Backdrop
           sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
@@ -161,14 +187,12 @@ const PurchaseInvoice = () => {
             position: 'relative'
           }}
         >
-          <Box display="flex" alignItems="center" justifyContent="center">
-            {/* Left side Image */}
-            <Box style={{ marginRight: '150px' }}>
+          <Box display="flex" alignItems="center" justifyContent="center"> 
+            <Box style={{ marginRight: '50px' }}>
               <img src={invoice} alt="Screenshot" style={{ width: '100px', height: 'auto' }} />
             </Box>
-
-            {/* Text Content */}
-            <Box style={{ marginRight: '320px' }}>
+ 
+            <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
                 SAMYOTECH
               </Typography>

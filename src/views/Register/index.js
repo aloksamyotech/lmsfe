@@ -19,8 +19,8 @@ const Call = () => {
   const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
   const [excelData, setExcelData] = useState();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openFavoriteDialog, setOpenFavoriteDialog] = useState(false);
-  const [favoriteStudent, setFavoriteStudent] = useState(null);
+  // const [openFavoriteDialog, setOpenFavoriteDialog] = useState(false);
+  // const [favoriteStudent, setFavoriteStudent] = useState(null);
   const [bookToDelete, setBookToDelete] = useState(null);
 
   const XLSX = require('xlsx');
@@ -42,9 +42,20 @@ const Call = () => {
   const columns = [
     {
       field: 'email',
-      headerName: 'Email',
+      headerName: 'Student Email',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+      renderCell: (params) => {
+        return (
+          <a 
+            href="#!" 
+            onClick={() => handleView(params.row)} 
+            style={{ textDecoration: 'none', color: 'inherit' }}  
+          >
+            {params.value}
+          </a>
+        );
+      },
     },
     {
       field: 'student_Name',

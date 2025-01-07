@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { FormLabel, Grid, TextField, MenuItem, Select, FormHelperText, FormControl } from '@mui/material';
+import { FormLabel, Grid, TextField, MenuItem, Select, FormHelperText, FormControl, Autocomplete } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -41,12 +41,10 @@ const AddAllotment = (props) => {
         ...values,
         bookId: [values.bookId]
       };
-
       if (addBook.some((book) => book.bookId === values.bookId)) {
         toast.error('This book has already been added.');
         return;
       }
-
       setAddBook((prevBooks) => [...prevBooks, values]);
 
       const dataToSend = addBook && Object.keys(addBook).length > 0 ? addBook : [values];
@@ -86,21 +84,21 @@ const AddAllotment = (props) => {
       try {
         const response = await axios.get('http://localhost:4300/user/bookManagement');
         const filteredBooks = response.data?.BookManagement.filter((book) => book.quantity > 0);
+        console.log('response Aman-2', response);
         setBookData(filteredBooks);
       } catch (error) {
         console.error('Error fetching books:', error);
       }
     };
-
     const fetchStudents = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/registerManagement');
+        console.log('response Aman', response);
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
         console.error('Error fetching students:', error);
       }
     };
-
     const fetchSubscription = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
@@ -109,14 +107,14 @@ const AddAllotment = (props) => {
         console.error('Error fetching SubscriptionType', error);
       }
     };
-
     fetchBooks();
     fetchStudents();
     fetchSubscription();
   }, []);
-
   const handleStudentChange = async (event) => {
     const studentId = event.target.value;
+    console.log('studentId New ', event.target.value);
+
     if (!studentId) {
       toast.error('Please select a valid student.');
       return;
@@ -152,13 +150,12 @@ const AddAllotment = (props) => {
     // }
     const bookData = {
       studentId,
-      bookId,
+      bookId: bookId?._id,
       submissionDate,
       bookIssueDate,
       paymentType,
       amount
     };
-
     setAddBook([...addBook, bookData]);
     formik.setValues({
       ...formik.values,
@@ -169,13 +166,10 @@ const AddAllotment = (props) => {
       amount: ''
     });
   };
-
   console.log(`addBook`, addBook);
-
   const handleRemoveBook = (bookId) => {
     setAddBook((prevBooks) => prevBooks.filter((book) => book.bookId !== bookId));
   };
-
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -187,7 +181,7 @@ const AddAllotment = (props) => {
           <form onSubmit={formik.handleSubmit}>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-                <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 2 }}>
+                {/* <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 2 }}>
                   <FormLabel>Student</FormLabel>
                   <FormControl fullWidth error={formik.touched.studentId && Boolean(formik.errors.studentId)}>
                     <Select id="studentId" name="studentId" value={formik.values.studentId} onChange={handleStudentChange}>
@@ -200,6 +194,33 @@ const AddAllotment = (props) => {
                     <FormHelperText>{formik.touched.studentId && formik.errors.studentId}</FormHelperText>
                     <FormLabel style={{ color: bookNumber == 5 ? 'red' : 'inherit' }}>
                       {bookNumber == 5 ? `You Have Already Booked ${bookNumber} books` : null}
+                    </FormLabel>
+                  </FormControl>
+                </Grid> */}
+                <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 2 }}>
+                  <FormLabel>Student</FormLabel>
+                  <FormControl fullWidth error={formik.touched.studentId && Boolean(formik.errors.studentId)}>
+                    <Autocomplete
+                      id="studentId"
+                      name="studentId"
+                      value={formik.values.studentId ? allData.find((student) => student._id === formik.values.studentId) : null}
+                      onChange={(event, newValue) => {
+                        // When a student is selected, update the formik values for studentId
+                        if (newValue) {
+                          formik.setFieldValue('studentId', newValue._id); // ensure you set the student ID correctly
+                        } else {
+                          formik.setFieldValue('studentId', ''); // clear the studentId when no student is selected
+                        }
+                      }}
+                      options={allData}
+                      getOptionLabel={(option) => option.student_Name}
+                      renderInput={(params) => <TextField {...params} />}
+                      isOptionEqualToValue={(option, value) => option._id === value?._id}
+                      fullWidth
+                    />
+                    <FormHelperText>{formik.touched.studentId && formik.errors.studentId ? formik.errors.studentId : ''}</FormHelperText>
+                    <FormLabel style={{ color: bookNumber === 5 ? 'red' : 'inherit' }}>
+                      {bookNumber === 5 ? `You Have Already Booked ${bookNumber} books` : null}
                     </FormLabel>
                   </FormControl>
                 </Grid>
@@ -218,7 +239,7 @@ const AddAllotment = (props) => {
                   style={{ border: '1px solid #ddd', padding: '10px', borderRadius: '5px', marginLeft: '20px', marginTop: '15px' }}
                 >
                   <Grid container>
-                    <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
+                    {/* <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
                       {' '}
                       <FormLabel>Book</FormLabel>
                       <FormControl fullWidth error={formik.touched.bookId && Boolean(formik.errors.bookId)}>
@@ -237,7 +258,26 @@ const AddAllotment = (props) => {
                         </Select>
                         <FormHelperText>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
                       </FormControl>
+                    </Grid> */}
+
+                    <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
+                      <FormLabel>Book</FormLabel>
+                      <FormControl fullWidth error={formik.touched.bookId && Boolean(formik.errors.bookId)}>
+                        <Autocomplete
+                          id="bookId"
+                          name="bookId"
+                          value={formik.values.bookId || null}
+                          onChange={(event, newValue) => formik.setFieldValue('bookId', newValue)}
+                          options={bookData}
+                          getOptionLabel={(option) => option.bookName || ''}
+                          isOptionEqualToValue={(option, value) => option._id === value}
+                          disabled={borrowedBooksCount >= 5}
+                          renderInput={(params) => <TextField {...params} error={formik.touched.bookId && Boolean(formik.errors.bookId)} />}
+                        />
+                        <FormHelperText>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
+                      </FormControl>
                     </Grid>
+
                     <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 4 }}>
                       <FormLabel>Subscription Type</FormLabel>
                       <FormControl fullWidth error={formik.touched.paymentType && Boolean(formik.errors.paymentType)}>
@@ -298,7 +338,7 @@ const AddAllotment = (props) => {
                             padding: '10px',
                             borderRadius: '5px',
                             marginLeft: '-10px ',
-                            position: 'relative' // Added relative positioning
+                            position: 'relative'
                           }}
                         >
                           <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
@@ -361,7 +401,6 @@ const AddAllotment = (props) => {
                 )}
               </Grid>
             </Grid>
-
             <DialogActions sx={{ ml: '40px' }}>
               <Button type="submit" variant="contained" color="primary">
                 Save

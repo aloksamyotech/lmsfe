@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -14,29 +13,18 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
-// import { useEffect, useState } from 'react';
-
-// import { apiget, apipost } from '../../service/api';
-import Palette from '../../ui-component/ThemePalette.js';
-import { hasShrinkWidth } from '@fullcalendar/core/internal';
 
 const AddPolicy = (props) => {
   const { open, handleClose, fetchData } = props;
 
-  //   const [contactList, setContactList] = useState([]);
-  //   const userid = localStorage.getItem('user_id');
-  //   const userRole = localStorage.getItem('userRole');
+  // Get today's date in the required format (yyyy-mm-dd)
+  const todayDate = new Date().toISOString().split('T')[0];
 
   // -----------  validationSchema
   const validationSchema = yup.object({
     vendorName: yup.string().required('Book Title is required'),
-    // .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
     companyName: yup.string().required('Book Title is required'),
-    // .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
     address: yup.string().required('Address is required'),
-    // cityName: yup.string().required('City Name is required'),
-    // .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-    // date: yup.date().required('Policy Start Date is required'),
     phoneNumber: yup
       .string()
       .matches(/^[0-9]{10}$/, 'Phone number is invalid')
@@ -50,52 +38,27 @@ const AddPolicy = (props) => {
       vendorName: '',
       companyName: '',
       address: '',
-      // cityName: '',
-      date: '',
+      date: todayDate, 
       phoneNumber: '',
       email: ''
     },
     validationSchema,
 
     onSubmit: async (values) => {
-      console.log('Submitted values', values);
       try {
         const response = await axios.post('http://localhost:4300/user/addVenderBook', values);
         console.log('Form submitted successfully:', response);
-        console.log();
         fetchData();
         handleClose();
       } catch (error) {
         console.error('Error submitting form:', error);
       }
-      toast.success('Vender details added successfully');
+      toast.success('Vendor details added successfully');
       formik.resetForm();
       handleClose();
     }
   });
-  // add policy api
-  //   const addPolicy = async (values) => {
-  //     const data = values;
-  //     const result = await apipost('policy/add', data);
 
-  //     setUserAction(result);
-
-  //     if (result && result.status === 201) {
-  //       toast.success(result.data.message);
-  //       formik.resetForm();
-  //       handleClose();
-  //     }
-  //   };
-
-  //   const fetchdata = async () => {
-  //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`);
-  //     if (result && result.status === 200) {
-  //       setContactList(result?.data?.result);
-  //     }
-  //   };
-  //   useEffect(() => {
-  //     fetchdata();
-  //   }, []);
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -104,8 +67,6 @@ const AddPolicy = (props) => {
           style={{
             display: 'flex',
             justifyContent: 'space-between'
-            // backgroundColor: "#2b4054",
-            // color: "white",
           }}
         >
           <Typography variant="h6">Add New Vendor</Typography>
@@ -116,9 +77,6 @@ const AddPolicy = (props) => {
         <DialogContent dividers>
           <form>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-              {/* <Typography style={{ marginBottom: '15px' }} variant="h6">
-                Vendor
-              </Typography> */}
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
                 <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Vendor Name</FormLabel>
@@ -148,20 +106,6 @@ const AddPolicy = (props) => {
                     inputProps={{ maxLength: 50 }}
                   />
                 </Grid>
-                {/* <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>City</FormLabel>
-                  <TextField
-                    id="cityName"
-                    name="cityName"
-                    size="small"
-                    fullWidth
-                    value={formik.values.cityName}
-                    onChange={formik.handleChange}
-                    error={formik.touched.cityName && Boolean(formik.errors.cityName)}
-                    helperText={formik.cityName && formik.errors.cityName}
-                    inputProps={{ maxLength: 50 }}
-                  />
-                </Grid> */}
                 <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Date</FormLabel>
                   <TextField
@@ -169,15 +113,14 @@ const AddPolicy = (props) => {
                     type="date"
                     size="small"
                     fullWidth
-                    value={formik.values.date || new Date().toISOString().slice(0, 10)}
+                    value={formik.values.date}
                     onChange={formik.handleChange}
                     error={formik.touched.date && Boolean(formik.errors.date)}
                     helperText={formik.touched.date && formik.errors.date}
-                    inputProps={{
-                      min: new Date().toISOString().slice(0, 10)
-                    }}
+                    inputProps={{ min: todayDate }}
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Phone Number</FormLabel>
                   <TextField

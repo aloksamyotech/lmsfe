@@ -39,14 +39,31 @@ const Allotment = () => {
   }, []);
 
   const columns = [
- 
     {
       field: 'studentEmail',
       headerName: 'Student Email',
       flex: 1,
       align: 'center',
       headerAlign: 'center',
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+      renderCell: (params) => (
+        <div>
+          <Button
+            onClick={() => handleView(params.row)}
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',  
+              backgroundColor: 'transparent', 
+              padding: 0,
+              border: 'none',
+              cursor: 'pointer',
+              fontWeight: 'normal'  
+            }}
+          >
+            {params.value}  
+          </Button>
+        </div>
+      )
     },
     {
       field: 'student_Name',
@@ -63,7 +80,7 @@ const Allotment = () => {
       align: 'center',
       headerAlign: 'center',
       cellClassName: 'name-column--cell--capitalize'
-    }, 
+    },
     {
       field: 'bookIssueDate',
       headerName: 'Book Issue Date',
@@ -71,7 +88,7 @@ const Allotment = () => {
       align: 'center',
       headerAlign: 'center'
     },
-    
+
     {
       field: 'action',
       headerName: 'Action',

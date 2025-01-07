@@ -19,6 +19,8 @@ const AddRegister = (props) => {
   const { open, handleClose, fetchData } = props;
   const userid = localStorage.getItem('user_id');
 
+  const todayDate = new Date().toISOString().split('T')[0];
+
   // -----------  validationSchema
   const validationSchema = yup.object({
     // student_id: yup.string().required('Student is required'),
@@ -46,8 +48,8 @@ const AddRegister = (props) => {
       email: '',
       mobile_Number: '',
       select_identity: '',
-      upload_identity: null,
-      register_Date: ''
+      upload_identity: '',
+      register_Date: todayDate
     },
     validationSchema,
     // onSubmit: async (values) => {
@@ -212,7 +214,7 @@ const AddRegister = (props) => {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={6}>
+              {/* <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Register Date</FormLabel>
                 <TextField
                   id="register_Date"
@@ -226,6 +228,26 @@ const AddRegister = (props) => {
                   helperText={formik.touched.register_Date && formik.errors.register_Date}
                   inputProps={{
                     min: new Date().toISOString().slice(0, 10), // ensures the user can only select today's date or a future date
+                    style: {
+                      height: '25px'
+                    }
+                  }}
+                />
+              </Grid> */}
+              <Grid item xs={12} sm={6} md={6}>
+                <FormLabel>Register Date</FormLabel>
+                <TextField
+                  id="register_Date"
+                  name="register_Date"
+                  type="date"
+                  size="small"
+                  fullWidth
+                  value={formik.values.date || todayDate}
+                  onChange={formik.handleChange}
+                  error={formik.touched.date && Boolean(formik.errors.date)}
+                  helperText={formik.touched.date && formik.errors.date}
+                  inputProps={{
+                    min: todayDate,
                     style: {
                       height: '25px'
                     }
