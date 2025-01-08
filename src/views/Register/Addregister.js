@@ -42,8 +42,7 @@ const AddRegister = (props) => {
   });
 
   const formik = useFormik({
-    initialValues: {
-      // student_id: '',
+    initialValues: { 
       student_Name: '',
       email: '',
       mobile_Number: '',
@@ -52,19 +51,7 @@ const AddRegister = (props) => {
       register_Date: todayDate
     },
     validationSchema,
-    // onSubmit: async (values) => {
-    //   console.log('Submitted values', values);
-    //   try {
-    //     const response = await axios.post('http://localhost:4300/user/addRegister', values);
-    //     console.log('Form submitted successfully:', response);
-    //     toast.success('Register details added successfully');
-    //     handleClose();
-    //     formik.resetForm();
-    //   } catch (error) {
-    //     console.error('Error submitting form:', error);
-    //     toast.error('Failed to add register details');
-    //   }
-    // }
+  
     onSubmit: async (values) => {
       console.log('on submit');
       console.log(`values`, values);
@@ -78,13 +65,8 @@ const AddRegister = (props) => {
       formData.append('upload_identity', values.upload_identity);
       formData.append('register_Date', values.register_Date);
 
-      // for (let [key, value] of formData.entries()) {
-      //   console.log(`${key}: ${value}`);
-      // }
       try {
         console.log('try bolck');
-
-        // const response = await axios.post('http://localhost:4300/user/addRegister', values);
         const response = await axios.post('http://localhost:4300/user/addRegister', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -123,21 +105,7 @@ const AddRegister = (props) => {
         <form onSubmit={formik.handleSubmit}>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-              {/* <Grid item xs={12} sm={6} md={6}>
-                <FormLabel>Student Id</FormLabel>
-                <TextField
-                  id="student_id"
-                  name="student_id"
-                  size="small"
-                  fullWidth
-                  value={formik.values.student_id}
-                  onChange={formik.handleChange}
-                  error={formik.touched.student_id && Boolean(formik.errors.student_id)}
-                  helperText={formik.touched.student_id && formik.errors.student_id}
-                  inputProps={{ maxLength: 50 }}
-                />
-              </Grid> */}
-              <Grid item xs={12} sm={6} md={6}>
+            <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Student Name</FormLabel>
                 <TextField
                   id="student_Name"
@@ -180,8 +148,7 @@ const AddRegister = (props) => {
                 <TextField
                   id="mobile_Number"
                   name="mobile_Number"
-                  size="small"
-                  // type="number"
+                  size="small" 
                   fullWidth
                   value={formik.values.mobile_Number}
                   onChange={formik.handleChange}
@@ -213,27 +180,7 @@ const AddRegister = (props) => {
                   </Select>
                 </FormControl>
               </Grid>
-
-              {/* <Grid item xs={12} sm={6} md={6}>
-                <FormLabel>Register Date</FormLabel>
-                <TextField
-                  id="register_Date"
-                  name="register_Date"
-                  size="small"
-                  type="date"
-                  fullWidth
-                  value={formik.values.register_Date || new Date().toISOString().slice(0, 10)} // default to today's date
-                  onChange={formik.handleChange}
-                  error={formik.touched.register_Date && Boolean(formik.errors.register_Date)}
-                  helperText={formik.touched.register_Date && formik.errors.register_Date}
-                  inputProps={{
-                    min: new Date().toISOString().slice(0, 10), // ensures the user can only select today's date or a future date
-                    style: {
-                      height: '25px'
-                    }
-                  }}
-                />
-              </Grid> */}
+ 
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Register Date</FormLabel>
                 <TextField
@@ -258,8 +205,7 @@ const AddRegister = (props) => {
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Upload Identity</FormLabel>
                 <FormControl fullWidth>
-                  <input type="file" accept="image/*" onChange={handleFileChange} style={{ width: '100%' }} />
-                  {/* <input type="file" name="profilePic" onChange={handleFileChange} style={{ width: '100%' }} /> */}
+                  <input type="file" accept="image/*" onChange={handleFileChange} style={{ width: '100%' }} /> 
 
                   {formik.touched.upload_identity && formik.errors.upload_identity && (
                     <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.upload_identity}</div>

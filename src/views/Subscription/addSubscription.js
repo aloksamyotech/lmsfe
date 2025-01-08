@@ -66,8 +66,7 @@ const AddRegister = (props) => {
  
       try {
         console.log('try bolck');
-
-        // const response = await axios.post('http://localhost:4300/user/addRegister', values);
+ 
         const response = await axios.post('http://localhost:4300/user/addRegister', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -106,20 +105,7 @@ const AddRegister = (props) => {
         <form onSubmit={formik.handleSubmit}>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-              {/* <Grid item xs={12} sm={6} md={6}>
-                <FormLabel>Student Id</FormLabel>
-                <TextField
-                  id="student_id"
-                  name="student_id"
-                  size="small"
-                  fullWidth
-                  value={formik.values.student_id}
-                  onChange={formik.handleChange}
-                  error={formik.touched.student_id && Boolean(formik.errors.student_id)}
-                  helperText={formik.touched.student_id && formik.errors.student_id}
-                  inputProps={{ maxLength: 50 }}
-                />
-              </Grid> */}
+              
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Title</FormLabel>
                 <TextField

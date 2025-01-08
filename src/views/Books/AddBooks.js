@@ -146,27 +146,6 @@ const AddLead = (props) => {
                   inputProps={{ maxLength: 50 }}
                 />
               </Grid>
-
-              {/* <Grid item xs={12} sm={4} md={4}>
-                <FormLabel>Publisher Name</FormLabel>
-                <FormControl fullWidth error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}>
-                  <Select
-                    id="publisherName"
-                    name="publisherName"
-                    value={formik.values.publisherName}
-                    onChange={formik.handleChange}
-                    sx={{ height: '40px' }}
-                  >
-                    {publisherData.map((item) => (
-                      <MenuItem key={item._id} value={item.publisherName}>
-                        {item.publisherName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{formik.touched.publisherName && formik.errors.publisherName}</FormHelperText>
-                </FormControl>
-              </Grid> */}
-
               <Grid item xs={12} sm={4} md={4}>
                 <FormLabel>Publisher Name</FormLabel>
                 <FormControl fullWidth error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}>
@@ -181,37 +160,12 @@ const AddLead = (props) => {
                         {...params}
                         error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}
                         helperText={formik.touched.publisherName && formik.errors.publisherName}
-                        // sx={{ height: '10px', input: { padding: '8px' } }}
                       />
                     )}
                     sx={{ height: '40px' }}
                   />
                 </FormControl>
               </Grid>
-
-              {/* <Grid item xs={12} sm={4} md={4}>
-                <FormLabel>Upload Book Image</FormLabel>
-                <FormControl fullWidth error={formik.touched.upload_Book && Boolean(formik.errors.upload_Book)}>
-                  <TextField
-                    id="upload_Book"
-                    name="upload_Book"
-                    size="small"
-                    fullWidth
-                    value={formik.values.upload_Book ? formik.values.upload_Book.name : ''}
-                    onClick={() => document.getElementById('file-input').click()}
-                    InputProps={{
-                      readOnly: true,
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button sx={{ marginRight: '25px' }}>Choose File</Button>
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                  <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
-                  {formik.touched.upload_Book && formik.errors.upload_Book && <FormHelperText>{formik.errors.upload_Book}</FormHelperText>}
-                </FormControl>
-              </Grid> */}
 
               <Grid item xs={12} sm={4} md={4}>
                 <FormLabel>Upload Book Image</FormLabel>
@@ -234,8 +188,6 @@ const AddLead = (props) => {
                   />
                   <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
                   {formik.touched.upload_Book && formik.errors.upload_Book && <FormHelperText>{formik.errors.upload_Book}</FormHelperText>}
-
-                  {/* Display file path below the input */}
                   {formik.values.upload_Book && formik.values.upload_Book.name && (
                     <Typography variant="body2" color="textSecondary" sx={{ marginTop: 1 }}>
                       {formik.values.upload_Book.name}

@@ -3,13 +3,11 @@ import { useState, useEffect } from 'react';
 import { Stack, Grid, Dialog, TextField, DialogActions, DialogContent, DialogTitle, Typography, Divider, Avatar } from '@mui/material';
 import TableStyle from '../../ui-component/TableStyle';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import IconButton from '@mui/material/IconButton'; // Import IconButton
-import VisibilityIcon from '@mui/icons-material/Visibility'; // Import VisibilityIcon
+import IconButton from '@mui/material/IconButton'; 
+import VisibilityIcon from '@mui/icons-material/Visibility'; 
 
 import axios from 'axios';
-import Iconify from '../../ui-component/iconify';
-// import AddContact from './addContact.js';
-
+import Iconify from '../../ui-component/iconify'; 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -85,7 +83,7 @@ const Contact = () => {
     setOpenDeleteDialog(false);
   };
 
-  // Array of random image URLs
+ 
   const randomImages = [
     'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&q=70&fm=webp',
     'https://randomuser.me/api/portraits/men/1.jpg',
@@ -94,7 +92,7 @@ const Contact = () => {
     'https://placeimg.com/200/200/people'
   ];
 
-  // Function to get a random image
+ 
   const getRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * randomImages.length);
     return randomImages[randomIndex];
@@ -136,7 +134,7 @@ const Contact = () => {
             flexDirection: 'column',
             alignItems: 'flex-start',
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            height: 'auto', // Set height to auto so it adjusts dynamically
+            height: 'auto',  
             justifyContent: 'space-between'
           }}
         >
@@ -159,7 +157,7 @@ const Contact = () => {
               >
                 <Grid item xs={4}>
                   <Avatar
-                    src={getRandomImage()} // Random image
+                    src={getRandomImage()} 
                     sx={{ borderRadius: '10px', height: '90px', width: '70px' }}
                   />
                 </Grid>

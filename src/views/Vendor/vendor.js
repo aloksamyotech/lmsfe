@@ -16,8 +16,7 @@ import { toast } from 'react-toastify';
 
 const AddPolicy = (props) => {
   const { open, handleClose, fetchData } = props;
-
-  // Get today's date in the required format (yyyy-mm-dd)
+ 
   const todayDate = new Date().toISOString().split('T')[0];
 
   // -----------  validationSchema

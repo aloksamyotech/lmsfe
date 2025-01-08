@@ -47,36 +47,7 @@ const AddSubscription = (props) => {
       numberOfDays: ''
     },
     validationSchema,
-    // oonSubmit: async (values) => {
-    //   const formData = new FormData();
 
-    //   Object.keys(values).forEach((key) => {
-    //     if (key !== 'upload_Book') {
-    //       formData.append(key, values[key]);
-    //     }
-    //   });
-
-    //   if (values.upload_Book) {
-    //     formData.append('upload_Book', values.upload_Book);
-    //   }
-
-    //   try {
-    //     const response = await axios.post('http://localhost:4300/user/addBook', formData, {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data'
-    //       }
-    //     });
-
-    //     console.log('Form submitted successfully:', response);
-    //     fetchData();
-    //     toast.success('Book details added successfully');
-    //     formik.resetForm();
-    //     handleClose();
-    //   } catch (error) {
-    //     console.error('Error submitting form:', error);
-    //     toast.error('Error submitting the form');
-    //   }
-    // }
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
@@ -109,20 +80,6 @@ const AddSubscription = (props) => {
         <form onSubmit={formik.handleSubmit}>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-              {/* <Grid item xs={12} sm={4} md={4}>
-                <FormLabel>Book Name</FormLabel>
-                <FormControl fullWidth error={formik.touched.bookName && Boolean(formik.errors.bookName)}>
-                  <Select id="bookName" name="bookName" value={formik.values.bookName} onChange={formik.handleChange} displayEmpty>
-                    {publisherData.map((item) => (
-                      <MenuItem key={item._id} value={item.bookName}>
-                        {item.bookName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{formik.touched.bookName && formik.errors.bookName}</FormHelperText>
-                </FormControl>
-              </Grid> */}
-
               <Grid item xs={12} sm={5} md={5}>
                 <FormLabel>Title</FormLabel>
                 <TextField
@@ -165,7 +122,6 @@ const AddSubscription = (props) => {
                   inputProps={{ maxLength: 5 }}
                 />
               </Grid>
-              {/* numberOfDays */}
               <Grid item xs={12} sm={5} md={5}>
                 <FormLabel>Number Of Days</FormLabel>
                 <TextField

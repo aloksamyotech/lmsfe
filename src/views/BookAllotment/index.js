@@ -3,12 +3,11 @@ import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField } fr
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
-// import AddLead from './AddBooks.js';
 import AddLead from './booksAllotment';
 import axios from 'axios';
 
-import IconButton from '@mui/material/IconButton'; // Import IconButton
-import VisibilityIcon from '@mui/icons-material/Visibility'; // Import VisibilityIcon
+import IconButton from '@mui/material/IconButton'; 
+import VisibilityIcon from '@mui/icons-material/Visibility'; 
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -100,12 +99,6 @@ const Allotment = () => {
           <Button onClick={() => handleView(params.row)} color="secondary" style={{ margin: '-15px' }}>
             <VisibilityIcon />
           </Button>
-          {/* <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
-            <EditIcon />
-          </Button>
-          <Button color="secondary" onClick={() => handleDelete(params.row.id)} style={{ margin: '-9px' }}>
-            <DeleteIcon />
-          </Button> */}
         </div>
       )
     }
@@ -124,11 +117,7 @@ const Allotment = () => {
   };
   const fetchData = async () => {
     try {
-      console.log('Api Start........');
-
-      // const response = await axios.get('http://localhost:4300/user/reBookAllotment');
-      // console.log('response--------->>>>>>>>>>>>', response?.data);
-
+      console.log('Api Start........'); 
       const response = await axios.get('http://localhost:4300/user/getBookAllotmentHistory');
       console.log('response--------->>>>>>>>>>>>', response?.data);
 
@@ -232,15 +221,7 @@ const Allotment = () => {
         </Box>
 
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
-
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-          <Typography variant="h4"> Allotment Management</Typography>
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Allotted New Book
-            </Button>
-          </Stack>
-        </Stack> */}
+ 
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>

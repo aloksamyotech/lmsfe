@@ -71,10 +71,6 @@ const PurchaseInvoice = () => {
     const url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
     console.log(`url`, url);
     const response = await axios.get(`http://localhost:4300/user/getPurchaseInvoice/${rowData?.id}`);
-    console.log('Invoice Data ----------', response?.data[0]);
-    // console.log('Invoice Data ----------', response);
-
-    // const student_Name = response?.data[0]?.studentDetails?.student_Name;
 
     const student_Name = response?.data[0]?.vendorDetails?.vendorName;
 
@@ -94,9 +90,6 @@ const PurchaseInvoice = () => {
 
     const bookName = response?.data[0]?.bookDetails?.bookName;
     setBookName(bookName);
-    // const bookName = response?.data[0]?.bookDetails?.bookName;
-    // const bookName = response?.data[0]?.bookDetails?.bookName;
-
     const amount = response?.data[0]?.price;
     setStudentAmount(amount);
 
@@ -150,7 +143,7 @@ const PurchaseInvoice = () => {
           height: '50px',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           marginBottom: '-18px',
-          marginLeft:'2.5%',
+          marginLeft: '2.5%',
           width: '95%'
         }}
       >
@@ -187,11 +180,11 @@ const PurchaseInvoice = () => {
             position: 'relative'
           }}
         >
-          <Box display="flex" alignItems="center" justifyContent="center"> 
+          <Box display="flex" alignItems="center" justifyContent="center">
             <Box style={{ marginRight: '50px' }}>
               <img src={invoice} alt="Screenshot" style={{ width: '100px', height: 'auto' }} />
             </Box>
- 
+
             <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
                 SAMYOTECH
@@ -276,13 +269,6 @@ const PurchaseInvoice = () => {
               </Typography>
               <Typography variant="body2">{discount ? `₹${discount}` : '₹0' || '₹0'}</Typography>
             </Grid>
-            {/* <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Payment Type:
-              </Typography>
-              <Typography variant="body2">{studentTitle || 'N/A'}</Typography>
-            </Grid> */}
-
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Book Purchase Date:
@@ -295,18 +281,7 @@ const PurchaseInvoice = () => {
               </Typography>
               <Typography variant="body2">{quantity || '₹0'}</Typography>
             </Grid>
-            {/* <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Total Paid Amount:
-              </Typography>
-              <Typography variant="body2">
-                {allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount
-                  ? `₹${allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount}`
-                  : '₹0' || '₹0'}
-              </Typography>
-            </Grid> */}
           </Grid>
-
           <Grid container spacing={1} mt={2} mb={5}>
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
@@ -315,7 +290,6 @@ const PurchaseInvoice = () => {
               </Typography>
             </Grid>
           </Grid>
-
           <Box sx={{ position: 'absolute', bottom: '20px', right: '20px' }}>
             <Typography variant="body2" fontSize="1.1rem" color="text.secondary">
               SAMYOTECH

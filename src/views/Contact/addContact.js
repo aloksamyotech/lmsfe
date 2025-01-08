@@ -16,8 +16,7 @@ import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from '
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-const AddContact = (props) => {
-  // const { open, handleClose } = props;
+const AddContact = (props) => { 
   const { open, handleClose, fetchData } = props;
 
   const validationSchema = yup.object({
@@ -75,8 +74,7 @@ const AddContact = (props) => {
           <Typography variant="h6">Add New Contact</Typography>
           <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
         </DialogTitle>
-        <DialogContent dividers>
-          {/* The form tag should wrap all inputs */}
+        <DialogContent dividers> 
           <form onSubmit={formik.handleSubmit}>
             <Typography style={{ marginBottom: '15px' }} variant="h6">
               Basic Information
@@ -184,8 +182,7 @@ const AddContact = (props) => {
                 />
               </Grid>
             </Grid>
-            <DialogActions>
-              {/* Submit button must be inside the form */}
+            <DialogActions> 
               <Button type="submit" variant="contained" style={{ textTransform: 'capitalize' }}>
                 Save
               </Button>
@@ -194,7 +191,7 @@ const AddContact = (props) => {
                   formik.resetForm();
                   handleClose();
                 }}
-                type="button" // Prevent triggering form submission
+                type="button"  
                 variant="outlined"
                 style={{ textTransform: 'capitalize' }}
                 color="error"

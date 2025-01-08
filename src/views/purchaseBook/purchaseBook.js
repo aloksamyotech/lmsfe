@@ -15,7 +15,6 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState } from 'react';
 
-// Validation schema for the form
 const validationSchema = yup.object({
   bookId: yup.string().required('Book is required'),
   vendorId: yup.string().required('Vendor is required'),
@@ -127,31 +126,6 @@ const AddPurchaseBook = (props) => {
           <form onSubmit={formik.handleSubmit}>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-                {/* <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Books</FormLabel>
-                  <FormControl fullWidth>
-                    <Select
-                      id="bookId"
-                      name="bookId"
-                      value={formik.values.bookId}
-                      error={formik.touched.bookId && Boolean(formik.errors.bookId)}
-                      helperText={formik.touched.bookId && formik.errors.bookId}
-                      onChange={formik.handleChange}
-                    >
-                      {bookData && bookData.length > 0 ? (
-                        bookData.map((item) => (
-                          <MenuItem key={item._id} value={item._id}>
-                            {item.bookName}
-                          </MenuItem>
-                        ))
-                      ) : (
-                        <MenuItem disabled>No books available</MenuItem>
-                      )}
-                    </Select>
-                    <FormHelperText style={{ color: 'red' }}>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
-                  </FormControl>
-                </Grid> */}
-
                 <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Books</FormLabel>
                   <FormControl fullWidth>
@@ -171,51 +145,26 @@ const AddPurchaseBook = (props) => {
                         />
                       )}
                     />
-                    {/* {formik.touched.bookId && formik.errors.bookId && (
-                      <FormHelperText style={{ color: 'red' }}>{formik.errors.bookId}</FormHelperText>
-                    )} */}
                   </FormControl>
                 </Grid>
-
-                {/* <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Vendor</FormLabel>
-                  <FormControl fullWidth>
-                    <Select
-                      id="vendorId"
-                      name="vendorId"
-                      value={formik.values.vendorId}
-                      error={formik.touched.vendorId && Boolean(formik.errors.vendorId)}
-                      // helperText={formik.touched.vendorId && formik.errors.vendorId}
-                      onChange={(event) => formik.setFieldValue('vendorId', event.target.value)}
-                    >
-                      {studentData.map((item) => (
-                        <MenuItem key={item._id} value={item._id}>
-                          {item.vendorName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText style={{ color: 'red' }}>{formik.touched.vendorId && formik.errors.vendorId}</FormHelperText>
-                  </FormControl>
-                </Grid> */}
                 <Grid item xs={12} sm={5} md={5}>
                   <FormLabel>Vendor</FormLabel>
                   <FormControl fullWidth>
                     <Autocomplete
                       id="vendorId"
                       name="vendorId"
-                      value={studentData.find((item) => item._id === formik.values.vendorId) || null}  
-                      onChange={(event, newValue) => formik.setFieldValue('vendorId', newValue?._id || '')} 
+                      value={studentData.find((item) => item._id === formik.values.vendorId) || null}
+                      onChange={(event, newValue) => formik.setFieldValue('vendorId', newValue?._id || '')}
                       options={studentData}
-                      getOptionLabel={(option) => option.vendorName}  
+                      getOptionLabel={(option) => option.vendorName}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                       
                           error={formik.touched.vendorId && Boolean(formik.errors.vendorId)}
                           helperText={formik.touched.vendorId && formik.errors.vendorId}
                         />
                       )}
-                      isOptionEqualToValue={(option, value) => option._id === value}  
+                      isOptionEqualToValue={(option, value) => option._id === value}
                     />
                     {/* <FormHelperText style={{ color: 'red' }}>{formik.touched.vendorId && formik.errors.vendorId}</FormHelperText> */}
                   </FormControl>

@@ -168,11 +168,7 @@ const Contact = () => {
   return (
     <>
       <AddContact open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
-      <Container>
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-          <Typography variant="h4">Favorite Contact </Typography>
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
-        </Stack> */}
+      <Container> 
         <Box
           sx={{
             backgroundColor: 'white',

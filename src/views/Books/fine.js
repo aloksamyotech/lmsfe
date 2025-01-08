@@ -236,43 +236,6 @@ const FinePerDay = () => {
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
-      {/* <Box
-        sx={{
-          backgroundColor: 'white',
-          padding: '10px 20px',
-          borderRadius: '8px',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          height: '120px',
-          marginBottom: '-18px'
-        }}
-      >
-        <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-          <Grid item xs={12} sm={4} md={4}>
-            <FormLabel>Student</FormLabel>
-            <FormControl fullWidth>
-              <Select id="studentId" name="studentId" value={formik.values.studentId} onChange={handleStudentChange}>
-                {allData.map((item) => (
-                  <MenuItem key={item._id} value={item._id}>
-                    {item.student_Name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={4} md={4}>
-            <FormLabel>Email</FormLabel>
-            <FormControl fullWidth>
-              <Select id="email" name="email" value={formik.values.email} disabled onChange={formik.handleChange}>
-                {allData.map((item) => (
-                  <MenuItem key={item._id} value={item.email}>
-                    {item.email}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-      </Box> */}
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
 
       <Box
@@ -301,8 +264,7 @@ const FinePerDay = () => {
             />
           </Card>
         </Box>
-      </TableStyle>
-      {/* </Grid> */}
+      </TableStyle> 
     </Container>
   );
 };

@@ -144,10 +144,6 @@ const AddAllotment = (props) => {
       toast.error('This book has already been added.');
       return;
     }
-    // if (!bookId || !submissionDate || !bookIssueDate || !paymentType) {
-    //   toast.error('Book details addition failed!!! Please Add Book');
-    //   return;
-    // }
     const bookData = {
       studentId,
       bookId: bookId?._id,
@@ -181,22 +177,6 @@ const AddAllotment = (props) => {
           <form onSubmit={formik.handleSubmit}>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-                {/* <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 2 }}>
-                  <FormLabel>Student</FormLabel>
-                  <FormControl fullWidth error={formik.touched.studentId && Boolean(formik.errors.studentId)}>
-                    <Select id="studentId" name="studentId" value={formik.values.studentId} onChange={handleStudentChange}>
-                      {allData.map((item) => (
-                        <MenuItem key={item._id} value={item._id}>
-                          {item.student_Name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText>{formik.touched.studentId && formik.errors.studentId}</FormHelperText>
-                    <FormLabel style={{ color: bookNumber == 5 ? 'red' : 'inherit' }}>
-                      {bookNumber == 5 ? `You Have Already Booked ${bookNumber} books` : null}
-                    </FormLabel>
-                  </FormControl>
-                </Grid> */}
                 <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 2 }}>
                   <FormLabel>Student</FormLabel>
                   <FormControl fullWidth error={formik.touched.studentId && Boolean(formik.errors.studentId)}>
@@ -205,11 +185,10 @@ const AddAllotment = (props) => {
                       name="studentId"
                       value={formik.values.studentId ? allData.find((student) => student._id === formik.values.studentId) : null}
                       onChange={(event, newValue) => {
-                        // When a student is selected, update the formik values for studentId
                         if (newValue) {
-                          formik.setFieldValue('studentId', newValue._id); // ensure you set the student ID correctly
+                          formik.setFieldValue('studentId', newValue._id);
                         } else {
-                          formik.setFieldValue('studentId', ''); // clear the studentId when no student is selected
+                          formik.setFieldValue('studentId', '');
                         }
                       }}
                       options={allData}
@@ -228,38 +207,18 @@ const AddAllotment = (props) => {
                   variant="outlined"
                   color="primary"
                   style={{ marginLeft: '50px', marginTop: '50px', height: '40px' }}
-                  disabled={!formik.isValid || !formik.dirty || bookNumber >= 5}
+                  disabled={!formik.values.bookId || !formik.values.paymentType || !formik.values.submissionDate || bookNumber >= 5}
                   onClick={handleAddBookClick}
                 >
                   Add Book
                 </Button>
+
                 <Grid
                   container
                   spacing={1}
                   style={{ border: '1px solid #ddd', padding: '10px', borderRadius: '5px', marginLeft: '20px', marginTop: '15px' }}
                 >
                   <Grid container>
-                    {/* <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
-                      {' '}
-                      <FormLabel>Book</FormLabel>
-                      <FormControl fullWidth error={formik.touched.bookId && Boolean(formik.errors.bookId)}>
-                        <Select
-                          id="bookId"
-                          name="bookId"
-                          value={formik.values.bookId}
-                          onChange={formik.handleChange}
-                          disabled={borrowedBooksCount >= 5}
-                        >
-                          {bookData.map((item) => (
-                            <MenuItem key={item._id} value={item._id}>
-                              {item.bookName}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        <FormHelperText>{formik.touched.bookId && formik.errors.bookId}</FormHelperText>
-                      </FormControl>
-                    </Grid> */}
-
                     <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 6 }}>
                       <FormLabel>Book</FormLabel>
                       <FormControl fullWidth error={formik.touched.bookId && Boolean(formik.errors.bookId)}>
@@ -402,7 +361,7 @@ const AddAllotment = (props) => {
               </Grid>
             </Grid>
             <DialogActions sx={{ ml: '40px' }}>
-              <Button type="submit" variant="contained" color="primary">
+              <Button type="submit" variant="contained" color="primary" disabled={addBook.length === 0}>
                 Save
               </Button>
               <Button

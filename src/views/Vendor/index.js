@@ -158,15 +158,7 @@ const PolicyManagement = () => {
   return (
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
-      <Container>
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-          <Typography variant="h4">Vendor Management</Typography>
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Add New Vendor
-            </Button>
-          </Stack>
-        </Stack> */}
+      <Container> 
         <Box
           sx={{
             backgroundColor: 'white',
@@ -230,20 +222,7 @@ const PolicyManagement = () => {
                 fullWidth
                 margin="normal"
               />
-              {/* <TextField
-                label="Email"
-                value={editData.email}
-                onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
-              {/* <TextField
-                label="City Name"
-                value={editData.cityName}
-                onChange={(e) => setEditData({ ...editData, cityName: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
+              
               <TextField
                 label="Phone Number"
                 value={editData.phoneNumber}

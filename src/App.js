@@ -1,38 +1,3 @@
-// import { useSelector } from 'react-redux';
-
-// import { ThemeProvider } from '@mui/material/styles';
-// import { CssBaseline, StyledEngineProvider } from '@mui/material';
-// import { ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-
-// routing
-// import Routes from 'routes';
-
-// defaultTheme
-// import themes from 'themes';
-// project imports
-// import NavigationScroll from 'layout/NavigationScroll';
-
-// ==============================|| APP ||============================== //
-
-// const App = () => {
-//   const customization = useSelector((state) => state.customization);
-
-//   return (
-//     <StyledEngineProvider injectFirst>
-//       <ThemeProvider theme={themes(customization)}>
-//         <CssBaseline />
-//         <ToastContainer />
-//         <NavigationScroll>
-//           <Routes />
-//         </NavigationScroll>
-//       </ThemeProvider>
-//     </StyledEngineProvider>
-//   );
-// };
-
-// export default App;
-
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
@@ -41,9 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { Bars } from 'react-loader-spinner';
-import { CirclesWithBar } from 'react-loader-spinner';
-// import ReactLoaderSpinner from 'react-loader-spinner';
-// import { TailSpin } from 'react-loader-spinner';
+import { CirclesWithBar } from 'react-loader-spinner'; 
 
 import Routes from 'routes';
 import themes from 'themes';

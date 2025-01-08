@@ -213,24 +213,7 @@ const ReceiveBook = () => {
         console.error('Error fetching Receive Book', error);
       }
     };
-
-    // const fetchStudents = async () => {
-    //   try {
-    //     const response = await axios.get('http://localhost:4300/user/registerManagement');
-
-    //     setAllData(response?.data?.RegisterManagement);
-    //     console.log('response', response?.data?.RegisterManagement?.[0]._id);
-    //     const modifiedData = response?.data?.RegisterManagement?.map((item) => {
-    //       console.log('response Amit01', item._id);
-    //       return item;
-    //     });
-
-    //     setAllData(modifiedData);
-    //   } catch (error) {
-    //     console.error('Error fetching students:', error);
-    //   }
-    // };
-
+ 
     const fetchStudents = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/registerManagement');
@@ -277,43 +260,7 @@ const ReceiveBook = () => {
         console.error('Error fetching Receive Book', error);
       }
     };
-
-    // const BookAllotments = async () => {
-    //   try {
-    //     const response = await axios.get('http://localhost:4300/user/allotmentManagement');
-    //     // setBookAllotments(response.data);
-    //     const studentIds = response?.data?.map((item) => item.studentId);
-
-    //     console.log('response Amit---:', studentIds);
-    //   } catch (error) {
-    //     console.error('Error fetching Allotment Books', error);
-    //   }
-    // };
-
-    // const filterData = async () => {
-    //   try {
-    //     const students = await fetchStudents();
-    //     const studentIds = await BookAllotments();
-
-    //     const matchedStudents = students.filter((student) => studentIds.includes(student._id));
-
-    //     console.log('Matched Students:', matchedStudents);
-
-    //     setMatchedStudents(matchedStudents);
-    //   } catch (error) {
-    //     console.error('Error filtering data:', error);
-    //   }
-    // };
-    // const BookAllotments = async () => {
-    //   try {
-    //     const response = await axios.get('http://localhost:4300/user/allotmentManagement');
-    //     // setBookAllotments(response.data);
-    //     console.log('response Amit---', response?.data?.[0].studentId);
-    //   } catch (error) {
-    //     console.error('Error fetching Allotment Books', error);
-    //   }
-    // };
-
+ 
     filterData();
     fetchStudents();
     fetchSubscription();
@@ -394,8 +341,7 @@ const ReceiveBook = () => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
   };
 
-  const handleFineSubmit = async () => {
-    // console.log(`formik.values.bookId`, formik.values.bookId[0]);
+  const handleFineSubmit = async () => { 
     const idBook = formik.values.bookId[0];
     try {
       const data = {

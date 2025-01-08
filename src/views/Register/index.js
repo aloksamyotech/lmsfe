@@ -18,9 +18,7 @@ const Call = () => {
   const [editData, setEditData] = useState(null);
   const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
   const [excelData, setExcelData] = useState();
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  // const [openFavoriteDialog, setOpenFavoriteDialog] = useState(false);
-  // const [favoriteStudent, setFavoriteStudent] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); 
   const [bookToDelete, setBookToDelete] = useState(null);
 
   const XLSX = require('xlsx');
@@ -262,16 +260,11 @@ const Call = () => {
   };
   const handleBulkUpload = async () => {
     try {
-      // if (!excelData) {
-      //   alert('No data to upload');
-      //   return;
-      // }
+       
       console.log('excelData>>>>>>>>', excelData);
 
       const response = await axios.post('http://localhost:4300/user/registerMany', excelData);
-      console.log(`response------>>>`, response);
-
-      // alert(response.data.message);
+      console.log(`response------>>>`, response); 
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');

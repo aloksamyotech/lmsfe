@@ -80,10 +80,7 @@ const PurchaseBook = () => {
       headerName: 'Action',
       flex: 1,
       renderCell: (params) => (
-        <div>
-          {/* <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
-            <EditIcon />
-          </Button> */}
+        <div> 
 
           <Button color="secondary" onClick={() => handleDelete(params?.row)} style={{ margin: '-9px' }}>
             <DeleteIcon />
@@ -101,11 +98,9 @@ const PurchaseBook = () => {
       console.log('response-----===', response);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
-        id: item._id,
-        // bookId: item.bookId?.bookName,
+        id: item._id, 
         bookName: item.bookName,
-        vendorId: item.vendorId,
-        // publisherId: item.publisherId,
+        vendorId: item.vendorId, 
         price: item.price,
         quantity: item.quantity
       }));
@@ -141,8 +136,7 @@ const PurchaseBook = () => {
       fetchData();
     } catch (error) {
       console.error('Error updating book:', error);
-    }
-    // fetchData();
+    } 
   };
 
   const handleInvoice = (row) => {
