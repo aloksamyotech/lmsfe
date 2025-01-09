@@ -11,9 +11,9 @@ import PhoneIcon from '@mui/icons-material/Phone';
 const moment = require('moment');
 
 import EmailIcon from '@mui/icons-material/Email';
-import IconButton from '@mui/material/IconButton'; // Import IconButton
-import VisibilityIcon from '@mui/icons-material/Visibility'; // Import VisibilityIcon
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'; // Import VisibilityOffIcon
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const ViewBookAllotment = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -29,13 +29,11 @@ const ViewBookAllotment = () => {
   const [submissionDate, setSubmissionDate] = useState([]);
   const [amount, setAmount] = useState([]);
 
-  // Initial profile data
   const [profile, setProfile] = useState({
     student_Name: '',
     email: '',
     mobile_Number: '',
     register_Date: ''
-    // address: ''
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,7 +45,6 @@ const ViewBookAllotment = () => {
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    // console.log('Breadcrumb clicked');
   };
 
   const handleOpenAdd = () => setOpenAdd(true);
@@ -59,7 +56,6 @@ const ViewBookAllotment = () => {
 
   useEffect(() => {
     const url = window.location.href;
-    // console.log('Current Url', url);
     setCurrentUrl(url);
 
     const parts = url.split('/');
@@ -69,11 +65,11 @@ const ViewBookAllotment = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        // const response = await axios.get(`http://localhost:4300/user/getBookAllotmentById/${extractedId}`);
-
         const response = await axios.get(`http://localhost:4300/user/getBookDetailHistoryStudentId/${extractedId}`);
 
         console.log(`response---from all history api-->>>>`, response?.data?.allotmentDetails[0]?.bookDetails?.bookName);
+
+        console.log(`response----->>>>`, response?.data);
 
         const student_Name = response?.data?.studentDetails?.student_Name;
         const mobile_Number = response?.data?.studentDetails?.mobile_Number;
@@ -87,8 +83,6 @@ const ViewBookAllotment = () => {
         const title = response?.data?.allotmentDetails[0]?.bookDetails?.title;
         const bookIssueDate = response?.data?.allotmentDetails[0]?.bookDetails?.bookIssueDate;
         const submissionDate = response?.data?.allotmentDetails[0]?.bookDetails?.submissionDate;
-
-        // const amount = response?.data[0].paymentType[0].amount;
 
         setAllData(response?.data?.studentDetails);
         setAllbookData(response?.data?.allotmentDetails);
@@ -109,7 +103,6 @@ const ViewBookAllotment = () => {
       sendIdToBackend();
     }
   }, []);
-  console.log(`allbookData---->>>>>>>>>>`, allbookData);
 
   return (
     <>
@@ -140,7 +133,6 @@ const ViewBookAllotment = () => {
       <Box p={3}>
         <Card>
           <CardContent>
-            {/* Tabs Section */}
             <Box display="flex" justifyContent="space-between" mb={2}>
               <Box display="flex" gap={4}>
                 <Typography variant="button" color="primary">
@@ -165,10 +157,8 @@ const ViewBookAllotment = () => {
                 </Stack>
               </Stack>
             </Box>
-            {/* </CardContent> */}
-            {/* </Card> */}
             <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
-            {/* Grid for Cards */}
+
             <Grid container spacing={3}>
               {allbookData?.map((bookDetails, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
@@ -198,7 +188,7 @@ const ViewBookAllotment = () => {
                         <Grid container sx={{ marginTop: '10px' }}>
                           <Grid item xs={8}>
                             <Typography sx={{ fontSize: '10px', marginTop: '3px' }}>
-                              <strong>Amount -: </strong> {bookDetails?.paymentDetails?.amount || 'Loading...'}
+                              <strong>Amount -: </strong> {bookDetails?.amount || 'Loading...'}
                             </Typography>
                           </Grid>
                         </Grid>
@@ -207,7 +197,8 @@ const ViewBookAllotment = () => {
                       </Grid>
                       <Grid item xs={12}>
                         <Typography sx={{ color: '#2A2A2A', fontWeight: '500' }}>
-                          <strong>Submission Date -: </strong> {moment(bookDetails?.bookDetails?.submissionDate).format('DD-MM-YYYY') || 'Loading...'}
+                          <strong>Submission Date -: </strong>{' '}
+                          {moment(bookDetails?.bookDetails?.submissionDate).format('DD-MM-YYYY') || 'Loading...'}
                         </Typography>
                       </Grid>
                     </Grid>

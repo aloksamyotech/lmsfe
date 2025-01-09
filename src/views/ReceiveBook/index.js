@@ -213,7 +213,7 @@ const ReceiveBook = () => {
         console.error('Error fetching Receive Book', error);
       }
     };
- 
+
     const fetchStudents = async () => {
       try {
         const response = await axios.get('http://localhost:4300/user/registerManagement');
@@ -260,7 +260,7 @@ const ReceiveBook = () => {
         console.error('Error fetching Receive Book', error);
       }
     };
- 
+
     filterData();
     fetchStudents();
     fetchSubscription();
@@ -341,7 +341,7 @@ const ReceiveBook = () => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
   };
 
-  const handleFineSubmit = async () => { 
+  const handleFineSubmit = async () => {
     const idBook = formik.values.bookId[0];
     try {
       const data = {
@@ -386,6 +386,9 @@ const ReceiveBook = () => {
 
     toast.success('Book submitted successfully');
   };
+
+  const isSubmitDisabled = !amount || !reason || amountError || reasonError;
+
   return (
     <Container>
       <Box
@@ -540,6 +543,7 @@ const ReceiveBook = () => {
                       error={amountError}
                       helperText={amountHelperText}
                       sx={{ marginBottom: 2 }}
+                      inputProps={{ maxLength: 3 }}
                     />
                     <TextField
                       label="Reason"
@@ -556,7 +560,7 @@ const ReceiveBook = () => {
                     <Button onClick={handleClose} color="primary">
                       Cancel
                     </Button>
-                    <Button onClick={handleSubmit} color="primary">
+                    <Button onClick={handleSubmit} color="primary" disabled={isSubmitDisabled}>
                       Submit
                     </Button>
                   </DialogActions>

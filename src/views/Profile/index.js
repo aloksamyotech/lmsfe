@@ -18,7 +18,6 @@ import {
 import HomeIcon from '@mui/icons-material/Home';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
 const formatDate = (date: string) => {
   const d = new Date(date);
   const day = d.getDate().toString().padStart(2, '0');
@@ -26,7 +25,6 @@ const formatDate = (date: string) => {
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 };
-
 const View = () => {
   const [formData, setFormData] = useState({
     student_Name: '',
@@ -36,7 +34,6 @@ const View = () => {
     select_identity: '',
     logo: null
   });
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -44,7 +41,6 @@ const View = () => {
       [name]: value
     }));
   };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setFormData((prev) => ({
@@ -55,7 +51,6 @@ const View = () => {
   function refreshPage() {
     window.location.reload();
   }
-
   const handleSaveEdit = async () => {
     try {
       console.log('Data>>>>>>>>>>>>>>>>>> @123');
@@ -69,7 +64,6 @@ const View = () => {
       if (formData.logo) {
         formDataToSend.append('logo', formData.logo);
       }
-
       const response = await axios.put(`http://localhost:4300/user/editProfilePage/${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
@@ -83,16 +77,13 @@ const View = () => {
     }
     // fetchData();
   };
-
   const [studentId, setStudentId] = useState(null);
   const [data, setData] = useState([]);
-
   useEffect(() => {
     const url = window.location.href;
     const parts = url.split('/');
     const extractedId = parts[parts.length - 1];
     setStudentId(extractedId);
-
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(`http://localhost:4300/user/profilePage`);
@@ -112,12 +103,10 @@ const View = () => {
         console.error('Error fetching profile data:', error);
       }
     };
-
     if (extractedId) {
       fetchProfileData();
     }
   }, []);
-
   return (
     <>
       <Box
@@ -136,7 +125,7 @@ const View = () => {
       >
         <Breadcrumbs aria-label="breadcrumb">
           <Link href="/" underline="hover" color="inherit">
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+            <HomeIcon sx={{ mr: 0.5, color: '#6A1B9A' }} />
           </Link>
           <Link href="/account-profile" underline="hover" color="inherit">
             <h4> Account Profile</h4>
@@ -161,7 +150,6 @@ const View = () => {
         >
           <Avatar src={formData.logo ? formData.logo : 'profile.logoUrl'} alt="Profile" sx={{ width: 100, height: 100, mb: 2 }} />
           <Typography variant="caption" color="textSecondary"></Typography>
-
           <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={6}>
               <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} />
@@ -184,7 +172,6 @@ const View = () => {
                 onChange={handleChange}
               />
             </Grid>
-
             <Grid item xs={6}>
               <FormControl fullWidth>
                 <TextField
@@ -205,7 +192,6 @@ const View = () => {
               </FormControl>
             </Grid>
           </Grid>
-
           <Button variant="contained" color="primary" onClick={handleSaveEdit} sx={{ mt: 3 }}>
             Update
           </Button>
@@ -214,5 +200,4 @@ const View = () => {
     </>
   );
 };
-
 export default View;

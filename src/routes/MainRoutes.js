@@ -14,6 +14,7 @@ import StudentInvoice from 'views/view/invoiceStudent';
 import ReceiveInvoice from 'views/view/receiveInvoiice';
 import PurchaseInvoice from 'views/purchaseBook/purchaseInvoice';
 import ImageGallery from 'views/Card/openImage';
+import PrivateRoutes from './PrivateRoute';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -40,6 +41,10 @@ const MainRoutes = {
   path: '/',
   element: <MainLayout />,
   children: [
+    // {
+    // path: '/',
+    // element: <PrivateRoutes />,
+    // children: [
     {
       path: '/',
       element: <DashboardDefault />
@@ -254,15 +259,7 @@ const MainRoutes = {
         }
       ]
     },
-    // {
-    //   path: 'dashboard',
-    //   children: [
-    //     {
-    //       path: 'subscription',
-    //       element: <SubscriptionPage />
-    //     }
-    //   ]
-    // },
+
     {
       path: 'dashboard',
       children: [
@@ -281,6 +278,8 @@ const MainRoutes = {
         }
       ]
     }
+    // ]
+    // }
   ]
 };
 
