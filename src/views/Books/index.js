@@ -137,7 +137,7 @@ const Lead = () => {
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
-       toast.success('Book details Edit successfully');
+      toast.success('Book details Edit successfully');
     } catch (error) {
       console.error('Error updating book:', error);
     }
@@ -157,7 +157,7 @@ const Lead = () => {
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);
-       toast.success('Book details Deleted successfully');
+      toast.success('Book details Deleted successfully');
     } catch (error) {
       console.error('Error deleting book:', error);
       setOpenDeleteDialog(false);
@@ -191,10 +191,10 @@ const Lead = () => {
       if (!excelData || excelData.length === 0) {
         alert('No data to upload');
         return;
-      } 
- 
+      }
+
       console.log('formData>>>>>>', excelData);
-      const response = await axios.post('http://localhost:4300/user/addManyBooks', excelData); 
+      const response = await axios.post('http://localhost:4300/user/addManyBooks', excelData);
       alert(response.data.message);
     } catch (error) {
       console.error('Error uploading data:', error);
@@ -206,7 +206,7 @@ const Lead = () => {
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
-        <Box
+        {/* <Box
           sx={{
             backgroundColor: 'white',
             padding: '10px 20px',
@@ -236,7 +236,52 @@ const Lead = () => {
               Add New Book
             </Button>
           </Stack>
+        </Box> */}
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            padding: '10px 20px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            height: '50px',
+            justifyContent: 'space-between',
+            marginBottom: '-18px'
+          }}
+        >
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
+              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+            </Link>
+            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
+              <h4>Books Management</h4>
+            </Link>
+          </Breadcrumbs>
+
+          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
+              Bulk Upload
+            </Button>
+
+            <Button
+              variant="outlined"
+              startIcon={<Iconify icon="eva:file-download-fill" />}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = '/BookFile.xlsx';
+                link.download = 'SampleFile.xlsx';
+                link.click();
+              }}
+            >
+              Download Sample File
+            </Button>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+              Add New Book
+            </Button>
+          </Stack>
         </Box>
+
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
