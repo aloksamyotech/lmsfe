@@ -41,245 +41,245 @@ const MainRoutes = {
   path: '/',
   element: <MainLayout />,
   children: [
-    // {
-    // path: '/',
-    // element: <PrivateRoutes />,
-    // children: [
     {
       path: '/',
-      element: <DashboardDefault />
-    },
-    {
-      path: 'dashboard',
+      element: <PrivateRoutes />,
       children: [
         {
-          path: 'default',
+          path: '/',
           element: <DashboardDefault />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+        },
         {
-          path: 'lead',
-          element: <LeadManagement />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'default',
+              element: <DashboardDefault />
+            }
+          ]
+        },
         {
-          path: 'receive',
-          element: <ReceiveBook />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'lead',
+              element: <LeadManagement />
+            }
+          ]
+        },
         {
-          path: 'fine',
-          element: <FinePerDay />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'receive',
+              element: <ReceiveBook />
+            }
+          ]
+        },
         {
-          path: 'bookAllotment',
-          element: <BookAlloment />
-        }
-      ]
-    },
+          path: 'dashboard',
+          children: [
+            {
+              path: 'fine',
+              element: <FinePerDay />
+            }
+          ]
+        },
+        {
+          path: 'dashboard',
+          children: [
+            {
+              path: 'bookAllotment',
+              element: <BookAlloment />
+            }
+          ]
+        },
 
-    {
-      path: 'dashboard',
-      children: [
         {
-          path: 'contact',
-          element: <ContactManagement />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'contact',
+              element: <ContactManagement />
+            }
+          ]
+        },
         {
-          path: 'purchase',
-          element: <PurchaseBook />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'purchase',
+              element: <PurchaseBook />
+            }
+          ]
+        },
         {
-          path: 'call',
-          element: <Call />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'call',
+              element: <Call />
+            }
+          ]
+        },
         {
-          path: 'policy',
-          element: <Policy />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'policy',
+              element: <Policy />
+            }
+          ]
+        },
         {
-          path: 'policy',
-          element: <Policy />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'policy',
+              element: <Policy />
+            }
+          ]
+        },
         {
-          path: 'task',
-          element: <Task />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'task',
+              element: <Task />
+            }
+          ]
+        },
         {
-          path: 'email',
-          element: <Email />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'email',
+              element: <Email />
+            }
+          ]
+        },
         {
-          path: 'meeting',
-          element: <Metting />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'meeting',
+              element: <Metting />
+            }
+          ]
+        },
         {
-          path: 'calender',
-          element: <Calender />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'calender',
+              element: <Calender />
+            }
+          ]
+        },
         {
-          path: 'view/:id',
-          element: <View />
-        }
-      ]
-    },
+          path: 'dashboard',
+          children: [
+            {
+              path: 'view/:id',
+              element: <View />
+            }
+          ]
+        },
 
-    {
-      path: 'dashboard',
-      children: [
         {
-          path: 'invoice/:id',
-          element: <StudentInvoice />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'invoice/:id',
+              element: <StudentInvoice />
+            }
+          ]
+        },
         {
-          path: 'receiveInvoice/:id',
-          element: <ReceiveInvoice />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'receiveInvoice/:id',
+              element: <ReceiveInvoice />
+            }
+          ]
+        },
         {
-          path: 'purchaseInvoice/:id',
-          element: <PurchaseInvoice />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'purchaseInvoice/:id',
+              element: <PurchaseInvoice />
+            }
+          ]
+        },
         {
-          path: 'viewBookAllotment/:id',
-          element: <ViewBookAllotment />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'viewBookAllotment/:id',
+              element: <ViewBookAllotment />
+            }
+          ]
+        },
         {
-          path: 'imageGallery/:id',
-          element: <ImageGallery />
-        }
-      ]
-    },
+          path: 'dashboard',
+          children: [
+            {
+              path: 'imageGallery/:id',
+              element: <ImageGallery />
+            }
+          ]
+        },
 
-    {
-      path: 'dashboard',
-      children: [
         {
-          path: 'document',
-          element: <Document />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'document',
+              element: <Document />
+            }
+          ]
+        },
         {
-          path: 'emailtemplate',
-          element: <EmailTemplates />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'emailtemplate',
+              element: <EmailTemplates />
+            }
+          ]
+        },
         {
-          path: 'emailtemplate/addTemplates',
-          element: <AddTemplates />
-        }
-      ]
-    },
+          path: 'dashboard',
+          children: [
+            {
+              path: 'emailtemplate/addTemplates',
+              element: <AddTemplates />
+            }
+          ]
+        },
 
-    {
-      path: 'dashboard',
-      children: [
         {
-          path: 'subscriptionType',
-          element: <SubscriptionType />
-        }
-      ]
-    },
-    {
-      path: 'dashboard',
-      children: [
+          path: 'dashboard',
+          children: [
+            {
+              path: 'subscriptionType',
+              element: <SubscriptionType />
+            }
+          ]
+        },
         {
-          path: 'profile',
-          element: <Profile />
+          path: 'dashboard',
+          children: [
+            {
+              path: 'profile',
+              element: <Profile />
+            }
+          ]
         }
       ]
     }
-    // ]
-    // }
   ]
 };
 

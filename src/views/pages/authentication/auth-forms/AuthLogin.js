@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -20,22 +18,15 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
-
-// third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-
-// project imports
 import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-
-// assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
 import Google from 'assets/images/icons/social-google.svg';
-
-// ============================|| FIREBASE - LOGIN ||============================ //
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
@@ -43,10 +34,6 @@ const FirebaseLogin = ({ ...others }) => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
   const customization = useSelector((state) => state.customization);
   const [checked, setChecked] = useState(true);
-
-  const googleHandler = async () => {
-    console.error('Login');
-  };
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
@@ -59,69 +46,10 @@ const FirebaseLogin = ({ ...others }) => {
 
   return (
     <>
-      <Grid container direction="column" justifyContent="center" spacing={2}>
-        <Grid item xs={12}>
-          <AnimateButton>
-            <Button
-              disableElevation
-              fullWidth
-              onClick={googleHandler}
-              size="large"
-              variant="outlined"
-              sx={{
-                color: 'grey.700',
-                backgroundColor: theme.palette.grey[50],
-                borderColor: theme.palette.grey[100]
-              }}
-            >
-              <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
-              </Box>
-              Sign in with Google
-            </Button>
-          </AnimateButton>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex'
-            }}
-          >
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-
-            <Button
-              variant="outlined"
-              sx={{
-                cursor: 'unset',
-                m: 2,
-                py: 0.5,
-                px: 7,
-                borderColor: `${theme.palette.grey[100]} !important`,
-                color: `${theme.palette.grey[900]}!important`,
-                fontWeight: 500,
-                borderRadius: `${customization.borderRadius}px`
-              }}
-              disableRipple
-              disabled
-            >
-              OR
-            </Button>
-
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-          </Box>
-        </Grid>
-        <Grid item xs={12} container alignItems="center" justifyContent="center">
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1">Sign in with Email address</Typography>
-          </Box>
-        </Grid>
-      </Grid>
-
       <Formik
         initialValues={{
-          email: 'info@codedthemes.com',
-          password: '123456',
+          email: '',
+          password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -129,6 +57,33 @@ const FirebaseLogin = ({ ...others }) => {
           password: Yup.string().max(255).required('Password is required')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+          try {
+            const response = await axios.post('http://localhost:4300/user/login', values);
+
+            if (response?.status === 200) {
+              console.log('Response:', response?.data?.message);
+
+              if (response?.data?.message === 'Password Not Match') {
+                toast.warn('Enter Correct Password');
+              } else if (response?.data?.message === 'not found') {
+                toast.error('User not Found');
+              } else if (response?.data?.userToken) {
+                toast.success('Login Successfully');
+                const loginToken = response?.data?.userToken;
+                localStorage.setItem('loginToken', loginToken);
+
+                setTimeout(() => {
+                  window.location.replace('/dashboard/default');
+                }, 1000);
+              }
+            } else {
+              toast.error('Unexpected response status');
+            }
+          } catch (error) {
+            console.error('Error submitting form:', error);
+            toast.error('An error occurred, please try again');
+          }
+
           try {
             if (scriptedRef.current) {
               setStatus({ success: true });
@@ -203,9 +158,6 @@ const FirebaseLogin = ({ ...others }) => {
                 }
                 label="Remember me"
               />
-              <Typography variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
-                Forgot Password?
-              </Typography>
             </Stack>
             {errors.submit && (
               <Box sx={{ mt: 3 }}>
