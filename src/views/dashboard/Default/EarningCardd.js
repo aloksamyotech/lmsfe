@@ -18,7 +18,7 @@ import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import GroupAddIcon from '@mui/icons-material/GroupAdd'; // Import GroupAddIcon
+import GroupAddIcon from '@mui/icons-material/GroupAdd';  
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.dark,
@@ -78,7 +78,7 @@ const EarningCardd = ({ isLoading }) => {
         <SkeletonEarningCard />
       ) : (
         <CardWrapper border={false} content={false}>
-          <Box sx={{ p: 2.25 }}>
+          <Box sx={{ p: 1.45 }}>
             <Grid container direction="column">
               <Grid item>
                 <Grid container justifyContent="space-between">

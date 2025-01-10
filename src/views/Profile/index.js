@@ -86,7 +86,7 @@ const View = () => {
     setStudentId(extractedId);
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4300/user/adminProfilePage`);
+        const response = await axios.get(`http://64.227.130.216:4300/user/adminProfilePage`);
 
         if (response.data.status) {
           const formattedDate = formatDate(response.data.students[0].register_Date);

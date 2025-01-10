@@ -37,14 +37,18 @@ const ProfileCard = ({ name, role, status, img }) => {
         borderRadius: 2,
         overflow: 'hidden',
         boxShadow: 3,
-        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', // smooth transition for zoom effect
+        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
         '&:hover': {
-          transform: 'scale(1.05)', // zoom in the card on hover
-          boxShadow: 6 // increase shadow on hover
+          transform: 'scale(1.05)', 
+          boxShadow: 6
         }
       }}
     >
-      <CardMedia component="img" height="250" image={img} alt={`${name} background`} />
+      <CardMedia component="img"
+        height="250"
+        image={img}
+        alt={`${name} background`}
+        style={{ objectFit: 'contain' }} />
       <CardContent sx={{ textAlign: 'center' }}>
         <Typography variant="h6" component="div">
           {name}
