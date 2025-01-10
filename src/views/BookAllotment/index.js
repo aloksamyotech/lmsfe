@@ -118,7 +118,7 @@ const Allotment = () => {
   const fetchData = async () => {
     try {
       console.log('Api Start........'); 
-      const response = await axios.get('http://localhost:4300/user/getBookAllotmentHistory');
+      const response = await axios.get('http://64.227.130.216:4300/user/getBookAllotmentHistory');
       console.log('response--------->>>>>>>>>>>>', response?.data);
 
       const fetchedData = response?.data?.histories.map((item) => ({
@@ -148,7 +148,7 @@ const Allotment = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editBookAllotment/${editData.id}`, editData);
+      const response = await axios.put(`http://64.227.130.216:4300/user/editBookAllotment/${editData.id}`, editData);
       console.log('Data', response);
 
       const updatedBook = response.data;
@@ -167,7 +167,7 @@ const Allotment = () => {
   const confirmDelete = async () => {
     try {
       console.log('delete API...');
-      await axios.delete(`http://localhost:4300/user/deleteAllotmentBook/${bookToDelete}`);
+      await axios.delete(`http://64.227.130.216:4300/user/deleteAllotmentBook/${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);

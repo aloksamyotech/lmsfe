@@ -54,7 +54,7 @@ const AddContact = (props) => {
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        const response = await axios.post('http://localhost:4300/user/addContact', values);
+        const response = await axios.post('http://64.227.130.216:4300/user/addContact', values);
         console.log('Form submitted successfully:', response);
         toast.success('Contact added successfully');
         fetchData();

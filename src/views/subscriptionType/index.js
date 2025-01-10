@@ -89,7 +89,7 @@ const SubscriptType = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+      const response = await axios.get('http://64.227.130.216:4300/user/getSubscriptionType');
       console.log('response>>>>>>>>>', response);
 
       const fetchedData = response?.data?.SubscriptionType?.map((item) => ({
@@ -118,7 +118,7 @@ const SubscriptType = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editSubscriptionType/${editData.id}`, editData);
+      const response = await axios.put(`http://64.227.130.216:4300/user/editSubscriptionType/${editData.id}`, editData);
       console.log('Data', response);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
@@ -140,7 +140,7 @@ const SubscriptType = () => {
     try {
       console.log('delete API...');
 
-      await axios.delete(`http://localhost:4300/user/deleteSubscriptionType/${bookToDelete}`);
+      await axios.delete(`http://64.227.130.216:4300/user/deleteSubscriptionType/${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);

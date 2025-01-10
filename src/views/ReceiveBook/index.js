@@ -175,7 +175,7 @@ const ReceiveBook = () => {
   useEffect(() => {
     const getAllSubmitBookDetails = async () => {
       try {
-        const submitResponse = await axios.get(`http://localhost:4300/user/getAllSubmitBookDetails`);
+        const submitResponse = await axios.get(`http://64.227.130.216:4300/user/getAllSubmitBookDetails`);
         console.log(`submitResponse`, submitResponse);
 
         const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
@@ -198,7 +198,7 @@ const ReceiveBook = () => {
 
     const fetchSubscription = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+        const response = await axios.get('http://64.227.130.216:4300/user/getSubscriptionType');
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
@@ -207,7 +207,7 @@ const ReceiveBook = () => {
 
     const fetchReceiveBook = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/receiveBook');
+        const response = await axios.get('http://64.227.130.216:4300/user/receiveBook');
         setFetchReceiveBook(response.data);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
@@ -216,7 +216,7 @@ const ReceiveBook = () => {
 
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/registerManagement');
+        const response = await axios.get('http://64.227.130.216:4300/user/registerManagement');
         setAllData(response?.data?.RegisterManagement);
         console.log('response', response?.data?.RegisterManagement?.[0]._id);
         const modifiedData = response?.data?.RegisterManagement?.map((item) => {
@@ -232,7 +232,7 @@ const ReceiveBook = () => {
 
     const BookAllotments = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/allotmentManagement');
+        const response = await axios.get('http://64.227.130.216:4300/user/allotmentManagement');
         const studentIds = response?.data?.map((item) => item.studentId);
         console.log('response Amit---:', studentIds);
 
@@ -254,7 +254,7 @@ const ReceiveBook = () => {
     };
     const NewReceiveBook = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getReceiveBook');
+        const response = await axios.get('http://64.227.130.216:4300/user/getReceiveBook');
         setFetchReceiveBook(response.data);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
@@ -277,7 +277,7 @@ const ReceiveBook = () => {
     },
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://localhost:4300/user/postReceiveBook', values);
+        const response = await axios.post('http://64.227.130.216:4300/user/postReceiveBook', values);
         toast.success('Details Book successfully');
         fetchData();
         handleClose();
@@ -304,7 +304,7 @@ const ReceiveBook = () => {
     }
 
     try {
-      const submitResponse = await axios.get(`http://localhost:4300/user/getSubmitBookDetails/${selectedStudentId}`);
+      const submitResponse = await axios.get(`http://64.227.130.216:4300/user/getSubmitBookDetails/${selectedStudentId}`);
       console.log(`submitResponse`, submitResponse);
 
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
@@ -353,7 +353,7 @@ const ReceiveBook = () => {
 
       console.log('values', data);
 
-      const response = await axios.post('http://localhost:4300/user/addFineBook', data);
+      const response = await axios.post('http://64.227.130.216:4300/user/addFineBook', data);
 
       toast.success('Fine Book successfully added');
     } catch (error) {
@@ -368,7 +368,7 @@ const ReceiveBook = () => {
 
     try {
       setLoading(true);
-      const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
+      const removeResponse = await axios.post(`http://64.227.130.216:4300/user/removeReceiveBook/${bookId}`);
       console.log('removeResponse', removeResponse);
 
       toast.success('Book removed successfully');
@@ -381,7 +381,7 @@ const ReceiveBook = () => {
       setLoading(false);
     }
 
-    const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
+    const submitResponse = await axios.post(`http://64.227.130.216:4300/user/submitBook/${bookId}`);
     console.log('submitResponse', submitResponse);
 
     toast.success('Book submitted successfully');

@@ -52,7 +52,7 @@ const AddPurchaseBook = (props) => {
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
       try {
-        const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
+        const response = await axios.post('http://64.227.130.216:4300/user/purchaseBook', values);
         console.log('Form submitted successfully>>>>>>>:', response);
         toast.success('Purchase Book added successfully');
         fetchData();
@@ -69,7 +69,7 @@ const AddPurchaseBook = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/bookManagement');
+        const response = await axios.get('http://64.227.130.216:4300/user/bookManagement');
         console.log('Fetched Book Data:', response.data);
         setBookData(response.data?.BookManagement);
       } catch (error) {
@@ -79,7 +79,7 @@ const AddPurchaseBook = (props) => {
 
     const fetchVendor = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/venderManagement');
+        const response = await axios.get('http://64.227.130.216:4300/user/venderManagement');
         console.log('Vendor Data:', response);
         setStudentData(response.data?.VenderManagement);
       } catch (error) {
@@ -89,7 +89,7 @@ const AddPurchaseBook = (props) => {
 
     const fetchPublisher = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getPublications');
+        const response = await axios.get('http://64.227.130.216:4300/user/getPublications');
         console.log('Publisher Data:', response);
         setPublisherData(response.data?.PublicationsManagement);
       } catch (error) {

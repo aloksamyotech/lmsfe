@@ -3,13 +3,13 @@ import axios from 'axios';
 import { Card, CardContent, CardMedia, Typography, Box, Grid } from '@mui/material';
 import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import defaultBook from "../Books/bookDummy.jpeg"
 
-// ProfileCard component to display each book's information
 const ProfileCard = ({ name, role, img, onClick }) => {
   return (
     <Card
       sx={{
-        width: '100%', // Full width of the grid column
+        width: '100%',
         marginTop: 4,
         borderRadius: 2,
         overflow: 'hidden',
@@ -20,12 +20,12 @@ const ProfileCard = ({ name, role, img, onClick }) => {
           boxShadow: 5
         }
       }}
-      onClick={onClick} // Add onClick event handler here
+      onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') onClick();
-      }} // Handle keyboard navigation
-      role="button" // This makes the card behave like a button for screen readers
-      tabIndex={0} // Ensures that the Card is focusable
+      }}
+      role="button"
+      tabIndex={0}
     >
       <CardMedia component="img" height="250" image={img} alt={`${name} background`} />
       <CardContent sx={{ textAlign: 'center' }}>
@@ -35,7 +35,6 @@ const ProfileCard = ({ name, role, img, onClick }) => {
         <Typography variant="body2" color="text.secondary">
           {role}
         </Typography>
-
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 2 }}>
           <Facebook sx={{ color: '#3b5998', cursor: 'pointer' }} />
           <Twitter sx={{ color: '#1da1f2', cursor: 'pointer' }} />
@@ -46,34 +45,30 @@ const ProfileCard = ({ name, role, img, onClick }) => {
   );
 };
 
-// Main App component
 const App = () => {
-  const [data, setData] = useState([]); // State to store fetched data
-  const navigate = useNavigate(); // Hook to navigate to different pages
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/bookManagement');
-      console.log('response <<<<<>>>>>>>> : ', response.data);
-
+      const response = await axios.get('http://64.227.130.216:4300/user/bookManagement');
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
-        name: item.bookName, // Assuming 'bookName' is the book's name
-        role: item.author, // Assuming 'author' is the author of the book
-        img: `http://localhost:4300/${item.upload_Book}` // Assuming 'upload_Book' is the image path
+        name: item.bookName,
+        role: item.author,
+        img: item.upload_Book ? `http://64.227.130.216:4300/${item.upload_Book}` : defaultBook,
       }));
-
-      setData(fetchedData); // Set the fetched data into state
+      
+      setData(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
   useEffect(() => {
-    fetchData(); // Fetch data when the component mounts
-  }, []); // Empty dependency array ensures it runs only once after the initial render
+    fetchData();
+  }, []);
 
-  // Handle card click and navigate to the image gallery
   const handleImage = (row) => {
     navigate(`/dashboard/imageGallery/${row.id}`, { state: { rowData: row } });
   };
@@ -81,12 +76,11 @@ const App = () => {
   return (
     <Box sx={{ padding: 2, marginTop: '-1%' }}>
       <Grid container spacing={4} justifyContent="center">
-        {/* Map through the data and create a ProfileCard for each item */}
         {data.map((profile, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <ProfileCard
-              {...profile} // Spread profile data to the ProfileCard
-              onClick={() => handleImage(profile)} // Pass the click handler
+              {...profile}
+              onClick={() => handleImage(profile)}
             />
           </Grid>
         ))}

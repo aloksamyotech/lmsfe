@@ -64,7 +64,7 @@ const View = () => {
       if (formData.logo) {
         formDataToSend.append('logo', formData.logo);
       }
-      const response = await axios.put(`http://localhost:4300/user/adminEditProfilePage/${formData.id}`, formDataToSend, {
+      const response = await axios.put(`http://64.227.130.216:4300/user/adminEditProfilePage/${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log('Data>>>>>>>>>>>>>>>>>>', response);
@@ -86,7 +86,7 @@ const View = () => {
     setStudentId(extractedId);
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4300/user/adminProfilePage`);
+        const response = await axios.get(`http://64.227.130.216:4300/user/adminProfilePage`);
 
         if (response.data.status) {
           const formattedDate = formatDate(response.data.students[0].register_Date);

@@ -11,32 +11,27 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { toast } from 'react-toastify';
-
+import Iconify from '../../ui-component/iconify';
 const Call = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
   const [editData, setEditData] = useState(null);
   const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
   const [excelData, setExcelData] = useState();
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); 
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
-
   const XLSX = require('xlsx');
-
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     console.log('Breadcrumb clicked');
   };
-
   const [studentId, setStudentId] = useState(null);
-
   useEffect(() => {
     const url = window.location.href;
     const parts = url.split('/');
     const extractedId = parts[parts.length - 1];
     setStudentId(extractedId);
   }, []);
-
   const columns = [
     {
       field: 'email',
@@ -45,15 +40,11 @@ const Call = () => {
       cellClassName: 'name-column--cell name-column--cell--capitalize',
       renderCell: (params) => {
         return (
-          <a 
-            href="#!" 
-            onClick={() => handleView(params.row)} 
-            style={{ textDecoration: 'none', color: 'inherit' }}  
-          >
+          <a href="#!" onClick={() => handleView(params.row)} style={{ textDecoration: 'none', color: 'inherit' }}>
             {params.value}
           </a>
         );
-      },
+      }
     },
     {
       field: 'student_Name',
@@ -70,7 +61,6 @@ const Call = () => {
       headerName: 'Register Date',
       flex: 1
     },
-
     {
       field: 'action',
       headerName: 'Action',
@@ -85,14 +75,12 @@ const Call = () => {
           <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
             <EditIcon />
           </Button>
-
           <Button
             onClick={() => handleFavorite(params.row)}
             style={{ color: params.row.favorite ? 'red' : 'gray', margin: '-9px', fontSize: '21px', padding: '10px' }}
           >
             <Icon icon="mdi:heart" />
           </Button>
-
           <Button color="secondary" onClick={() => handleDelete(params.row.id)} style={{ margin: '-9px' }}>
             <DeleteIcon />
           </Button>
@@ -107,12 +95,10 @@ const Call = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
   const fetchData = async () => {
     try {
       console.log('Data');
-
-      const response = await axios.get('http://localhost:4300/user/registerManagement');
+      const response = await axios.get('http://64.227.130.216:4300/user/registerManagement');
       console.log('data API------------', response);
       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
         id: item._id,
@@ -134,20 +120,18 @@ const Call = () => {
   }, []);
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
-
   const handleEdit = (register) => {
     setEditData(register);
   };
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
+      const response = await axios.put(`http://64.227.130.216:4300/user/editRegister/${editData.id}`, editData);
       console.log('Data', response);
-
       const updatedRegister = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
       setEditData(null);
       fetchData();
-       toast.success('Register details Edit successfully');
+      toast.success('Register details Edit successfully');
     } catch (error) {
       console.error('Error updating Register:', error);
     }
@@ -159,9 +143,9 @@ const Call = () => {
   };
   const confirmDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4300/user/deleteRegister/${bookToDelete}`);
+      await axios.delete(`http://64.227.130.216:4300/user/deleteRegister/${bookToDelete}`);
       setData((prevData) => prevData.filter((register) => register.id !== bookToDelete));
-       toast.success('Register details Deleted successfully');
+      toast.success('Register details Deleted successfully');
       cancelDelete();
     } catch (error) {
       console.error('Error deleting Register:', error);
@@ -192,17 +176,15 @@ const Call = () => {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchStudent();
   };
   const handleFavorite = async (student) => {
     console.log(`click on like`);
     try {
       console.log('Student ID', student.id);
-      const response = await axios.post(`http://localhost:4300/user/markFavorite/${student.id}`);
+      const response = await axios.post(`http://64.227.130.216:4300/user/markFavorite/${student.id}`);
       console.log('Favorite response-------', response);
       const updatedStudent = response.data.student;
-
       setData((prevData) => prevData.map((item) => (item.id === updatedStudent.id ? updatedStudent : item)));
       if (response) {
         fetchData();
@@ -223,13 +205,11 @@ const Call = () => {
   const handleSubscription = async (row) => {
     try {
       console.log('handleSubscription---------');
-
       const updatedSubscription = !row.subscription;
-      const response = await axios.post(`http://localhost:4300/user/markSubscription/${row.id}`, {
+      const response = await axios.post(`http://64.227.130.216:4300/user/markSubscription/${row.id}`, {
         subscription: updatedSubscription
       });
       console.log('response', response);
-
       if (response.status === 200) {
         setData((prevData) => prevData.map((item) => (item.id === row.id ? { ...item, subscription: updatedSubscription } : item)));
       }
@@ -242,11 +222,9 @@ const Call = () => {
       console.error('Error toggling subscription:', error);
     }
   };
-
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-
     reader.onload = (event) => {
       const binaryStr = event.target.result;
       const workbook = XLSX.read(binaryStr, { type: 'binary' });
@@ -254,17 +232,18 @@ const Call = () => {
       const worksheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(worksheet);
       setExcelData(data);
-      console.log('Parsed Excel Data:', data);
+      
     };
     reader.readAsBinaryString(file);
   };
   const handleBulkUpload = async () => {
     try {
-       
       console.log('excelData>>>>>>>>', excelData);
-
-      const response = await axios.post('http://localhost:4300/user/registerMany', excelData);
-      console.log(`response------>>>`, response); 
+      const response = await axios.post('http://64.227.130.216:4300/user/registerMany', excelData);
+      toast.success(`upload Successfully`)
+      setTimeout(()=>{
+        window.location.reload()
+      },1000)
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');
@@ -296,8 +275,20 @@ const Call = () => {
             </Link>
           </Breadcrumbs>
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
               Bulk Upload
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<Iconify icon="eva:file-download-fill" />}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = '/SampleFile.xlsx';
+                link.download = 'SampleFile.xlsx';
+                link.click();
+              }}
+            >
+              Download Sample File
             </Button>
             <Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               Register Student
@@ -379,5 +370,4 @@ const Call = () => {
     </>
   );
 };
-
 export default Call;
