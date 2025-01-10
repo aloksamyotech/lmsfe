@@ -53,14 +53,14 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/bookManagement');
+      const response = await axios.get('http://64.227.130.216:4300/user/bookManagement');
       console.log('response <<<<<>>>>>>>> : ', response.data);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
         name: item.bookName, // Assuming 'bookName' is the book's name
         role: item.author, // Assuming 'author' is the author of the book
-        img: `http://localhost:4300/${item.upload_Book}` // Assuming 'upload_Book' is the image path
+        img: `http://64.227.130.216:4300/${item.upload_Book}` // Assuming 'upload_Book' is the image path
       }));
 
       setData(fetchedData); // Set the fetched data into state

@@ -93,7 +93,7 @@ const PolicyManagement = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/venderManagement');
+      const response = await axios.get('http://64.227.130.216:4300/user/venderManagement');
       const fetchedData = response?.data?.VenderManagement?.map((item) => ({
         id: item._id,
         vendorName: item.vendorName,
@@ -122,7 +122,7 @@ const PolicyManagement = () => {
   };
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editVender/${editData.id}`, editData);
+      const response = await axios.put(`http://64.227.130.216:4300/user/editVender/${editData.id}`, editData);
       const updatedVender = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedVender.id ? updatedVender : item)));
       setEditData(null);
@@ -139,7 +139,7 @@ const PolicyManagement = () => {
   };
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:4300/user/deleteVender/${bookToDelete}`);
+      await axios.delete(`http://64.227.130.216:4300/user/deleteVender/${bookToDelete}`);
 
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));

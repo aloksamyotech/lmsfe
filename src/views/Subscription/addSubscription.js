@@ -67,7 +67,7 @@ const AddRegister = (props) => {
       try {
         console.log('try bolck');
  
-        const response = await axios.post('http://localhost:4300/user/addRegister', formData, {
+        const response = await axios.post('http://64.227.130.216:4300/user/addRegister', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

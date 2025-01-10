@@ -212,7 +212,7 @@ const EmailTemplates = () => {
     return `${day}/${month}/${year}`;
   };
   const handleSubmit = async (values) => {
-    const response = await axios.get(`http://localhost:4300/user/bookAllotmentReport/${values.startDate}/${values.endDate}`);
+    const response = await axios.get(`http://64.227.130.216:4300/user/bookAllotmentReport/${values.startDate}/${values.endDate}`);
 
     const finalData = response.data.map((item, index) => {
       return {

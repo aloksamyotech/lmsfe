@@ -56,7 +56,7 @@ const AddLead = (props) => {
       }
 
       try {
-        const response = await axios.post('http://localhost:4300/user/addBook', formData, {
+        const response = await axios.post('http://64.227.130.216:4300/user/addBook', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -77,7 +77,7 @@ const AddLead = (props) => {
   useEffect(() => {
     const fetchPublisher = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getPublications');
+        const response = await axios.get('http://64.227.130.216:4300/user/getPublications');
         console.log(`response ---------`, response.BookManagement);
 
         setPublisherData(response.data.PublicationsManagement);

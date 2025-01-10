@@ -141,7 +141,7 @@ const Publications = () => {
     try {
       console.log('useEffect-----------');
 
-      const response = await axios.get('http://localhost:4300/user/getPublications');
+      const response = await axios.get('http://64.227.130.216:4300/user/getPublications');
       console.log('After API------------', response);
       console.log('Id -----', response?.data?.PublicationsManagement);
       const fetchedData = await response?.data?.PublicationsManagement.map((item) => {
@@ -175,7 +175,7 @@ const Publications = () => {
   };
   // const handleSaveEdit = async () => {
   //   try {
-  //     const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, editData);
+  //     const response = await axios.put(`http://64.227.130.216:4300/user/editPublications/${editData.id}`, editData);
   //     const updatedPublications = response.data;
   //     setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
   //     setEditData(null);
@@ -189,7 +189,7 @@ const Publications = () => {
       // Ensure you're passing the correct data
       const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; // Make sure the startDate is a valid Date
 
-      const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, updatedPublications);
+      const response = await axios.put(`http://64.227.130.216:4300/user/editPublications/${editData.id}`, updatedPublications);
 
       // After successful edit, update your data array
       setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
@@ -209,7 +209,7 @@ const Publications = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:4300/user/deletePublications/${bookToDelete}`);
+      await axios.delete(`http://64.227.130.216:4300/user/deletePublications/${bookToDelete}`);
 
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));

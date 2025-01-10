@@ -45,7 +45,7 @@ const AddPolicy = (props) => {
 
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://localhost:4300/user/addVenderBook', values);
+        const response = await axios.post('http://64.227.130.216:4300/user/addVenderBook', values);
         console.log('Form submitted successfully:', response);
         fetchData();
         handleClose();

@@ -100,7 +100,7 @@ const Contact = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getMarkFavorite');
+      const response = await axios.get('http://64.227.130.216:4300/user/getMarkFavorite');
       console.log('response', response);
       const fetchedData = response?.data?.students?.map((item) => ({
         id: item._id,
@@ -131,7 +131,7 @@ const Contact = () => {
   const handleConfirmDelete = async () => {
     try {
       if (contactToDelete) {
-        await axios.delete(`http://localhost:4300/user/deleteContact/${contactToDelete}`);
+        await axios.delete(`http://64.227.130.216:4300/user/deleteContact/${contactToDelete}`);
         setData((prevData) => prevData.filter((item) => item.id !== contactToDelete));
         setContactToDelete(null);
       }
@@ -151,7 +151,7 @@ const Contact = () => {
     try {
       console.log('Student ID', student);
 
-      const response = await axios.post(`http://localhost:4300/user/markFavorite/${student}`);
+      const response = await axios.post(`http://64.227.130.216:4300/user/markFavorite/${student}`);
       console.log('Favorite response>>>>>>>-------', response);
       const updatedStudent = response.data.student;
 

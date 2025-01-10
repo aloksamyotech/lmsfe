@@ -6,7 +6,6 @@ import { ButtonBase } from '@mui/material';
 
 // project imports
 import config from 'config';
-import Logo from 'ui-component/Logo';
 import { MENU_OPEN } from 'store/actions';
 
 // ==============================|| MAIN LOGO ||============================== //
@@ -22,7 +21,7 @@ const LogoSection = () => {
       component={Link}
       to={config.defaultPath}
     >
-      <Logo />
+      <img alt='' src='/Screenshot.png' style={{height : '100px' , width : '120px',marginLeft : '60px' , marginTop : '10px'}}></img>
     </ButtonBase>
   );
 };

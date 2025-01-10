@@ -14,7 +14,7 @@ const Logo = () => {
         console.log('Logo data received:', response?.data.students[0]?.logo);
 
         const image = response?.data.students[0]?.logo;
-        const baseUrl = 'http://localhost:4300/';
+        const baseUrl = 'http://64.227.130.216:4300/';
 
         const fullImageUrl = `${baseUrl}${image}`;
 

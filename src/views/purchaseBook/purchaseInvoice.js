@@ -68,9 +68,9 @@ const PurchaseInvoice = () => {
 
   const fetchData = async () => {
     console.log(`fetchData>>>>>>>>>>>>>>`);
-    const url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
+    const url = `http://64.227.130.216:4300/user/getInvoice/${rowData?.id}`;
     console.log(`url`, url);
-    const response = await axios.get(`http://localhost:4300/user/getPurchaseInvoice/${rowData?.id}`);
+    const response = await axios.get(`http://64.227.130.216:4300/user/getPurchaseInvoice/${rowData?.id}`);
 
     const student_Name = response?.data[0]?.vendorDetails?.vendorName;
 
