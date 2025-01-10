@@ -1,8 +1,7 @@
-// import React from 'react';
-// import { Outlet, Navigate } from 'react-router-dom';
+import React from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
 
-// export default function PrivateRoutes() {
-//   let userValidation = localStorage.getItem('token') == null ? false : true;
-//   return <>{userValidation ? <Outlet /> : <Navigate to="/pages/login/login3" />};</>;
-// }      
-  
+export default function PrivateRoutes() {
+  let userValidation = localStorage.getItem('loginToken') == null ? false : true;
+  return <>{userValidation ? <Outlet /> : <Navigate to="/login" />};</>;
+}

@@ -56,10 +56,8 @@ const ProfileSection = () => {
    * */
   const anchorRef = useRef(null);
   const handleLogout = async () => {
-      localStorage.removeItem('token');   
-      window.location.href = '/login/login3';   
-  
-    console.log('Logout');
+    localStorage.clear();
+    window.location.reload();
   };
 
   const handleClose = (event) => {
