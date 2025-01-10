@@ -296,9 +296,9 @@ const Call = () => {
             </Link>
           </Breadcrumbs>
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
+            {/* <Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
               Bulk Upload
-            </Button>
+            </Button> */}
             <Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               Register Student
             </Button>

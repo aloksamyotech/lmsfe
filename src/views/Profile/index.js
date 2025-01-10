@@ -64,7 +64,7 @@ const View = () => {
       if (formData.logo) {
         formDataToSend.append('logo', formData.logo);
       }
-      const response = await axios.put(`http://localhost:4300/user/adminEditProfilePage/${formData.id}`, formDataToSend, {
+      const response = await axios.put(`http://64.227.130.216:4300/user/adminEditProfilePage/${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log('Data>>>>>>>>>>>>>>>>>>', response);
