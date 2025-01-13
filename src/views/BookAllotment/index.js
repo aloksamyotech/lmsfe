@@ -6,8 +6,10 @@ import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './booksAllotment';
 import axios from 'axios';
 
-import IconButton from '@mui/material/IconButton'; 
-import VisibilityIcon from '@mui/icons-material/Visibility'; 
+import ReceiptIcon from '@mui/icons-material/Receipt';
+
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -15,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { array } from 'prop-types';
 
 const Allotment = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -51,15 +54,15 @@ const Allotment = () => {
             onClick={() => handleView(params.row)}
             style={{
               color: 'inherit',
-              textDecoration: 'none',  
-              backgroundColor: 'transparent', 
+              textDecoration: 'none',
+              backgroundColor: 'transparent',
               padding: 0,
               border: 'none',
               cursor: 'pointer',
-              fontWeight: 'normal'  
+              fontWeight: 'normal'
             }}
           >
-            {params.value}  
+            {params.value}
           </Button>
         </div>
       )
@@ -87,7 +90,26 @@ const Allotment = () => {
       align: 'center',
       headerAlign: 'center'
     },
-
+    {
+      field: 'amount',
+      headerName: 'Total Amount',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      cellClassName: 'name-column--cell--capitalize'
+    },
+    {
+      field: 'invoice',
+      headerName: 'Invoice',
+      flex: 1,
+      renderCell: (params) => (
+        <div>
+          <Button color="primary" onClick={() => handleInvoice(params.row)} style={{ margin: '-9px' }}>
+            <ReceiptIcon />
+          </Button>
+        </div>
+      )
+    },
     {
       field: 'action',
       headerName: 'Action',
@@ -117,10 +139,20 @@ const Allotment = () => {
   };
   const fetchData = async () => {
     try {
-      console.log('Api Start........'); 
+      console.log('Api Start........');
       const response = await axios.get('http://64.227.130.216:4300/user/getBookAllotmentHistory');
       console.log('response--------->>>>>>>>>>>>', response?.data);
 
+      // let BookData = response?.data?.histories[0]?.allotmentDetails;
+      // console.log('BookData:', BookData);
+
+
+      let BookData = response?.data?.histories[0]?.allotmentDetails?.map((item)=>({
+      amount : item.amount
+      })); 
+        
+      console.log('Book Data', BookData);
+      
       const fetchedData = response?.data?.histories.map((item) => ({
         id: item._id,
         student_Name: item.studentDetails[0]?.student_Name,
@@ -221,7 +253,7 @@ const Allotment = () => {
         </Box>
 
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
- 
+
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>

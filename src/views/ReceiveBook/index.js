@@ -507,6 +507,8 @@ const ReceiveBook = () => {
                 </Grid>
               </Grid>
               <Divider sx={{ marginY: 2 }} />
+
+              
               <Typography variant="body1">
                 <strong>Issue Date:</strong> {formatDate(book?.bookIssueDate) || 'Loading...'}
               </Typography>
@@ -543,7 +545,7 @@ const ReceiveBook = () => {
                       error={amountError}
                       helperText={amountHelperText}
                       sx={{ marginBottom: 2 }}
-                      inputProps={{ maxLength: 3 }}
+                      inputProps={{ maxLength: 5 }}
                     />
                     <TextField
                       label="Reason"

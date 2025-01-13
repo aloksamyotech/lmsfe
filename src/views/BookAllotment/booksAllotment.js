@@ -49,6 +49,7 @@ const AddAllotment = (props) => {
 
       const dataToSend = addBook && Object.keys(addBook).length > 0 ? addBook : [values];
       console.log('Gopal>>>>>>>>>>', dataToSend);
+      console.log('Gopal Chotu>>>>>>>>>>', dataToSend[0]?.amount);
       const newData = {
         studentId: dataToSend?.[0]?.studentId,
         bookDetails: dataToSend

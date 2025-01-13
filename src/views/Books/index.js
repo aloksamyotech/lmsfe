@@ -11,7 +11,7 @@ import HomeIcon from '@mui/icons-material/Home';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import defaultBook from "./bookDummy.jpeg"
+import defaultBook from './bookDummy.jpeg';
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -53,8 +53,14 @@ const Lead = () => {
         console.log(`params`, params.row);
 
         const imageUrl = `http://64.227.130.216:4300/${params?.row?.upload_Book}`;
-        
-        return <img src={params?.row?.upload_Book ? imageUrl : defaultBook} alt="Book" style={{ width: '60px', height: '43px', objectFit: 'contain' }} />;
+
+        return (
+          <img
+            src={params?.row?.upload_Book ? imageUrl : defaultBook}
+            alt="Book"
+            style={{ width: '60px', height: '43px', objectFit: 'contain' }}
+          />
+        );
       }
     },
     {
@@ -111,13 +117,14 @@ const Lead = () => {
         title: item.title,
         publisherName: item.publisherName,
         author: item.author,
-        quantity: item.quantity || 0
+        quantity: item.quantity > 0 ? item.quantity : 'Not Available'
       }));
       setData(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -188,15 +195,15 @@ const Lead = () => {
   const handleBulkUpload = async () => {
     try {
       if (!excelData || excelData.length === 0) {
-       toast.error('No data to upload');
+        toast.error('No data to upload');
         return;
       }
       console.log('excelData>>>>>>', excelData);
-      const response = await axios.post('http://64.227.130.216:4300/user/addManyBooks', excelData); 
-      toast.success(`Data Uploaded Successfully`)
-      setTimeout(()=>{
-        window.location.reload()
-      },2000)
+      const response = await axios.post('http://64.227.130.216:4300/user/addManyBooks', excelData);
+      toast.success(`Data Uploaded Successfully`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');
@@ -207,51 +214,6 @@ const Lead = () => {
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
-     
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            height: '50px',
-            justifyContent: 'space-between',
-            marginBottom: '-18px'
-          }}
-        >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Books Management</h4>
-            </Link>
-          </Breadcrumbs>
-
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
-              Bulk Upload
-            </Button>
-
-            <Button
-              variant="outlined"
-              startIcon={<Iconify icon="eva:file-download-fill" />}
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = '/BookFile.xlsx';
-                link.download = 'SampleFile.xlsx';
-                link.click();
-              }}
-            >
-              Download Sample File
-            </Button>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Add New Book
-            </Button>
-          </Stack>
-        </Box> */}
         <Box
           sx={{
             backgroundColor: 'white',
