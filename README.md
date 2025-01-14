@@ -13,7 +13,7 @@ Install packages
 ### `npm start`
 
 Runs the app in the development mode.\
-Open [http://64.227.130.216:3000](http://64.227.130.216:3000) to view it in your browser.
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.

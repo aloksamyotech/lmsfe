@@ -65,7 +65,7 @@ const ViewBookAllotment = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        const response = await axios.get(`http://64.227.130.216:4300/user/getBookDetailHistoryStudentId/${extractedId}`);
+        const response = await axios.get(`http://localhost:4300/user/getBookDetailHistoryStudentId/${extractedId}`);
 
         console.log(`response---from all history api-->>>>`, response?.data?.allotmentDetails[0]?.bookDetails?.bookName);
 

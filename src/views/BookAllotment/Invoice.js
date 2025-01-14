@@ -7,11 +7,6 @@ import {
   Stack,
   Button,
   Container,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableBody,
-  Table,
   Typography,
   Box,
   Divider,
@@ -22,23 +17,20 @@ import {
   Breadcrumbs,
   Link
 } from '@mui/material';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
-// import { url } from 'api/url';
-
 import moment from 'moment';
 import axios from 'axios';
-// import html2pdf from 'html2pdf.js';
-// import { allBooking, allItems } from 'api/apis';
+import { set } from 'immutable';
 
-const ReceiveInvoice = () => {
+const BookInvoice = () => {
   const location = useLocation();
-  const { customerData, row, bookingData } = location.state || {};
+  // const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
   console.log('Received Row Data:', rowData?.id);
 
-  const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
-  const bookingId = row?._id ? row?._id : bookingData?._id;
+  // const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
+  // const bookingId = row?._id ? row?._id : bookingData?._id;
 
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
@@ -54,6 +46,10 @@ const ReceiveInvoice = () => {
   const [studentAmount, setStudentAmount] = useState('');
   const [discount, setDiscount] = useState('');
   const [submissionDate, setSubmissionDate] = useState('');
+  const [currentUrl, setCurrentUrl] = useState('');
+  const [newData, setNewData] = useState('');
+  const [mappedData, setMappedData] = useState('');
+  const [payment, setPayment] = useState('');
 
   const containerRef = useRef();
 
@@ -67,52 +63,49 @@ const ReceiveInvoice = () => {
 
   const fetchData = async () => {
     console.log(`fetchData`);
-    const url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
-    console.log(`url`, url);
-    const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
-    console.log('Invoice Data ----------', response?.data[0]);
+    const url = window.location.href;
+    setCurrentUrl(url);
+    const parts = url.split('/');
+    const extractedId = parts[parts.length - 1];
+    console.log('getting id from dashboard', extractedId);
 
-    // const student_Name = response?.data[0]?.studentDetails?.student_Name;
+    const response = await axios.get(`http://localhost:4300/user/getBookAllotmentInvoice/${extractedId}`);
+    console.log('Invoice Data ----------', response?.data);
+    // console.log('bookIssueDate Data ----------', response?.data?.histories?.[0]?.bookIssueDate);
+    // console.log('Date >>>>>>>', response?.data?.histories?.[0]?.studentDetails[0]?.email);
 
-    const student_Name = response?.data[0]?.studentDetails?.student_Name;
+    const NewData = {
+      _id: response?.data?.histories?.[0]?._id,
+      studentId: response?.data?.histories?.[0]?.studentId,
+      bookIssueDate: formatDate(response?.data?.histories?.[0]?.bookIssueDate),
 
-    setStudentName(student_Name);
+      email: response?.data?.studentDetails?.email,
+      mobile_Number: response?.data?.studentDetails?.mobile_Number,
+      student_Name: response?.data?.studentDetails?.student_Name,
+      select_identity: response?.data?.studentDetails?.select_identity,
+      register_Date: formatDate(response?.data?.studentDetails?.register_Date)
+    };
+    setNewData(NewData);
+    console.log('NewData', NewData);
 
-    const email = response?.data[0]?.studentDetails?.email;
-    setStudentEmail(email);
+    const MappedData = response?.data?.allotmentDetails.map((item) => ({
+      amount: item?.amount,
+      bookName: item?.bookDetails?.bookName,
+      submissionDate: formatDate(item?.submissionDate)
+      // bookId: item.bookId,
+      // paymentType: item.paymentType,
+      // submissionDate: item.submissionDate,
+      // id: item._id
+    }));
+    setMappedData(MappedData);
+    console.log('mappedData>>>>>>', MappedData);
 
-    const mobile_Number = response?.data[0]?.studentDetails?.mobile_Number;
-    setStudentMobile_Number(mobile_Number);
-
-    const select_identity = response?.data[0]?.studentDetails?.select_identity;
-    setStudentSelectIdentity(select_identity);
-
-    const register_Date = response?.data[0]?.studentDetails?.register_Date;
-    setStudentRegister_Date(formatDate(register_Date));
-
-    const bookName = response?.data[0]?.bookDetails?.bookName;
-    setBookName(bookName);
-    // const bookName = response?.data[0]?.bookDetails?.bookName;
-    // const bookName = response?.data[0]?.bookDetails?.bookName;
-
-    const amount = response?.data[0]?.subscriptionDetails?.amount;
-    setStudentAmount(amount);
-
-    const title = response?.data[0]?.subscriptionDetails?.title;
-    setStudentTitle(title);
-
-    const discount = response?.data[0]?.subscriptionDetails?.discount;
-    setDiscount(discount);
-
-    const bookIssueDate = response?.data[0]?.bookIssueDate;
-    const submissionDate = response?.data[0]?.submissionDate;
-    setSubmissionDate(formatDate(submissionDate));
-
-    console.log('bookName', bookName);
-    console.log('student Name >>', student_Name);
-    console.log('email >>', email);
-    console.log(' amount >>', amount);
-    console.log('bookIssueDate', bookIssueDate);
+    const Payment = response?.data?.allotmentDetails.map((item) => ({
+      amount: item?.amount,
+      paymentType: item?.paymentDetails?.title
+    }));
+    setPayment(Payment);
+    console.log('mappedData>>>>>>', Payment);
   };
 
   useEffect(() => {
@@ -122,19 +115,6 @@ const ReceiveInvoice = () => {
   useEffect(() => {
     setAllItemData(allBookingData?.items);
   }, [allBookingData?.items]);
-
-  // const handlePrint = () => {
-  //   const element = containerRef.current;
-  //   const options = {
-  //     margin: 10,
-  //     filename: `invoice_${allBookingData?.bookingData?.[0]?.customer?.[0]?.name}${moment().format('DD-MM_YYYY')}.pdf`,
-  //     image: { type: 'jpeg', quality: 0.98 },
-  //     html2canvas: { scale: 2 },
-  //     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  //   };
-
-  //   html2pdf().set(options).from(element).save();
-  // };
 
   const handlePrint = () => {
     const element = containerRef.current;
@@ -168,18 +148,14 @@ const ReceiveInvoice = () => {
             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
           </Link>
           <Link href="/account-profile" underline="hover" color="inherit">
-            <h4>Receive Books Invoice</h4>
+            <h4> Books Allotment Invoice</h4>
           </Link>
         </Breadcrumbs>
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
       {loading && (
-        <Backdrop
-          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-          open={loading}
-          // onClick={handleClose}
-        >
+        <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={loading}>
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
@@ -227,31 +203,32 @@ const ReceiveInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Name:
               </Typography>
-              <Typography variant="body2">{studentName || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.student_Name || 'N/A'}</Typography>
             </Grid>
+
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Phone:
               </Typography>
-              <Typography variant="body2">{studentMobile_Number || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.mobile_Number || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Email:
               </Typography>
-              <Typography variant="body2">{studentEmail || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.email || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Select Identity:
               </Typography>
-              <Typography variant="body2">{studentSelectIdentity || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.select_identity || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" fontWeight="bold">
                 Register Date:
               </Typography>
-              <Typography variant="body2">{studentRegister_Date || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.register_Date || 'N/A'}</Typography>
             </Grid>
           </Grid>
 
@@ -259,18 +236,20 @@ const ReceiveInvoice = () => {
             Payment Information
           </Typography>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
+          <div> 
           <Grid container spacing={1}>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Book Name:
               </Typography>
-              <Typography variant="body2">{bookName || 'N/A'}</Typography>
+              <Typography variant="body2">{mappedData?.[0]?.bookName || 'N/A'}</Typography>
             </Grid>
+
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Total Price:
               </Typography>
-              <Typography variant="body2">{`₹${studentAmount}` || '₹0'}</Typography>
+              <Typography variant="body2">{`₹${mappedData?.[0]?.amount}` || '₹0'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
@@ -288,7 +267,7 @@ const ReceiveInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Payment Type:
               </Typography>
-              <Typography variant="body2">{studentTitle || 'N/A'}</Typography>
+              <Typography variant="body2">{payment?.[0]?.paymentType || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
@@ -308,7 +287,7 @@ const ReceiveInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Submission Date:
               </Typography>
-              <Typography variant="body2">{submissionDate}</Typography>
+              <Typography variant="body2">{mappedData?.[0]?.submissionDate}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
@@ -321,6 +300,7 @@ const ReceiveInvoice = () => {
               </Typography>
             </Grid>
           </Grid>
+          </div>
 
           <Grid container spacing={1} mt={2} mb={5}>
             <Grid item xs={12}>
@@ -347,4 +327,4 @@ const ReceiveInvoice = () => {
   );
 };
 
-export default ReceiveInvoice;
+export default BookInvoice;

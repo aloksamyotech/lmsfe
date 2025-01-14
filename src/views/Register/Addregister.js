@@ -42,7 +42,7 @@ const AddRegister = (props) => {
   });
 
   const formik = useFormik({
-    initialValues: { 
+    initialValues: {
       student_Name: '',
       email: '',
       mobile_Number: '',
@@ -51,7 +51,7 @@ const AddRegister = (props) => {
       register_Date: todayDate
     },
     validationSchema,
-  
+
     onSubmit: async (values) => {
       console.log('on submit');
       console.log(`values`, values);
@@ -67,7 +67,7 @@ const AddRegister = (props) => {
 
       try {
         console.log('try bolck');
-        const response = await axios.post('http://64.227.130.216:4300/user/addRegister', formData, {
+        const response = await axios.post('http://localhost:4300/user/addRegister', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -105,7 +105,7 @@ const AddRegister = (props) => {
         <form onSubmit={formik.handleSubmit}>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-            <Grid item xs={12} sm={6} md={6}>
+              <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Student Name</FormLabel>
                 <TextField
                   id="student_Name"
@@ -148,7 +148,7 @@ const AddRegister = (props) => {
                 <TextField
                   id="mobile_Number"
                   name="mobile_Number"
-                  size="small" 
+                  size="small"
                   fullWidth
                   value={formik.values.mobile_Number}
                   onChange={formik.handleChange}
@@ -180,7 +180,7 @@ const AddRegister = (props) => {
                   </Select>
                 </FormControl>
               </Grid>
- 
+
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Register Date</FormLabel>
                 <TextField
@@ -205,7 +205,7 @@ const AddRegister = (props) => {
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Upload Identity</FormLabel>
                 <FormControl fullWidth>
-                  <input type="file" accept="image/*" onChange={handleFileChange} style={{ width: '100%' }} /> 
+                  <input type="file" accept="image/*" onChange={handleFileChange} style={{ width: '100%' }} />
 
                   {formik.touched.upload_identity && formik.errors.upload_identity && (
                     <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.upload_identity}</div>

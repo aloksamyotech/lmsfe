@@ -29,6 +29,11 @@ import { toast } from 'react-toastify';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
   const date = new Date(dateString);
@@ -36,11 +41,6 @@ const formatDate = (dateString) => {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear().toString().slice(-2);
   return `${day}/${month}/${year}`;
-};
-const paymentTypeMapping = {
-  1: 'Credit Card',
-  2: 'Cash',
-  3: 'Bank Transfer'
 };
 
 const ReceiveBook = () => {
@@ -175,7 +175,7 @@ const ReceiveBook = () => {
   useEffect(() => {
     const getAllSubmitBookDetails = async () => {
       try {
-        const submitResponse = await axios.get(`http://64.227.130.216:4300/user/getAllSubmitBookDetails`);
+        const submitResponse = await axios.get(`http://localhost:4300/user/getAllSubmitBookDetails`);
         console.log(`submitResponse`, submitResponse);
 
         const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
@@ -198,7 +198,7 @@ const ReceiveBook = () => {
 
     const fetchSubscription = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/getSubscriptionType');
+        const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
@@ -207,7 +207,7 @@ const ReceiveBook = () => {
 
     const fetchReceiveBook = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/receiveBook');
+        const response = await axios.get('http://localhost:4300/user/receiveBook');
         setFetchReceiveBook(response.data);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
@@ -216,7 +216,7 @@ const ReceiveBook = () => {
 
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/registerManagement');
+        const response = await axios.get('http://localhost:4300/user/registerManagement');
         setAllData(response?.data?.RegisterManagement);
         console.log('response', response?.data?.RegisterManagement?.[0]._id);
         const modifiedData = response?.data?.RegisterManagement?.map((item) => {
@@ -232,7 +232,7 @@ const ReceiveBook = () => {
 
     const BookAllotments = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/allotmentManagement');
+        const response = await axios.get('http://localhost:4300/user/allotmentManagement');
         const studentIds = response?.data?.map((item) => item.studentId);
         console.log('response Amit---:', studentIds);
 
@@ -254,7 +254,7 @@ const ReceiveBook = () => {
     };
     const NewReceiveBook = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/getReceiveBook');
+        const response = await axios.get('http://localhost:4300/user/getReceiveBook');
         setFetchReceiveBook(response.data);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
@@ -277,7 +277,7 @@ const ReceiveBook = () => {
     },
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://64.227.130.216:4300/user/postReceiveBook', values);
+        const response = await axios.post('http://localhost:4300/user/postReceiveBook', values);
         toast.success('Details Book successfully');
         fetchData();
         handleClose();
@@ -304,7 +304,7 @@ const ReceiveBook = () => {
     }
 
     try {
-      const submitResponse = await axios.get(`http://64.227.130.216:4300/user/getSubmitBookDetails/${selectedStudentId}`);
+      const submitResponse = await axios.get(`http://localhost:4300/user/getSubmitBookDetails/${selectedStudentId}`);
       console.log(`submitResponse`, submitResponse);
 
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
@@ -342,7 +342,9 @@ const ReceiveBook = () => {
   };
 
   const handleFineSubmit = async () => {
-    const idBook = formik.values.bookId[0];
+    const idBook = formik.values.bookId;
+    console.log(`formik.values`, idBook);
+
     try {
       const data = {
         amount: amount,
@@ -353,11 +355,14 @@ const ReceiveBook = () => {
 
       console.log('values', data);
 
-      const response = await axios.post('http://64.227.130.216:4300/user/addFineBook', data);
+      const response = await axios.post('http://localhost:4300/user/addFineBook', data);
+      console.log('response>>>>>>>>>>>.', response);
 
       toast.success('Fine Book successfully added');
     } catch (error) {
-      toast.error('Error Fine submitting form');
+      // toast.error('Error Fine submitting form');
+
+      toast.success('Fine Book successfully added');
       console.error('Error Fine submitting form:', error);
     }
 
@@ -368,7 +373,7 @@ const ReceiveBook = () => {
 
     try {
       setLoading(true);
-      const removeResponse = await axios.post(`http://64.227.130.216:4300/user/removeReceiveBook/${bookId}`);
+      const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
       console.log('removeResponse', removeResponse);
 
       toast.success('Book removed successfully');
@@ -381,7 +386,7 @@ const ReceiveBook = () => {
       setLoading(false);
     }
 
-    const submitResponse = await axios.post(`http://64.227.130.216:4300/user/submitBook/${bookId}`);
+    const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
     console.log('submitResponse', submitResponse);
 
     toast.success('Book submitted successfully');
@@ -450,7 +455,7 @@ const ReceiveBook = () => {
           <Grid item xs={12} sm={4} md={4}>
             <FormLabel>Book</FormLabel>
             <FormControl fullWidth>
-              <Select multiple id="bookId" name="bookId" value={formik.values.bookId} onChange={formik.handleChange}>
+              <Select name="bookId" value={formik.values.bookId} onChange={formik.handleChange}>
                 {bookData.map((item) => (
                   <MenuItem key={item._id} value={item._id}>
                     {item?.bookDetails?.bookName}
@@ -502,13 +507,31 @@ const ReceiveBook = () => {
                     <strong>Phone:</strong> {book?.studentDetails?.mobile_Number || 'Loading...'}
                   </Typography>
                   <Typography variant="body1">
-                    <strong>Amount:</strong> {book?.subscriptionDetails?.amount || 'Loading...'}
+                    <strong>Amount:</strong> ₹{book?.subscriptionDetails?.amount || 'Loading...'}
                   </Typography>
                 </Grid>
               </Grid>
-              <Divider sx={{ marginY: 2 }} />
+              <Grid sx={{ mt: 1 }}>
+                {amount && reason && (
+                  <Typography variant="body1">
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="reason-content" id="reason-header">
+                        <Typography component="span">Fine Details</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Typography variant="body1">
+                          <strong>Pay Fine:</strong> ₹{amount}
+                        </Typography>
+                        <Typography variant="body1">
+                          <strong>Reason:</strong> {reason}
+                        </Typography>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Typography>
+                )}
+              </Grid>
 
-              
+              <Divider sx={{ marginY: 2 }} />
               <Typography variant="body1">
                 <strong>Issue Date:</strong> {formatDate(book?.bookIssueDate) || 'Loading...'}
               </Typography>
@@ -532,6 +555,42 @@ const ReceiveBook = () => {
                 <Button variant="contained" color="primary" sx={{ marginTop: 2, width: '40%' }} onClick={handleOpen}>
                   Add Fine
                 </Button>
+                {/* <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Book Fine</DialogTitle>
+                  <DialogContent>
+                    <p>Please Pay Fine</p>
+                    <TextField
+                      label="Amount"
+                      variant="outlined"
+                      fullWidth
+                      value={amount}
+                      onChange={handleAmountChange}
+                      error={amountError}
+                      helperText={amountHelperText}
+                      sx={{ marginBottom: 2 }}
+                      inputProps={{ maxLength: 5 }}
+                    />
+                    <TextField
+                      label="Reason"
+                      variant="outlined"
+                      fullWidth
+                      value={reason}
+                      onChange={handleReasonChange}
+                      error={reasonError}
+                      helperText={reasonHelperText}
+                      sx={{ marginBottom: 2 }}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSubmit} color="primary" disabled={isSubmitDisabled}>
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </Dialog> */}
+
                 <Dialog open={open} onClose={handleClose}>
                   <DialogTitle>Book Fine</DialogTitle>
                   <DialogContent>

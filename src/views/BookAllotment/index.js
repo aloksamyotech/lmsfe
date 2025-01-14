@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { array } from 'prop-types';
+import BookInvoice from './Invoice';
 
 const Allotment = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -27,11 +28,12 @@ const Allotment = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleClick = (event) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
+
+  console.log('data---->', data);
 
   useEffect(() => {
     const url = window.location.href;
@@ -91,7 +93,7 @@ const Allotment = () => {
       headerAlign: 'center'
     },
     {
-      field: 'amount',
+      field: 'totalAmount',
       headerName: 'Total Amount',
       flex: 1,
       align: 'center',
@@ -133,40 +135,33 @@ const Allotment = () => {
     return `${day}/${month}/${year}`;
   };
   const handleView = (row) => {
-    console.log('Viewing', row);
-
     navigate(`/dashboard/viewBookAllotment/${row.id}`);
   };
+
   const fetchData = async () => {
     try {
-      console.log('Api Start........');
-      const response = await axios.get('http://64.227.130.216:4300/user/getBookAllotmentHistory');
-      console.log('response--------->>>>>>>>>>>>', response?.data);
+      const response = await axios.get('http://localhost:4300/user/getBookAllotmentHistory');
 
-      // let BookData = response?.data?.histories[0]?.allotmentDetails;
-      // console.log('BookData:', BookData);
+      console.log('response===========', response);
 
-
-      let BookData = response?.data?.histories[0]?.allotmentDetails?.map((item)=>({
-      amount : item.amount
-      })); 
-        
-      console.log('Book Data', BookData);
-      
-      const fetchedData = response?.data?.histories.map((item) => ({
-        id: item._id,
-        student_Name: item.studentDetails[0]?.student_Name,
-        studentEmail: item.studentDetails[0]?.email,
-        mobile_Number: item.studentDetails[0]?.mobile_Number,
-        bookIssueDate: formatDate(item.bookIssueDate)
-      }));
-      console.log(' student_Name', fetchedData);
-
-      setData(fetchedData);
+      const result = response?.data?.histories.map((item) => {
+        const totalAmount = item.allotmentDetails.reduce((sum, detail) => sum + (detail.amount || 0), 0);
+        return {
+          id: item?._id,
+          student_Name: item.studentDetails[0]?.student_Name,
+          studentEmail: item.studentDetails[0]?.email,
+          mobile_Number: item.studentDetails[0]?.mobile_Number,
+          bookIssueDate: formatDate(item.bookIssueDate),
+          totalAmount
+        };
+      });
+      console.log('Fetched Data >>>>>>', result);
+      setData(result);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
   useState(() => {
     fetchData();
   }, []);
@@ -180,8 +175,7 @@ const Allotment = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://64.227.130.216:4300/user/editBookAllotment/${editData.id}`, editData);
-      console.log('Data', response);
+      const response = await axios.put(`http://localhost:4300/user/editBookAllotment/${editData.id}`, editData);
 
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
@@ -198,8 +192,7 @@ const Allotment = () => {
 
   const confirmDelete = async () => {
     try {
-      console.log('delete API...');
-      await axios.delete(`http://64.227.130.216:4300/user/deleteAllotmentBook/${bookToDelete}`);
+      await axios.delete(`http://localhost:4300/user/deleteAllotmentBook/${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);
@@ -214,9 +207,10 @@ const Allotment = () => {
     setOpenDeleteDialog(false);
     setBookToDelete(null);
   };
-
-  console.log(`editData`, editData);
-
+  const handleInvoice = (row) => {
+    console.log(`row>>>>>>>>>>>>>>>>>`, row);
+    navigate(`/dashboard/bookAllotmentInvoice/${row.id}`, { state: { rowData: row } });
+  };
   return (
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />

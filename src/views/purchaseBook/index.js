@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
-import TableStyle from '../../ui-component/TableStyle'; 
+import TableStyle from '../../ui-component/TableStyle';
 import axios from 'axios';
 import AddPurchaseBook from './purchaseBook';
 import { toast } from 'react-toastify';
@@ -47,7 +47,7 @@ const PurchaseBook = () => {
       headerName: 'Vendor',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
-    }, 
+    },
     {
       field: 'quantity',
       headerName: 'Available Quantity',
@@ -80,8 +80,7 @@ const PurchaseBook = () => {
       headerName: 'Action',
       flex: 1,
       renderCell: (params) => (
-        <div> 
-
+        <div>
           <Button color="secondary" onClick={() => handleDelete(params?.row)} style={{ margin: '-9px' }}>
             <DeleteIcon />
           </Button>
@@ -94,13 +93,13 @@ const PurchaseBook = () => {
     try {
       console.log('fetch data ');
 
-      const response = await axios.get('http://64.227.130.216:4300/user/purchaseManagement');
+      const response = await axios.get('http://localhost:4300/user/purchaseManagement');
       console.log('response-----===', response);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
-        id: item._id, 
+        id: item._id,
         bookName: item.bookName,
-        vendorId: item.vendorId, 
+        vendorId: item.vendorId,
         price: item.price,
         quantity: item.quantity
       }));
@@ -128,7 +127,7 @@ const PurchaseBook = () => {
     console.log(`editData`, editData);
 
     try {
-      const response = await axios.put(`http://64.227.130.216:4300/user/editPurchaseBook/${editData.id}`, editData);
+      const response = await axios.put(`http://localhost:4300/user/editPurchaseBook/${editData.id}`, editData);
       console.log('Data', response);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
@@ -136,7 +135,7 @@ const PurchaseBook = () => {
       fetchData();
     } catch (error) {
       console.error('Error updating book:', error);
-    } 
+    }
   };
 
   const handleInvoice = (row) => {
@@ -155,7 +154,7 @@ const PurchaseBook = () => {
     console.log(`id`, id);
 
     try {
-      await axios.delete(`http://64.227.130.216:4300/user/deletePurchaseBook/${id}`);
+      await axios.delete(`http://localhost:4300/user/deletePurchaseBook/${id}`);
       setData((prevData) => prevData.filter((book) => book.id !== id));
       toast.success('Purchase Book add  successfully');
       setOpenDeleteDialog(false);

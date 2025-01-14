@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+ import { lazy } from 'react';
 
 // project imports
 import MainLayout from 'layout/MainLayout';
@@ -15,6 +15,7 @@ import ReceiveInvoice from 'views/view/receiveInvoiice';
 import PurchaseInvoice from 'views/purchaseBook/purchaseInvoice';
 import ImageGallery from 'views/Card/openImage';
 import PrivateRoutes from './PrivateRoute';
+import BookInvoice from 'views/BookAllotment/Invoice';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -34,7 +35,8 @@ const AddPurchaseBook = Loadable(lazy(() => import('views/purchaseBook/index')))
 const SubscriptionType = Loadable(lazy(() => import('views/subscriptionType/index')));
 const Receive = Loadable(lazy(() => import('views/ReceiveBook/index')));
 const Invoice = Loadable(lazy(() => import('views/view/invoiceStudent')));
-// const ReceiveInvoice = Loadable(lazy(() => import('views/view/receiveInvoiice')));
+// const BookInvoice = Loadable(lazy(() => import('views/BookAllotment/Invoice')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -73,6 +75,15 @@ const MainRoutes = {
             {
               path: 'receive',
               element: <ReceiveBook />
+            }
+          ]
+        },
+        {
+          path: 'dashboard',
+          children: [
+            {
+              path: 'bookAllotmentInvoice/:id',
+              element: <BookInvoice />
             }
           ]
         },

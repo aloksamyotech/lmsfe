@@ -58,7 +58,7 @@ const FirebaseLogin = ({ ...others }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            const response = await axios.post('http://64.227.130.216:4300/user/login', values);
+            const response = await axios.post('http://localhost:4300/user/login', values);
 
             if (response?.status === 200) {
               console.log('Response:', response?.data?.message);

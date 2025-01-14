@@ -97,7 +97,7 @@ const FinePerDay = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/registerManagement');
+        const response = await axios.get('http://localhost:4300/user/registerManagement');
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -108,7 +108,7 @@ const FinePerDay = () => {
       console.log('HRitik ..........');
 
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/getAllFineBooks');
+        const response = await axios.get('http://localhost:4300/user/getAllFineBooks');
         console.log('response>>>>>>>>', response?.data);
 
         setAllData(response?.data);
@@ -152,7 +152,7 @@ const FinePerDay = () => {
     }
 
     try {
-      const fineResponse = await axios.get(`http://64.227.130.216:4300/user/getFineBook/${selectedStudentId}`);
+      const fineResponse = await axios.get(`http://localhost:4300/user/getFineBook/${selectedStudentId}`);
 
       console.log(`Fine Response`, fineResponse?.data);
 
@@ -195,7 +195,7 @@ const FinePerDay = () => {
 
     try {
       setLoading(true);
-      const removeResponse = await axios.post(`http://64.227.130.216:4300/user/removeReceiveBook/${bookId}`);
+      const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
       console.log('removeResponse', removeResponse);
 
       toast.success('Book removed successfully');
@@ -208,7 +208,7 @@ const FinePerDay = () => {
       setLoading(false);
     }
 
-    const submitResponse = await axios.post(`http://64.227.130.216:4300/user/submitBook/${bookId}`);
+    const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
     console.log('submitResponse', submitResponse);
 
     // toast.success('Book submitted successfully');
@@ -264,7 +264,7 @@ const FinePerDay = () => {
             />
           </Card>
         </Box>
-      </TableStyle> 
+      </TableStyle>
     </Container>
   );
 };
