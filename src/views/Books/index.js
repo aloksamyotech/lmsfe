@@ -106,7 +106,7 @@ const Lead = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://64.227.130.216:4300/user/bookManagement');
+      const response = await axios.get('http://localhost:4300/user/bookManagement');
       console.log('response <<<<<>>>>>>>> : ', response.data);
       console.log('image url : ', `http://64.227.130.216:4300/${response.data.BookManagement[0].upload_Book}`);
 
@@ -124,7 +124,6 @@ const Lead = () => {
       console.error('Error fetching data:', error);
     }
   };
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -149,7 +148,6 @@ const Lead = () => {
     }
     fetchData();
   };
-
   const handleDelete = (id) => {
     setBookToDelete(id);
     setOpenDeleteDialog(true);
@@ -175,7 +173,6 @@ const Lead = () => {
     setOpenDeleteDialog(false);
     setBookToDelete(null);
   };
-
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();

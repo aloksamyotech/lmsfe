@@ -55,11 +55,11 @@ const AddAllotment = (props) => {
         bookDetails: dataToSend
       };
       try {
-        const response = await axios.post('http://64.227.130.216:4300/user/manyBookAllotment', dataToSend);
+        const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
 
         if (response) {
           console.log(`response  Gopal ---->>>>`, response);
-          const Bookresponse = await axios.post('http://64.227.130.216:4300/user/bookAllotmentHistory', newData);
+          const Bookresponse = await axios.post('http://localhost:4300/user/bookAllotmentHistory', newData);
           console.log('Bookresponse', Bookresponse);
 
           toast.success('Book details added successfully');

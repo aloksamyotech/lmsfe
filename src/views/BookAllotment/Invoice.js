@@ -17,20 +17,20 @@ import {
   Breadcrumbs,
   Link
 } from '@mui/material';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
-
 import moment from 'moment';
 import axios from 'axios';
+import { set } from 'immutable';
 
-const ReceiveInvoice = () => {
+const BookInvoice = () => {
   const location = useLocation();
-  const { customerData, row, bookingData } = location.state || {};
+  // const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
   console.log('Received Row Data:', rowData?.id);
 
-  const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
-  const bookingId = row?._id ? row?._id : bookingData?._id;
+  // const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
+  // const bookingId = row?._id ? row?._id : bookingData?._id;
 
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
@@ -46,6 +46,8 @@ const ReceiveInvoice = () => {
   const [studentAmount, setStudentAmount] = useState('');
   const [discount, setDiscount] = useState('');
   const [submissionDate, setSubmissionDate] = useState('');
+  const [currentUrl, setCurrentUrl] = useState('');
+  const [newData, setNewData] = useState('');
 
   const containerRef = useRef();
 
@@ -59,48 +61,39 @@ const ReceiveInvoice = () => {
 
   const fetchData = async () => {
     console.log(`fetchData`);
-    const url = `http://64.227.130.216:4300/user/getInvoice/${rowData?.id}`;
-    console.log(`url`, url);
-    const response = await axios.get(`http://64.227.130.216:4300/user/getInvoice/${rowData?.id}`);
-    console.log('Invoice Data ----------', response?.data[0]);
+    const url = window.location.href;
+    setCurrentUrl(url);
+    const parts = url.split('/');
+    const extractedId = parts[parts.length - 1];
+    console.log('getting id from dashboard', extractedId);
 
-    const student_Name = response?.data[0]?.studentDetails?.student_Name;
+    const response = await axios.get(`http://localhost:4300/user/getBookAllotmentInvoice/${extractedId}`);
+    console.log('Invoice Data ----------', response?.data?.histories);
+    // console.log('bookIssueDate Data ----------', response?.data?.histories?.[0]?.bookIssueDate);
+    // console.log('Date >>>>>>>', response?.data?.histories?.[0]?.studentDetails[0]?.email);
 
-    setStudentName(student_Name);
+    const NewData = {
+      _id: response?.data?.histories?.[0]?._id,
+      studentId: response?.data?.histories?.[0]?.studentId,
+      bookIssueDate: formatDate(response?.data?.histories?.[0]?.bookIssueDate),
 
-    const email = response?.data[0]?.studentDetails?.email;
-    setStudentEmail(email);
+      email: response?.data?.histories?.[0]?.studentDetails[0]?.email,
+      mobile_Number: response?.data?.histories?.[0]?.studentDetails[0]?.mobile_Number,
+      student_Name: response?.data?.histories?.[0]?.studentDetails[0]?.student_Name,
+      select_identity: response?.data?.histories?.[0]?.studentDetails[0]?.select_identity,
+      register_Date: formatDate(response?.data?.histories?.[0]?.studentDetails[0]?.register_Date)
+    };
+    setNewData(NewData);
+    console.log('NewData', NewData);
 
-    const mobile_Number = response?.data[0]?.studentDetails?.mobile_Number;
-    setStudentMobile_Number(mobile_Number);
-
-    const select_identity = response?.data[0]?.studentDetails?.select_identity;
-    setStudentSelectIdentity(select_identity);
-
-    const register_Date = response?.data[0]?.studentDetails?.register_Date;
-    setStudentRegister_Date(formatDate(register_Date));
-
-    const bookName = response?.data[0]?.bookDetails?.bookName;
-    setBookName(bookName);
-
-    const amount = response?.data[0]?.subscriptionDetails?.amount;
-    setStudentAmount(amount);
-
-    const title = response?.data[0]?.subscriptionDetails?.title;
-    setStudentTitle(title);
-
-    const discount = response?.data[0]?.subscriptionDetails?.discount;
-    setDiscount(discount);
-
-    const bookIssueDate = response?.data[0]?.bookIssueDate;
-    const submissionDate = response?.data[0]?.submissionDate;
-    setSubmissionDate(formatDate(submissionDate));
-
-    console.log('bookName', bookName);
-    console.log('student Name >>', student_Name);
-    console.log('email >>', email);
-    console.log(' amount >>', amount);
-    console.log('bookIssueDate', bookIssueDate);
+    const mappedData = response?.data?.histories?.[0]?.allotmentDetails.map((item) => ({
+      amount: item.amount,
+      bookId: item.bookId,
+      paymentType: item.paymentType,
+      submissionDate: item.submissionDate,
+      id: item._id
+    }));
+    console.log('mappedData>>>>>>', mappedData);
   };
 
   useEffect(() => {
@@ -143,14 +136,18 @@ const ReceiveInvoice = () => {
             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
           </Link>
           <Link href="/account-profile" underline="hover" color="inherit">
-            <h4>Receive Books Invoice</h4>
+            <h4> Books Allotment Invoice</h4>
           </Link>
         </Breadcrumbs>
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
       {loading && (
-        <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={loading}>
+        <Backdrop
+          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+          open={loading}
+          // onClick={handleClose}
+        >
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
@@ -198,31 +195,32 @@ const ReceiveInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Name:
               </Typography>
-              <Typography variant="body2">{studentName || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.student_Name || 'N/A'}</Typography>
             </Grid>
+
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Phone:
               </Typography>
-              <Typography variant="body2">{studentMobile_Number || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.mobile_Number || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Email:
               </Typography>
-              <Typography variant="body2">{studentEmail || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.email || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Select Identity:
               </Typography>
-              <Typography variant="body2">{studentSelectIdentity || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.select_identity || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" fontWeight="bold">
                 Register Date:
               </Typography>
-              <Typography variant="body2">{studentRegister_Date || 'N/A'}</Typography>
+              <Typography variant="body2">{newData?.register_Date || 'N/A'}</Typography>
             </Grid>
           </Grid>
 
@@ -263,7 +261,7 @@ const ReceiveInvoice = () => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
-                Fine Amount:
+                Paid Amount:
               </Typography>
               <Typography variant="body2">
                 {allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount
@@ -318,4 +316,4 @@ const ReceiveInvoice = () => {
   );
 };
 
-export default ReceiveInvoice;
+export default BookInvoice;
