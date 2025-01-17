@@ -36,7 +36,7 @@ const Receive = Loadable(lazy(() => import('views/ReceiveBook/index')));
 const Invoice = Loadable(lazy(() => import('views/view/invoiceStudent')));
 // const ReceiveInvoice = Loadable(lazy(() => import('views/view/receiveInvoiice')));
 // ==============================|| MAIN ROUTING ||============================== //
-
+const Invoicedta = Loadable(lazy(() => import('views/Books/Invoice')));
 const MainRoutes = {
   path: '/',
   element: <MainLayout />,
@@ -191,7 +191,7 @@ const MainRoutes = {
           children: [
             {
               path: 'invoice/:id',
-              element: <StudentInvoice />
+              element: <Invoicedta />
             }
           ]
         },

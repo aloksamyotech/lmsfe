@@ -102,6 +102,7 @@ const AddAllotment = (props) => {
     const fetchSubscription = async () => {
       try {
         const response = await axios.get('http://64.227.130.216:4300/user/getSubscriptionType');
+
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);

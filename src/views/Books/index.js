@@ -11,7 +11,7 @@ import HomeIcon from '@mui/icons-material/Home';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import defaultBook from "./bookDummy.jpeg"
+import defaultBook from './bookDummy.jpeg';
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -53,8 +53,14 @@ const Lead = () => {
         console.log(`params`, params.row);
 
         const imageUrl = `http://64.227.130.216:4300/${params?.row?.upload_Book}`;
-        
-        return <img src={params?.row?.upload_Book ? imageUrl : defaultBook} alt="Book" style={{ width: '60px', height: '43px', objectFit: 'contain' }} />;
+
+        return (
+          <img
+            src={params?.row?.upload_Book ? imageUrl : defaultBook}
+            alt="Book"
+            style={{ width: '60px', height: '43px', objectFit: 'contain' }}
+          />
+        );
       }
     },
     {
@@ -188,15 +194,15 @@ const Lead = () => {
   const handleBulkUpload = async () => {
     try {
       if (!excelData || excelData.length === 0) {
-       toast.error('No data to upload');
+        toast.error('No data to upload');
         return;
       }
       console.log('excelData>>>>>>', excelData);
-      const response = await axios.post('http://64.227.130.216:4300/user/addManyBooks', excelData); 
-      toast.success(`Data Uploaded Successfully`)
-      setTimeout(()=>{
-        window.location.reload()
-      },2000)
+      const response = await axios.post('http://64.227.130.216:4300/user/addManyBooks', excelData);
+      toast.success(`Data Uploaded Successfully`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');
@@ -207,7 +213,6 @@ const Lead = () => {
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
-     
         <Box
           sx={{
             backgroundColor: 'white',

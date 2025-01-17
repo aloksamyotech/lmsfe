@@ -1,303 +1,350 @@
+// //..................................................................//
 import { useState, useEffect } from 'react';
-import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import Iconify from '../../ui-component/iconify';
-import TableStyle from '../../ui-component/TableStyle';
-import AddLead from './booksAllotment';
-import axios from 'axios';
-
-import IconButton from '@mui/material/IconButton'; 
-import VisibilityIcon from '@mui/icons-material/Visibility'; 
-
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  Container,
+  Grid,
+  Box,
+  Card,
+  CardMedia,
+  Typography,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  FormLabel
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-import { Breadcrumbs, Link } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
+import axios from 'axios';
+import Cart from '../Books/Cart.js';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
+import { toast } from 'react-toastify';
 
 const Allotment = () => {
-  const [openAdd, setOpenAdd] = useState(false);
-  const [data, setData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [search, setSearch] = useState('');
+  const [cartItems, setCartItems] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [submissionDate, setSubmissionDate] = useState('');
+  const [submissionType, setSubmissionType] = useState('');
+  const [studentData, setStudentData] = useState([]);
+  const [calculatedAmount, setCalculatedAmount] = useState(0);
+  const [students, setStudents] = useState([]); // Holds student data
+
+  const [selectedStudent, setSelectedStudent] = useState(null); // Store selected student
+
   const navigate = useNavigate();
-  const [editData, setEditData] = useState(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [bookToDelete, setBookToDelete] = useState(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    event.preventDefault();
-    console.log('Breadcrumb clicked');
+  const fetchCategory = async () => {
+    const response = await axios.get('http://localhost:4300/user/bookManagement');
+    setCategoryData(response.data.BookManagement);
   };
-  const [studentId, setStudentId] = useState(null);
 
-  useEffect(() => {
-    const url = window.location.href;
-    const parts = url.split('/');
-    const extractedId = parts[parts.length - 1];
-    setStudentId(extractedId);
-  }, []);
-
-  const columns = [
-    {
-      field: 'studentEmail',
-      headerName: 'Student Email',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center',
-      cellClassName: 'name-column--cell name-column--cell--capitalize',
-      renderCell: (params) => (
-        <div>
-          <Button
-            onClick={() => handleView(params.row)}
-            style={{
-              color: 'inherit',
-              textDecoration: 'none',  
-              backgroundColor: 'transparent', 
-              padding: 0,
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 'normal'  
-            }}
-          >
-            {params.value}  
-          </Button>
-        </div>
-      )
-    },
-    {
-      field: 'student_Name',
-      headerName: 'Student Name',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center',
-      cellClassName: 'name-column--cell--capitalize'
-    },
-    {
-      field: 'mobile_Number',
-      headerName: 'Mobile Number',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center',
-      cellClassName: 'name-column--cell--capitalize'
-    },
-    {
-      field: 'bookIssueDate',
-      headerName: 'Book Issue Date',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center'
-    },
-
-    {
-      field: 'action',
-      headerName: 'Action',
-      align: 'center',
-      headerAlign: 'center',
-      flex: 1,
-      renderCell: (params) => (
-        <div>
-          <Button onClick={() => handleView(params.row)} color="secondary" style={{ margin: '-15px' }}>
-            <VisibilityIcon />
-          </Button>
-        </div>
-      )
+  const fetchSubscription = async () => {
+    try {
+      const response = await axios.get('http://64.227.130.216:4300/user/getSubscriptionType');
+      console.log('response of student data', response);
+      setStudentData(response.data?.SubscriptionType);
+    } catch (error) {
+      console.error('Error fetching SubscriptionType', error);
     }
-  ];
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-  const handleView = (row) => {
-    console.log('Viewing', row);
-
-    navigate(`/dashboard/viewBookAllotment/${row.id}`);
   };
   const fetchData = async () => {
     try {
-      console.log('Api Start........'); 
+      console.log('API Start........');
       const response = await axios.get('http://64.227.130.216:4300/user/getBookAllotmentHistory');
-      console.log('response--------->>>>>>>>>>>>', response?.data);
+      console.log('Response--------->>>>>>>>>>>>', response?.data);
 
       const fetchedData = response?.data?.histories.map((item) => ({
         id: item._id,
-        student_Name: item.studentDetails[0]?.student_Name,
-        studentEmail: item.studentDetails[0]?.email,
-        mobile_Number: item.studentDetails[0]?.mobile_Number,
-        bookIssueDate: formatDate(item.bookIssueDate)
+        name: item.studentDetails[0]?.student_Name || 'N/A',
+        email: item.studentDetails[0]?.email || 'N/A',
+        mobile: item.studentDetails[0]?.mobile_Number || 'N/A',
+        bookIssueDate: item.bookIssueDate || 'N/A'
       }));
-      console.log(' student_Name', fetchedData);
 
-      setData(fetchedData);
+      console.log('Student Data:', fetchedData);
+      setStudents(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-  useState(() => {
+
+  useEffect(() => {
     fetchData();
   }, []);
 
-  const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
+  useEffect(() => {
+    fetchCategory();
+    fetchSubscription();
+  }, []);
 
-  const handleEdit = (book) => {
-    setEditData(book);
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
   };
 
-  const handleSaveEdit = async () => {
-    try {
-      const response = await axios.put(`http://64.227.130.216:4300/user/editBookAllotment/${editData.id}`, editData);
-      console.log('Data', response);
+  const handleAddToCart = (product) => {
+    setSelectedProduct(product);
+    setOpenModal(true);
+  };
+  const handleStudentChange = (event) => {
+    setSelectedStudent(event.target.value);
+  };
 
-      const updatedBook = response.data;
-      setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
-      setEditData(null);
-    } catch (error) {
-      console.error('Error updating book:', error);
+  const handleRemoveFromCart = (productId, submissionType) => {
+    setCartItems((prevCartItems) => prevCartItems.filter((item) => !(item._id === productId && item.submissionType === submissionType)));
+  };
+
+  const handleIncreaseQuantity = (itemId, submissionType) => {
+    const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+    if (totalQuantity < 10) {
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item._id === itemId && item.submissionType === submissionType
+            ? {
+                ...item,
+                quantity: (item.quantity || 0) + 1, // Increase quantity
+                amount: (item.amount || 0) + (item.amount || 0) / (item.quantity || 1)
+              }
+            : item
+        )
+      );
+    } else {
+      toast.error('Total quantity in cart cannot exceed 10');
     }
   };
 
-  const handleDelete = (id) => {
-    setBookToDelete(id);
-    setOpenDeleteDialog(true);
+  const handleDecreaseQuantity = (itemId, submissionType) => {
+    console.log('look', itemId, submissionType);
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item._id === itemId && item.submissionType === submissionType
+          ? {
+              ...item,
+              quantity: item.quantity > 1 ? item.quantity - 1 : 1,
+              amount: item.quantity > 1 ? item.amount - item.amount / item.quantity : item.amount
+            }
+          : item
+      )
+    );
   };
 
-  const confirmDelete = async () => {
-    try {
-      console.log('delete API...');
-      await axios.delete(`http://64.227.130.216:4300/user/deleteAllotmentBook/${bookToDelete}`);
-      setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
-      setOpenDeleteDialog(false);
-      setBookToDelete(null);
-    } catch (error) {
-      console.error('Error deleting book:', error);
-      setOpenDeleteDialog(false);
-      setBookToDelete(null);
+  const handleClearCart = () => {
+    setCartItems([]);
+  };
+
+  useEffect(() => {
+    if (submissionType && submissionDate) {
+      const selectedType = studentData.find((type) => type._id === submissionType);
+      setCalculatedAmount(selectedType ? selectedType.amount : 0);
+    } else {
+      setCalculatedAmount(null);
     }
+  }, [submissionType, submissionDate, studentData]);
+
+  const handleDateChange = (event) => {
+    setSubmissionDate(event.target.value);
+    const selectedType = studentData.find((type) => type._id === selectedTypeId);
+    setCalculatedAmount(selectedType ? selectedType.amount : 0);
   };
 
-  const cancelDelete = () => {
-    setOpenDeleteDialog(false);
-    setBookToDelete(null);
+  const handleTypeChange = (event) => {
+    setSubmissionType(event.target.value);
+  };
+  const handleSubmitCart = () => {
+    const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+    if (totalQuantity >= 10) {
+      toast.error('You can only add up to 10 books to your cart.');
+      setOpenModal(false);
+      return;
+    }
+
+    if (!submissionDate || !submissionType) {
+      toast.error('Please select both submission date and type.');
+      return;
+    }
+
+    const selectedType = studentData.find((type) => type._id === submissionType);
+    const typeCharge = selectedType ? selectedType.amount : 0;
+    const typeName = selectedType ? selectedType.title : 'N/A';
+
+    setCartItems((prevCartItems) => {
+      const existingItemIndex = prevCartItems.findIndex(
+        (item) => item._id === selectedProduct._id && item.submissionType === submissionType
+      );
+
+      if (existingItemIndex >= 0) {
+        const updatedCartItems = [...prevCartItems];
+        updatedCartItems[existingItemIndex].quantity += 1;
+        updatedCartItems[existingItemIndex].submissionDate = submissionDate;
+        updatedCartItems[existingItemIndex].amount += typeCharge;
+        return updatedCartItems;
+      } else {
+        return [
+          ...prevCartItems,
+          {
+            ...selectedProduct,
+            quantity: 1,
+            submissionDate,
+            submissionType,
+            submissionTypeName: typeName,
+            amount: typeCharge
+          }
+        ];
+      }
+    });
+
+    setOpenModal(false);
+    setSubmissionDate('');
+    setSubmissionType('');
+    setCalculatedAmount(null);
   };
 
-  console.log(`editData`, editData);
+  const filteredProducts = categoryData.filter((product) => product.title.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <>
-      <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
-      <Container>
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            height: '50px',
-            justifyContent: 'space-between',
-            marginBottom: '-18px'
-          }}
-        >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Allotment Management</h4>
-            </Link>
-          </Breadcrumbs>
-
-          {/* <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}> */}
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Allotted New Book
-            </Button>
-          </Stack>
-          {/* </Stack> */}
-        </Box>
-
-        <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
- 
-        <TableStyle>
-          <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
-              <DataGrid
-                rows={data}
-                columns={columns}
-                checkboxSelection
-                getRowId={(row) => row.id}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{ toolbar: { showQuickFilter: true } }}
-              />
-            </Card>
-          </Box>
-        </TableStyle>
-
-        {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3}>
-              <Typography variant="h6">Edit Book</Typography>
-              <TextField
-                label="Book Name"
-                value={editData.bookName}
-                onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Student Name"
-                value={editData.student_Name}
-                onChange={(e) => setEditData({ ...editData, student_Name: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Payment Type"
-                value={editData.paymentType}
-                onChange={(e) => setEditData({ ...editData, paymentType: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              {/* <TextField
-                label="Book Issue Date"
-                value={editData.bookIssueDate}
-                onChange={(e) => setEditData({ ...editData, bookIssueDate: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
-              {/* <TextField
-                label="Submission Date"
-                value={editData.submissionDate}
-                onChange={(e) => setEditData({ ...editData, submissionDate: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
-              <Button onClick={handleSaveEdit} variant="contained" color="primary">
-                Save
-              </Button>
+    <Container maxWidth="xl">
+      <Box sx={{ display: 'flex', flexDirection: 'row', mb: 2 }}>
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={4}>
+            <FormControl sx={{ width: '300px', marginBottom: 2 }}>
+              <InputLabel>Select Student</InputLabel>
+              <Select value={selectedStudent} onChange={handleStudentChange} label="Select Student">
+                {students.map((student) => (
+                  <MenuItem key={student.id} value={student.id}>
+                    {student.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl sx={{ width: '300px', marginBottom: 2 }}>
+              <InputLabel>Select Email</InputLabel>
+              <Select value={selectedStudent} onChange={handleStudentChange} label="Select Student">
+                {students.map((student) => (
+                  <MenuItem key={student.id} value={student.id}>
+                    {student.email}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '80%' }}>
+              <SearchIcon />
+              <InputBase placeholder="Search Product..." sx={{ flex: 1, ml: 1 }} onChange={handleSearch} value={search} />
             </Box>
-          </Dialog>
-        )}
+          </Grid>
+        </Grid>
+      </Box>
 
-        <Dialog open={openDeleteDialog} onClose={cancelDelete}>
-          <Box p={3}>
-            <Typography variant="h6">Are you sure you want to delete this book?</Typography>
-            <Stack direction="row" spacing={2} justifyContent="flex-end" mt={3}>
-              <Button onClick={cancelDelete} variant="outlined" color="secondary">
-                Cancel
-              </Button>
-              <Button onClick={confirmDelete} variant="contained" color="primary">
-                OK
-              </Button>
-            </Stack>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={9} lg={6}>
+          <Box sx={{ height: '70vh' }}>
+            <Grid container spacing={2}>
+              {filteredProducts.map((product) => (
+                <Grid item xs={12} sm={6} md={4} key={product._id}>
+                  <Card
+                    sx={{
+                      transition: 'box-shadow 0.3s, transform 0.3s',
+                      border: '1px solid #ccc',
+                      height: '35vh',
+                      '&:hover': { transform: 'scale(1.05)', boxShadow: 4 }
+                    }}
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    <CardMedia
+                      component="img"
+                      image={`http://64.227.130.216:4300/${product.upload_Book}`}
+                      sx={{ objectFit: 'cover', height: '150px' }}
+                    />
+                    <Box sx={{ p: 2 }}>
+                      <Typography variant="h6">{product.title}</Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {product.author}
+                      </Typography>
+                    </Box>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
           </Box>
-        </Dialog>
-      </Container>
-    </>
+        </Grid>
+
+        <Grid item xs={12} md={3} lg={6}>
+          <Box
+            sx={{
+              height: '70vh',
+              overflowY: 'auto',
+              border: '1px solid #ccc',
+              borderRadius: '8px',
+              padding: 2
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              Shopping Cart
+            </Typography>
+            <Cart
+              cartItems={cartItems}
+              onRemoveFromCart={handleRemoveFromCart}
+              onClearCart={handleClearCart}
+              onIncreaseQuantity={handleIncreaseQuantity}
+              onDeacrmentQuantaty={handleDecreaseQuantity}
+              selectedStudent={selectedStudent}
+              students={students}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+
+      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+        <DialogTitle>Enter Submission Details</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth sx={{ marginBottom: 2 }}>
+            <FormLabel>Submission Type</FormLabel>
+            <Select value={submissionType} onChange={handleTypeChange} label="Submission Type">
+              {studentData.length > 0 &&
+                studentData.map((type) => (
+                  <MenuItem key={type._id} value={type._id}>
+                    {type.title}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+          <FormLabel>Submission Date</FormLabel>
+          <TextField
+            type="date"
+            value={submissionDate}
+            onChange={handleDateChange}
+            label=""
+            fullWidth
+            variant="outlined"
+            sx={{ marginBottom: 2 }}
+          />
+          <Typography variant="h6" color="primary">
+            Amount: ₹{calculatedAmount}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenModal(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmitCart} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
   );
 };
 

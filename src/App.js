@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { Bars } from 'react-loader-spinner';
-import { CirclesWithBar } from 'react-loader-spinner'; 
+import { CirclesWithBar } from 'react-loader-spinner';
 
 import Routes from 'routes';
 import themes from 'themes';
