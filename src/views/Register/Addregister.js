@@ -14,6 +14,8 @@ import * as yup from 'yup';
 import { FormLabel, FormControl, MenuItem, Select } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { url } from 'core/url';
+import { addRegister } from 'core/helperFurtion';
 
 const AddRegister = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -67,8 +69,10 @@ const AddRegister = (props) => {
 
       try {
         console.log('try bolck');
-        const response = await axios.post('http://localhost:4300/user/addRegister', formData, {
-          headers: {
+        // const response = await axios.post('http://localhost:4300/user/addRegister', formData, {
+          const response = await addRegister(url.studentRegister.addRegister, formData, {
+           
+        headers: {
             'Content-Type': 'multipart/form-data'
           }
         });

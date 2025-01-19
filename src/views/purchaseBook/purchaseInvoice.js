@@ -28,6 +28,7 @@ import { useLocation } from 'react-router-dom';
 
 import moment from 'moment';
 import axios from 'axios';
+import { url } from 'core/url';
 // import html2pdf from 'html2pdf.js';
 // import { allBooking, allItems } from 'api/apis';
 
@@ -68,9 +69,11 @@ const PurchaseInvoice = () => {
 
   const fetchData = async () => {
     console.log(`fetchData>>>>>>>>>>>>>>`);
-    const url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
-    console.log(`url`, url);
+    // const Url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
+    // console.log(`Url`, Url);
     const response = await axios.get(`http://localhost:4300/user/getPurchaseInvoice/${rowData?.id}`);
+
+    // const response = await getPurchaseInvoices(`${url.purchaseBook.getPurchaseInvoice}${rowData?.id}`);
 
     const student_Name = response?.data[0]?.vendorDetails?.vendorName;
 

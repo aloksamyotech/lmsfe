@@ -83,26 +83,24 @@ const View = () => {
       flex: 1
     },
 
-    {
-      field: 'invoice',
-      headerName: 'Invoice',
-      flex: 1,
-      renderCell: (params) => (
-        <div>
-          <Button color="primary" onClick={() => handleInvoice(params.row)} style={{ margin: '-9px' }}>
-            <ReceiptIcon />
-          </Button>
-        </div>
-      )
-    }
+    // {
+    //   field: 'invoice',
+    //   headerName: 'Invoice',
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <div>
+    //       <Button color="primary" onClick={() => handleInvoice(params.row)} style={{ margin: '-9px' }}>
+    //         <ReceiptIcon />
+    //       </Button>
+    //     </div>
+    //   )
+    // }
   ];
   const handleInvoice = (row) => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
 
     const fetchStudent = async () => {
       try {
-        // console.log('Student');
-
         const response = await axios.get('/user/viewBookAllotmentUser/:id');
         console.log('data API------------', response);
         const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
@@ -138,7 +136,7 @@ const View = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
+      const response = await axios.put(`http://64.227.130.216:4300/user/editRegister/${editData.id}`, editData);
       console.log('Data', response);
 
       const updatedRegister = response.data;
@@ -155,7 +153,7 @@ const View = () => {
 
   const confirmDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4300/user/deleteRegister/${id}`);
+      await axios.delete(`http://64.227.130.216:4300/user/deleteRegister/${id}`);
       setData((prevData) => prevData.filter((register) => register.id !== id));
     } catch (error) {
       console.error('Error deleting Register:', error);
@@ -186,7 +184,7 @@ const View = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
+        const response = await axios.get(`http://64.227.130.216:4300/user/viewBookAllotmentUser/${extractedId}`);
         // const student = response?.data?.bookAllotments?.user?.map((item) => ({
         //   // id: item._id,
         //   student_id: item.student_id,
@@ -221,7 +219,9 @@ const View = () => {
     const fetchData = async () => {
       try {
         console.log('findHistoryBookAllotmentUser');
-        const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+        // const response = await axios.get(`http://64.227.130.216:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+
+        const response = await axios.get(`http://64.227.130.216:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
         console.log('findHistoryBookAllotmentUser----------', response);
         const fetchedData = response?.data?.map((item) => ({
           id: item._id,
@@ -241,42 +241,6 @@ const View = () => {
 
     fetchData();
   }, []);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
-  //       console.log('Student ', response);
-  //       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
-  //         id: item._id,
-  //         student_id: item.student_id,
-  //         student_Name: item.student_Name,
-  //         email: item.email,
-  //         mobile_Number: item.mobile_Number,
-  //         register_Date: formatDate(item.register_Date)
-  //       }));
-  //       setData(fetchedData);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   const fetchStudentData = async () => {
-  //     try {
-  //       console.log('Student Data........');
-
-  //       const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
-  //       console.log('Student ', response);
-
-  //       setStudentData(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching student data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  //   fetchStudentData();
-  // }, []);
 
   console.log(`allData`, allData?.user?.email);
   return (
@@ -318,7 +282,6 @@ const View = () => {
             // marginRight: '-5%'
           }}
         >
-          {/* Student Logo / Avatar */}
           <Avatar
             src={student.logoUrl}
             alt={student.student_Name}
@@ -329,7 +292,6 @@ const View = () => {
             }}
           />
 
-          {/* Student Details */}
           <Box sx={{ lineHeight: 2 }}>
             <Typography variant="h5" gutterBottom>
               {allData?.user?.student_Name}
@@ -345,28 +307,6 @@ const View = () => {
             </Typography>
           </Box>
         </Paper>
-        {/* <Box
-          sx={{
-            backgroundColor: 'white',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            height: '50px',
-            marginBottom: '-18px'
-          }}
-        >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Student Allotted Books</h4>
-            </Link>
-          </Breadcrumbs>
-        </Box> */}
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack> */}
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -381,8 +321,6 @@ const View = () => {
             </Card>
           </Box>
         </TableStyle>
-        {/* <StudentInvoice />
-        <PaymentReceipt /> */}
       </Container>
     </>
   );

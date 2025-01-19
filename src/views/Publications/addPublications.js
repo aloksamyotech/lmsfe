@@ -18,6 +18,8 @@ import { FormControl, FormHelperText, FormLabel, MenuItem, Select } from '@mui/m
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { url } from 'core/url';
+import { addPublications } from 'core/helperFurtion';
 // import { apiget, apipost } from '../../service/api';
 
 const AddPublications = (props) => {
@@ -121,7 +123,8 @@ const AddPublications = (props) => {
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        const response = await axios.post('http://localhost:4300/user/addPublications', values);
+        // const response = await axios.post('http://localhost:4300/user/addPublications', values);
+        const response = await addPublications(url.publications.addPublications, values);
         console.log('Form submitted successfully:', response);
         console.log();
         fetchData();

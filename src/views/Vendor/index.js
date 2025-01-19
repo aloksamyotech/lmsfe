@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { url } from 'core/url';
+import { deleteVender, editVender, viewVender } from 'core/helperFurtion';
 
 const PolicyManagement = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -70,7 +72,6 @@ const PolicyManagement = () => {
       )
     }
   ];
-
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     console.log('Breadcrumb clicked');
@@ -93,7 +94,9 @@ const PolicyManagement = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/venderManagement');
+      // const response = await axios.get('http://localhost:4300/user/venderManagement');
+      
+      const response = await viewVender(url.vendorManagement.viewVender);
       const fetchedData = response?.data?.VenderManagement?.map((item) => ({
         id: item._id,
         vendorName: item.vendorName,
@@ -103,8 +106,7 @@ const PolicyManagement = () => {
         date: formatDate(item.date),
         phoneNumber: item.phoneNumber,
         address: item.address
-      }));
-
+      })); 
       setData(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -122,7 +124,9 @@ const PolicyManagement = () => {
   };
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editVender/${editData.id}`, editData);
+      // const response = await axios.put(`http://localhost:4300/user/editVender/${editData.id}`, editData);
+      const response = await editVender(`${url.vendorManagement.editVender}${editData.id}`, editData);
+     
       const updatedVender = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedVender.id ? updatedVender : item)));
       setEditData(null);
@@ -139,8 +143,8 @@ const PolicyManagement = () => {
   };
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:4300/user/deleteVender/${bookToDelete}`);
-
+      // await axios.delete(`http://localhost:4300/user/deleteVender/${bookToDelete}`);
+      await deleteVender(`${url.vendorManagement.delete}${bookToDelete}`)
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
       cancelDelete();
@@ -154,7 +158,6 @@ const PolicyManagement = () => {
     setOpenDeleteDialog(false);
     setBookToDelete(null);
   };
-
   return (
     <>
       <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
@@ -187,7 +190,6 @@ const PolicyManagement = () => {
             </Button>
           </Stack>
         </Box>
-
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">

@@ -87,14 +87,14 @@ const dashboard = {
           type: 'item',
           url: '/dashboard/receive',
           breadcrumbs: false
-        },
-        {
-          id: 'update-Fine',
-          title: 'Manage Fine',
-          type: 'item',
-          url: '/dashboard/fine',
-          breadcrumbs: false
         }
+        // {
+        //   id: 'update-Fine',
+        //   title: 'Manage Fine',
+        //   type: 'item',
+        //   url: '/dashboard/fine',
+        //   breadcrumbs: false
+        // }
       ]
     },
     {

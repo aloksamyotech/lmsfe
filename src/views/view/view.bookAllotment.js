@@ -14,6 +14,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { url } from 'core/url';
 
 const ViewBookAllotment = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -55,17 +56,19 @@ const ViewBookAllotment = () => {
   };
 
   useEffect(() => {
-    const url = window.location.href;
-    setCurrentUrl(url);
+    const urlWindow = window.location.href;
+    setCurrentUrl(urlWindow);
 
-    const parts = url.split('/');
+    const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
     console.log('getting id from dashboard', extractedId);
 
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        const response = await axios.get(`http://localhost:4300/user/getBookDetailHistoryStudentId/${extractedId}`);
+        // const response = await axios.get(`http://localhost:4300/user/getBookDetailHistoryStudentId/${extractedId}`);
+
+        const response = await axios.get(`${url.bookAllotmentHistory.getBookDetailHistoryStudentId}${extractedId}`);
 
         console.log(`response---from all history api-->>>>`, response?.data?.allotmentDetails[0]?.bookDetails?.bookName);
 

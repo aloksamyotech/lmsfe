@@ -4,6 +4,7 @@ import { Card, CardContent, CardMedia, Typography, Box, Grid } from '@mui/materi
 import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import defaultBook from '../Books/bookDummy.jpeg';
+import { url } from 'core/url';
 
 const ProfileCard = ({ name, role, img, onClick }) => {
   return (
@@ -51,12 +52,15 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/bookManagement');
+      // const response = await axios.get('http://localhost:4300/user/bookManagement/');
+
+      const response = await axios.get(url.bookManagenent.bookManagement);
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
         name: item.bookName,
         role: item.author,
         img: item.upload_Book ? `http://localhost:4300/${item.upload_Book}` : defaultBook
+        // img: item.upload_Book ? `${url}${item.upload_Book}` : defaultBook
       }));
 
       setData(fetchedData);

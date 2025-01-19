@@ -24,6 +24,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { url } from 'core/url';
+import { deleteMarkFavorite, getMarkFavorite, markFavorite } from 'core/helperFurtion';
 
 // ----------------------------------------------------------------------
 
@@ -100,7 +102,9 @@ const Contact = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getMarkFavorite');
+      // const response = await axios.get('http://localhost:4300/user/getMarkFavorite');
+      
+      const response = await getMarkFavorite(url.studentRegister.getMarkFavorite);
       console.log('response', response);
       const fetchedData = response?.data?.students?.map((item) => ({
         id: item._id,
@@ -131,7 +135,8 @@ const Contact = () => {
   const handleConfirmDelete = async () => {
     try {
       if (contactToDelete) {
-        await axios.delete(`http://localhost:4300/user/deleteContact/${contactToDelete}`);
+        // await axios.delete(`http://localhost:4300/user/deleteContact/${contactToDelete}`);
+        await deleteMarkFavorite(`${url.favoriteStudents.delete}${contactToDelete}`);
         setData((prevData) => prevData.filter((item) => item.id !== contactToDelete));
         setContactToDelete(null);
       }
@@ -145,13 +150,14 @@ const Contact = () => {
   const handleCancelDelete = () => {
     setOpenDeleteDialog(false);
   };
-
   const handleFavorite = async (student) => {
     console.log(`click on like`);
     try {
       console.log('Student ID', student);
 
-      const response = await axios.post(`http://localhost:4300/user/markFavorite/${student}`);
+      // const response = await axios.post(`http://localhost:4300/user/markFavorite/${student}`);
+      
+      const response = await markFavorite(`${url.studentRegister.markFavorite}${student}`);
       console.log('Favorite response>>>>>>>-------', response);
       const updatedStudent = response.data.student;
 

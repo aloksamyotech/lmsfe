@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddSubscription from './addSubscriptionType';
+import { url } from 'core/url';
+import { deleteSubscription, findSubscription, updateSubscription } from 'core/helperFurtion';
 
 const SubscriptType = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -89,7 +91,10 @@ const SubscriptType = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+      // const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+      // const response = await axios.get(url.subscription.findSub);
+      const response = await findSubscription(url.subscription.findSub);
+
       console.log('response>>>>>>>>>', response);
 
       const fetchedData = response?.data?.SubscriptionType?.map((item) => ({
@@ -118,7 +123,12 @@ const SubscriptType = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editSubscriptionType/${editData.id}`, editData);
+      // const response = await axios.put(`http://localhost:4300/user/editSubscriptionType/${editData.id}`, editData);
+
+      // const response = await axios.put(`${url.subscription.update}${editData.id}`, editData);
+
+      const response = await updateSubscription(`${url.subscription.update}${editData.id}`, editData);
+
       console.log('Data', response);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
@@ -140,7 +150,10 @@ const SubscriptType = () => {
     try {
       console.log('delete API...');
 
-      await axios.delete(`http://localhost:4300/user/deleteSubscriptionType/${bookToDelete}`);
+      // await axios.delete(`http://localhost:4300/user/deleteSubscriptionType/${bookToDelete}`);
+
+      // await axios.delete(`${url.subscription.delete}${bookToDelete}`);
+      await deleteSubscription(`${url.subscription.delete}${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);

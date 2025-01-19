@@ -13,6 +13,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { url } from 'core/url';
+import { deletePublications, editPublications, getPublications } from 'core/helperFurtion';
 // ----------------------------------------------------------------------
 
 const meetingData = [
@@ -141,7 +143,10 @@ const Publications = () => {
     try {
       console.log('useEffect-----------');
 
-      const response = await axios.get('http://localhost:4300/user/getPublications');
+      // const response = await axios.get('http://localhost:4300/user/getPublications');
+
+      const response = await getPublications(url.publications.getPublications);
+
       console.log('After API------------', response);
       console.log('Id -----', response?.data?.PublicationsManagement);
       const fetchedData = await response?.data?.PublicationsManagement.map((item) => {
@@ -189,7 +194,9 @@ const Publications = () => {
       // Ensure you're passing the correct data
       const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; // Make sure the startDate is a valid Date
 
-      const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, updatedPublications);
+      // const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, updatedPublications);
+
+      const response = await editPublications(`${url.publications.editPublications}${editData.id}`, updatedPublications);
 
       // After successful edit, update your data array
       setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
@@ -209,7 +216,9 @@ const Publications = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:4300/user/deletePublications/${bookToDelete}`);
+      // await axios.delete(`http://localhost:4300/user/deletePublications/${bookToDelete}`);
+
+      await deletePublications(`${url.publications.delete}${bookToDelete}`);
 
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));

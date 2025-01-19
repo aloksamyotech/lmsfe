@@ -13,6 +13,8 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
+import { url } from 'core/url.js';
+import { addVender } from 'core/helperFurtion.js';
 
 const AddPolicy = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -45,7 +47,9 @@ const AddPolicy = (props) => {
 
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://localhost:4300/user/addVenderBook', values);
+        // const response = await axios.post('http://localhost:4300/user/addVenderBook', values);
+        const response = await addVender( url.vendorManagement.addVender, values);
+      
         console.log('Form submitted successfully:', response);
         fetchData();
         handleClose();

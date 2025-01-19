@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import invoice from '../view/invoice.png';
 const html2pdf = require('html2pdf.js');
 import HomeIcon from '@mui/icons-material/Home';
-
 import {
   Stack,
   Button,
@@ -17,40 +16,24 @@ import {
   Breadcrumbs,
   Link
 } from '@mui/material';
-// import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
-import { set } from 'immutable';
+import { url } from 'core/url';
 
 const BookInvoice = () => {
   const location = useLocation();
-  // const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
-  console.log('Received Row Data:', rowData?.id);
-
-  // const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
-  // const bookingId = row?._id ? row?._id : bookingData?._id;
-
-  let totalPrice = 0;
+  const [allInvoiceData, setAllInvoiceData] = useState();
   const [allBookingData, setAllBookingData] = useState([]);
   const [allItemData, setAllItemData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [studentName, setStudentName] = useState('');
-  const [studentMobile_Number, setStudentMobile_Number] = useState('');
-  const [studentEmail, setStudentEmail] = useState('');
-  const [studentSelectIdentity, setStudentSelectIdentity] = useState('');
-  const [studentRegister_Date, setStudentRegister_Date] = useState('');
-  const [bookName, setBookName] = useState('');
-  const [studentTitle, setStudentTitle] = useState('');
   const [studentAmount, setStudentAmount] = useState('');
   const [discount, setDiscount] = useState('');
-  const [submissionDate, setSubmissionDate] = useState('');
   const [currentUrl, setCurrentUrl] = useState('');
   const [newData, setNewData] = useState('');
   const [mappedData, setMappedData] = useState('');
   const [payment, setPayment] = useState('');
-
   const containerRef = useRef();
 
   const formatDate = (dateString) => {
@@ -62,50 +45,14 @@ const BookInvoice = () => {
   };
 
   const fetchData = async () => {
-    console.log(`fetchData`);
-    const url = window.location.href;
-    setCurrentUrl(url);
-    const parts = url.split('/');
+    const urlWindow = window.location.href;
+    setCurrentUrl(urlWindow);
+    const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
-    console.log('getting id from dashboard', extractedId);
-
-    const response = await axios.get(`http://localhost:4300/user/getBookAllotmentInvoice/${extractedId}`);
+    // const response = await axios.get(`http://localhost:4300/user/getBookAllotmentInvoice/${extractedId}`);
+    const response = await axios.get(`${url.bookAllotmentHistory.getBookAllotmentInvoice}${extractedId}`);
     console.log('Invoice Data ----------', response?.data);
-    // console.log('bookIssueDate Data ----------', response?.data?.histories?.[0]?.bookIssueDate);
-    // console.log('Date >>>>>>>', response?.data?.histories?.[0]?.studentDetails[0]?.email);
-
-    const NewData = {
-      _id: response?.data?.histories?.[0]?._id,
-      studentId: response?.data?.histories?.[0]?.studentId,
-      bookIssueDate: formatDate(response?.data?.histories?.[0]?.bookIssueDate),
-
-      email: response?.data?.studentDetails?.email,
-      mobile_Number: response?.data?.studentDetails?.mobile_Number,
-      student_Name: response?.data?.studentDetails?.student_Name,
-      select_identity: response?.data?.studentDetails?.select_identity,
-      register_Date: formatDate(response?.data?.studentDetails?.register_Date)
-    };
-    setNewData(NewData);
-    console.log('NewData', NewData);
-
-    const MappedData = response?.data?.allotmentDetails.map((item) => ({
-      amount: item?.amount,
-      bookName: item?.bookDetails?.bookName,
-      submissionDate: formatDate(item?.submissionDate)
-      // bookId: item.bookId,
-      // paymentType: item.paymentType,
-      // submissionDate: item.submissionDate,
-      // id: item._id
-    }));
-    setMappedData(MappedData);
-    console.log('mappedData>>>>>>', MappedData);
-
-    const Payment = response?.data?.allotmentDetails.map((item) => ({
-      amount: item?.amount,
-      paymentType: item?.paymentDetails?.title
-    }));
-    setPayment(Payment);
-    console.log('mappedData>>>>>>', Payment);
+    setAllInvoiceData(response?.data);
   };
 
   useEffect(() => {
@@ -125,9 +72,13 @@ const BookInvoice = () => {
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-
     html2pdf().set(options).from(element).save();
   };
+  const totalAmount = allInvoiceData?.allotmentDetails?.reduce((acc, item) => {
+    return acc + (item?.amount ?? 0);
+  }, 0);
+
+  const totalAmountAfterDiscount = totalAmount - (discount ?? 0);
 
   return (
     <>
@@ -145,7 +96,7 @@ const BookInvoice = () => {
       >
         <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '-12px' }}>
           <Link href="/" underline="hover" color="inherit">
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+            <HomeIcon sx={{ mr: 0.5, color: '#6A1B9A' }} />
           </Link>
           <Link href="/account-profile" underline="hover" color="inherit">
             <h4> Books Allotment Invoice</h4>
@@ -176,7 +127,6 @@ const BookInvoice = () => {
             <Box style={{ marginRight: '50px' }}>
               <img src={invoice} alt="Screenshot" style={{ width: '100px', height: 'auto' }} />
             </Box>
-
             <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
                 SAMYOTECH
@@ -189,11 +139,9 @@ const BookInvoice = () => {
           <Typography variant="h3" fontWeight="bold" mt={3}>
             Invoice
           </Typography>
-
           <Typography variant="h4" align="right" mb={3}>
             Date: {moment().format('MMMM D, YYYY')}
           </Typography>
-
           <Typography variant="h4" mb={3} mt={3}>
             Student Information
           </Typography>
@@ -203,114 +151,103 @@ const BookInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Name:
               </Typography>
-              <Typography variant="body2">{newData?.student_Name || 'N/A'}</Typography>
+              <Typography variant="body2">{allInvoiceData?.studentDetails?.student_Name ?? 'N/A'}</Typography>
             </Grid>
-
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Phone:
               </Typography>
-              <Typography variant="body2">{newData?.mobile_Number || 'N/A'}</Typography>
+              <Typography variant="body2">{allInvoiceData?.studentDetails?.mobile_Number ?? 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Email:
               </Typography>
-              <Typography variant="body2">{newData?.email || 'N/A'}</Typography>
+              <Typography variant="body2">{allInvoiceData?.studentDetails?.email ?? 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Select Identity:
               </Typography>
-              <Typography variant="body2">{newData?.select_identity || 'N/A'}</Typography>
+              <Typography variant="body2">{allInvoiceData?.studentDetails?.select_identity ?? 'N/A'}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" fontWeight="bold">
                 Register Date:
               </Typography>
-              <Typography variant="body2">{newData?.register_Date || 'N/A'}</Typography>
+              <Typography variant="body2">{formatDate(allInvoiceData?.studentDetails?.register_Date ?? 'N/A')}</Typography>
             </Grid>
           </Grid>
-
           <Typography variant="h4" mb={3} mt={3}>
             Payment Information
           </Typography>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
-          <div> 
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Book Name:
-              </Typography>
-              <Typography variant="body2">{mappedData?.[0]?.bookName || 'N/A'}</Typography>
-            </Grid>
-
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Total Price:
-              </Typography>
-              <Typography variant="body2">{`₹${mappedData?.[0]?.amount}` || '₹0'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Advance Payment:
-              </Typography>
-              <Typography variant="body2">{'₹0'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Discount:
-              </Typography>
-              <Typography variant="body2">{discount ? `₹${discount}` : '₹0' || '₹0'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Payment Type:
-              </Typography>
-              <Typography variant="body2">{payment?.[0]?.paymentType || 'N/A'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Paid Amount:
-              </Typography>
-              <Typography variant="body2">
-                {allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount
-                  ? `₹${
-                      allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount -
-                      allBookingData?.bookingData?.[0]?.payments?.[0]?.discount
-                    }`
-                  : '₹0' || '₹0'}
-              </Typography>
-            </Grid>
-
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Submission Date:
-              </Typography>
-              <Typography variant="body2">{mappedData?.[0]?.submissionDate}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Total Paid Amount:
-              </Typography>
-              <Typography variant="body2">
-                {allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount
-                  ? `₹${allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount}`
-                  : '₹0' || '₹0'}
-              </Typography>
-            </Grid>
-          </Grid>
-          </div>
-
+          {allInvoiceData?.allotmentDetails?.map((item, index) => {
+            console.log(`item`, item?.bookDetails?.bookName);
+            return (
+              <div key={index}>
+                <Grid container spacing={1}>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Book Name:
+                    </Typography>
+                    <Typography variant="body2">{item?.bookDetails?.bookName ?? 'N/A'}</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Total Price:
+                    </Typography>
+                    <Typography variant="body2">{`₹${item?.amount ?? '0'}`}</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Advance Payment:
+                    </Typography>
+                    <Typography variant="body2">{'₹0'}</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Discount:
+                    </Typography>
+                    <Typography variant="body2">{discount ? `₹${discount}` : '₹0'}</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Payment Type:
+                    </Typography>
+                    <Typography variant="body2">{item?.paymentDetails?.title ?? 'N/A'}</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Paid Amount:
+                    </Typography>
+                    <Typography variant="body2">{`₹${'0'}`}</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Submission Date:
+                    </Typography>
+                    <Typography variant="body2">{formatDate(item?.submissionDate ?? 'N/A')}</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Total Paid Amount:
+                    </Typography>
+                    <Typography variant="body2">{`₹${item?.amount ?? '0'}`}</Typography>
+                  </Grid>
+                </Grid>
+                <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
+              </div>
+            );
+          })}
           <Grid container spacing={1} mt={2} mb={5}>
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-                {`₹${studentAmount - discount || `₹0.00`}`}
+                {`₹${totalAmountAfterDiscount ?? `₹0.00`}`}
               </Typography>
             </Grid>
           </Grid>
-
           <Box sx={{ position: 'absolute', bottom: '20px', right: '20px' }}>
             <Typography variant="body2" fontSize="1.1rem" color="text.secondary">
               SAMYOTECH

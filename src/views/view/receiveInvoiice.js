@@ -7,11 +7,6 @@ import {
   Stack,
   Button,
   Container,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableBody,
-  Table,
   Typography,
   Box,
   Divider,
@@ -24,21 +19,16 @@ import {
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
-// import { url } from 'api/url';
 
 import moment from 'moment';
 import axios from 'axios';
-// import html2pdf from 'html2pdf.js';
-// import { allBooking, allItems } from 'api/apis';
+import { url } from 'core/url';
 
 const ReceiveInvoice = () => {
   const location = useLocation();
   const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
   console.log('Received Row Data:', rowData?.id);
-
-  const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
-  const bookingId = row?._id ? row?._id : bookingData?._id;
 
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
@@ -54,6 +44,8 @@ const ReceiveInvoice = () => {
   const [studentAmount, setStudentAmount] = useState('');
   const [discount, setDiscount] = useState('');
   const [submissionDate, setSubmissionDate] = useState('');
+  const [allFineData, setAllFineData] = useState('');
+  const [reason, setReason] = useState('');
 
   const containerRef = useRef();
 
@@ -64,18 +56,23 @@ const ReceiveInvoice = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
   const fetchData = async () => {
     console.log(`fetchData`);
-    const url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
-    console.log(`url`, url);
+    // const Url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
+    const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
+    console.log(`Url`, Url);
     const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
-    console.log('Invoice Data ----------', response?.data[0]);
+    // const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
+    // console.log('Invoice Data ----------', response?.data[0]);
+    console.log('Invoice Data ----------', response?.data);
 
-    // const student_Name = response?.data[0]?.studentDetails?.student_Name;
+    const studentId = response?.data[0]?.studentId;
+    console.log('studentId', studentId);
+
+    const bookId = response?.data[0]?.bookId;
+    console.log('bookId by Hritik>>', bookId);
 
     const student_Name = response?.data[0]?.studentDetails?.student_Name;
-
     setStudentName(student_Name);
 
     const email = response?.data[0]?.studentDetails?.email;
@@ -92,9 +89,6 @@ const ReceiveInvoice = () => {
 
     const bookName = response?.data[0]?.bookDetails?.bookName;
     setBookName(bookName);
-    // const bookName = response?.data[0]?.bookDetails?.bookName;
-    // const bookName = response?.data[0]?.bookDetails?.bookName;
-
     const amount = response?.data[0]?.subscriptionDetails?.amount;
     setStudentAmount(amount);
 
@@ -108,11 +102,19 @@ const ReceiveInvoice = () => {
     const submissionDate = response?.data[0]?.submissionDate;
     setSubmissionDate(formatDate(submissionDate));
 
-    console.log('bookName', bookName);
-    console.log('student Name >>', student_Name);
-    console.log('email >>', email);
-    console.log(' amount >>', amount);
-    console.log('bookIssueDate', bookIssueDate);
+    try {
+      const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
+      
+      // const data = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
+      console.log(`Fine data  >>>>>>>>`, data?.data);
+      let fineAmount = data?.data?.[0]?.fineAmount;
+      setAllFineData(fineAmount);
+      let reason = data?.data?.[0]?.reason;
+      setReason(reason);
+      console.log('fineAmount', fineAmount);
+    } catch (error) {
+      console.log(`error`, error);
+    }
   };
 
   useEffect(() => {
@@ -122,20 +124,6 @@ const ReceiveInvoice = () => {
   useEffect(() => {
     setAllItemData(allBookingData?.items);
   }, [allBookingData?.items]);
-
-  // const handlePrint = () => {
-  //   const element = containerRef.current;
-  //   const options = {
-  //     margin: 10,
-  //     filename: `invoice_${allBookingData?.bookingData?.[0]?.customer?.[0]?.name}${moment().format('DD-MM_YYYY')}.pdf`,
-  //     image: { type: 'jpeg', quality: 0.98 },
-  //     html2canvas: { scale: 2 },
-  //     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  //   };
-
-  //   html2pdf().set(options).from(element).save();
-  // };
-
   const handlePrint = () => {
     const element = containerRef.current;
     const options = {
@@ -145,10 +133,8 @@ const ReceiveInvoice = () => {
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-
     html2pdf().set(options).from(element).save();
   };
-
   return (
     <>
       <Box
@@ -175,11 +161,7 @@ const ReceiveInvoice = () => {
       </Box>
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
       {loading && (
-        <Backdrop
-          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-          open={loading}
-          // onClick={handleClose}
-        >
+        <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={loading}>
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
@@ -200,7 +182,6 @@ const ReceiveInvoice = () => {
             <Box style={{ marginRight: '50px' }}>
               <img src={invoice} alt="Screenshot" style={{ width: '100px', height: 'auto' }} />
             </Box>
-
             <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
                 SAMYOTECH
@@ -213,11 +194,9 @@ const ReceiveInvoice = () => {
           <Typography variant="h3" fontWeight="bold" mt={3}>
             Invoice
           </Typography>
-
           <Typography variant="h4" align="right" mb={3}>
             Date: {moment().format('MMMM D, YYYY')}
           </Typography>
-
           <Typography variant="h4" mb={3} mt={3}>
             Student Information
           </Typography>
@@ -254,7 +233,6 @@ const ReceiveInvoice = () => {
               <Typography variant="body2">{studentRegister_Date || 'N/A'}</Typography>
             </Grid>
           </Grid>
-
           <Typography variant="h4" mb={3} mt={3}>
             Payment Information
           </Typography>
@@ -274,9 +252,9 @@ const ReceiveInvoice = () => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
-                Advance Payment:
+                Payment Type:
               </Typography>
-              <Typography variant="body2">{'₹0'}</Typography>
+              <Typography variant="body2">{studentTitle || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
@@ -286,9 +264,9 @@ const ReceiveInvoice = () => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
-                Payment Type:
+                Submission Date:
               </Typography>
-              <Typography variant="body2">{studentTitle || 'N/A'}</Typography>
+              <Typography variant="body2">{submissionDate}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
@@ -303,22 +281,21 @@ const ReceiveInvoice = () => {
                   : '₹0' || '₹0'}
               </Typography>
             </Grid>
-
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Submission Date:
-              </Typography>
-              <Typography variant="body2">{submissionDate}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Total Paid Amount:
-              </Typography>
-              <Typography variant="body2">
-                {allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount
-                  ? `₹${allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount}`
-                  : '₹0' || '₹0'}
-              </Typography>
+            <Grid>
+              <Grid item xs={6}>
+                <Typography variant="body1" fontWeight="bold">
+                  Fine Reason :
+                </Typography>
+                <Typography variant="body2">{reason}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="body1" fontWeight="bold">
+                  Fine Amount:
+                </Typography>
+                <Typography variant="body2">
+                  <Typography variant="body2">{`₹${allFineData}` || '₹0'}</Typography>
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
 
@@ -326,7 +303,7 @@ const ReceiveInvoice = () => {
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-                {`₹${studentAmount - discount || `₹0.00`}`}
+                {`₹${studentAmount + (allFineData || 0) - (discount || 0)}` || `₹0.00`}
               </Typography>
             </Grid>
           </Grid>

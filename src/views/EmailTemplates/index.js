@@ -1,101 +1,3 @@
-// /* eslint-disable react/prop-types */
-// /* eslint-disable react-hooks/exhaustive-deps */
-// import { Link } from 'react-router-dom';
-// // @mui
-// import { Stack, Button, Container, Typography, Card, Box } from '@mui/material';
-// import TableStyle from '../../ui-component/TableStyle';
-// import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-// import { Grid, FormLabel, TextField, Stack, Button, Container, Typography, Card, Box } from '@mui/material';
-// import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-
-// import Iconify from '../../ui-component/iconify';
-// // import AddEmailTemplates from './AddTemplates';
-
-// // ----------------------------------------------------------------------
-
-// const documentData = [
-//   // {
-//   //   id: 1,
-//   //   templatesName: 'Heading',
-//   //   createdOn: '09/01/2024',
-//   //   modifiedOn: '09/01/2024',
-//   //   createdBy: 'user '
-//   // }
-// ];
-// const EmailTemplates = () => {
-//   const columns = [
-//     // {
-//     //   field: 'templatesName',
-//     //   headerName: 'Templates Name',
-//     //   flex: 1,
-//     //   cellClassName: 'name-column--cell name-column--cell--capitalize'
-//     // },
-//     // {
-//     //   field: 'createdOn',
-//     //   headerName: 'Created On',
-//     //   flex: 1,
-//     //   cellClassName: 'name-column--cell--capitalize'
-//     // },
-//     // {
-//     //   field: 'modifiedOn',
-//     //   headerName: 'ModifiedOn',
-//     //   flex: 1
-//     // },
-//     // {
-//     //   field: 'createdBy',
-//     //   headerName: 'Created By',
-//     //   flex: 1
-//     // }
-//   ];
-//   return (
-//     <>
-//       {/* <AddEmailTemplates /> */}
-//       <Container>
-//         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-//           <Typography variant="h4"> Report Lists</Typography>
-//           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-//             {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-//               <Link to="/dashboard/emailtemplate/addTemplates" style={{ textDecoration: 'none', color: 'white' }}>
-//                 New Template
-//               </Link>
-//             </Button> */}
-//              <Grid item xs={12} sm={6} md={6}>
-//                 <FormLabel>Register Date</FormLabel>
-//                 <TextField
-//                   id="register_Date"
-//                   name="register_Date"
-//                   size="small"
-//                   type="datetime-local"
-//                   fullWidth
-//                   value={formik.values.register_Date}
-//                   onChange={formik.handleChange}
-//                   error={formik.touched.register_Date && Boolean(formik.errors.register_Date)}
-//                   helperText={formik.touched.register_Date && formik.errors.register_Date}
-//                 />
-//               </Grid>
-//           </Stack>
-//         </Stack>
-//         <TableStyle>
-//           <Box width="100%">
-//             <Card style={{ height: '600px', paddingTop: '15px' }}>
-//               <DataGrid
-//                 rows={documentData}
-//                 columns={columns}
-//                 checkboxSelection
-//                 getRowId={(row) => row.id}
-//                 slots={{ toolbar: GridToolbar }}
-//                 slotProps={{ toolbar: { showQuickFilter: true } }}
-//               />
-//             </Card>
-//           </Box>
-//         </TableStyle>
-//       </Container>
-//     </>
-//   );
-// };
-
-// export default EmailTemplates;
-
 import React, { useState, useEffect } from 'react';
 import { Card, Container, Grid, Typography, Box, FormLabel, TextField, Button } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
@@ -105,8 +7,8 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-// import { allBooking } from 'api/apis';
-// import { url } from 'api/url';
+import { bookAllotmentReport } from 'core/helperFurtion';
+import { url } from 'core/url'; 
 const EmailTemplates = () => {
   const [allBookAllotmentData, setAllBookAllotmentData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -154,55 +56,7 @@ const EmailTemplates = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 1
-    }
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   flex: 1
-    // }
-    // {
-    //   field: 'createdAt',
-    //   headerName: 'Book Allotment Date',
-    //   flex: 0.7,
-    //   valueFormatter: ({ value }) => moment(value).format('MM-DD-YYYY')
-    // },
-    // { field: '_id', headerName: 'Booking ID', flex: 1 },
-    // { field: 'assignedTo', headerName: 'Assigned To', flex: 1 },
-    // { field: 'customerName', headerName: 'Customer Name', flex: 1 },
-    // {
-    //   field: 'serviceStatus',
-    //   headerName: 'Service Status',
-    //   flex: 0.7,
-    //   renderCell: (params) => {
-    //     const statusColors = {
-    //       Accepted: '#90EE90',
-    //       Pending: '#66CDAA',
-    //       Processing: '#4CAE4C',
-    //       Completed: '#36D962'
-    //     };
-    //     const backgroundColor = statusColors[params.value] || statusColors.default;
-    //     return (
-    //       <Box
-    //         sx={{
-    //           width: '70px',
-    //           height: '30px',
-    //           backgroundColor: backgroundColor,
-    //           color: 'white',
-    //           padding: '4px',
-    //           borderRadius: '6px',
-    //           textAlign: 'center',
-    //           display: 'flex',
-    //           justifyContent: 'center',
-    //           alignItems: 'center',
-    //           overflow: 'hidden',
-    //           textOverflow: 'ellipsis'
-    //         }}
-    //       >
-    //         {params.value}
-    //       </Box>
-    //     );
-    //   }
-    // }
+    } 
   ];
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -212,7 +66,7 @@ const EmailTemplates = () => {
     return `${day}/${month}/${year}`;
   };
   const handleSubmit = async (values) => {
-    const response = await axios.get(`http://localhost:4300/user/bookAllotmentReport/${values.startDate}/${values.endDate}`);
+    const response = await bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${values.startDate}/${values.endDate}`);
 
     const finalData = response.data.map((item, index) => {
       return {

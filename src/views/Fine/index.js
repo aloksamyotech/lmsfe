@@ -5,6 +5,7 @@ import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './AddBooks.js';
 import axios from 'axios';
+import { url } from 'core/url';
 
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -66,7 +67,8 @@ const Lead = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/bookManagement');
+        // const response = await axios.get('http://localhost:4300/user/bookManagement');
+        const response = await axios.get(url.bookManagenent.bookManagement);
         const fetchedData = response?.data?.BookManagement?.map((item) => ({
           id: item._id,
           bookName: item.bookName,
@@ -94,7 +96,9 @@ const Lead = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editBook/${editData.id}`, editData);
+      // const response = await axios.put(`http://localhost:4300/user/editBook/${editData.id}`, editData);
+      
+      const response = await axios.put(`${url.bookManagenent.editBook}${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
@@ -110,7 +114,9 @@ const Lead = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:4300/user/deleteBook/${bookToDelete}`);
+      // await axios.delete(`http://localhost:4300/user/deleteBook/${bookToDelete}`);
+      
+      await axios.delete(`${url.bookManagenent.delete}${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);

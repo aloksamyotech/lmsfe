@@ -18,6 +18,8 @@ import {
 import HomeIcon from '@mui/icons-material/Home';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { url } from 'core/url';
+import { createAdmin, editAdmin, loginAdmin, uploadLogoAdmin } from 'core/helperFurtion';
 const formatDate = (date: string) => {
   const d = new Date(date);
   const day = d.getDate().toString().padStart(2, '0');
@@ -64,7 +66,11 @@ const View = () => {
       if (formData.logo) {
         formDataToSend.append('logo', formData.logo);
       }
-      const response = await axios.put(`http://localhost:4300/user/adminEditProfilePage/${formData.id}`, formDataToSend, {
+      // const response = await axios.put(`http://localhost:4300/user/adminEditProfilePage/${formData.id}`, formDataToSend, {
+      //   headers: { 'Content-Type': 'multipart/form-data' }
+      // });
+
+      const response = await editAdmin(`${url.admin.edit}${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log('Data>>>>>>>>>>>>>>>>>>', response);
@@ -80,13 +86,16 @@ const View = () => {
   const [studentId, setStudentId] = useState(null);
   const [data, setData] = useState([]);
   useEffect(() => {
-    const url = window.location.href;
-    const parts = url.split('/');
+    const urlWindow = window.location.href;
+    const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
     setStudentId(extractedId);
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4300/user/adminProfilePage`);
+        // const response = await axios.get(`http://localhost:4300/user/adminProfilePage`);
+        const response = await axios.get(url.admin.admin);
+
+        // const response = await uploadLogoAdmin(url.admin.admin);
 
         if (response.data.status) {
           const formattedDate = formatDate(response.data.students[0].register_Date);
@@ -120,7 +129,7 @@ const View = () => {
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           height: '50px',
           marginBottom: '-10px',
-          width: '73%',
+          width: '85%',
           marginLeft: '5%'
         }}
       >

@@ -16,6 +16,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 import { Box, Container } from '@mui/system';
+import { url } from 'core/url';
 
 // ----------------------------------------------------------------------
 
@@ -50,7 +51,9 @@ const Contact = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getSubscription');
+      // const response = await axios.get('http://localhost:4300/user/getSubscription');
+      
+      const response = await axios.get(url.studentRegister.getSubscription);
       console.log('response>>>>>>>>>>', response);
       const fetchedData = response?.data?.students?.map((item) => ({
         id: item._id,

@@ -19,6 +19,8 @@ import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { array } from 'prop-types';
 import BookInvoice from './Invoice';
+import { url } from 'core/url';
+import { deleteBook, editBookAllotment, getBookAllotmentHistory } from 'core/helperFurtion';
 
 const Allotment = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -36,8 +38,8 @@ const Allotment = () => {
   console.log('data---->', data);
 
   useEffect(() => {
-    const url = window.location.href;
-    const parts = url.split('/');
+    const urlWindow = window.location.href;
+    const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
     setStudentId(extractedId);
   }, []);
@@ -140,7 +142,7 @@ const Allotment = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getBookAllotmentHistory');
+      const response = await getBookAllotmentHistory(url.bookAllotmentHistory.getBookAllotmentHistory);
 
       console.log('response===========', response);
 
@@ -175,7 +177,8 @@ const Allotment = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editBookAllotment/${editData.id}`, editData);
+      // const response = await axios.put(`http://localhost:4300/user/editBookAllotment/${editData.id}`, editData);
+      const response = await editBookAllotment(`${url.allotmentManagement.editBookAllotment}${editData.id}`, editData);
 
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
@@ -192,7 +195,12 @@ const Allotment = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:4300/user/deleteAllotmentBook/${bookToDelete}`);
+      // await axios.delete(`http://localhost:4300/user/deleteAllotmentBook/${bookToDelete}`);
+      const respone = await deleteBook(`${url.allotmentManagement.deleteAllotmentBook}${bookToDelete}`);
+      console.log(`respone>>>>>>`, respone);
+
+      // await axios.delete(`${url.allotmentManagement.deleteAllotmentBook}${bookToDelete}`);
+
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);

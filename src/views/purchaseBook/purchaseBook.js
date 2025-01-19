@@ -14,6 +14,8 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState } from 'react';
+import { url } from 'core/url';
+import { getBookManagement, getPublications, purchaseBook, viewVender } from 'core/helperFurtion';
 
 const validationSchema = yup.object({
   bookId: yup.string().required('Book is required'),
@@ -52,7 +54,9 @@ const AddPurchaseBook = (props) => {
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
       try {
-        const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
+        // const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
+        const response = await purchaseBook(url.purchaseBook.purchaseBook, values);
+       
         console.log('Form submitted successfully>>>>>>>:', response);
         toast.success('Purchase Book added successfully');
         fetchData();
@@ -69,7 +73,9 @@ const AddPurchaseBook = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/bookManagement');
+        // const response = await axios.get('http://localhost:4300/user/bookManagement');
+        
+        const response = await getBookManagement(url.bookManagenent.bookManagement);
         console.log('Fetched Book Data:', response.data);
         setBookData(response.data?.BookManagement);
       } catch (error) {
@@ -79,7 +85,9 @@ const AddPurchaseBook = (props) => {
 
     const fetchVendor = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/venderManagement');
+        // const response = await axios.get('http://localhost:4300/user/venderManagement');
+        
+        const response = await viewVender(url.vendorManagement.viewVender);
         console.log('Vendor Data:', response);
         setStudentData(response.data?.VenderManagement);
       } catch (error) {
@@ -89,7 +97,9 @@ const AddPurchaseBook = (props) => {
 
     const fetchPublisher = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getPublications');
+        // const response = await axios.get('http://localhost:4300/user/getPublications');
+        
+        const response = await getPublications(url.publications.getPublications);
         console.log('Publisher Data:', response);
         setPublisherData(response.data?.PublicationsManagement);
       } catch (error) {

@@ -9,6 +9,8 @@ import MenuBookIcon from '@mui/icons-material/MenuBook'; // Import the MenuBookI
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
+import { url } from 'core/url';
+import { getBookCount } from 'core/helperFurtion';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.error.dark, // Change the background color
@@ -52,7 +54,9 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getBookCount');
+        // const response = await axios.get('http://localhost:4300/user/getBookCount');
+        
+        const response = await getBookCount(url.bookManagenent.bookCount);
         console.log('API Response:', response.data);
         setBookCount(response.data.count);
       } catch (error) {

@@ -14,6 +14,8 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { url } from 'core/url';
+import { createSubscription } from 'core/helperFurtion';
 
 const AddSubscription = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -51,7 +53,12 @@ const AddSubscription = (props) => {
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        const response = await axios.post('http://localhost:4300/user/subscriptionType', values);
+        // const response = await axios.post('http://localhost:4300/user/subscriptionType', values);
+
+        // const response = await axios.post(url.subscription.Subscription, values);
+
+        const response = await createSubscription(url.subscription.Subscription, values);
+
         console.log('Form submitted successfully:', response);
         console.log();
         fetchData();

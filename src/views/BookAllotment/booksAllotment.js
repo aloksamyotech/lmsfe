@@ -16,6 +16,16 @@ import axios from 'axios';
 import { useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from '@mui/material/IconButton';
+import { url } from 'core/url';
+import {
+  bookAllotmentCount,
+  bookAllotmentHistory,
+  findHistoryBookAllotment,
+  getBookManagement,
+  getRegisterManagement,
+  getSubscription,
+  manyBookAllotment
+} from 'core/helperFurtion';
 
 const AddAllotment = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -55,11 +65,14 @@ const AddAllotment = (props) => {
         bookDetails: dataToSend
       };
       try {
-        const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
+        // const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
+
+        const response = await manyBookAllotment(url.allotmentManagement.manyBookAllotment, dataToSend);
 
         if (response) {
           console.log(`response  Gopal ---->>>>`, response);
-          const Bookresponse = await axios.post('http://localhost:4300/user/bookAllotmentHistory', newData);
+          // const Bookresponse = await axios.post('http://localhost:4300/user/bookAllotmentHistory', newData);
+          const Bookresponse = await bookAllotmentHistory(url.bookAllotmentHistory.bookAllotmentHistory, newData);
           console.log('Bookresponse', Bookresponse);
 
           toast.success('Book details added successfully');
@@ -83,7 +96,8 @@ const AddAllotment = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/bookManagement');
+        // const response = await axios.get('http://localhost:4300/user/bookManagement');
+        const response = await getBookManagement(url.bookManagenent.bookManagement);
         const filteredBooks = response.data?.BookManagement.filter((book) => book.quantity > 0);
         console.log('response Aman-2', response);
         setBookData(filteredBooks);
@@ -93,7 +107,8 @@ const AddAllotment = (props) => {
     };
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/registerManagement');
+        // const response = await axios.get('http://localhost:4300/user/registerManagement');
+        const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
         console.log('response Aman', response);
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
@@ -102,7 +117,8 @@ const AddAllotment = (props) => {
     };
     const fetchSubscription = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+        // const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+        const response = await getSubscription(url.subscription.findSub);
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
@@ -122,7 +138,9 @@ const AddAllotment = (props) => {
     }
     formik.setFieldValue('studentId', studentId);
     try {
-      const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
+      // const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
+
+      const response = await bookAllotmentCount(`${url.allotmentManagement.bookAllotmentCount}${studentId}`);
       const count = response?.data?.allotmentsCount || 0;
 
       setBookNumber(count);
@@ -178,7 +196,7 @@ const AddAllotment = (props) => {
           <form onSubmit={formik.handleSubmit}>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
               <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-                <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 2, }}>
+                <Grid item xs={12} sm={5} md={5} sx={{ marginRight: 2 }}>
                   <FormLabel>Student</FormLabel>
                   <FormControl fullWidth error={formik.touched.studentId && Boolean(formik.errors.studentId)}>
                     <Autocomplete

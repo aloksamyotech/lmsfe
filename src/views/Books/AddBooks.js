@@ -13,6 +13,8 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { url } from 'core/url';
+import { addBook, getPublications } from 'core/helperFurtion';
 
 const validationSchema = yup.object({
   bookName: yup.string().required('Book Name is required').max(100, 'Book Name must be less than or equal to 100 characters'),
@@ -56,7 +58,11 @@ const AddLead = (props) => {
       }
 
       try {
-        const response = await axios.post('http://localhost:4300/user/addBook', formData, {
+        // const response = await axios.post('http://localhost:4300/user/addBook', formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        const response = await addBook(url.bookManagenent.addBook, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -77,7 +83,8 @@ const AddLead = (props) => {
   useEffect(() => {
     const fetchPublisher = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getPublications');
+        // const response = await axios.get('http://localhost:4300/user/getPublications');
+        const response = await getPublications(url.publications.getPublications);
         console.log(`response ---------`, response.BookManagement);
 
         setPublisherData(response.data.PublicationsManagement);
