@@ -138,7 +138,7 @@ const View = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://64.227.130.216:4300/user/editRegister/${editData.id}`, editData);
+      const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
       console.log('Data', response);
 
       const updatedRegister = response.data;
@@ -155,7 +155,7 @@ const View = () => {
 
   const confirmDelete = async (id) => {
     try {
-      await axios.delete(`http://64.227.130.216:4300/user/deleteRegister/${id}`);
+      await axios.delete(`http://localhost:4300/user/deleteRegister/${id}`);
       setData((prevData) => prevData.filter((register) => register.id !== id));
     } catch (error) {
       console.error('Error deleting Register:', error);
@@ -186,7 +186,7 @@ const View = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        const response = await axios.get(`http://64.227.130.216:4300/user/viewBookAllotmentUser/${extractedId}`);
+        const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
         // const student = response?.data?.bookAllotments?.user?.map((item) => ({
         //   // id: item._id,
         //   student_id: item.student_id,
@@ -221,7 +221,7 @@ const View = () => {
     const fetchData = async () => {
       try {
         console.log('findHistoryBookAllotmentUser');
-        const response = await axios.get(`http://64.227.130.216:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+        const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
         console.log('findHistoryBookAllotmentUser----------', response);
         const fetchedData = response?.data?.map((item) => ({
           id: item._id,
@@ -245,7 +245,7 @@ const View = () => {
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
-  //       const response = await axios.get(`http://64.227.130.216:4300/user/viewBookAllotmentUser/${extractedId}`);
+  //       const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
   //       console.log('Student ', response);
   //       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
   //         id: item._id,
@@ -265,7 +265,7 @@ const View = () => {
   //     try {
   //       console.log('Student Data........');
 
-  //       const response = await axios.get(`http://64.227.130.216:4300/user/viewBookAllotmentUser/${extractedId}`);
+  //       const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
   //       console.log('Student ', response);
 
   //       setStudentData(response.data);

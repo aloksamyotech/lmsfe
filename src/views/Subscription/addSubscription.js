@@ -50,7 +50,7 @@ const AddRegister = (props) => {
       register_Date: ''
     },
     validationSchema,
- 
+
     onSubmit: async (values) => {
       console.log('on submit');
       console.log(`values`, values);
@@ -63,11 +63,11 @@ const AddRegister = (props) => {
       formData.append('select_identity', values.select_identity);
       formData.append('upload_identity', values.upload_identity);
       formData.append('register_Date', values.register_Date);
- 
+
       try {
         console.log('try bolck');
- 
-        const response = await axios.post('http://64.227.130.216:4300/user/addRegister', formData, {
+
+        const response = await axios.post('http://localhost:4300/user/addRegister', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -105,7 +105,6 @@ const AddRegister = (props) => {
         <form onSubmit={formik.handleSubmit}>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-              
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Title</FormLabel>
                 <TextField
@@ -209,7 +208,7 @@ const AddRegister = (props) => {
                   {/* <input type="file" name="profilePic" onChange={handleFileChange} style={{ width: '100%' }} /> */}
 
                   {formik.touched.upload_identity && formik.errors.upload_identity && (
-                    <div style={{ color: 'red', fontSize: '12px'  }}>{formik.errors.upload_identity}</div>
+                    <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.upload_identity}</div>
                   )}
                 </FormControl>
               </Grid>

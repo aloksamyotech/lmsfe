@@ -10,11 +10,11 @@ const Logo = () => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/adminGetLogo');
+        const response = await axios.get('http://localhost:4300/user/adminGetLogo');
         console.log('Logo data received:', response?.data.students[0]?.logo);
 
         const image = response?.data.students[0]?.logo;
-        const baseUrl = 'http://64.227.130.216:4300/';
+        const baseUrl = 'http://localhost:4300/';
 
         const fullImageUrl = `${baseUrl}${image}`;
 

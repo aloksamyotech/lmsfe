@@ -54,11 +54,11 @@ const AddAllotment = (props) => {
         bookDetails: dataToSend
       };
       try {
-        const response = await axios.post('http://64.227.130.216:4300/user/manyBookAllotment', dataToSend);
+        const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
 
         if (response) {
           console.log(`response  Gopal ---->>>>`, response);
-          const Bookresponse = await axios.post('http://64.227.130.216:4300/user/bookAllotmentHistory', newData);
+          const Bookresponse = await axios.post('http://localhost:4300/user/bookAllotmentHistory', newData);
           console.log('Bookresponse', Bookresponse);
 
           toast.success('Book details added successfully');
@@ -82,7 +82,7 @@ const AddAllotment = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/bookManagement');
+        const response = await axios.get('http://localhost:4300/user/bookManagement');
         const filteredBooks = response.data?.BookManagement.filter((book) => book.quantity > 0);
         console.log('response Aman-2', response);
         setBookData(filteredBooks);
@@ -92,8 +92,9 @@ const AddAllotment = (props) => {
     };
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/registerManagement');
-        console.log('response Aman', response);
+        console.log('response Aman>>>>>>>>>>>>', response);
+        const response = await axios.get('http://localhost:4300/user/registerManagement');
+        console.log('response Aman>>>>>>>>>>>>', response);
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -101,7 +102,7 @@ const AddAllotment = (props) => {
     };
     const fetchSubscription = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/getSubscriptionType');
+        const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
 
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
@@ -122,7 +123,7 @@ const AddAllotment = (props) => {
     }
     formik.setFieldValue('studentId', studentId);
     try {
-      const response = await axios.get(`http://64.227.130.216:4300/user/bookAllotmentCount/${studentId}`);
+      const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
       const count = response?.data?.allotmentsCount || 0;
 
       setBookNumber(count);

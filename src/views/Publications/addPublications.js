@@ -121,7 +121,7 @@ const AddPublications = (props) => {
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        const response = await axios.post('http://64.227.130.216:4300/user/addPublications', values);
+        const response = await axios.post('http://localhost:4300/user/addPublications', values);
         console.log('Form submitted successfully:', response);
         console.log();
         fetchData();

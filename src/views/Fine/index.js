@@ -66,7 +66,7 @@ const Lead = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/bookManagement');
+        const response = await axios.get('http://localhost:4300/user/bookManagement');
         const fetchedData = response?.data?.BookManagement?.map((item) => ({
           id: item._id,
           bookName: item.bookName,
@@ -94,7 +94,7 @@ const Lead = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://64.227.130.216:4300/user/editBook/${editData.id}`, editData);
+      const response = await axios.put(`http://localhost:4300/user/editBook/${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
@@ -110,7 +110,7 @@ const Lead = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://64.227.130.216:4300/user/deleteBook/${bookToDelete}`);
+      await axios.delete(`http://localhost:4300/user/deleteBook/${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);

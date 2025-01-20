@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import { Stack, Grid, Dialog, TextField, DialogActions, DialogContent, DialogTitle, Typography, Divider, Avatar } from '@mui/material';
 import TableStyle from '../../ui-component/TableStyle';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import IconButton from '@mui/material/IconButton'; 
-import VisibilityIcon from '@mui/icons-material/Visibility'; 
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import axios from 'axios';
-import Iconify from '../../ui-component/iconify'; 
+import Iconify from '../../ui-component/iconify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -50,7 +50,7 @@ const Contact = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://64.227.130.216:4300/user/getSubscription');
+      const response = await axios.get('http://localhost:4300/user/getSubscription');
       console.log('response>>>>>>>>>>', response);
       const fetchedData = response?.data?.students?.map((item) => ({
         id: item._id,
@@ -83,7 +83,6 @@ const Contact = () => {
     setOpenDeleteDialog(false);
   };
 
- 
   const randomImages = [
     'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&q=70&fm=webp',
     'https://randomuser.me/api/portraits/men/1.jpg',
@@ -92,7 +91,6 @@ const Contact = () => {
     'https://placeimg.com/200/200/people'
   ];
 
- 
   const getRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * randomImages.length);
     return randomImages[randomIndex];
@@ -134,7 +132,7 @@ const Contact = () => {
             flexDirection: 'column',
             alignItems: 'flex-start',
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            height: 'auto',  
+            height: 'auto',
             justifyContent: 'space-between'
           }}
         >
@@ -156,10 +154,7 @@ const Contact = () => {
                 }}
               >
                 <Grid item xs={4}>
-                  <Avatar
-                    src={getRandomImage()} 
-                    sx={{ borderRadius: '10px', height: '90px', width: '70px' }}
-                  />
+                  <Avatar src={getRandomImage()} sx={{ borderRadius: '10px', height: '90px', width: '70px' }} />
                 </Grid>
                 <Grid item xs={8}>
                   <Grid item xs={12}>

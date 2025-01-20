@@ -18,7 +18,7 @@ import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';  
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.dark,
@@ -62,7 +62,7 @@ const EarningCardd = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/getPublicationsCount');
+        const response = await axios.get('http://localhost:4300/user/getPublicationsCount');
         setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);

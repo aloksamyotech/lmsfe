@@ -55,7 +55,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookAllotmentCount = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/getBookAllotedCount');
+        const response = await axios.get('http://localhost:4300/user/getBookAllotedCount');
         // console.log('response', response);
         setBookCount(response.data.count);
         // setBookCount(response.data.count);
@@ -68,7 +68,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
 
     const fetchBookMonthVise = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/getBookMonthVise');
+        const response = await axios.get('http://localhost:4300/user/getBookMonthVise');
         console.log('response Data', response.data);
 
         var countArray = response.data.map((item) => item.count);
@@ -220,7 +220,7 @@ export default TotalGrowthBarChart;
 
 //   const fetchBookMonthWiseData = async () => {
 //     try {
-//       const response = await axios.get('http://64.227.130.216:4300/user/getBookMonthVise');
+//       const response = await axios.get('http://localhost:4300/user/getBookMonthVise');
 //       const formattedData = response.data.map((item) => item.count);
 //       setSeriesData(formattedData);
 //     } catch (error) {
@@ -235,7 +235,7 @@ export default TotalGrowthBarChart;
 //   useEffect(() => {
 //     const fetchBookAllotmentCount = async () => {
 //       try {
-//         const response = await axios.get('http://64.227.130.216:4300/user/getBookAllotedCount');
+//         const response = await axios.get('http://localhost:4300/user/getBookAllotedCount');
 //         setBookCount(response.data.count);
 //       } catch (error) {
 //         console.error('Error fetching book count:', error);

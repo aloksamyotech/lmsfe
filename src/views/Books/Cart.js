@@ -4,7 +4,7 @@ import { IconTrash } from '@tabler/icons-react';
 import CloseIcon from '@mui/icons-material/Close';
 import CartSummary from './cartSummary';
 
-const Cart = ({ cartItems, onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantaty, selectedStudent, students }) => {
+const Cart = ({ cartItems, onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantity, selectedStudent, students }) => {
   const [summary, setSummary] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -86,7 +86,7 @@ const Cart = ({ cartItems, onRemoveFromCart, onClearCart, onIncreaseQuantity, on
             >
               <CardMedia
                 component="img"
-                image={`http://64.227.130.216:4300/${item.upload_Book}`}
+                image={`http://localhost:4300/${item.upload_Book}`}
                 alt={item.title}
                 sx={{
                   width: 80,
@@ -123,9 +123,10 @@ const Cart = ({ cartItems, onRemoveFromCart, onClearCart, onIncreaseQuantity, on
                 <Button variant="outlined" color="secondary" onClick={() => onIncreaseQuantity(item._id, item.submissionType)}>
                   +
                 </Button>
-                <Button variant="outlined" color="secondary" onClick={() => onDeacrmentQuantaty(item._id, item.submissionType)}>
+                <Button variant="outlined" color="secondary" onClick={() => onDeacrmentQuantity(item._id, item.submissionType)}>
                   -
                 </Button>
+
                 <Button variant="outlined" color="error" onClick={() => onRemoveFromCart(item._id, item.submissionType)}>
                   <IconTrash stroke={2} size={20} />
                 </Button>

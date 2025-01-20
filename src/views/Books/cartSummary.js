@@ -1,93 +1,3 @@
-// import React from 'react';
-// import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
-
-// const CartSummary = ({ summaryData }) => {
-//   const { studentName, studentEmail, cartItems, totalAmount } = summaryData;
-
-//   return (
-//     <>
-//       <Box
-//         sx={{
-//           padding: 4,
-//           borderRadius: '8px',
-//           backgroundColor: '#f9f9f9',
-//           maxWidth: '600px',
-//           margin: '0 auto'
-//         }}
-//       >
-//         <Typography variant="h5" fontWeight="bold" gutterBottom>
-//           Student Details:
-//         </Typography>
-//         <Typography>Name: {studentName}</Typography>
-//         <Typography>Email: {studentEmail}</Typography>
-
-//         <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mt: 2 }}>
-//           Books Details
-//         </Typography>
-
-//         {/* Table for Cart Items */}
-//         <TableContainer>
-//           <Table>
-//             <TableBody>
-//               {/* Table Header */}
-//               <TableRow>
-//                 <TableCell sx={{ padding: 1, fontWeight: 'bold' }}>Book Name</TableCell>
-//                 <TableCell sx={{ padding: 1, fontWeight: 'bold' }}>Quantity</TableCell>
-//                 <TableCell sx={{ padding: 1, fontWeight: 'bold' }}>Amount</TableCell>
-//                 <TableCell sx={{ padding: 1, fontWeight: 'bold' }}> Type</TableCell>
-//                 <TableCell sx={{ padding: 1, fontWeight: 'bold' }}>Submission Date</TableCell>
-//               </TableRow>
-
-//               {/* Table Rows for Each Cart Item */}
-//               {cartItems.map((item, index) => (
-//                 <TableRow key={index}>
-//                   <TableCell sx={{ padding: 1 }}>
-//                     <Typography variant="body1" fontWeight="bold">
-//                       {item.title}
-//                     </Typography>
-//                   </TableCell>
-//                   <TableCell sx={{ padding: 1 }}>
-//                     <Typography variant="body2">{item.quantity || 0}</Typography>
-//                   </TableCell>
-//                   <TableCell sx={{ padding: 1 }}>
-//                     <Typography variant="body2">₹{(item.amount || 0).toFixed(2)}</Typography>
-//                   </TableCell>
-//                   <TableCell sx={{ padding: 1 }}>
-//                     <Typography variant="body2">{item.submissionTypeName || 'N/A'}</Typography>
-//                   </TableCell>
-//                   <TableCell sx={{ padding: 1 }}>
-//                     {item.submissionDate && <Typography variant="body2">{new Date(item.submissionDate).toLocaleDateString()}</Typography>}
-//                   </TableCell>
-//                 </TableRow>
-//               ))}
-//             </TableBody>
-//           </Table>
-//         </TableContainer>
-
-//         <Typography
-//           variant="h6"
-//           fontWeight="bold"
-//           sx={{
-//             mt: 3,
-//             textAlign: 'right',
-//             borderTop: '1px solid #ddd',
-//             paddingTop: 2
-//           }}
-//         >
-//           Total Amount: ₹{totalAmount.toFixed(2)}
-//         </Typography>
-//       </Box>
-
-//       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-//         <Button>Create Invoice</Button>
-//         <Button>Print</Button>
-//       </Box>
-//     </>
-//   );
-// };
-
-// export default CartSummary;
-//------------------------------------------------------------------//
 import React from 'react';
 import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -99,7 +9,7 @@ const CartSummary = ({ summaryData }) => {
   const handleCreateInvoice = async () => {
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
-      studentId: studentId,
+      studentId: studentId, // Same studentId for all books
       bookIssueDate: new Date().toISOString(),
       submissionDate: item.submissionDate || null,
       paymentType: item.submissionType,
@@ -118,25 +28,28 @@ const CartSummary = ({ summaryData }) => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Invoice created successfully:', result);
-
-        console.log('dnf.gsfdngf', result[0]._id);
-
-        const invoiceId = result[0]._id;
-
-        navigate(`/dashboard/invoice/${invoiceId}`, { state: { invoiceData, cartItems, studentName, studentEmail, totalAmount } });
+        console.log('Books allotted successfully:', result);
+        navigate(`/dashboard/invoice/${result._id}`, { state: { invoiceData, cartItems, studentName, studentEmail, totalAmount } });
       } else {
-        console.error('Failed to create invoice:', response.statusText);
-        alert('Failed to create invoice. Please try again.');
+        console.error('Failed to allot books:', response.statusText);
+        alert('Failed to allot books. Please try again.');
       }
     } catch (error) {
-      console.error('Error creating invoice:', error);
+      console.error('Error allotting books:', error);
       alert('An error occurred. Please try again.');
     }
   };
 
   return (
-    <Box sx={{ padding: 4, borderRadius: '8px', backgroundColor: '#f9f9f9', maxWidth: '600px', margin: '0 auto' }}>
+    <Box
+      sx={{
+        padding: 4,
+        borderRadius: '8px',
+        backgroundColor: '#f9f9f9',
+        maxWidth: '600px',
+        margin: '0 auto'
+      }}
+    >
       <Typography variant="h5" fontWeight="bold" gutterBottom>
         Student Details:
       </Typography>

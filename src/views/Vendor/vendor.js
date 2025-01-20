@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 
 const AddPolicy = (props) => {
   const { open, handleClose, fetchData } = props;
- 
+
   const todayDate = new Date().toISOString().split('T')[0];
 
   // -----------  validationSchema
@@ -37,7 +37,7 @@ const AddPolicy = (props) => {
       vendorName: '',
       companyName: '',
       address: '',
-      date: todayDate, 
+      date: todayDate,
       phoneNumber: '',
       email: ''
     },
@@ -45,7 +45,7 @@ const AddPolicy = (props) => {
 
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://64.227.130.216:4300/user/addVenderBook', values);
+        const response = await axios.post('http://localhost:4300/user/addVenderBook', values);
         console.log('Form submitted successfully:', response);
         fetchData();
         handleClose();

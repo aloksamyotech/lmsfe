@@ -16,27 +16,25 @@ import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from '
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-const AddContact = (props) => { 
+const AddContact = (props) => {
   const { open, handleClose, fetchData } = props;
 
   const validationSchema = yup.object({
-    firstName: yup 
-    .string()
-    .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-    .required('Book Title is required'),
+    firstName: yup
+      .string()
+      .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
+      .required('Book Title is required'),
     lastName: yup
-    .string()
-    .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
-    .required('Book Title is required'),
+      .string()
+      .matches(/^[a-zA-Z0-9 ]*$/, 'Only letters, numbers are allowed')
+      .required('Book Title is required'),
     dateOfBirth: yup.date().required('Date of Birth is required'),
     gender: yup.string().required('Gender is required'),
     phoneNumber: yup
       .string()
       .matches(/^[0-9]{10}$/, 'Phone number is invalid')
       .required('Phone number is required'),
-    email: yup.string()
-    .email('Invalid email')
-    .required('Email is required'),
+    email: yup.string().email('Invalid email').required('Email is required'),
     address: yup.string().required('Address is required')
   });
 
@@ -54,7 +52,7 @@ const AddContact = (props) => {
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        const response = await axios.post('http://64.227.130.216:4300/user/addContact', values);
+        const response = await axios.post('http://localhost:4300/user/addContact', values);
         console.log('Form submitted successfully:', response);
         toast.success('Contact added successfully');
         fetchData();
@@ -63,7 +61,6 @@ const AddContact = (props) => {
       } catch (error) {
         console.error('Error submitting form:', error);
       }
-     
     }
   });
 
@@ -74,7 +71,7 @@ const AddContact = (props) => {
           <Typography variant="h6">Add New Contact</Typography>
           <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
         </DialogTitle>
-        <DialogContent dividers> 
+        <DialogContent dividers>
           <form onSubmit={formik.handleSubmit}>
             <Typography style={{ marginBottom: '15px' }} variant="h6">
               Basic Information
@@ -182,7 +179,7 @@ const AddContact = (props) => {
                 />
               </Grid>
             </Grid>
-            <DialogActions> 
+            <DialogActions>
               <Button type="submit" variant="contained" style={{ textTransform: 'capitalize' }}>
                 Save
               </Button>
@@ -191,7 +188,7 @@ const AddContact = (props) => {
                   formik.resetForm();
                   handleClose();
                 }}
-                type="button"  
+                type="button"
                 variant="outlined"
                 style={{ textTransform: 'capitalize' }}
                 color="error"

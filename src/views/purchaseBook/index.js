@@ -127,7 +127,7 @@ const PurchaseBook = () => {
     console.log(`editData`, editData);
 
     try {
-      const response = await axios.put(`http://64.227.130.216:4300/user/editPurchaseBook/${editData.id}`, editData);
+      const response = await axios.put(`http://localhost:4300/user/editPurchaseBook/${editData.id}`, editData);
       console.log('Data', response);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
@@ -154,7 +154,7 @@ const PurchaseBook = () => {
     console.log(`id`, id);
 
     try {
-      await axios.delete(`http://64.227.130.216:4300/user/deletePurchaseBook/${id}`);
+      await axios.delete(`http://localhost:4300/user/deletePurchaseBook/${id}`);
       setData((prevData) => prevData.filter((book) => book.id !== id));
       toast.success('Purchase Book add  successfully');
       setOpenDeleteDialog(false);

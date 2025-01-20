@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Card, CardContent, CardMedia, Typography, Box, Grid } from '@mui/material';
 import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import defaultBook from "../Books/bookDummy.jpeg"
+import defaultBook from '../Books/bookDummy.jpeg';
 
 const ProfileCard = ({ name, role, img, onClick }) => {
   return (
@@ -51,14 +51,14 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://64.227.130.216:4300/user/bookManagement');
+      const response = await axios.get('http://localhost:4300/user/bookManagement');
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
         name: item.bookName,
         role: item.author,
-        img: item.upload_Book ? `http://64.227.130.216:4300/${item.upload_Book}` : defaultBook,
+        img: item.upload_Book ? `http://localhost:4300/${item.upload_Book}` : defaultBook
       }));
-      
+
       setData(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -78,10 +78,7 @@ const App = () => {
       <Grid container spacing={4} justifyContent="center">
         {data.map((profile, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
-            <ProfileCard
-              {...profile}
-              onClick={() => handleImage(profile)}
-            />
+            <ProfileCard {...profile} onClick={() => handleImage(profile)} />
           </Grid>
         ))}
       </Grid>

@@ -77,7 +77,7 @@ const AddLead = (props) => {
   useEffect(() => {
     const fetchPublisher = async () => {
       try {
-        const response = await axios.get('http://64.227.130.216:4300/user/getPublications');
+        const response = await axios.get('http://localhost:4300/user/getPublications');
         console.log(`response ---------`, response.BookManagement);
 
         setPublisherData(response.data.PublicationsManagement);
