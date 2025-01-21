@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
-  const navigate = useNavigate(); // Initialize navigation hook
+  const navigate = useNavigate();
 
   const handleCreateInvoice = async () => {
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
-      studentId: studentId, // Same studentId for all books
+      studentId: studentId,
       bookIssueDate: new Date().toISOString(),
       submissionDate: item.submissionDate || null,
       paymentType: item.submissionType,
@@ -28,8 +28,12 @@ const CartSummary = ({ summaryData }) => {
 
       if (response.ok) {
         const result = await response.json();
+        console.log('response===============>', result.allotment.studentId);
+
         console.log('Books allotted successfully:', result);
-        navigate(`/dashboard/invoice/${result._id}`, { state: { invoiceData, cartItems, studentName, studentEmail, totalAmount } });
+        navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
+          state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }
+        });
       } else {
         console.error('Failed to allot books:', response.statusText);
         alert('Failed to allot books. Please try again.');

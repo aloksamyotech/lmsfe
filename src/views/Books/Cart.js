@@ -3,6 +3,7 @@ import { Box, Typography, Button, CardMedia, Dialog, DialogTitle, DialogContent,
 import { IconTrash } from '@tabler/icons-react';
 import CloseIcon from '@mui/icons-material/Close';
 import CartSummary from './cartSummary';
+import { toast } from 'react-toastify';
 
 const Cart = ({ cartItems, onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantity, selectedStudent, students }) => {
   const [summary, setSummary] = useState(null);
@@ -12,7 +13,7 @@ const Cart = ({ cartItems, onRemoveFromCart, onClearCart, onIncreaseQuantity, on
 
   const handleSubmit = () => {
     if (!selectedStudent) {
-      alert('Please select a student.');
+      toast.error('Please select a student.');
       return;
     }
 

@@ -35,6 +35,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import { toast } from 'react-toastify';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import BooksModal from './viewbooks.js';
 const Allotment = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [search, setSearch] = useState('');
@@ -47,10 +48,17 @@ const Allotment = () => {
   const [calculatedAmount, setCalculatedAmount] = useState(0);
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [tabValue, setTabValue] = useState(0); // Initialize tab value
+  const [tabValue, setTabValue] = useState(0);
   const [studentss, setStudentss] = useState([]);
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBooks, setSelectedBooks] = useState([]);
+  const [studentName, setStudentName] = useState('');
 
+  const [selectedBook, setSelectedBook] = useState(null);
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   const fetchCategory = async () => {
     const response = await axios.get('http://localhost:4300/user/bookManagement');
     setCategoryData(response.data.BookManagement);
@@ -64,18 +72,24 @@ const Allotment = () => {
       console.error('Error fetching SubscriptionType', error);
     }
   };
+  const handleViewBooks = (row) => {
+    setSelectedBooks(row.books);
+    setStudentName(row.studentName);
+    setShowModal(true);
+  };
 
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:4300/user/registerManagement');
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
+
         name: item.student_Name || 'N/A',
         email: item.email || 'N/A',
         mobile: item.mobile_Number || 'N/A',
         registerDate: item.register_Date ? new Date(item.register_Date).toLocaleDateString() : 'N/A'
       }));
-      setStudents(fetchedData); // Update the state with the fetched data
+      setStudents(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -83,11 +97,12 @@ const Allotment = () => {
 
   const fetchinvoice = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getdataalocated'); // Adjust URL as needed
+      const response = await axios.get('http://localhost:4300/user/getdataalocated');
       const formattedData = response.data.response.map((item) => ({
-        id: item._id || Math.random().toString(), // Unique key
+        id: item._id || Math.random().toString(),
         studentName: item.studentName,
         email: item.studentEmail,
+        books: item.books || [],
         bookName: item.bookName,
         studentEmail: item.studentEmail,
         bookAuthor: item.bookAuthor,
@@ -164,15 +179,13 @@ const Allotment = () => {
   const columns = [
     {
       field: 'studentName',
-      headerName: 'student Name',
-      flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
+      headerName: 'Student Name',
+      flex: 1
     },
     {
       field: 'totalAmount',
-      headerName: 'totalAmount',
-      flex: 1,
-      cellClassName: 'name-column--cell--capitalize'
+      headerName: 'Total Amount',
+      flex: 1
     },
     {
       field: 'studentEmail',
@@ -181,48 +194,10 @@ const Allotment = () => {
       align: 'center',
       headerAlign: 'center'
     },
-
     {
       field: 'studentMobile',
-      headerName: 'Submission Date',
+      headerName: 'Mobile',
       flex: 1
-    },
-    {
-      field: 'viewBooks',
-      headerName: 'View Books',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center',
-      renderCell: (params) => (
-        <button
-          style={{
-            padding: '5px 10px',
-            borderRadius: '5px',
-            border: 'none',
-            background: '#007bff',
-            color: '#fff',
-            cursor: 'pointer'
-          }}
-          onClick={() => handleViewBooks(params.row)}
-        >
-          View
-        </button>
-      )
-    }
-  ];
-
-  const columns1 = [
-    {
-      field: 'studentName',
-      headerName: 'Student Name',
-      flex: 1
-    },
-    {
-      field: 'quantity',
-      headerName: 'Quantity',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center'
     },
     {
       field: 'viewBooks',
@@ -258,21 +233,7 @@ const Allotment = () => {
         { bookName: 'Book B', quantity: 1 }
       ]
     }
-    // Add more rows here
   ];
-
-  const handleViewBooks = (row) => {
-    console.log('Books Data:', row.books);
-    alert(`Books allotted:\n${JSON.stringify(row.books, null, 2)}`);
-  };
-
-  const BookTable = () => {
-    return (
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid rows={rows} columns={columns1} />
-      </div>
-    );
-  };
 
   const handleClearCart = () => {
     setCartItems([]);
@@ -454,6 +415,9 @@ const Allotment = () => {
               <FormLabel>Submission Date</FormLabel>
               <TextField
                 type="date"
+                inputProps={{
+                  min: new Date().toISOString().split('T')[0]
+                }}
                 value={submissionDate}
                 onChange={handleDateChange}
                 label=""
@@ -461,6 +425,7 @@ const Allotment = () => {
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
               />
+
               <Typography variant="h6" color="primary">
                 Amount: ₹{calculatedAmount}
               </Typography>
@@ -492,6 +457,10 @@ const Allotment = () => {
           </Box>
         </TableContainer>
       )}
+
+      <div>
+        <BooksModal show={showModal} handleClose={handleCloseModal} books={selectedBooks} studentName={studentName} />
+      </div>
     </Container>
   );
 };

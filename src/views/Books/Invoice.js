@@ -1,18 +1,35 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Box, Typography, Button, Grid, Divider, Paper } from '@mui/material';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 const InvoicePage = () => {
   const { id } = useParams();
   const { state } = useLocation();
+  const navigate = useNavigate();
+  const printRef = useRef();
   const { invoiceData, studentName, studentEmail, totalAmount, cartItems } = state;
 
-  const handlePrint = (index) => {
-    const printContents = document.getElementById(`printable-card`).innerHTML;
-    const originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
+  const handlePrint = () => {
+    const printContents = printRef.current.innerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Invoice</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+          </style>
+        </head>
+        <body>
+          ${printContents}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
+
+    navigate('/dashboard/bookAllotment');
   };
 
   return (
@@ -25,12 +42,12 @@ const InvoicePage = () => {
         boxShadow: 3,
         borderRadius: 2
       }}
-      id="printable-card"
+      ref={printRef}
     >
       <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ textAlign: 'center' }}>
         Samyotech Library Management
       </Typography>
-      {/* Invoice Header */}
+
       <Paper sx={{ padding: 1, marginBottom: 1 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -117,7 +134,6 @@ const InvoicePage = () => {
         </Grid>
       </Paper>
 
-      {/* Print Button */}
       <Box sx={{ textAlign: 'center', marginTop: 1 }}>
         <Button variant="contained" color="primary" onClick={handlePrint}>
           Print Invoice
