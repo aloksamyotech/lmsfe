@@ -205,7 +205,6 @@ const PolicyManagement = () => {
             </Card>
           </Box>
         </TableStyle>
-
         {editData && (
           <Dialog open={true} onClose={() => setEditData(null)}>
             <Box p={3}>
@@ -224,7 +223,6 @@ const PolicyManagement = () => {
                 fullWidth
                 margin="normal"
               />
-
               <TextField
                 label="Phone Number"
                 value={editData.phoneNumber}

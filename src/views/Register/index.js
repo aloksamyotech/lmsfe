@@ -1,4 +1,4 @@
- import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Stack, Typography, Button, Box, Card, Dialog, TextField } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
@@ -12,6 +12,7 @@ import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { toast } from 'react-toastify';
 import Iconify from '../../ui-component/iconify';
+import { url } from 'core/url';
 const Call = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -98,7 +99,9 @@ const Call = () => {
   const fetchData = async () => {
     try {
       console.log('Data');
-      const response = await axios.get('http://64.227.130.216:4300/user/registerManagement');
+      // const response = await axios.get('http://64.227.130.216:4300/user/registerManagement');
+
+      const response = await axios.get(url.studentRegister.getRegisterManagement);
       console.log('data API------------', response);
       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
         id: item._id,
@@ -125,7 +128,10 @@ const Call = () => {
   };
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://64.227.130.216:4300/user/editRegister/${editData.id}`, editData);
+      // const response = await axios.put(`http://64.227.130.216:4300/user/editRegister/${editData.id}`, editData);
+
+      const response = await axios.put(`${url.studentRegister.editRegister}${editData.id}`, editData);
+
       console.log('Data', response);
       const updatedRegister = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
@@ -143,7 +149,12 @@ const Call = () => {
   };
   const confirmDelete = async (id) => {
     try {
-      await axios.delete(`http://64.227.130.216:4300/user/deleteRegister/${bookToDelete}`);
+      // await axios.delete(`http://64.227.130.216:4300/user/deleteRegister/${bookToDelete}`);
+
+      await axios.delete(`${url.studentRegister.deleteRegister}${bookToDelete}`);
+
+      // await axios.delete(`${url}${bookToDelete}`);
+
       setData((prevData) => prevData.filter((register) => register.id !== bookToDelete));
       toast.success('Register details Deleted successfully');
       cancelDelete();
@@ -161,7 +172,9 @@ const Call = () => {
     const fetchStudent = async () => {
       try {
         console.log('Student');
-        const response = await axios.get('/user/viewBookAllotmentUser/:id');
+        // const response = await axios.get('/user/viewBookAllotmentUser/:id');
+
+        const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${id}`);
         console.log('data API------------', response);
         const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
           id: item._id,
@@ -182,7 +195,9 @@ const Call = () => {
     console.log(`click on like`);
     try {
       console.log('Student ID', student.id);
-      const response = await axios.post(`http://64.227.130.216:4300/user/markFavorite/${student.id}`);
+      // const response = await axios.post(`http://64.227.130.216:4300/user/markFavorite/${student.id}`);
+
+      const response = await axios.post(`${url.studentRegister.markFavorite}${student.id}`);
       console.log('Favorite response-------', response);
       const updatedStudent = response.data.student;
       setData((prevData) => prevData.map((item) => (item.id === updatedStudent.id ? updatedStudent : item)));
@@ -206,7 +221,9 @@ const Call = () => {
     try {
       console.log('handleSubscription---------');
       const updatedSubscription = !row.subscription;
-      const response = await axios.post(`http://64.227.130.216:4300/user/markSubscription/${row.id}`, {
+      // const response = await axios.post(`http://64.227.130.216:4300/user/markSubscription/${row.id}`, {
+
+      const response = await axios.post(`${url.studentRegister.markSubscription}${row.id}`, {
         subscription: updatedSubscription
       });
       console.log('response', response);
@@ -232,18 +249,19 @@ const Call = () => {
       const worksheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(worksheet);
       setExcelData(data);
-      
     };
     reader.readAsBinaryString(file);
   };
   const handleBulkUpload = async () => {
     try {
       console.log('excelData>>>>>>>>', excelData);
-      const response = await axios.post('http://64.227.130.216:4300/user/registerMany', excelData);
-      toast.success(`upload Successfully`)
-      setTimeout(()=>{
-        window.location.reload()
-      },1000)
+      // const response = await axios.post('http://64.227.130.216:4300/user/registerMany', excelData);
+
+      const response = await axios.post(url.studentRegister.registerMany, excelData);
+      toast.success(`upload Successfully`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');

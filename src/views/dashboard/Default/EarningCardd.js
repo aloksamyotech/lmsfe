@@ -65,7 +65,7 @@ const EarningCardd = ({ isLoading }) => {
     const fetchBookCount = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/getPublicationsCount');
-        
+
         const response = await getPublicationsCount(url.publications.getPublicationsCount);
         setBookCount(response.data.count);
       } catch (error) {
@@ -103,11 +103,11 @@ const EarningCardd = ({ isLoading }) => {
               <Grid item sx={{ mb: 1.25 }}>
                 <Typography
                   sx={{
-                    fontSize: '1.45rem',
+                    fontSize: '1.40rem',
                     fontWeight: 500,
                     mr: 1,
                     mt: 1.75,
-                    mb: 0.75
+                    mb: 0.55
                   }}
                 >
                   {`Total Publications `}

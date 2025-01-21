@@ -18,7 +18,8 @@ import {
   IconBookmark,
   IconUserCheck,
   IconUser,
-  IconCreditCard
+  IconCreditCard,
+  IconHeart
 } from '@tabler/icons';
 
 // constant
@@ -40,7 +41,8 @@ const icons = {
   IconBookmark,
   IconUserCheck,
   IconUser,
-  IconCreditCard
+  IconCreditCard,
+  IconHeart
 };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
@@ -118,7 +120,7 @@ const dashboard = {
       title: 'Favorite Students',
       type: 'item',
       url: '/dashboard/contact',
-      icon: icons.IconPhoneCheck,
+      icon: icons.IconHeart,
       breadcrumbs: false
     },
     {

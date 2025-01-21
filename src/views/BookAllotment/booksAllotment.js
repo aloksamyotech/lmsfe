@@ -118,7 +118,7 @@ const AddAllotment = (props) => {
     const fetchSubscription = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
-        const response = await getSubscription(url.subscription.findSub);
+        const response = await getSubscription(url.subscription.findSubscription);
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
@@ -130,8 +130,7 @@ const AddAllotment = (props) => {
   }, []);
   const handleStudentChange = async (event) => {
     const studentId = event.target.value;
-    console.log('studentId New ', event.target.value);
-
+    console.log('studentId New ', event.target.value); 
     if (!studentId) {
       toast.error('Please select a valid student.');
       return;

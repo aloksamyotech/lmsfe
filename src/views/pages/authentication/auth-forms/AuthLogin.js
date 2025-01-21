@@ -59,24 +59,27 @@ const FirebaseLogin = ({ ...others }) => {
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             const response = await axios.post('http://localhost:4300/user/login', values);
+            console.log('resppppppppppppppppp', response);
 
             if (response?.status === 200) {
               console.log('Response:', response?.data?.message);
-
               if (response?.data?.message === 'Password Not Match') {
                 toast.warn('Enter Correct Password');
-              } else if (response?.data?.message === 'not found') {
-                toast.error('User not Found');
-              // } else if (response?.data?.userToken) {
-              } else if (response?.data) {
+              } else if (response?.data?.message === 'Admin not found') {
+                toast.error('Admin not Found');
+                // } else if (response?.data?.userToken) {
+              } else if (response?.data?.statusCode === 200) {
+                console.log('response', response);
+
                 toast.success('Login Successfully');
                 // const loginToken = response?.data?.userToken;
                 const loginToken = response?.data;
-                localStorage.setItem('loginToken', loginToken);
+                console.log('loginToken', loginToken);
 
-                setTimeout(() => {
-                  window.location.replace('/dashboard/default');
-                }, 1000);
+                localStorage.setItem('loginToken', loginToken);
+                // setTimeout(() => {
+                window.location.replace('/dashboard/default');
+                // }, 1000);
               }
             } else {
               toast.error('Unexpected response status');
@@ -85,7 +88,6 @@ const FirebaseLogin = ({ ...others }) => {
             console.error('Error submitting form:', error);
             toast.error('An error occurred, please try again');
           }
-
           try {
             if (scriptedRef.current) {
               setStatus({ success: true });

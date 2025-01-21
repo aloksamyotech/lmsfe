@@ -256,7 +256,7 @@ const PurchaseInvoice = () => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
-                Total Price:
+                Par Book Price:
               </Typography>
               <Typography variant="body2">{`₹${studentAmount}` || '₹0'}</Typography>
             </Grid>

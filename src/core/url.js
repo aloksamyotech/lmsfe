@@ -8,14 +8,14 @@ export const url = {
   //     update(com_url , payload),
 
   admin: {
-    admin: base_url + 'user/adminProfilePage/',
+    adminProfile: base_url + 'user/adminProfilePage/',
     edit: base_url + 'user/adminEditProfilePage/',
     logo: base_url + 'user/adminGetLogo/',
     login: base_url + 'user/login/'
   },
   subscription: {
     Subscription: base_url + 'user/subscriptionType/',
-    findSub: base_url + 'user/getSubscriptionType/',
+    findSubscription: base_url + 'user/getSubscriptionType/',
     delete: base_url + 'user/deleteSubscriptionType/',
     update: base_url + 'user/editSubscriptionType/'
   },
@@ -64,7 +64,7 @@ export const url = {
     findHistory: base_url + 'user/findHistoryBookAllotmentUser/',
     bookAllotment: base_url + 'user/bookAllotment/',
     manyBookAllotment: base_url + 'user/manyBookAllotment',
-    allotmentManagement: base_url + 'user/allotmentManagement/',
+    allotmentManagementData: base_url + 'user/allotmentManagement/',
     getReceiveBook: base_url + 'user/getReceiveBook/',
     removeReceiveBook: base_url + 'user/removeReceiveBook/',
     submitBook: base_url + 'user/submitBook/',

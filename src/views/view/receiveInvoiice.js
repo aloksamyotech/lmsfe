@@ -28,7 +28,7 @@ const ReceiveInvoice = () => {
   const location = useLocation();
   const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
-  console.log('Received Row Data:', rowData?.id);
+  // console.log('Received Row Data:', rowData?.id);
 
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
@@ -57,20 +57,20 @@ const ReceiveInvoice = () => {
     return `${day}/${month}/${year}`;
   };
   const fetchData = async () => {
-    console.log(`fetchData`);
+    // console.log(`fetchData`);
     // const Url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
     const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
-    console.log(`Url`, Url);
-    const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
-    // const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
+    // console.log(`Url`, Url);
+    // const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
+    const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
     // console.log('Invoice Data ----------', response?.data[0]);
-    console.log('Invoice Data ----------', response?.data);
+    // console.log('Invoice Data ----------', response?.data);
 
     const studentId = response?.data[0]?.studentId;
-    console.log('studentId', studentId);
+    // console.log('studentId', studentId);
 
     const bookId = response?.data[0]?.bookId;
-    console.log('bookId by Hritik>>', bookId);
+    // console.log('bookId by Hritik>>', bookId);
 
     const student_Name = response?.data[0]?.studentDetails?.student_Name;
     setStudentName(student_Name);
@@ -103,15 +103,16 @@ const ReceiveInvoice = () => {
     setSubmissionDate(formatDate(submissionDate));
 
     try {
-      const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
-      
-      // const data = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
+      // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
+
+      const data = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
+
       console.log(`Fine data  >>>>>>>>`, data?.data);
       let fineAmount = data?.data?.[0]?.fineAmount;
       setAllFineData(fineAmount);
       let reason = data?.data?.[0]?.reason;
       setReason(reason);
-      console.log('fineAmount', fineAmount);
+      // console.log('fineAmount', fineAmount);
     } catch (error) {
       console.log(`error`, error);
     }
@@ -281,21 +282,19 @@ const ReceiveInvoice = () => {
                   : '₹0' || '₹0'}
               </Typography>
             </Grid>
-            <Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" fontWeight="bold">
-                  Fine Reason :
-                </Typography>
-                <Typography variant="body2">{reason}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" fontWeight="bold">
-                  Fine Amount:
-                </Typography>
-                <Typography variant="body2">
-                  <Typography variant="body2">{`₹${allFineData}` || '₹0'}</Typography>
-                </Typography>
-              </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Fine Reason :
+              </Typography>
+              <Typography variant="body2">{reason || 'The book has not been fined'}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Fine Amount:
+              </Typography>
+              <Typography variant="body2">
+                <Typography variant="body2">{`${allFineData}` || '₹0'}</Typography>
+              </Typography>
             </Grid>
           </Grid>
 

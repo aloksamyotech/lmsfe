@@ -93,9 +93,9 @@ const View = () => {
     const fetchProfileData = async () => {
       try {
         // const response = await axios.get(`http://localhost:4300/user/adminProfilePage`);
-        const response = await axios.get(url.admin.admin);
-
+        const response = await axios.get(url.admin.adminProfile);
         // const response = await uploadLogoAdmin(url.admin.admin);
+        console.log(' response>>>>>>>>', response.data.students[0].logo);
 
         if (response.data.status) {
           const formattedDate = formatDate(response.data.students[0].register_Date);

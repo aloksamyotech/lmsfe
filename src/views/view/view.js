@@ -9,6 +9,7 @@ import AddRegister from 'views/Register/Addregister';
 // import StudentInvoice from './invoiceStudent';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
+import { url } from 'core/url';
 
 // import PaymentReceipt from './berry';
 
@@ -96,29 +97,7 @@ const View = () => {
     //   )
     // }
   ];
-  const handleInvoice = (row) => {
-    navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
-
-    const fetchStudent = async () => {
-      try {
-        const response = await axios.get('/user/viewBookAllotmentUser/:id');
-        console.log('data API------------', response);
-        const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
-          id: item._id,
-          student_id: item.student_id,
-          student_Name: item.student_Name,
-          email: item.email,
-          mobile_Number: item.mobile_Number,
-          register_Date: formatDate(item.register_Date)
-        }));
-        setData(fetchedData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchStudent();
-  };
+   
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -130,40 +109,6 @@ const View = () => {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
-  const handleEdit = (register) => {
-    setEditData(register);
-  };
-
-  const handleSaveEdit = async () => {
-    try {
-      const response = await axios.put(`http://64.227.130.216:4300/user/editRegister/${editData.id}`, editData);
-      console.log('Data', response);
-
-      const updatedRegister = response.data;
-      setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
-      setEditData(null);
-    } catch (error) {
-      console.error('Error updating Register:', error);
-    }
-  };
-  const handleDelete = (id) => {
-    setBookToDelete(id);
-    setOpenDeleteDialog(true);
-  };
-
-  const confirmDelete = async (id) => {
-    try {
-      await axios.delete(`http://64.227.130.216:4300/user/deleteRegister/${id}`);
-      setData((prevData) => prevData.filter((register) => register.id !== id));
-    } catch (error) {
-      console.error('Error deleting Register:', error);
-    }
-  };
-  const cancelDelete = () => {
-    setOpenDeleteDialog(false);
-    setBookToDelete(null);
-  };
-
   const student = {
     logoUrl: 'https://example.com/logo.png',
     Name: 'John Doe',
@@ -173,29 +118,22 @@ const View = () => {
   };
 
   useEffect(() => {
-    const url = window.location.href;
-    console.log('Current Url', url);
-    setCurrentUrl(url);
+    const Url = window.location.href;
+    console.log('Current Url', Url);
+    setCurrentUrl(Url);
 
-    const parts = url.split('/');
+    const parts = Url.split('/');
     const extractedId = parts[parts.length - 1];
     console.log('Id', extractedId);
 
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        const response = await axios.get(`http://64.227.130.216:4300/user/viewBookAllotmentUser/${extractedId}`);
-        // const student = response?.data?.bookAllotments?.user?.map((item) => ({
-        //   // id: item._id,
-        //   student_id: item.student_id,
-        //   student_Name: item.student_Name,
-        //   email: item.email,
-        //   mobile_Number: item.mobile_Number,
-        //   register_Date: formatDate(item.register_Date)
-        // }));
-        setAllData(response.data);
+        // const response = await axios.get(`http://64.227.130.216:4300/user/viewBookAllotmentUser/${extractedId}`);
+        
+        const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
 
-        // console.log('Backend Response:', response?.data?.user?.email);
+        setAllData(response.data); 
       } catch (error) {
         console.error('Error sending ID to backend:', error);
       }
@@ -207,11 +145,11 @@ const View = () => {
   }, []);
 
   useEffect(() => {
-    const url = window.location.href;
-    console.log('Current Url', url);
-    setCurrentUrl(url);
+    const rul = window.location.href;
+    console.log('Current Url', rul);
+    setCurrentUrl(rul);
 
-    const parts = url.split('/');
+    const parts = rul.split('/');
     const extractedId = parts[parts.length - 1];
     console.log('Id', extractedId);
 
@@ -220,8 +158,8 @@ const View = () => {
       try {
         console.log('findHistoryBookAllotmentUser');
         // const response = await axios.get(`http://64.227.130.216:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
-
-        const response = await axios.get(`http://64.227.130.216:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+        
+        const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
         console.log('findHistoryBookAllotmentUser----------', response);
         const fetchedData = response?.data?.map((item) => ({
           id: item._id,
