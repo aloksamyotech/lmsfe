@@ -89,8 +89,9 @@ export const url = {
     addFineBook: base_url + 'user/addFineBook/',
     getFineBook: base_url + 'user/getFineBook/',
     getAllFineBooks: base_url + 'user/getAllFineBooks/',
-    findByStudentId: base_url + 'user/findByStudentId/', 
-    findFine: base_url+'user/findFineInvoice/'
+    findByStudentId: base_url + 'user/findByStudentId/',
+    findFine: base_url + 'user/findFineInvoice/',
+    fineDetails: base_url + 'user/findFine/'
   },
   purchaseBook: {
     purchaseBook: base_url + 'user/purchaseBook/',

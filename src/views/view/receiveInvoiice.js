@@ -44,8 +44,8 @@ const ReceiveInvoice = () => {
   const [studentAmount, setStudentAmount] = useState('');
   const [discount, setDiscount] = useState('');
   const [submissionDate, setSubmissionDate] = useState('');
-  const [allFineData, setAllFineData] = useState('');
-  const [reason, setReason] = useState('');
+  const [allFineData, setAllFineData] = useState([]);
+  const [amount, setAmount] = useState();
 
   const containerRef = useRef();
 
@@ -102,17 +102,41 @@ const ReceiveInvoice = () => {
     const submissionDate = response?.data[0]?.submissionDate;
     setSubmissionDate(formatDate(submissionDate));
 
+    // try {
+    //   // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
+
+    //   const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
+
+    //   console.log(`Fine data  >>>>>>>>`, response?.data);
+    //   const fine = response?.data?.map((item) => {
+    //     const reason = item?.reason;
+    //     const fineAmount = item?.fineAmount;
+    //     return { reason, fineAmount };
+    //   });
+    //   setAllFineData(fine);
+    //   console.log('fine>>>>>>>>', fine);
+    // } catch (error) {
+    //   console.log(`error`, error);
+    // }
+
     try {
       // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
 
-      const data = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
+      const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
 
-      console.log(`Fine data  >>>>>>>>`, data?.data);
-      let fineAmount = data?.data?.[0]?.fineAmount;
-      setAllFineData(fineAmount);
-      let reason = data?.data?.[0]?.reason;
-      setReason(reason);
-      // console.log('fineAmount', fineAmount);
+      console.log(`Fine data  >>>>>>>>`, response?.data);
+
+      const fine = response?.data?.map((item) => {
+        const reason = item?.reason;
+        const fineAmount = item?.fineAmount;
+        return { reason, fineAmount };
+      });
+
+      const amount = fine.reduce((total, item) => total + item.fineAmount, 0);
+      setAmount(amount);
+      setAllFineData(fine);
+      console.log('fine>>>>>>>>', fine);
+      console.log('Total Fine Amount: ', amount);
     } catch (error) {
       console.log(`error`, error);
     }
@@ -282,27 +306,35 @@ const ReceiveInvoice = () => {
                   : '₹0' || '₹0'}
               </Typography>
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Fine Reason :
-              </Typography>
-              <Typography variant="body2">{reason || 'The book has not been fined'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Fine Amount:
-              </Typography>
-              <Typography variant="body2">
-                <Typography variant="body2">{`${allFineData}` || '₹0'}</Typography>
-              </Typography>
-            </Grid>
+            <div>
+              <Grid container spacing={2}>
+                {allFineData?.map((item, index) => (
+                  <Grid item xs={12} key={index}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <Typography variant="body1" fontWeight="bold">
+                          Fine Reason :
+                        </Typography>
+                        <Typography variant="body2">{item.reason || 'The book has not been fined'}</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="body1" fontWeight="bold">
+                          Fine Amount:
+                        </Typography>
+                        <Typography variant="body2">{item.fineAmount ? `₹${item.fineAmount}` : '₹0'}</Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ))}
+              </Grid>
+            </div>
           </Grid>
 
           <Grid container spacing={1} mt={2} mb={5}>
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-                {`₹${studentAmount + (allFineData || 0) - (discount || 0)}` || `₹0.00`}
+                {`₹${studentAmount + (amount || 0) - (discount || 0)}` || `₹0.00`}
               </Typography>
             </Grid>
           </Grid>

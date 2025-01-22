@@ -68,6 +68,7 @@ const ReceiveBook = () => {
   const [book_Id, setBook_Id] = useState();
   const [fineDataa, setFineDataa] = useState([]);
   const [fineDetails, setFineDetails] = useState(null);
+  const [allFineData, setAllFineData] = useState([]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -368,51 +369,32 @@ const ReceiveBook = () => {
     toast.success('Book submitted successfully');
   };
   const isSubmitDisabled = !amount || !reason || amountError || reasonError;
-  const fineData = async () => {
-    try {
-      // /user/findFine/:bookId/:studentId
 
-      // const response = await axios.get(url.fine.getAllFineBooks);
-      
-       const response = await axios.get(url.fine.findByStudentId);
-      console.log('All Fine Data ', response?.data);
-      const fineData = response?.data?.map((item) => {
-        const studentId = item?.studentId;
-        const bookId = item?.bookId;
-        const fineAmount = item?.fineAmount;
+  console.log(`formik.values`, formik.values.bookId);
+  console.log(`selectedStudentId`, selectedStudentId);
+  const findFineData = async () => {
+    try {
+      // const response = await axios.get(`http://localhost:4300/user/findFine/${formik.values.bookId}/${selectedStudentId}`);
+
+      const response = await axios.get(`${url.fine.fineDetails}${formik.values.bookId}/${selectedStudentId}`);
+      const fine = response?.data?.map((item) => {
         const reason = item?.reason;
-        console.log(`Student ID: ${studentId}, Book ID: ${bookId} ,Fine Amount:${fineAmount},reason:${reason}`);
-        return { studentId, bookId, reason, fineAmount };
+        const fineAmount = item?.fineAmount;
+        return { reason, fineAmount };
       });
-      console.log(`Fine data.>>>>>>>>`, fineData);
+      setAllFineData(fine);
+      console.log('fine>>>>>>>>>>>>', fine);
     } catch (error) {
       console.log(`error`, error);
     }
   };
-  fineData();
+  if (formik.values.bookId) {
+    // findFineData()
+  }
+  useEffect(() => {
+    findFineData();
+  }, [formik.values.bookId]);
 
-
-
-
-
-  // const fineData = async () => {
-  //   try {
-  //     const response = await axios.get(url.fine.getAllFineBooks);
-  //     console.log('All Fine Data ', response?.data);
-  //     const fineData = response?.data?.map((item) => {
-  //       const studentId = item?.studentId;
-  //       const bookId = item?.bookId;
-  //       const fineAmount = item?.fineAmount;
-  //       const reason = item?.reason;
-  //       console.log(`Student ID: ${studentId}, Book ID: ${bookId} ,Fine Amount:${fineAmount},reason:${reason}`);
-  //       return { studentId, bookId, reason, fineAmount };
-  //     });
-  //     console.log(`Fine data.>>>>>>>>`, fineData);
-  //   } catch (error) {
-  //     console.log(`error`, error);
-  //   }
-  // };
-  // fineData();
   return (
     <Container>
       <Box
@@ -537,14 +519,35 @@ const ReceiveBook = () => {
                     Fine Details
                   </Typography>
                 </AccordionSummary>
+                <div>
+                  <AccordionDetails sx={{ marginTop: '-20px' }}>
+                    {allFineData?.length > 0 ? (
+                      allFineData.map((item, index) => (
+                        <div key={index}>
+                          <Typography variant="body1">
+                            <strong>Reason:</strong> {item?.reason || 'Loading...'}
+                          </Typography>
+                          <Typography variant="body1">
+                            <strong>Fine Amount:</strong> {`₹${item?.fineAmount}` || '₹0'}
+                          </Typography>
+                        </div>
+                      ))
+                    ) : (
+                      <Typography variant="body1">No fines available.</Typography>
+                    )}
+                  </AccordionDetails>
+                </div>
+
+                {/* <div> 
                 <AccordionDetails sx={{ marginTop: '-20px' }}>
                   <Typography variant="body1">
-                    <strong>Reason:</strong> {1 || 'Loading...'}
+                    <strong>Reason:</strong> {allFineData?.reason || 'Loading...'}
                   </Typography>
                   <Typography variant="body1">
-                    <strong>Fine Amount:</strong> {12 || 'Loading...'}
+                    <strong>Fine Amount:</strong> {`₹${allFineData?.fineAmount}` || '₹0'}
                   </Typography>
                 </AccordionDetails>
+                </div> */}
               </Accordion>
               <Divider sx={{ marginY: 1 }} />
               <Typography variant="body1">
