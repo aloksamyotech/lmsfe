@@ -9,6 +9,8 @@ import GroupsIcon from '@mui/icons-material/Groups'; // Import the GroupsIcon
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
+import { url } from 'core/url';
+import { getVenderCount } from 'core/helperFurtion';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.warning.dark,
@@ -52,7 +54,9 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getVenderCount');
+        // const response = await axios.get('http://localhost:4300/user/getVenderCount');
+
+        const response = await getVenderCount(url.vendorManagement.venderCount);
         setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);

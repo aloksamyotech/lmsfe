@@ -18,7 +18,8 @@ import {
   IconBookmark,
   IconUserCheck,
   IconUser,
-  IconCreditCard
+  IconCreditCard,
+  IconHeart
 } from '@tabler/icons';
 
 // constant
@@ -40,7 +41,8 @@ const icons = {
   IconBookmark,
   IconUserCheck,
   IconUser,
-  IconCreditCard
+  IconCreditCard,
+  IconHeart
 };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
@@ -87,14 +89,14 @@ const dashboard = {
           type: 'item',
           url: '/dashboard/receive',
           breadcrumbs: false
-        },
-        {
-          id: 'update-Fine',
-          title: 'Manage Fine',
-          type: 'item',
-          url: '/dashboard/fine',
-          breadcrumbs: false
         }
+        // {
+        //   id: 'update-Fine',
+        //   title: 'Manage Fine',
+        //   type: 'item',
+        //   url: '/dashboard/fine',
+        //   breadcrumbs: false
+        // }
       ]
     },
     {
@@ -118,7 +120,7 @@ const dashboard = {
       title: 'Favorite Students',
       type: 'item',
       url: '/dashboard/contact',
-      icon: icons.IconPhoneCheck,
+      icon: icons.IconHeart,
       breadcrumbs: false
     },
     {

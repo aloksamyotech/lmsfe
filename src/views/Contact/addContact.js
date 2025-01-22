@@ -15,6 +15,7 @@ import * as yup from 'yup';
 import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { url } from 'core/url';
 
 const AddContact = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -52,7 +53,9 @@ const AddContact = (props) => {
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        const response = await axios.post('http://localhost:4300/user/addContact', values);
+        // const response = await axios.post('http://localhost:4300/user/addContact', values);
+
+        const response = await axios.post(url.favoriteStudents.addContact, values);
         console.log('Form submitted successfully:', response);
         toast.success('Contact added successfully');
         fetchData();

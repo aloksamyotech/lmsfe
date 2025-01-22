@@ -13,6 +13,8 @@ import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
+import { deletePurchaseBook, getPurchaseBook, updatePurchaseBook } from 'core/helperFurtion';
+import { url } from 'core/url';
 
 const PurchaseBook = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -29,8 +31,8 @@ const PurchaseBook = () => {
   const [studentId, setStudentId] = useState(null);
 
   useEffect(() => {
-    const url = window.location.href;
-    const parts = url.split('/');
+    const urlWindow = window.location.href;
+    const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
     setStudentId(extractedId);
   }, []);
@@ -93,7 +95,10 @@ const PurchaseBook = () => {
     try {
       console.log('fetch data ');
 
-      const response = await axios.get('http://localhost:4300/user/purchaseManagement');
+      // const response = await axios.get('http://localhost:4300/user/purchaseManagement');
+
+      const response = await getPurchaseBook(url.purchaseBook.purchaseManagement);
+
       console.log('response-----===', response);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
@@ -127,7 +132,9 @@ const PurchaseBook = () => {
     console.log(`editData`, editData);
 
     try {
-      const response = await axios.put(`http://localhost:4300/user/editPurchaseBook/${editData.id}`, editData);
+      // const response = await axios.put(`http://localhost:4300/user/editPurchaseBook/${editData.id}`, editData);
+
+      const response = await updatePurchaseBook(`${url.purchaseBook.edit}${editData.id}`, editData);
       console.log('Data', response);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
@@ -154,7 +161,8 @@ const PurchaseBook = () => {
     console.log(`id`, id);
 
     try {
-      await axios.delete(`http://localhost:4300/user/deletePurchaseBook/${id}`);
+      // await axios.delete(`http://localhost:4300/user/deletePurchaseBook/${id}`);
+      await deletePurchaseBook(`${url.purchaseBook.deletePurchaseBook}${id}`);
       setData((prevData) => prevData.filter((book) => book.id !== id));
       toast.success('Purchase Book add  successfully');
       setOpenDeleteDialog(false);

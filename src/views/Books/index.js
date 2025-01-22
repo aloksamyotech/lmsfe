@@ -12,6 +12,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import defaultBook from './bookDummy.jpeg';
+import { url } from 'core/url';
+import { addManyBooks, deleteBook, editBook, getBookManagement } from 'core/helperFurtion';
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -32,8 +34,8 @@ const Lead = () => {
   const [studentId, setStudentId] = useState(null);
 
   useEffect(() => {
-    const url = window.location.href;
-    const parts = url.split('/');
+    const urlWindow = window.location.href;
+    const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
     setStudentId(extractedId);
   }, []);
@@ -52,7 +54,10 @@ const Lead = () => {
       renderCell: (params) => {
         console.log(`params`, params.row);
 
+        // const imageUrl = `http://localhost:4300/${params?.row?.upload_Book}`;
+
         const imageUrl = `http://localhost:4300/${params?.row?.upload_Book}`;
+        console.log('imageUrl>>>>>>>>>>>>>>.', imageUrl);
 
         return (
           <img
@@ -106,9 +111,12 @@ const Lead = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/bookManagement');
-      console.log('response <<<<<>>>>>>>> : ', response.data);
-      console.log('image url : ', `http://localhost:4300/${response.data.BookManagement[0].upload_Book}`);
+      // const response = await axios.get('http://localhost:4300/user/bookManagement');
+      const response = await getBookManagement(url.bookManagenent.bookManagement);
+
+      // console.log('response <<<<<>>>>>>>> : ', response.data);
+
+      // console.log('image url >>>>>>>>>>>: ', `http://localhost:4300/${response.data.BookManagement[0].upload_Book}`);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
@@ -117,13 +125,14 @@ const Lead = () => {
         title: item.title,
         publisherName: item.publisherName,
         author: item.author,
-        quantity: item.quantity || 0
+        quantity: item.quantity > 0 ? item.quantity : 'Not Available'
       }));
       setData(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -137,8 +146,8 @@ const Lead = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editBook/${editData.id}`, editData);
-      console.log('Data', response);
+      // const response = await axios.put(`http://localhost:4300/user/editBook/${editData.id}`, editData);
+      const response = await editBook(`${url.bookManagenent.editBook}${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
@@ -158,7 +167,9 @@ const Lead = () => {
     try {
       console.log('delete API...');
 
-      await axios.delete(`http://localhost:4300/user/deleteBook/${bookToDelete}`);
+      // await axios.delete(`http://localhost:4300/user/deleteBook/${bookToDelete}`);
+      await deleteBook(`${url.bookManagenent.delete}${bookToDelete}`);
+
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);
@@ -198,7 +209,8 @@ const Lead = () => {
         return;
       }
       console.log('excelData>>>>>>', excelData);
-      const response = await axios.post('http://localhost:4300/user/addManyBooks', excelData);
+      // const response = await axios.post('http://localhost:4300/user/addManyBooks', excelData);
+      const response = await addManyBooks(url.bookManagenent.addManyBooks, excelData);
       toast.success(`Data Uploaded Successfully`);
       setTimeout(() => {
         window.location.reload();

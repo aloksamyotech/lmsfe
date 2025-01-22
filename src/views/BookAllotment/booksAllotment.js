@@ -16,6 +16,16 @@ import axios from 'axios';
 import { useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from '@mui/material/IconButton';
+import { url } from 'core/url';
+import {
+  bookAllotmentCount,
+  bookAllotmentHistory,
+  findHistoryBookAllotment,
+  getBookManagement,
+  getRegisterManagement,
+  getSubscription,
+  manyBookAllotment
+} from 'core/helperFurtion';
 
 const AddAllotment = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -49,16 +59,20 @@ const AddAllotment = (props) => {
 
       const dataToSend = addBook && Object.keys(addBook).length > 0 ? addBook : [values];
       console.log('Gopal>>>>>>>>>>', dataToSend);
+      console.log('Gopal Chotu>>>>>>>>>>', dataToSend[0]?.amount);
       const newData = {
         studentId: dataToSend?.[0]?.studentId,
         bookDetails: dataToSend
       };
       try {
-        const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
+        // const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
+
+        const response = await manyBookAllotment(url.allotmentManagement.manyBookAllotment, dataToSend);
 
         if (response) {
           console.log(`response  Gopal ---->>>>`, response);
-          const Bookresponse = await axios.post('http://localhost:4300/user/bookAllotmentHistory', newData);
+          // const Bookresponse = await axios.post('http://localhost:4300/user/bookAllotmentHistory', newData);
+          const Bookresponse = await bookAllotmentHistory(url.bookAllotmentHistory.bookAllotmentHistory, newData);
           console.log('Bookresponse', Bookresponse);
 
           toast.success('Book details added successfully');
@@ -82,7 +96,8 @@ const AddAllotment = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/bookManagement');
+        // const response = await axios.get('http://localhost:4300/user/bookManagement');
+        const response = await getBookManagement(url.bookManagenent.bookManagement);
         const filteredBooks = response.data?.BookManagement.filter((book) => book.quantity > 0);
         console.log('response Aman-2', response);
         setBookData(filteredBooks);
@@ -92,9 +107,9 @@ const AddAllotment = (props) => {
     };
     const fetchStudents = async () => {
       try {
-        console.log('response Aman>>>>>>>>>>>>', response);
-        const response = await axios.get('http://localhost:4300/user/registerManagement');
-        console.log('response Aman>>>>>>>>>>>>', response);
+        // const response = await axios.get('http://localhost:4300/user/registerManagement');
+        const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
+        console.log('response Aman', response);
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -102,8 +117,7 @@ const AddAllotment = (props) => {
     };
     const fetchSubscription = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
-
+        const response = await getSubscription(url.subscription.findSubscription);
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
@@ -116,14 +130,15 @@ const AddAllotment = (props) => {
   const handleStudentChange = async (event) => {
     const studentId = event.target.value;
     console.log('studentId New ', event.target.value);
-
     if (!studentId) {
       toast.error('Please select a valid student.');
       return;
     }
     formik.setFieldValue('studentId', studentId);
     try {
-      const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
+      // const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
+
+      const response = await bookAllotmentCount(`${url.allotmentManagement.bookAllotmentCount}${studentId}`);
       const count = response?.data?.allotmentsCount || 0;
 
       setBookNumber(count);

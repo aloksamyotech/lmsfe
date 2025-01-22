@@ -20,6 +20,8 @@ import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import PersonAddIcon from '@mui/icons-material/PersonAdd'; // Updated import for PersonAddIcon
+import { url } from 'core/url';
+import { getRegisterStudentCount } from 'core/helperFurtion';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.primary.dark,
@@ -53,7 +55,9 @@ const EarningCard = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getRegisterStudentCount');
+        // const response = await axios.get('http://localhost:4300/user/getRegisterStudentCount');
+
+        const response = await getRegisterStudentCount(url.studentRegister.getRegisterStudentCount);
         setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);

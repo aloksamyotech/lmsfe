@@ -13,18 +13,7 @@ import Iconify from '../../ui-component/iconify';
 // import AddContact from './addContact.js';
 
 // ----------------------------------------------------------------------
-
-// const leadData = [
-//   {
-//     id: 1,
-//     firstName: 'jonny',
-//     lastName: 'Doe',
-//     gender: 'male',
-//     phoneNumber: '9981923587',
-//     emailAddress: 'ap@samyotech.com',
-//     action: 'Edit'
-//   }
-// ];
+ 
 const FinePerDay = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);

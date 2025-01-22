@@ -13,6 +13,7 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
+import { url } from 'core/url';
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
@@ -97,7 +98,9 @@ const FinePerDay = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/registerManagement');
+        // const response = await axios.get('http://localhost:4300/user/registerManagement');
+
+        const response = await axios.get(url.studentRegister.getRegisterManagement);
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -108,7 +111,8 @@ const FinePerDay = () => {
       console.log('HRitik ..........');
 
       try {
-        const response = await axios.get('http://localhost:4300/user/getAllFineBooks');
+        // const response = await axios.get('http://localhost:4300/user/getAllFineBooks');
+        const response = await axios.get(url.fine.getAllFineBooks);
         console.log('response>>>>>>>>', response?.data);
 
         setAllData(response?.data);
@@ -152,7 +156,8 @@ const FinePerDay = () => {
     }
 
     try {
-      const fineResponse = await axios.get(`http://localhost:4300/user/getFineBook/${selectedStudentId}`);
+      // const fineResponse = await axios.get(`http://localhost:4300/user/getFineBook/${selectedStudentId}`);
+      const fineResponse = await axios.get(`${url.fine.getFineBook}${selectedStudentId}`);
 
       console.log(`Fine Response`, fineResponse?.data);
 
@@ -195,7 +200,9 @@ const FinePerDay = () => {
 
     try {
       setLoading(true);
-      const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
+      // const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
+
+      const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
       console.log('removeResponse', removeResponse);
 
       toast.success('Book removed successfully');
@@ -208,7 +215,8 @@ const FinePerDay = () => {
       setLoading(false);
     }
 
-    const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
+    // const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
+    const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
     console.log('submitResponse', submitResponse);
 
     // toast.success('Book submitted successfully');

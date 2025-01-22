@@ -9,6 +9,7 @@ import AddRegister from 'views/Register/Addregister';
 // import StudentInvoice from './invoiceStudent';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
+import { url } from 'core/url';
 
 // import PaymentReceipt from './berry';
 
@@ -81,46 +82,22 @@ const View = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 1
-    },
-
-    {
-      field: 'invoice',
-      headerName: 'Invoice',
-      flex: 1,
-      renderCell: (params) => (
-        <div>
-          <Button color="primary" onClick={() => handleInvoice(params.row)} style={{ margin: '-9px' }}>
-            <ReceiptIcon />
-          </Button>
-        </div>
-      )
     }
+
+    // {
+    //   field: 'invoice',
+    //   headerName: 'Invoice',
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <div>
+    //       <Button color="primary" onClick={() => handleInvoice(params.row)} style={{ margin: '-9px' }}>
+    //         <ReceiptIcon />
+    //       </Button>
+    //     </div>
+    //   )
+    // }
   ];
-  const handleInvoice = (row) => {
-    navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
 
-    const fetchStudent = async () => {
-      try {
-        // console.log('Student');
-
-        const response = await axios.get('/user/viewBookAllotmentUser/:id');
-        console.log('data API------------', response);
-        const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
-          id: item._id,
-          student_id: item.student_id,
-          student_Name: item.student_Name,
-          email: item.email,
-          mobile_Number: item.mobile_Number,
-          register_Date: formatDate(item.register_Date)
-        }));
-        setData(fetchedData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchStudent();
-  };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -175,29 +152,22 @@ const View = () => {
   };
 
   useEffect(() => {
-    const url = window.location.href;
-    console.log('Current Url', url);
-    setCurrentUrl(url);
+    const Url = window.location.href;
+    console.log('Current Url', Url);
+    setCurrentUrl(Url);
 
-    const parts = url.split('/');
+    const parts = Url.split('/');
     const extractedId = parts[parts.length - 1];
     console.log('Id', extractedId);
 
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
-        // const student = response?.data?.bookAllotments?.user?.map((item) => ({
-        //   // id: item._id,
-        //   student_id: item.student_id,
-        //   student_Name: item.student_Name,
-        //   email: item.email,
-        //   mobile_Number: item.mobile_Number,
-        //   register_Date: formatDate(item.register_Date)
-        // }));
-        setAllData(response.data);
+        // const response = await axios.get(`http://64.227.130.216:4300/user/viewBookAllotmentUser/${extractedId}`);
 
-        // console.log('Backend Response:', response?.data?.user?.email);
+        const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
+
+        setAllData(response.data);
       } catch (error) {
         console.error('Error sending ID to backend:', error);
       }
@@ -209,11 +179,11 @@ const View = () => {
   }, []);
 
   useEffect(() => {
-    const url = window.location.href;
-    console.log('Current Url', url);
-    setCurrentUrl(url);
+    const rul = window.location.href;
+    console.log('Current Url', rul);
+    setCurrentUrl(rul);
 
-    const parts = url.split('/');
+    const parts = rul.split('/');
     const extractedId = parts[parts.length - 1];
     console.log('Id', extractedId);
 
@@ -221,7 +191,9 @@ const View = () => {
     const fetchData = async () => {
       try {
         console.log('findHistoryBookAllotmentUser');
-        const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+        // const response = await axios.get(`http://64.227.130.216:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+
+        const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
         console.log('findHistoryBookAllotmentUser----------', response);
         const fetchedData = response?.data?.map((item) => ({
           id: item._id,
@@ -318,7 +290,6 @@ const View = () => {
             // marginRight: '-5%'
           }}
         >
-          {/* Student Logo / Avatar */}
           <Avatar
             src={student.logoUrl}
             alt={student.student_Name}
@@ -329,7 +300,6 @@ const View = () => {
             }}
           />
 
-          {/* Student Details */}
           <Box sx={{ lineHeight: 2 }}>
             <Typography variant="h5" gutterBottom>
               {allData?.user?.student_Name}
@@ -345,28 +315,6 @@ const View = () => {
             </Typography>
           </Box>
         </Paper>
-        {/* <Box
-          sx={{
-            backgroundColor: 'white',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            height: '50px',
-            marginBottom: '-18px'
-          }}
-        >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Student Allotted Books</h4>
-            </Link>
-          </Breadcrumbs>
-        </Box> */}
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack> */}
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -381,8 +329,6 @@ const View = () => {
             </Card>
           </Box>
         </TableStyle>
-        {/* <StudentInvoice />
-        <PaymentReceipt /> */}
       </Container>
     </>
   );
