@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, CardMedia, Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
-import { IconTrash } from '@tabler/icons-react';
 import CloseIcon from '@mui/icons-material/Close';
 import CartSummary from './cartSummary';
 import { toast } from 'react-toastify';
@@ -129,7 +128,7 @@ const Cart = ({ cartItems, onRemoveFromCart, onClearCart, onIncreaseQuantity, on
                 </Button>
 
                 <Button variant="outlined" color="error" onClick={() => onRemoveFromCart(item._id, item.submissionType)}>
-                  <IconTrash stroke={2} size={20} />
+                  {/* <IconTrash stroke={2} size={20} /> */}
                 </Button>
               </Box>
             </Box>
@@ -186,3 +185,76 @@ const Cart = ({ cartItems, onRemoveFromCart, onClearCart, onIncreaseQuantity, on
 };
 
 export default Cart;
+
+
+
+
+
+export const manyBookAllotment = async (req, res) => {
+  const allotmentsData = req.body;
+  try {
+    for (const allotment of allotmentsData) {
+      const { studentId } = allotment;
+      if (!mongoose.Types.ObjectId.isValid(studentId)) {
+        return res
+          .status(400)
+          .json({ message: `Invalid student ID: ${studentId}` });
+      }
+      const studentAllotments = await BookAllotment.countDocuments({
+        studentId,
+      });
+      if (studentAllotments >= 5) {
+        return res
+          .status(400)
+          .json({ message: "Student can't borrow more than 5 books." });
+      }
+    }
+    const allotmentsToInsert = allotmentsData.map((allotment) => ({
+      bookId: allotment.bookId,
+      studentId: allotment.studentId,
+      bookIssueDate: allotment.bookIssueDate,
+      submissionDate: allotment.submissionDate,
+      paymentType: allotment.paymentType,
+      amount: allotment.amount,
+      count: 1,
+    }));
+
+    const allotments = await BookAllotment.insertMany(allotmentsToInsert);
+    for (const allotment of allotmentsData) {
+      const { studentId } = allotment;
+      const studentAllotmentCount = await BookAllotment.countDocuments({
+        studentId,
+      });
+      await RegisterManagement.findOneAndUpdate(
+        { user_id: studentId },
+        { $set: { count: studentAllotmentCount } }
+      );
+    }
+    const bookUpdatePromises = allotmentsData.map(async (allotment) => {
+      const { bookId, studentId } = allotment;
+      const bookManagement = await BookManagement.findById(bookId);
+      if (!bookManagement || bookManagement.quantity <= 0) {
+        await BookAllotment.deleteMany({ studentId, bookId });
+        throw new Error(`Book with ID ${bookId} is out of stock.`);
+      } else {
+        const newId = new ObjectId(bookId);
+        const purchaseData = await PurchaseManagement.findOneAndUpdate(
+          {
+            bookId: new ObjectId(bookId),
+          },
+          {
+            $inc: { quantity: -1 },
+          },
+          {
+            new: true,
+          }
+        );
+      }
+    });
+    await Promise.all(bookUpdatePromises);
+    return res.status(200).json(allotments);
+  } catch (error) {
+    console.error("Error allotting books:", error);
+    return res.status(400).json({ message: error.message });
+  }
+};

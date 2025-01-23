@@ -313,7 +313,7 @@ const ReceiveInvoice = () => {
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
                         <Typography variant="body1" fontWeight="bold">
-                          Fine Reason :
+                          Fine Reason:
                         </Typography>
                         <Typography variant="body2">{item.reason || 'The book has not been fined'}</Typography>
                       </Grid>

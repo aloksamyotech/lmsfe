@@ -215,6 +215,8 @@ const ReceiveBook = () => {
         const response = await axios.get(url.studentRegister.getRegisterManagement);
         setAllData(response?.data?.RegisterManagement);
         console.log('response', response?.data?.RegisterManagement?.[0]._id);
+        console.log('response for data ', response);
+
         const modifiedData = response?.data?.RegisterManagement?.map((item) => {
           console.log('response Amit01', item._id);
           return item;
@@ -229,8 +231,10 @@ const ReceiveBook = () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/allotmentManagement');
         const response = await axios.get(url.allotmentManagement.allotmentManagementData);
+        console.log('data is coming for the ', response);
+
         const studentIds = response?.data?.map((item) => item.studentId);
-        console.log('response Amit---:', studentIds);
+        console.log('response Amit0011---:', studentIds);
         return studentIds;
       } catch (error) {
         console.error('Error fetching Allotment Books', error);

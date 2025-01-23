@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+ import { useState, useEffect } from 'react';
 import {
   Container,
   Grid,
@@ -403,7 +403,7 @@ const Allotment = () => {
             <Grid item xs={12} md={3} lg={6}>
               <Box sx={{ height: '70vh', overflowY: 'auto', border: '1px solid #ccc', borderRadius: '8px', padding: 2 }}>
                 <Typography variant="h6" gutterBottom>
-                  Shopping Cart
+                  Books Cart
                 </Typography>
                 <Cart
                   cartItems={cartItems}
@@ -444,8 +444,7 @@ const Allotment = () => {
                 fullWidth
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
-              />
-
+              /> 
               <Typography variant="h6" color="primary">
                 Amount: ₹{calculatedAmount}
               </Typography>
