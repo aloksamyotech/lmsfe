@@ -173,7 +173,7 @@ const ReceiveBook = () => {
       try {
         // const submitResponse = await axios.get(`http://localhost:4300/user/getAllSubmitBookDetails`);
         const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
-        console.log(`submitResponse`, submitResponse);
+        // console.log(`submitResponse0111>>>>>>>>>>>..`, submitResponse);
         const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
           id: item._id,
           student_Name: item?.studentDetails?.[0]?.student_Name,
@@ -183,8 +183,8 @@ const ReceiveBook = () => {
           bookIssueDate: formatDate(item?.bookIssueDate),
           submissionDate: formatDate(item?.submissionDate)
         }));
-        console.log('selectedStudentId>>>>>>>', selectedStudentId);
-        console.log('book_Id>>>>>>', book_Id);
+        // console.log('selectedStudentId>>>>>>>', selectedStudentId);
+        // console.log('book_Id>>>>>>', book_Id);
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching submit book data:', error);
@@ -203,55 +203,82 @@ const ReceiveBook = () => {
     const fetchReceiveBook = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/receiveBook');
-        const response = await axios.get(url.allotmentManagement.receiveBook);
-        setFetchReceiveBook(response.data);
+        const response = await axios.get('http://localhost:4300/user/receiveBook');
+        console.log(`response00011 is coming or nott==============>`, response?.data);
+        setFetchReceiveBook(response.data.books);
+        console.log('response data =======>', response.books);
+
+        console.log('fetchReaciverBook is coming after sate in=========>', fetchReceiveBook);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
       }
     };
+
     const fetchStudents = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/registerManagement');
         const response = await axios.get(url.studentRegister.getRegisterManagement);
+
         setAllData(response?.data?.RegisterManagement);
-        console.log('response', response?.data?.RegisterManagement?.[0]._id);
+        // console.log('response', response?.data?.RegisterManagement?.[0]._id);
         const modifiedData = response?.data?.RegisterManagement?.map((item) => {
-          console.log('response Amit01', item._id);
+          // console.log('response Amit01', response?.data?.RegisterManagement);
           return item;
         });
+
         setAllData(modifiedData);
         return modifiedData;
       } catch (error) {
         console.error('Error fetching students:', error);
       }
     };
+
     const BookAllotments = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/allotmentManagement');
         const response = await axios.get(url.allotmentManagement.allotmentManagementData);
-        const studentIds = response?.data?.map((item) => item.studentId);
-        console.log('response Amit---:', studentIds);
-        return studentIds;
+        const data = response?.data;
+        setFetchReceiveBook(data);
+        // console.log(`response---->1000>>`, response?.data);
+        return data;
+
+        // const studentIds = response?.data?.map((item) => item._id);
+        // console.log('response Amit>1000>>---:', studentIds);
+        // studentIds.forEach((id, index) => {
+        //   console.log(`Student ID ${index + 1}:`, id);
+        //   const rohit = id;
+        //   setRohit(rohit);
+        //   return studentIds;
+        // });
       } catch (error) {
         console.error('Error fetching Allotment Books', error);
       }
     };
     const filterData = async () => {
       try {
-        const students = await fetchStudents();
-        const studentIds = await BookAllotments();
-        const matchedStudents = students.filter((student) => studentIds.includes(student._id));
-        console.log('Matched Students>>>>>>>>:', matchedStudents);
+        const studentData = await fetchStudents();
+        const bookData = await BookAllotments();
+
+        // console.log('studentData:', studentData);
+        // console.log('bookData:', bookData);
+
+        const bookStudentIds = bookData.map((book) => book.studentId);
+        // console.log(`bookStudentIds`, bookStudentIds);
+
+        const matchedStudents = studentData.filter((student) => bookStudentIds.includes(student._id));
+
+        // console.log('Matched Students:', matchedStudents);
         setMatchedStudents(matchedStudents);
       } catch (error) {
         console.error('Error filtering data:', error);
       }
     };
+
     const NewReceiveBook = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/getReceiveBook');
         const response = await axios.get(url.allotmentManagement.getReceiveBook);
-        console.log('Matched Students<<<<<<<<<<>>>>>>>>', response);
+        // console.log('Matched Students<<<<<<<<<<>>>>>>>>', response);
         setFetchReceiveBook(response.data);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
@@ -288,7 +315,7 @@ const ReceiveBook = () => {
   });
   const handleStudentChange = async (event) => {
     const selectedStudentId = event.target.value;
-    console.log(`selectedStudentId`, selectedStudentId);
+    // console.log(`selectedStudentId>>01>>>>`, selectedStudentId);
     setSelectedStudentId(selectedStudentId);
     formik.setFieldValue('studentId', selectedStudentId);
     const selectedStudent = allData.find((student) => student._id === selectedStudentId);
@@ -298,11 +325,11 @@ const ReceiveBook = () => {
     try {
       // const submitResponse = await axios.get(`http://localhost:4300/user/getSubmitBookDetails/${selectedStudentId}`);
       const submitResponse = await axios.get(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
-      console.log(`getSubmitBookDetails >>>>>>>>>>>>>`, submitResponse);
+      // console.log(`getSubmitBookDetails >>>>>>>>>>>>>`, submitResponse);
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
-        bookName: item?.bookDetails?.[0]?.bookName,
+        // bookName: item?.bookDetails?.[0]?.bookName,
         title: item?.paymentDetails?.[0]?.title,
         amount: item?.paymentDetails?.[0]?.amount,
         bookIssueDate: formatDate(item?.bookIssueDate),
@@ -319,17 +346,27 @@ const ReceiveBook = () => {
   }
   useEffect(() => {
     if (selectedStudentId) {
+      // console.log('selected student is is===========>', selectedStudentId);
+
       const filteredBooks = fetchReceiveBook.filter((receiveBookItem) => receiveBookItem.studentId === selectedStudentId);
+      console.log(`filteredBooks is coming or nottt`, filteredBooks);
+
       setBookData(filteredBooks);
+      // console.log('bookk data is coming or not===========>', bookData);
     }
   }, [selectedStudentId, fetchReceiveBook]);
+
+  console.log('book data=============================>', bookData);
+
   const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book._id));
+  // console.log('filter books are coming after filter==========>', filteredBooks);
+
   const handleInvoice = (row) => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
   };
   const handleFineSubmit = async () => {
     const idBook = formik.values.bookId;
-    console.log('idBook......', idBook);
+    // console.log('idBook......', idBook);
     try {
       const data = {
         amount: amount,
@@ -337,7 +374,7 @@ const ReceiveBook = () => {
         bookId: idBook,
         studentId: selectedStudentId
       };
-      console.log('values>>>>', data);
+      // console.log('values>>>>', data);
       // const response = await axios.post('http://localhost:4300/user/addFineBook', data);
       const response = await axios.post(url.fine.addFineBook, data);
       toast.success('Fine Book successfully added');
@@ -348,12 +385,12 @@ const ReceiveBook = () => {
     setOpen(false);
   };
   const handleRemove = async (bookId) => {
-    console.log('submit click>>>>>', bookId);
+    // console.log('submit click>>>>>', bookId);
     try {
       setLoading(true);
       // const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
       const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
-      console.log('removeResponse', removeResponse);
+      // console.log('removeResponse', removeResponse);
       toast.success('Book removed successfully');
       window.location.reload();
       setLoading(false);
@@ -364,13 +401,13 @@ const ReceiveBook = () => {
     }
     // const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
     const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
-    console.log('submitResponse', submitResponse);
+    // console.log('submitResponse', submitResponse);
     toast.success('Book submitted successfully');
   };
   const isSubmitDisabled = !amount || !reason || amountError || reasonError;
 
-  console.log(`formik.values`, formik.values.bookId);
-  console.log(`selectedStudentId`, selectedStudentId);
+  // console.log(`formik.values`, formik.values.bookId);
+  // console.log(`selectedStudentId>>>>>>>>`, selectedStudentId);
   const findFineData = async () => {
     try {
       // const response = await axios.get(`http://localhost:4300/user/findFine/${formik.values.bookId}/${selectedStudentId}`);
@@ -382,7 +419,7 @@ const ReceiveBook = () => {
         return { reason, fineAmount };
       });
       setAllFineData(fine);
-      console.log('fine>>>>>>>>>>>>', fine);
+      // console.log('fine>>>>>>>>>>>>', fine);
     } catch (error) {
       console.log(`error`, error);
     }
@@ -501,13 +538,14 @@ const ReceiveBook = () => {
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body1">
-                    <strong>Subscription:</strong> {book?.subscriptionDetails?.title || 'Loading...'}
+                    <strong>Subscription:</strong> {book?.books?.paymentType?.title || 'Loading...'}
                   </Typography>
+
                   <Typography variant="body1">
                     <strong>Phone:</strong> {book?.studentDetails?.mobile_Number || 'Loading...'}
                   </Typography>
                   <Typography variant="body1">
-                    <strong>Amount:</strong> {book?.subscriptionDetails?.amount || 'Loading...'}
+                    <strong>Amount:</strong> {book?.books?.amount || 'Loading...'}
                   </Typography>
                 </Grid>
               </Grid>
@@ -550,7 +588,7 @@ const ReceiveBook = () => {
               </Accordion>
               <Divider sx={{ marginY: 1 }} />
               <Typography variant="body1">
-                <strong>Issue Date:</strong> {formatDate(book?.bookIssueDate) || 'Loading...'}
+                <strong>Issue Date:</strong> {formatDate(book?.books?.bookIssueDate) || 'Loading...'}
               </Typography>
               <Typography
                 variant="body1"
