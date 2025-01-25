@@ -64,14 +64,10 @@ const ReceiveBook = () => {
   const [amountHelperText, setAmountHelperText] = useState('');
   const [reasonHelperText, setReasonHelperText] = useState('');
   const [matchedStudents, setMatchedStudents] = useState([]);
-  const [book_Id, setBook_Id] = useState();
-  const [fineDataa, setFineDataa] = useState([]);
-  const [fineDetails, setFineDetails] = useState(null);
   const [allFineData, setAllFineData] = useState([]);
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  const [booksss, setFetchReceiveBooks] = useState([]);
   const columns = [
     {
       field: 'student_Name',
@@ -173,18 +169,16 @@ const ReceiveBook = () => {
       try {
         // const submitResponse = await axios.get(`http://localhost:4300/user/getAllSubmitBookDetails`);
         const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
-        console.log(`submitResponse`, submitResponse);
-        const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
-          id: item._id,
-          student_Name: item?.studentDetails?.[0]?.student_Name,
-          bookName: item?.bookDetails?.[0]?.bookName,
-          title: item?.paymentDetails?.[0]?.title,
-          amount: item?.paymentDetails?.[0]?.amount,
-          bookIssueDate: formatDate(item?.bookIssueDate),
-          submissionDate: formatDate(item?.submissionDate)
+        const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => ({
+          serial: index + 1,
+          id: item.books.bookId,
+          student_Name: item?.studentDetails?.student_Name,
+          bookName: item?.bookDetails?.bookName,
+          title: item?.paymentDetails?.title,
+          amount: item?.paymentDetails?.amount,
+          bookIssueDate: formatDate(item?.books?.bookIssueDate),
+          submissionDate: formatDate(item?.books?.submissionDate)
         }));
-        console.log('selectedStudentId>>>>>>>', selectedStudentId);
-        console.log('book_Id>>>>>>', book_Id);
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching submit book data:', error);
@@ -203,8 +197,9 @@ const ReceiveBook = () => {
     const fetchReceiveBook = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/receiveBook');
-        const response = await axios.get(url.allotmentManagement.receiveBook);
-        setFetchReceiveBook(response.data);
+        const response = await axios.get('http://localhost:4300/user/receiveBook');
+        setFetchReceiveBook(response.data.books);
+        setFetchReceiveBooks(response.data.books || []);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
       }
@@ -214,11 +209,7 @@ const ReceiveBook = () => {
         // const response = await axios.get('http://localhost:4300/user/registerManagement');
         const response = await axios.get(url.studentRegister.getRegisterManagement);
         setAllData(response?.data?.RegisterManagement);
-        console.log('response', response?.data?.RegisterManagement?.[0]._id);
-        console.log('response for data ', response);
-
         const modifiedData = response?.data?.RegisterManagement?.map((item) => {
-          console.log('response Amit01', item._id);
           return item;
         });
         setAllData(modifiedData);
@@ -231,31 +222,29 @@ const ReceiveBook = () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/allotmentManagement');
         const response = await axios.get(url.allotmentManagement.allotmentManagementData);
-        console.log('data is coming for the ', response);
-
-        const studentIds = response?.data?.map((item) => item.studentId);
-        console.log('response Amit0011---:', studentIds);
-        return studentIds;
+        const data = response?.data;
+        setFetchReceiveBook(data);
+        return data;
       } catch (error) {
         console.error('Error fetching Allotment Books', error);
       }
     };
     const filterData = async () => {
       try {
-        const students = await fetchStudents();
-        const studentIds = await BookAllotments();
-        const matchedStudents = students.filter((student) => studentIds.includes(student._id));
-        console.log('Matched Students>>>>>>>>:', matchedStudents);
+        const studentData = await fetchStudents();
+        const bookData = await BookAllotments();
+        const bookStudentIds = bookData.map((book) => book.studentId);
+        const matchedStudents = studentData.filter((student) => bookStudentIds.includes(student._id));
         setMatchedStudents(matchedStudents);
       } catch (error) {
         console.error('Error filtering data:', error);
       }
     };
+
     const NewReceiveBook = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/getReceiveBook');
         const response = await axios.get(url.allotmentManagement.getReceiveBook);
-        console.log('Matched Students<<<<<<<<<<>>>>>>>>', response);
         setFetchReceiveBook(response.data);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
@@ -292,7 +281,6 @@ const ReceiveBook = () => {
   });
   const handleStudentChange = async (event) => {
     const selectedStudentId = event.target.value;
-    console.log(`selectedStudentId`, selectedStudentId);
     setSelectedStudentId(selectedStudentId);
     formik.setFieldValue('studentId', selectedStudentId);
     const selectedStudent = allData.find((student) => student._id === selectedStudentId);
@@ -302,11 +290,9 @@ const ReceiveBook = () => {
     try {
       // const submitResponse = await axios.get(`http://localhost:4300/user/getSubmitBookDetails/${selectedStudentId}`);
       const submitResponse = await axios.get(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
-      console.log(`getSubmitBookDetails >>>>>>>>>>>>>`, submitResponse);
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
-        bookName: item?.bookDetails?.[0]?.bookName,
         title: item?.paymentDetails?.[0]?.title,
         amount: item?.paymentDetails?.[0]?.amount,
         bookIssueDate: formatDate(item?.bookIssueDate),
@@ -323,17 +309,17 @@ const ReceiveBook = () => {
   }
   useEffect(() => {
     if (selectedStudentId) {
-      const filteredBooks = fetchReceiveBook.filter((receiveBookItem) => receiveBookItem.studentId === selectedStudentId);
+      const filteredBooks = booksss.filter((receiveBookItem) => receiveBookItem.student.studentId === selectedStudentId);
       setBookData(filteredBooks);
     }
-  }, [selectedStudentId, fetchReceiveBook]);
-  const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book._id));
+  }, [selectedStudentId, booksss]);
+  const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
   const handleInvoice = (row) => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
   };
   const handleFineSubmit = async () => {
-    const idBook = formik.values.bookId;
-    console.log('idBook......', idBook);
+    const idBook = formik.values.bookId; 
+    const _id = formik.values._id;
     try {
       const data = {
         amount: amount,
@@ -341,7 +327,6 @@ const ReceiveBook = () => {
         bookId: idBook,
         studentId: selectedStudentId
       };
-      console.log('values>>>>', data);
       // const response = await axios.post('http://localhost:4300/user/addFineBook', data);
       const response = await axios.post(url.fine.addFineBook, data);
       toast.success('Fine Book successfully added');
@@ -352,12 +337,13 @@ const ReceiveBook = () => {
     setOpen(false);
   };
   const handleRemove = async (bookId) => {
-    console.log('submit click>>>>>', bookId);
+    // const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
+    const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
+    toast.success('Book submitted successfully');
     try {
       setLoading(true);
       // const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
       const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
-      console.log('removeResponse', removeResponse);
       toast.success('Book removed successfully');
       window.location.reload();
       setLoading(false);
@@ -366,19 +352,11 @@ const ReceiveBook = () => {
       toast.error('An error occurred');
       setLoading(false);
     }
-    // const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
-    const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
-    console.log('submitResponse', submitResponse);
-    toast.success('Book submitted successfully');
   };
   const isSubmitDisabled = !amount || !reason || amountError || reasonError;
-
-  console.log(`formik.values`, formik.values.bookId);
-  console.log(`selectedStudentId`, selectedStudentId);
   const findFineData = async () => {
     try {
       // const response = await axios.get(`http://localhost:4300/user/findFine/${formik.values.bookId}/${selectedStudentId}`);
-
       const response = await axios.get(`${url.fine.fineDetails}${formik.values.bookId}/${selectedStudentId}`);
       const fine = response?.data?.map((item) => {
         const reason = item?.reason;
@@ -386,7 +364,6 @@ const ReceiveBook = () => {
         return { reason, fineAmount };
       });
       setAllFineData(fine);
-      console.log('fine>>>>>>>>>>>>', fine);
     } catch (error) {
       console.log(`error`, error);
     }
@@ -397,7 +374,9 @@ const ReceiveBook = () => {
   useEffect(() => {
     findFineData();
   }, [formik.values.bookId]);
-
+  function getUniqueBooks(bookData) {
+    return [...new Map(bookData.filter((item) => item.active === true).map((item) => [item.bookId, item])).values()];
+  }
   return (
     <Container>
       <Box
@@ -460,9 +439,9 @@ const ReceiveBook = () => {
             <FormLabel>Book</FormLabel>
             <FormControl fullWidth>
               <Select id="bookId" name="bookId" value={formik.values.bookId} onChange={formik.handleChange}>
-                {bookData.map((item) => (
-                  <MenuItem key={item._id} value={item._id}>
-                    {item?.bookDetails?.bookName}
+                {getUniqueBooks(bookData).map((item) => (
+                  <MenuItem key={item.bookId} value={item.bookId}>
+                    {item?.bookTitle}
                   </MenuItem>
                 ))}
               </Select>
@@ -488,30 +467,31 @@ const ReceiveBook = () => {
               }}
             >
               <Typography variant="h4" sx={{ fontSize: '22px', textAlign: 'center', mb: 2, color: 'text.primary' }}>
-                {book?.bookDetails?.bookName || 'Loading...'}
+                {book?.bookTitle || 'Loading...'}
               </Typography>
               <Divider sx={{ marginY: 2 }} />
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <Typography variant="body1">
-                    <strong>Author:</strong> {book?.bookDetails?.author || 'Loading...'}
+                    <strong>Author:</strong> {book?.bookAuthor || 'Loading...'}
                   </Typography>
                   <Typography variant="body1">
-                    <strong>Student Name:</strong> {book?.studentDetails?.student_Name || 'Loading...'}
+                    <strong>Student Name:</strong> {book?.student.studentName || 'Loading...'}
                   </Typography>
                   <Typography variant="body1">
-                    <strong>Email:</strong> {book?.studentDetails?.email || 'Loading...'}
+                    <strong>Email:</strong> {book?.student.email || 'Loading...'}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body1">
-                    <strong>Subscription:</strong> {book?.subscriptionDetails?.title || 'Loading...'}
+                    <strong>Subscription:</strong> {book?.paymentType || 'Loading...'}
+                  </Typography>
+
+                  <Typography variant="body1">
+                    <strong>Phone:</strong> {book?.student.mobileNumber || 'Loading...'}
                   </Typography>
                   <Typography variant="body1">
-                    <strong>Phone:</strong> {book?.studentDetails?.mobile_Number || 'Loading...'}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Amount:</strong> {book?.subscriptionDetails?.amount || 'Loading...'}
+                    <strong>Amount:</strong> {book?.amount || 'Loading...'}
                   </Typography>
                 </Grid>
               </Grid>
@@ -540,17 +520,6 @@ const ReceiveBook = () => {
                     )}
                   </AccordionDetails>
                 </div>
-
-                {/* <div> 
-                <AccordionDetails sx={{ marginTop: '-20px' }}>
-                  <Typography variant="body1">
-                    <strong>Reason:</strong> {allFineData?.reason || 'Loading...'}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Fine Amount:</strong> {`₹${allFineData?.fineAmount}` || '₹0'}
-                  </Typography>
-                </AccordionDetails>
-                </div> */}
               </Accordion>
               <Divider sx={{ marginY: 1 }} />
               <Typography variant="body1">
@@ -636,14 +605,13 @@ const ReceiveBook = () => {
               rows={data}
               columns={columns}
               checkboxSelection
-              getRowId={(row) => row.id}
+              getRowId={(row) => row.serial}
               slots={{ toolbar: GridToolbar }}
               slotProps={{ toolbar: { showQuickFilter: true } }}
             />
           </Card>
         </Box>
       </TableStyle>
-      {/* </Grid> */}
     </Container>
   );
 };

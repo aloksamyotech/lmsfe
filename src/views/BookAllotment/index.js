@@ -1,4 +1,4 @@
- import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Grid,
@@ -80,10 +80,12 @@ const Allotment = () => {
     setShowModal(false);
   };
   const fetchCategory = async () => {
-    const response = await axios.get('http://localhost:4300/user/bookManagement');
+    const response = await axios.get('http://localhost:4300/user/availablePurchaseBook');
+    // const Data = response.data.BookManagement
+    console.log('response.data.BookManagement', response);
+
     setCategoryData(response.data.BookManagement);
   };
-
   const fetchSubscription = async () => {
     try {
       const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
@@ -97,13 +99,11 @@ const Allotment = () => {
     setStudentName(row.studentName);
     setShowModal(true);
   };
-
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:4300/user/registerManagement');
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
-
         name: item.student_Name || 'N/A',
         email: item.email || 'N/A',
         mobile: item.mobile_Number || 'N/A',
@@ -243,17 +243,17 @@ const Allotment = () => {
     }
   ];
 
-  const rows = [
-    {
-      id: 1,
-      studentName: 'John Doe',
-      quantity: 2,
-      books: [
-        { bookName: 'Book A', quantity: 1 },
-        { bookName: 'Book B', quantity: 1 }
-      ]
-    }
-  ];
+  // const rows = [
+  //   {
+  //     id: 1,
+  //     studentName: 'John Doe',
+  //     quantity: 2,
+  //     books: [
+  //       { bookName: 'Book A', quantity: 1 },
+  //       { bookName: 'Book B', quantity: 1 }
+  //     ]
+  //   }
+  // ];
 
   const handleClearCart = () => {
     setCartItems([]);
@@ -444,7 +444,7 @@ const Allotment = () => {
                 fullWidth
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
-              /> 
+              />
               <Typography variant="h6" color="primary">
                 Amount: ₹{calculatedAmount}
               </Typography>

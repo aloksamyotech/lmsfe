@@ -49,30 +49,24 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 const EarningCardd = ({ isLoading }) => {
   const theme = useTheme();
-
   const [anchorEl, setAnchorEl] = useState(null);
   const [bookCount, setBookCount] = useState(0);
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
         // const response = await axios.get('http://localhost:4300/user/getPublicationsCount');
-
         const response = await getPublicationsCount(url.publications.getPublicationsCount);
         setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);
       }
     };
-
     fetchBookCount();
   }, []);
 
@@ -82,7 +76,7 @@ const EarningCardd = ({ isLoading }) => {
         <SkeletonEarningCard />
       ) : (
         <CardWrapper border={false} content={false}>
-          <Box sx={{ p: 1.45 }}>
+          <Box sx={{ p: 1.86 }}>
             <Grid container direction="column">
               <Grid item>
                 <Grid container justifyContent="space-between">
