@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
   const navigate = useNavigate();
-
+  
   const handleCreateInvoice = async () => {
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
@@ -17,7 +17,7 @@ const CartSummary = ({ summaryData }) => {
       amount: item.amount || 0
     }));
 
-    try {
+    try { 
       const response = await fetch('http://localhost:4300/user/manyBookAllotment', {
         method: 'POST',
         headers: {
@@ -28,12 +28,26 @@ const CartSummary = ({ summaryData }) => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('response===============>', result.allotment.studentId);
-
         console.log('Books allotted successfully:', result);
-        navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
-          state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }
+        const historyResponse = await fetch('http://localhost:4300/user/bookAllotmentHistory', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(invoiceData)
         });
+
+        if (historyResponse.ok) {
+          const historyResult = await historyResponse.json();
+          console.log('Book Allotment History:', historyResult);
+ 
+          navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
+            state: { invoiceData, cartItems, studentName, studentEmail, totalAmount, history: historyResult }
+          });
+        } else {
+          console.error('Failed to fetch book allotment history:', historyResponse.statusText);
+          alert('Failed to fetch book allotment history. Please try again.');
+        }
       } else {
         console.error('Failed to allot books:', response.statusText);
         alert('Failed to allot books. Please try again.');

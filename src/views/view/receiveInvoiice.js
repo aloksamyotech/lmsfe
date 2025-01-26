@@ -27,8 +27,7 @@ import { url } from 'core/url';
 const ReceiveInvoice = () => {
   const location = useLocation();
   const { customerData, row, bookingData } = location.state || {};
-  const { rowData } = location.state || {};
-  // console.log('Received Row Data:', rowData?.id);
+  const { rowData, studentId } = location.state || {};
 
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
@@ -46,6 +45,7 @@ const ReceiveInvoice = () => {
   const [submissionDate, setSubmissionDate] = useState('');
   const [allFineData, setAllFineData] = useState([]);
   const [amount, setAmount] = useState();
+  const [firstStudent, setFirstStudent] = useState('');
 
   const containerRef = useRef();
 
@@ -56,91 +56,80 @@ const ReceiveInvoice = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
   const fetchData = async () => {
-    // console.log(`fetchData`);
+    const userId = rowData?.id;
+    const studentData = studentId;
+    console.log('Student Id:', studentData);
+    console.log('User ID:', userId);
+
     // const Url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
-    const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
     // console.log(`Url`, Url);
-    // const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
-    const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
-    // console.log('Invoice Data ----------', response?.data[0]);
-    // console.log('Invoice Data ----------', response?.data);
-
-    const studentId = response?.data[0]?.studentId;
-    // console.log('studentId', studentId);
-
-    const bookId = response?.data[0]?.bookId;
-    // console.log('bookId by Hritik>>', bookId);
-
-    const student_Name = response?.data[0]?.studentDetails?.student_Name;
-    setStudentName(student_Name);
-
-    const email = response?.data[0]?.studentDetails?.email;
-    setStudentEmail(email);
-
-    const mobile_Number = response?.data[0]?.studentDetails?.mobile_Number;
-    setStudentMobile_Number(mobile_Number);
-
-    const select_identity = response?.data[0]?.studentDetails?.select_identity;
-    setStudentSelectIdentity(select_identity);
-
-    const register_Date = response?.data[0]?.studentDetails?.register_Date;
-    setStudentRegister_Date(formatDate(register_Date));
-
-    const bookName = response?.data[0]?.bookDetails?.bookName;
-    setBookName(bookName);
-    const amount = response?.data[0]?.subscriptionDetails?.amount;
-    setStudentAmount(amount);
-
-    const title = response?.data[0]?.subscriptionDetails?.title;
-    setStudentTitle(title);
-
-    const discount = response?.data[0]?.subscriptionDetails?.discount;
-    setDiscount(discount);
-
-    const bookIssueDate = response?.data[0]?.bookIssueDate;
-    const submissionDate = response?.data[0]?.submissionDate;
-    setSubmissionDate(formatDate(submissionDate));
-
-    // try {
-    //   // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
-
-    //   const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
-
-    //   console.log(`Fine data  >>>>>>>>`, response?.data);
-    //   const fine = response?.data?.map((item) => {
-    //     const reason = item?.reason;
-    //     const fineAmount = item?.fineAmount;
-    //     return { reason, fineAmount };
-    //   });
-    //   setAllFineData(fine);
-    //   console.log('fine>>>>>>>>', fine);
-    // } catch (error) {
-    //   console.log(`error`, error);
-    // }
 
     try {
-      // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
+      const submitResponse = await axios.get(`http://localhost:4300/user/getReceivBookInvoice`);
+      // const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
+      console.log('submitResponse', submitResponse);
 
-      const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
-
-      console.log(`Fine data  >>>>>>>>`, response?.data);
-
-      const fine = response?.data?.map((item) => {
-        const reason = item?.reason;
-        const fineAmount = item?.fineAmount;
-        return { reason, fineAmount };
-      });
-
-      const amount = fine.reduce((total, item) => total + item.fineAmount, 0);
-      setAmount(amount);
-      setAllFineData(fine);
-      console.log('fine>>>>>>>>', fine);
-      console.log('Total Fine Amount: ', amount);
+      const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => ({
+        serial: index + 1,
+        id: item.books.bookId,
+        student_Name: item?.studentDetails?.student_Name,
+        bookName: item?.bookDetails?.bookName,
+        title: item?.paymentDetails?.title,
+        amount: item?.paymentDetails?.amount,
+        bookIssueDate: formatDate(item?.books?.bookIssueDate),
+        submissionDate: formatDate(item?.books?.submissionDate)
+      }));
+      // setData(fetchedData);
     } catch (error) {
-      console.log(`error`, error);
+      console.error('Error fetching submit book data:', error);
     }
   };
+
+  const fetchBookAllotmentHistory = async (studentData) => {
+    try {
+      const dataHistory = await axios.get(`http://localhost:4300/user/getBookAllotmentHistory/${studentData}`);
+      console.log('dataHistory', dataHistory?.data?.allotments);
+      // const student = dataHistory?.data?.allotments?.map((item, index) => {
+      // const student = {
+      //   studentName: dataHistory?.data?.allotments?.studentDetails?.student_Name,
+      //   email: dataHistory?.data?.allotments?.studentDetails?.email,
+      //   mobileNumber: dataHistory?.data?.allotments?.studentDetails?.mobile_Number,
+      //   select_identity: dataHistory?.data?.allotments?.studentDetails?.select_identity,
+      //   register_Date: dataHistory?.data?.allotments?.studentDetails?.register_Date
+      // };
+      // });
+      const book = dataHistory?.data?.allotments?.map((item, index) => {
+        return {
+          studentName: item.studentDetails?.student_Name,
+          email: item.studentDetails?.email,
+          mobileNumber: item.studentDetails?.mobile_Number,
+          select_identity: item.studentDetails?.select_identity,
+          register_Date: item.studentDetails?.register_Date
+        };
+      });
+      const firstStudentData = book[0];
+      setFirstStudent(firstStudentData);
+      console.log('First student data:', firstStudentData);
+
+      console.log('studentData<<<<<>>>>>', book);
+
+      if (!dataHistory.ok) {
+        throw new Error('Error fetching book allotment history');
+      }
+
+      const data = await dataHistory.json();
+
+      console.log('Allotment history:', data.allotments);
+      return data.allotments;
+    } catch (error) {
+      console.error('Error:', error);
+      return [];
+    }
+  };
+
+  fetchBookAllotmentHistory(studentId);
 
   useEffect(() => {
     fetchData();
@@ -231,31 +220,31 @@ const ReceiveInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Name:
               </Typography>
-              <Typography variant="body2">{studentName || 'N/A'}</Typography>
+              <Typography variant="body2">{firstStudent?.studentName || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Phone:
               </Typography>
-              <Typography variant="body2">{studentMobile_Number || 'N/A'}</Typography>
+              <Typography variant="body2">{firstStudent?.mobileNumber || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Email:
               </Typography>
-              <Typography variant="body2">{studentEmail || 'N/A'}</Typography>
+              <Typography variant="body2">{firstStudent?.email || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Select Identity:
               </Typography>
-              <Typography variant="body2">{studentSelectIdentity || 'N/A'}</Typography>
+              <Typography variant="body2">{firstStudent?.select_identity || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" fontWeight="bold">
                 Register Date:
               </Typography>
-              <Typography variant="body2">{studentRegister_Date || 'N/A'}</Typography>
+              <Typography variant="body2">{firstStudent?.register_Date || 'N/A'}</Typography>
             </Grid>
           </Grid>
           <Typography variant="h4" mb={3} mt={3}>
@@ -354,5 +343,73 @@ const ReceiveInvoice = () => {
     </>
   );
 };
-
 export default ReceiveInvoice;
+
+// const fetchData = async () => {
+//   // console.log(`fetchData`);
+//   // const Url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
+//   const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
+//   // console.log(`Url`, Url);
+//   // const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
+//   const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
+//   console.log('Invoice Data ----------', response?.data[0]);
+//   console.log('Invoice Data ----------', response?.data);
+
+//   const studentId = response?.data[0]?.studentId;
+//   console.log('studentId', studentId);
+
+//   const bookId = response?.data[0]?.bookId;
+//   console.log('bookId by Hritik>>', bookId);
+
+//   const student_Name = response?.data[0]?.studentDetails?.student_Name;
+//   setStudentName(student_Name);
+
+//   const email = response?.data[0]?.studentDetails?.email;
+//   setStudentEmail(email);
+
+//   const mobile_Number = response?.data[0]?.studentDetails?.mobile_Number;
+//   setStudentMobile_Number(mobile_Number);
+
+//   const select_identity = response?.data[0]?.studentDetails?.select_identity;
+//   setStudentSelectIdentity(select_identity);
+
+//   const register_Date = response?.data[0]?.studentDetails?.register_Date;
+//   setStudentRegister_Date(formatDate(register_Date));
+
+//   const bookName = response?.data[0]?.bookDetails?.bookName;
+//   setBookName(bookName);
+//   const amount = response?.data[0]?.subscriptionDetails?.amount;
+//   setStudentAmount(amount);
+
+//   const title = response?.data[0]?.subscriptionDetails?.title;
+//   setStudentTitle(title);
+
+//   const discount = response?.data[0]?.subscriptionDetails?.discount;
+//   setDiscount(discount);
+
+//   const bookIssueDate = response?.data[0]?.bookIssueDate;
+//   const submissionDate = response?.data[0]?.submissionDate;
+//   setSubmissionDate(formatDate(submissionDate));
+
+//   // try {
+//   //   const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
+
+//   //   // const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
+
+//   //   console.log(`Fine data  >>>>>>>>`, response?.data);
+
+//   //   const fine = response?.data?.map((item) => {
+//   //     const reason = item?.reason;
+//   //     const fineAmount = item?.fineAmount;
+//   //     return { reason, fineAmount };
+//   //   });
+
+//   //   const amount = fine.reduce((total, item) => total + item.fineAmount, 0);
+//   //   setAmount(amount);
+//   //   setAllFineData(fine);
+//   //   console.log('fine>>>>>>>>', fine);
+//   //   console.log('Total Fine Amount: ', amount);
+//   // } catch (error) {
+//   //   console.log(`error`, error);
+//   // }
+// };

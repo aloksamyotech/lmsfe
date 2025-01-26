@@ -68,6 +68,8 @@ const ReceiveBook = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [booksss, setFetchReceiveBooks] = useState([]);
+
+  const [stuId, setStuId] = useState('');
   const columns = [
     {
       field: 'student_Name',
@@ -158,6 +160,9 @@ const ReceiveBook = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
+  console.log('Student', stuId);
+
   useEffect(() => {
     const url = window.location.href;
     const parts = url.split('/');
@@ -169,6 +174,10 @@ const ReceiveBook = () => {
       try {
         // const submitResponse = await axios.get(`http://localhost:4300/user/getAllSubmitBookDetails`);
         const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
+        console.log('submitResponse<<<>>>', submitResponse);
+        const stuId = submitResponse?.data?.submittedBooks[0]?.studentId;
+        console.log('Stud0000000', stuId);
+        setStuId(stuId);
         const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => ({
           serial: index + 1,
           id: item.books.bookId,
@@ -288,8 +297,10 @@ const ReceiveBook = () => {
       formik.setFieldValue('email', selectedStudent.email);
     }
     try {
-      // const submitResponse = await axios.get(`http://localhost:4300/user/getSubmitBookDetails/${selectedStudentId}`);
-      const submitResponse = await axios.get(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
+      const submitResponse = await axios.get(`http://localhost:4300/user/getSubmitBookDetails/${selectedStudentId}`);
+      // const submitResponse = await axios.get(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
+      console.log('submitResponse<<<>>>', submitResponse?.data);
+
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
@@ -314,11 +325,15 @@ const ReceiveBook = () => {
     }
   }, [selectedStudentId, booksss]);
   const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
+
   const handleInvoice = (row) => {
-    navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
+    console.log('row Data', row);
+    console.log('rowwwwww', stuId);
+    navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row, studentId: stuId } });
   };
+
   const handleFineSubmit = async () => {
-    const idBook = formik.values.bookId; 
+    const idBook = formik.values.bookId;
     const _id = formik.values._id;
     try {
       const data = {
@@ -357,7 +372,7 @@ const ReceiveBook = () => {
   const findFineData = async () => {
     try {
       // const response = await axios.get(`http://localhost:4300/user/findFine/${formik.values.bookId}/${selectedStudentId}`);
-      const response = await axios.get(`${url.fine.fineDetails}${formik.values.bookId}/${selectedStudentId}`);
+      // const response = await axios.get(`${url.fine.fineDetails}${formik.values.bookId}/${selectedStudentId}`);
       const fine = response?.data?.map((item) => {
         const reason = item?.reason;
         const fineAmount = item?.fineAmount;
