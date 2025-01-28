@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
 
 const AddFine = ({ fineid, open, handleClose }) => {
-  console.log('fine id is ==================>', fineid);
-
   const [fineData, setFineData] = useState({
     fineid: fineid || '',
     amount: '',

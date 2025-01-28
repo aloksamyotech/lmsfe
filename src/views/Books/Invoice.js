@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Box, Typography, Button, Grid, Divider, Paper } from '@mui/material';
+import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 const InvoicePage = () => {
@@ -18,6 +18,9 @@ const InvoicePage = () => {
           <title>Print Invoice</title>
           <style>
             body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
           </style>
         </head>
         <body>
@@ -49,92 +52,53 @@ const InvoicePage = () => {
       </Typography>
 
       <Paper sx={{ padding: 1, marginBottom: 1 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" fontWeight="bold" gutterBottom>
-              Invoice
-            </Typography>
-            <Typography variant="h6" gutterBottom>
-              Student: {studentName}
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              Email: {studentEmail}
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              Invoice ID: {id}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={6} textAlign="right">
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
-              Invoice Date: {new Date().toLocaleDateString()}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Paper>
-
-      <Divider sx={{ marginBottom: 2 }} />
-
-      <Paper sx={{ padding: 3 }}>
-        <Typography variant="h6" fontWeight="bold" gutterBottom>
-          Books Details
+        <Typography variant="h6" gutterBottom>
+          Student Information
         </Typography>
-
-        <Grid container spacing={2} sx={{ borderBottom: 2, paddingBottom: 1, marginBottom: 2 }}>
-          <Grid item xs={6}>
-            <Typography variant="body1" fontWeight="bold">
-              Book Name
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography variant="body1" fontWeight="bold">
-              Quantity
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography variant="body1" fontWeight="bold">
-              Amount
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography variant="body1" fontWeight="bold">
-              Submission Date
-            </Typography>
-          </Grid>
-        </Grid>
-
-        {cartItems.map((item, index) => (
-          <Grid container spacing={2} sx={{ borderBottom: 1, paddingBottom: 1 }} key={index}>
-            <Grid item xs={6}>
-              <Typography variant="body2">{item.title}</Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <Typography variant="body2">{item.quantity}</Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <Typography variant="body2">₹{item.amount.toFixed(2)}</Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <Typography variant="body2">{item.submissionDate ? new Date(item.submissionDate).toLocaleDateString() : 'N/A'}</Typography>
-            </Grid>
-          </Grid>
-        ))}
+        <Typography variant="body1">Name: {studentName}</Typography>
+        <Typography variant="body1">Email: {studentEmail}</Typography>
+        <Typography variant="body1">Invoice ID: {id}</Typography>
+        <Typography variant="body1">Invoice Date: {new Date().toLocaleDateString()}</Typography>
       </Paper>
 
-      {/* Total Amount */}
-      <Paper sx={{ padding: 3, marginTop: 1 }}>
-        <Grid container justifyContent="flex-end">
-          <Grid item xs={6} textAlign="right">
-            <Typography variant="h6" fontWeight="bold">
-              Total Amount
-            </Typography>
-            <Typography variant="h4" color="primary" fontWeight="bold">
-              ₹{totalAmount.toFixed(2)}
-            </Typography>
-          </Grid>
-        </Grid>
+      <Paper sx={{ padding: 3, marginTop: 2 }}>
+        <Typography variant="h6" fontWeight="bold" gutterBottom>
+          Book Details
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Book Name</TableCell>
+                <TableCell align="center">Quantity</TableCell>
+                <TableCell align="center">Amount</TableCell>
+                <TableCell align="center">Submission Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {cartItems.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.title}</TableCell>
+                  <TableCell align="center">{item.quantity}</TableCell>
+                  <TableCell align="center">₹{item.amount.toFixed(2)}</TableCell>
+                  <TableCell align="center">{item.submissionDate ? new Date(item.submissionDate).toLocaleDateString() : 'N/A'}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
 
-      <Box sx={{ textAlign: 'center', marginTop: 1 }}>
+      <Paper sx={{ padding: 3, marginTop: 2 }}>
+        <Typography variant="h6" fontWeight="bold" gutterBottom>
+          Total Amount
+        </Typography>
+        <Typography variant="h4" color="primary" fontWeight="bold">
+          ₹{totalAmount.toFixed(2)}
+        </Typography>
+      </Paper>
+
+      <Box sx={{ textAlign: 'center', marginTop: 2 }}>
         <Button variant="contained" color="primary" onClick={handlePrint}>
           Print Invoice
         </Button>

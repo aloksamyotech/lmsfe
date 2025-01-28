@@ -80,7 +80,8 @@ const Allotment = () => {
     setShowModal(false);
   };
   const fetchCategory = async () => {
-    const response = await axios.get('http://localhost:4300/user/bookManagement');
+    const response = await axios.get('http://localhost:4300/user/alotmentsbooks');
+
     setCategoryData(response.data.BookManagement);
   };
 
@@ -331,7 +332,28 @@ const Allotment = () => {
 
   return (
     <Container maxWidth="xl">
-      <Tabs value={tabValue} onChange={(event, newValue) => setTabValue(newValue)} sx={{ marginBottom: 2 }}>
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          height: '50px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          marginBottom: '-18px'
+        }}
+      >
+        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '-12px' }}>
+          <Link href="/" underline="hover" color="inherit">
+            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+          </Link>
+          <Link href="/account-profile" underline="hover" color="inherit">
+            <h4>Books Management / Allocate Book</h4>
+          </Link>
+        </Breadcrumbs>
+        <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
+      </Box>
+
+      <Tabs value={tabValue} onChange={(event, newValue) => setTabValue(newValue)} sx={{ marginBottom: 2, marginTop: 2 }}>
         <Tab value={0} label="Allotment" />
         <Tab value={1} label="History" />
       </Tabs>

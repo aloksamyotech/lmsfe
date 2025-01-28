@@ -178,9 +178,7 @@ const ReceiveBook = () => {
   useEffect(() => {
     const getAllSubmitBookDetails = async () => {
       try {
-        // const submitResponse = await axios.get(`http://localhost:4300/user/getAllSubmitBookDetails`);
         const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
-        console.log(`submitResponse0111>>>>>>>>>>>..`, submitResponse);
 
         const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => ({
           serial: index + 1,
@@ -193,7 +191,7 @@ const ReceiveBook = () => {
           submissionDate: formatDate(item?.books?.submissionDate)
         }));
         console.log('selectedStudentId>>>>>>>', fetchedData);
-        // console.log('book_Id>>>>>>', book_Id);
+
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching submit book data:', error);
@@ -202,7 +200,6 @@ const ReceiveBook = () => {
     getAllSubmitBookDetails();
     const fetchSubscription = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
         const response = await axios.get(url.subscription.findSubscription);
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
@@ -211,7 +208,6 @@ const ReceiveBook = () => {
     };
     const fetchReceiveBook = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/receiveBook');
         const response = await axios.get('http://localhost:4300/user/receiveBook');
         console.log(`response00011 is coming or nott==============>`, response?.data);
         setFetchReceiveBook(response.data.books);
@@ -226,13 +222,11 @@ const ReceiveBook = () => {
 
     const fetchStudents = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/registerManagement');
         const response = await axios.get(url.studentRegister.getRegisterManagement);
 
         setAllData(response?.data?.RegisterManagement);
-        // console.log('response', response?.data?.RegisterManagement?.[0]._id);
+
         const modifiedData = response?.data?.RegisterManagement?.map((item) => {
-          // console.log('response Amit01', response?.data?.RegisterManagement);
           return item;
         });
 
@@ -245,21 +239,11 @@ const ReceiveBook = () => {
 
     const BookAllotments = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/allotmentManagement');
         const response = await axios.get(url.allotmentManagement.allotmentManagementData);
         const data = response?.data;
         setFetchReceiveBook(data);
-        // console.log(`response---->1000>>`, response?.data);
-        return data;
 
-        // const studentIds = response?.data?.map((item) => item._id);
-        // console.log('response Amit>1000>>---:', studentIds);
-        // studentIds.forEach((id, index) => {
-        //   console.log(`Student ID ${index + 1}:`, id);
-        //   const rohit = id;
-        //   setRohit(rohit);
-        //   return studentIds;
-        // });
+        return data;
       } catch (error) {
         console.error('Error fetching Allotment Books', error);
       }
@@ -269,15 +253,10 @@ const ReceiveBook = () => {
         const studentData = await fetchStudents();
         const bookData = await BookAllotments();
 
-        // console.log('studentData:', studentData);
-        // console.log('bookData:', bookData);
-
         const bookStudentIds = bookData.map((book) => book.studentId);
-        // console.log(`bookStudentIds`, bookStudentIds);
 
         const matchedStudents = studentData.filter((student) => bookStudentIds.includes(student._id));
 
-        // console.log('Matched Students:', matchedStudents);
         setMatchedStudents(matchedStudents);
       } catch (error) {
         console.error('Error filtering data:', error);
@@ -286,9 +265,8 @@ const ReceiveBook = () => {
 
     const NewReceiveBook = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getReceiveBook');
         const response = await axios.get(url.allotmentManagement.getReceiveBook);
-        // console.log('Matched Students<<<<<<<<<<>>>>>>>>', response);
+
         setFetchReceiveBook(response.data);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
@@ -309,7 +287,6 @@ const ReceiveBook = () => {
     },
     onSubmit: async (values) => {
       try {
-        // const response = await axios.post('http://localhost:4300/user/postReceiveBook', values);
         const response = await axios.post(url.allotmentManagement.postReceiveBook, values);
         toast.success('Details Book successfully');
         fetchData();
@@ -325,7 +302,7 @@ const ReceiveBook = () => {
   });
   const handleStudentChange = async (event) => {
     const selectedStudentId = event.target.value;
-    // console.log(`selectedStudentId>>01>>>>`, selectedStudentId);
+
     setSelectedStudentId(selectedStudentId);
     formik.setFieldValue('studentId', selectedStudentId);
     const selectedStudent = allData.find((student) => student._id === selectedStudentId);
@@ -333,13 +310,12 @@ const ReceiveBook = () => {
       formik.setFieldValue('email', selectedStudent.email);
     }
     try {
-      // const submitResponse = await axios.get(`http://localhost:4300/user/getSubmitBookDetails/${selectedStudentId}`);
       const submitResponse = await axios.get(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
-      // console.log(`getSubmitBookDetails >>>>>>>>>>>>>`, submitResponse);
+
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
-        // bookName: item?.bookDetails?.[0]?.bookName,
+
         title: item?.paymentDetails?.[0]?.title,
         amount: item?.paymentDetails?.[0]?.amount,
         bookIssueDate: formatDate(item?.bookIssueDate),
@@ -362,17 +338,12 @@ const ReceiveBook = () => {
       console.log(`filteredBooks is coming or nottt`, filteredBooks);
 
       setBookData(filteredBooks);
-      // console.log('bookk data is coming or not===========>', bookData);
     }
   }, [selectedStudentId, booksss]);
 
   console.log('book data=============================>', bookData);
 
   const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
-
-  // const fileteid = filteredBooks.map((item) => item._id);
-  // setFineid(fileteid);
-  // console.log('dsfgfgfhgfh================================================', fileteid);
 
   console.log('filter books are coming after filter==========>', filteredBooks);
 
@@ -383,10 +354,6 @@ const ReceiveBook = () => {
     const idBook = formik.values.bookId;
     const _id = formik.values._id;
     console.log('fadsgffdsgfhdhf====================>', fineid._id);
-
-    // console.log('main is is coming or', _id);
-
-    // console.log('idBook......', idBook);
     try {
       const data = {
         amount: amount,
@@ -395,9 +362,10 @@ const ReceiveBook = () => {
         studentId: selectedStudentId,
         _id: fineid._id
       };
-      // console.log('values>>>>', data);
-      // const response = await axios.post('http://localhost:4300/user/addFineBook', data);
+
       const response = await axios.post(url.fine.addFineBook, data);
+      console.log('response is======================>', response.data);
+
       toast.success('Fine Book successfully added');
     } catch (error) {
       toast.error('Error Fine submitting form');
@@ -408,15 +376,14 @@ const ReceiveBook = () => {
   const handleRemove = async (bookId) => {
     console.log('submit click>>>>>', bookId);
 
-    // const submitResponse = await axios.post(`http://localhost:4300/user/submitBook/${bookId}`);
     const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
-    // console.log('submitResponse', submitResponse);
+
     toast.success('Book submitted successfully');
     try {
       setLoading(true);
-      // const removeResponse = await axios.post(`http://localhost:4300/user/removeReceiveBook/${bookId}`);
+
       const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
-      // console.log('removeResponse', removeResponse);
+
       toast.success('Book removed successfully');
       window.location.reload();
       setLoading(false);
@@ -428,20 +395,18 @@ const ReceiveBook = () => {
   };
   const isSubmitDisabled = !amount || !reason || amountError || reasonError;
 
-  // console.log(`formik.values`, formik.values.bookId);
-  // console.log(`selectedStudentId>>>>>>>>`, selectedStudentId);
   const findFineData = async () => {
     try {
-      // const response = await axios.get(`http://localhost:4300/user/findFine/${formik.values.bookId}/${selectedStudentId}`);
-
       const response = await axios.get(`${url.fine.fineDetails}${formik.values.bookId}/${selectedStudentId}`);
-      const fine = response?.data?.map((item) => {
+      console.log(response, 'response================', response);
+
+      const fine = response.data?.map((item) => {
         const reason = item?.reason;
         const fineAmount = item?.fineAmount;
-        return { reason, fineAmount };
+        const alocationId = item.alocationId;
+        return { reason, fineAmount, alocationId };
       });
       setAllFineData(fine);
-      // console.log('fine>>>>>>>>>>>>', fine);
     } catch (error) {
       console.log(`error`, error);
     }
@@ -455,6 +420,12 @@ const ReceiveBook = () => {
 
   function getUniqueBooks(bookData) {
     return [...new Map(bookData.filter((item) => item.active === true).map((item) => [item.bookId, item])).values()];
+  }
+  function getFilteredBooksss(book) {
+    console.log(book._id);
+    const alocationIdToFind = book._id;
+    const filteredDataArray = allFineData.filter((item) => item.alocationId === alocationIdToFind);
+    return filteredDataArray;
   }
 
   return (
@@ -584,33 +555,18 @@ const ReceiveBook = () => {
                 </AccordionSummary>
                 <div>
                   <AccordionDetails sx={{ marginTop: '-20px' }}>
-                    {allFineData?.length > 0 ? (
-                      allFineData.map((item, index) => (
-                        <div key={index}>
-                          <Typography variant="body1">
-                            <strong>Reason:</strong> {item?.reason || 'Loading...'}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>Fine Amount:</strong> {`₹${item?.fineAmount}` || '₹0'}
-                          </Typography>
-                        </div>
-                      ))
-                    ) : (
-                      <Typography variant="body1">No fines available.</Typography>
-                    )}
+                    {getFilteredBooksss(book).map((item, index) => (
+                      <div key={index}>
+                        <Typography variant="body1">
+                          <strong>Reason:</strong> {item?.reason || 'Loading...'}
+                        </Typography>
+                        <Typography variant="body1">
+                          <strong>Fine Amount:</strong> ₹{item?.fineAmount ?? '0'}
+                        </Typography>
+                      </div>
+                    ))}
                   </AccordionDetails>
                 </div>
-
-                {/* <div> 
-                <AccordionDetails sx={{ marginTop: '-20px' }}>
-                  <Typography variant="body1">
-                    <strong>Reason:</strong> {allFineData?.reason || 'Loading...'}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Fine Amount:</strong> {`₹${allFineData?.fineAmount}` || '₹0'}
-                  </Typography>
-                </AccordionDetails>
-                </div> */}
               </Accordion>
               <Divider sx={{ marginY: 1 }} />
               <Typography variant="body1">
@@ -703,7 +659,6 @@ const ReceiveBook = () => {
           </Card>
         </Box>
       </TableStyle>
-      {/* </Grid> */}
     </Container>
   );
 };
