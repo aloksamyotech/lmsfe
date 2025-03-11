@@ -163,7 +163,7 @@ const View = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        // const response = await axios.get(`http://64.227.130.216:4300/user/viewBookAllotmentUser/${extractedId}`);
+        // const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
 
         const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
 
@@ -191,7 +191,7 @@ const View = () => {
     const fetchData = async () => {
       try {
         console.log('findHistoryBookAllotmentUser');
-        // const response = await axios.get(`http://64.227.130.216:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
+        // const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
 
         const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
         console.log('findHistoryBookAllotmentUser----------', response);

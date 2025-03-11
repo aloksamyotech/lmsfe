@@ -99,7 +99,7 @@ const Call = () => {
   const fetchData = async () => {
     try {
       console.log('Data');
-      // const response = await axios.get('http://64.227.130.216:4300/user/registerManagement');
+      // const response = await axios.get('http://localhost:4300/user/registerManagement');
 
       const response = await axios.get(url.studentRegister.getRegisterManagement);
       console.log('data API------------', response);
@@ -128,7 +128,7 @@ const Call = () => {
   };
   const handleSaveEdit = async () => {
     try {
-      // const response = await axios.put(`http://64.227.130.216:4300/user/editRegister/${editData.id}`, editData);
+      // const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
 
       const response = await axios.put(`${url.studentRegister.editRegister}${editData.id}`, editData);
 
@@ -149,7 +149,7 @@ const Call = () => {
   };
   const confirmDelete = async (id) => {
     try {
-      // await axios.delete(`http://64.227.130.216:4300/user/deleteRegister/${bookToDelete}`);
+      // await axios.delete(`http://localhost:4300/user/deleteRegister/${bookToDelete}`);
 
       await axios.delete(`${url.studentRegister.deleteRegister}${bookToDelete}`);
 
@@ -195,7 +195,7 @@ const Call = () => {
     console.log(`click on like`);
     try {
       console.log('Student ID', student.id);
-      // const response = await axios.post(`http://64.227.130.216:4300/user/markFavorite/${student.id}`);
+      // const response = await axios.post(`http://localhost:4300/user/markFavorite/${student.id}`);
 
       const response = await axios.post(`${url.studentRegister.markFavorite}${student.id}`);
       console.log('Favorite response-------', response);
@@ -221,7 +221,7 @@ const Call = () => {
     try {
       console.log('handleSubscription---------');
       const updatedSubscription = !row.subscription;
-      // const response = await axios.post(`http://64.227.130.216:4300/user/markSubscription/${row.id}`, {
+      // const response = await axios.post(`http://localhost:4300/user/markSubscription/${row.id}`, {
 
       const response = await axios.post(`${url.studentRegister.markSubscription}${row.id}`, {
         subscription: updatedSubscription
@@ -255,7 +255,7 @@ const Call = () => {
   const handleBulkUpload = async () => {
     try {
       console.log('excelData>>>>>>>>', excelData);
-      // const response = await axios.post('http://64.227.130.216:4300/user/registerMany', excelData);
+      // const response = await axios.post('http://localhost:4300/user/registerMany', excelData);
 
       const response = await axios.post(url.studentRegister.registerMany, excelData);
       toast.success(`upload Successfully`);
