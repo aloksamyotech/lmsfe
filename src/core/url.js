@@ -25,10 +25,12 @@ export const url = {
     addBook: base_url + 'user/addBook/',
     addManyBooks: base_url + 'user/addManyBooks/',
     delete: base_url + 'user/deleteBook/',
-    editBook: base_url + 'user/editBook/',
+    editBook: base_url + 'user/updateBook/',
     viewBook: base_url + 'user/viewBookUser/',
     bookManagement: base_url + 'user/bookManagement/',
-    bookCount: base_url + 'user/getBookCount/'
+    bookCount: base_url + 'user/getBookCount/',
+    bookmanagementTable :base_url+'user/bookmangmentTable/',
+    
   },
   vendorManagement: {
     addVender: base_url + 'user/addVenderBook/',
@@ -85,7 +87,8 @@ export const url = {
     bookAllotmentCount: base_url + 'user/bookAllotmentCount/',
     getBookMonthVise: base_url + 'user/getBookMonthVise/',
     getBookAllotedCount: base_url + 'user/getBookAllotedCount/',
-    bookAllotmentReport: base_url + 'user/bookAllotmentReport/'
+    bookAllotmentReport: base_url + 'user/bookAllotmentReport/',
+    trendingBooks :base_url + 'user/trendingBooks/',
   },
   fine: {
     addFineBook: base_url + 'user/addFineBook/',
@@ -93,7 +96,8 @@ export const url = {
     getAllFineBooks: base_url + 'user/getAllFineBooks/',
     findByStudentId: base_url + 'user/findByStudentId/',
     findFine: base_url + 'user/findFineInvoice/',
-    fineDetails: base_url + 'user/findFine/'
+    fineDetails: base_url + 'user/findFine/',
+    findFinebyAllotmentId : base_url+'user/findFinebyAllotmentId/',
   },
   purchaseBook: {
     purchaseBook: base_url + 'user/purchaseBook/',

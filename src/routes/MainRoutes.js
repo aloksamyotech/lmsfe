@@ -35,6 +35,8 @@ const AddPurchaseBook = Loadable(lazy(() => import('views/purchaseBook/index')))
 const SubscriptionType = Loadable(lazy(() => import('views/subscriptionType/index')));
 const Receive = Loadable(lazy(() => import('views/ReceiveBook/index')));
 const Invoice = Loadable(lazy(() => import('views/view/invoiceStudent')));
+const Cart = Loadable(lazy(() => import('views/Books/Cart')));
+const History = Loadable(lazy(() => import('views/BookAllotment/history')));
 // const BookInvoice = Loadable(lazy(() => import('views/BookAllotment/Invoice')));
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -288,10 +290,29 @@ const MainRoutes = {
               element: <Profile />
             }
           ]
+        },
+        {
+          path: 'dashboard',
+          children: [
+            {
+              path: 'cart',
+              element: <Cart />
+            }
+          ]
+        },
+        {
+          path: 'dashboard',
+          children: [
+            {
+              path: 'history',
+              element: <History />
+            }
+          ]
         }
+
       ]
     }
-  ]
+  ] 
 };
 
 export default MainRoutes;

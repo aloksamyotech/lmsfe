@@ -1,11 +1,12 @@
 import React from 'react';
 import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { useCart } from './CartContext';
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
   const navigate = useNavigate();
-
+  const { setCartcontextItems } = useCart();
+  
   const handleCreateInvoice = async () => {
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
@@ -31,6 +32,8 @@ const CartSummary = ({ summaryData }) => {
         console.log('response===============>', result.allotment.studentId);
 
         console.log('Books allotted successfully:', result);
+        setCartcontextItems([]); 
+        localStorage.setItem('librarycart', JSON.stringify([]));
         navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
           state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }
         });
@@ -43,7 +46,7 @@ const CartSummary = ({ summaryData }) => {
       alert('An error occurred. Please try again.');
     }
   };
-
+  const formattedTotalAmount = !isNaN(totalAmount) ? totalAmount.toFixed(2) : '0.00';
   return (
     <Box
       sx={{

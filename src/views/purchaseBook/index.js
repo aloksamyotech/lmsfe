@@ -223,7 +223,7 @@ const PurchaseBook = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
