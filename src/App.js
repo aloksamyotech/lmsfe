@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { Bars } from 'react-loader-spinner';
 import { CirclesWithBar } from 'react-loader-spinner';
-
+import { CartProvider } from './views/Books/CartContext';
 import Routes from 'routes';
 import themes from 'themes';
 import NavigationScroll from 'layout/NavigationScroll';
@@ -24,38 +24,40 @@ const App = () => {
   }, [location]);
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={themes(customization)}>
-        <CssBaseline />
-        <ToastContainer />
-        <Box
-          sx={{
-            minHeight: '100vh',
-            position: 'relative'
-          }}
-        >
-          {loading && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                zIndex: 9999
-              }}
-            >
-              <CirclesWithBar height="80" width="80" radius="9" color="#7951BF" ariaLabel="loading" visible={true} />
-            </Box>
-          )}
-          <NavigationScroll>
-            <Routes />
-          </NavigationScroll>
-        </Box>
-      </ThemeProvider>
+      <CartProvider>
+        <ThemeProvider theme={themes(customization)}>
+          <CssBaseline />
+          <ToastContainer />
+          <Box
+            sx={{
+              minHeight: '100vh',
+              position: 'relative'
+            }}
+          >
+            {loading && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                  zIndex: 9999
+                }}
+              >
+                <CirclesWithBar height="80" width="80" radius="9" color="#7951BF" ariaLabel="loading" visible={true} />
+              </Box>
+            )}
+            <NavigationScroll>
+              <Routes />
+            </NavigationScroll>
+          </Box>
+        </ThemeProvider>
+      </CartProvider>
     </StyledEngineProvider>
   );
 };

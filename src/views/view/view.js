@@ -42,12 +42,12 @@ const View = () => {
   };
 
   const handleSubmit = () => {
-    console.log('Form Data Submitted:', formData);
+    // console.log('Form Data Submitted:', formData);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
+    // console.log('Breadcrumb clicked');
   };
 
   const columns = [
@@ -116,13 +116,13 @@ const View = () => {
   const handleSaveEdit = async () => {
     try {
       const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
-      console.log('Data', response);
+      // console.log('Data', response);
 
       const updatedRegister = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
       setEditData(null);
     } catch (error) {
-      console.error('Error updating Register:', error);
+      // console.error('Error updating Register:', error);
     }
   };
   const handleDelete = (id) => {
@@ -135,7 +135,7 @@ const View = () => {
       await axios.delete(`http://localhost:4300/user/deleteRegister/${id}`);
       setData((prevData) => prevData.filter((register) => register.id !== id));
     } catch (error) {
-      console.error('Error deleting Register:', error);
+      // console.error('Error deleting Register:', error);
     }
   };
   const cancelDelete = () => {
@@ -153,12 +153,12 @@ const View = () => {
 
   useEffect(() => {
     const Url = window.location.href;
-    console.log('Current Url', Url);
+    // console.log('Current Url', Url);
     setCurrentUrl(Url);
 
     const parts = Url.split('/');
     const extractedId = parts[parts.length - 1];
-    console.log('Id', extractedId);
+    // console.log('Id', extractedId);
 
     setId(extractedId);
     const sendIdToBackend = async () => {
@@ -166,10 +166,11 @@ const View = () => {
         // const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
 
         const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
-
+        
         setAllData(response.data);
+        console.log("response from profile",response)
       } catch (error) {
-        console.error('Error sending ID to backend:', error);
+        // console.error('Error sending ID to backend:', error);
       }
     };
 
@@ -180,34 +181,34 @@ const View = () => {
 
   useEffect(() => {
     const rul = window.location.href;
-    console.log('Current Url', rul);
+    // console.log('Current Url', rul);
     setCurrentUrl(rul);
 
     const parts = rul.split('/');
     const extractedId = parts[parts.length - 1];
-    console.log('Id', extractedId);
+    // console.log('Id', extractedId);
 
     setId(extractedId);
     const fetchData = async () => {
       try {
-        console.log('findHistoryBookAllotmentUser');
+        // console.log('findHistoryBookAllotmentUser');
         // const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
 
         const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
-        console.log('findHistoryBookAllotmentUser----------', response);
+        // console.log('findHistoryBookAllotmentUser----------', response);
         const fetchedData = response?.data?.map((item) => ({
           id: item._id,
-          bookName: item.bookName,
-          student_Name: item.student_Name,
-          paymentType: item.paymentType,
-          amount: item.amount,
-          bookIssueDate: formatDate(item.bookIssueDate),
-          submissionDate: formatDate(item.submissionDate)
+          bookName: item.books?.[0]?.bookId?.bookName,  
+          student_Name: item.studentId?.student_Name,  
+          paymentType: item.paymentType?.title,  
+          amount: item.books?.[0]?.amount,  
+          bookIssueDate: formatDate(item.books?.[0]?.bookIssueDate),  
+          submissionDate: formatDate(item.books?.[0]?.submissionDate) 
         }));
 
         setData(fetchedData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        // console.error('Error fetching data:', error);
       }
     };
 
@@ -250,7 +251,7 @@ const View = () => {
   //   fetchStudentData();
   // }, []);
 
-  console.log(`allData`, allData?.user?.email);
+  // console.log(`allData`, allData?.user?.email);
   return (
     <>
       <Box

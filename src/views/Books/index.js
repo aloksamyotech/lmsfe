@@ -63,7 +63,7 @@ const Lead = () => {
           <img
             src={params?.row?.upload_Book ? imageUrl : defaultBook}
             alt="Book"
-            style={{ width: '60px', height: '43px', objectFit: 'contain' }}
+            style={{ width: '60px', height: '33px', objectFit: 'contain' }}
           />
         );
       }
@@ -112,20 +112,16 @@ const Lead = () => {
   const fetchData = async () => {
     try {
       // const response = await axios.get('http://localhost:4300/user/bookManagement');
-      const response = await getBookManagement(url.bookManagenent.bookManagement);
-
-      // console.log('response <<<<<>>>>>>>> : ', response.data);
-
-      // console.log('image url >>>>>>>>>>>: ', `http://localhost:4300/${response.data.BookManagement[0].upload_Book}`);
-
-      const fetchedData = response?.data?.BookManagement?.map((item) => ({
+      const response=await axios.get(url.bookManagenent.bookmanagementTable)
+      console.log("response ---------", response)
+      const fetchedData = response?.data?.data?.map((item) =>  ({
         id: item._id,
         bookName: item.bookName,
         upload_Book: item.upload_Book,
         title: item.title,
         publisherName: item.publisherName,
         author: item.author,
-        quantity: item.quantity > 0 ? item.quantity : 'Not Available'
+        quantity: item.bookQuantity> 0 ? item.bookQuantity : 'Not Available'
       }));
       setData(fetchedData);
     } catch (error) {
@@ -277,7 +273,7 @@ const Lead = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

@@ -84,10 +84,17 @@ const dashboard = {
           breadcrumbs: false
         },
         {
-          id: 'receive-Books',
-          title: 'Receive Books',
+          id: 'History',
+          title: 'History',
           type: 'item',
-          url: '/dashboard/receive',
+          url: '/dashboard/History',
+          breadcrumbs: false
+        },
+        {
+          id: 'Receive',
+          title: 'Receive',
+          type: 'item',
+          url: '/dashboard/Receive',
           breadcrumbs: false
         }
         // {
@@ -115,6 +122,7 @@ const dashboard = {
     //   // icon: icons.IconPlus
     //   icon: icons.IconBookmark
     // },
+
     {
       id: '04',
       title: 'Favorite Students',

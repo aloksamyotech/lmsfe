@@ -28,8 +28,15 @@ const ReceiveInvoice = () => {
   const location = useLocation();
   const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
-  // console.log('Received Row Data:', rowData?.id);
+  // console.log('Location State:', location.state);
 
+  
+  // console.log('Received Row Data:', rowData);
+  
+  // const student_Id =  rowData?.student_id;
+  // const book_Id = rowData?.id;
+  // console.log('Received book id :', book_Id);
+  // console.log('Received student id :', student_Id);
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
   const [allItemData, setAllItemData] = useState([]);
@@ -46,7 +53,7 @@ const ReceiveInvoice = () => {
   const [submissionDate, setSubmissionDate] = useState('');
   const [allFineData, setAllFineData] = useState([]);
   const [amount, setAmount] = useState();
-
+  const [allotmentId , setAllotmentId]= useState([]);
   const containerRef = useRef();
 
   const formatDate = (dateString) => {
@@ -59,37 +66,41 @@ const ReceiveInvoice = () => {
   const fetchData = async () => {
     // console.log(`fetchData`);
     // const Url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
-    const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
+    // const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
     // console.log(`Url`, Url);
     // const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
     const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
-    // console.log('Invoice Data ----------', response?.data[0]);
-    // console.log('Invoice Data ----------', response?.data);
+    // console.log('Invoice Data ----------', response?.data?._id);
+ 
+    const allotmentId = response?.data?._id;
+    setAllotmentId(allotmentId);
+    const studentId = response?.data?.studentId?._id;
+  
 
-    const studentId = response?.data[0]?.studentId;
-    // console.log('studentId', studentId);
+    const bookId = response?.data?.books?.[0]?._id;  // Assuming books is an array, accessing first element.
 
-    const bookId = response?.data[0]?.bookId;
-    // console.log('bookId by Hritik>>', bookId);
-
-    const student_Name = response?.data[0]?.studentDetails?.student_Name;
+    const student_Name = response?.data?.studentId?.student_Name;
     setStudentName(student_Name);
-
-    const email = response?.data[0]?.studentDetails?.email;
+    const email = response?.data?.studentId?.email;
     setStudentEmail(email);
 
-    const mobile_Number = response?.data[0]?.studentDetails?.mobile_Number;
+    const mobile_Number = response?.data?.studentId?.mobile_Number;
     setStudentMobile_Number(mobile_Number);
 
-    const select_identity = response?.data[0]?.studentDetails?.select_identity;
+    const select_identity = response?.data?.studentId?.select_identity;
     setStudentSelectIdentity(select_identity);
 
-    const register_Date = response?.data[0]?.studentDetails?.register_Date;
+    const register_Date = response?.data?.studentId?.register_Date;
     setStudentRegister_Date(formatDate(register_Date));
 
-    const bookName = response?.data[0]?.bookDetails?.bookName;
+    const bookName = response?.data?.books[0]?.bookId?.bookName;
     setBookName(bookName);
-    const amount = response?.data[0]?.subscriptionDetails?.amount;
+  
+
+    const paymentType=response?.data?.books[0]?.paymentType;
+ 
+
+    const amount = response?.data.books[0]?.amount;
     setStudentAmount(amount);
 
     const title = response?.data[0]?.subscriptionDetails?.title;
@@ -99,7 +110,7 @@ const ReceiveInvoice = () => {
     setDiscount(discount);
 
     const bookIssueDate = response?.data[0]?.bookIssueDate;
-    const submissionDate = response?.data[0]?.submissionDate;
+    const submissionDate = response?.data?.books[0]?.submissionDate;
     setSubmissionDate(formatDate(submissionDate));
 
     // try {
@@ -122,11 +133,12 @@ const ReceiveInvoice = () => {
     try {
       // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
 
-      const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
+      // const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
 
-      console.log(`Fine data  >>>>>>>>`, response?.data);
-
-      const fine = response?.data?.map((item) => {
+      // console.log(`Fine data  >>>>>>>>`, response?.data);
+       const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
+      //  console.log("99999999999999999999", response);
+      const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
         const fineAmount = item?.fineAmount;
         return { reason, fineAmount };
