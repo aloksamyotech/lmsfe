@@ -120,11 +120,6 @@ const AddRegister = (props) => {
                   error={formik.touched.student_Name && Boolean(formik.errors.student_Name)}
                   helperText={formik.touched.student_Name && formik.errors.student_Name}
                   inputProps={{ maxLength: 50 }}
-                  InputProps={{
-                    style: {
-                      height: '50px'
-                    }
-                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -139,11 +134,6 @@ const AddRegister = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
-                  InputProps={{
-                    style: {
-                      height: '50px'
-                    }
-                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -158,11 +148,6 @@ const AddRegister = (props) => {
                   error={formik.touched.mobile_Number && Boolean(formik.errors.mobile_Number)}
                   helperText={formik.touched.mobile_Number && formik.errors.mobile_Number}
                   inputProps={{ maxLength: 10 }}
-                  InputProps={{
-                    style: {
-                      height: '50px'
-                    }
-                  }}
                 />
               </Grid>
 
@@ -172,6 +157,7 @@ const AddRegister = (props) => {
                   <Select
                     id="select_identity"
                     name="select_identity"
+                    size="small"
                     value={formik.values.select_identity}
                     onChange={formik.handleChange}
                     error={formik.touched.select_identity && Boolean(formik.errors.select_identity)}
@@ -196,12 +182,7 @@ const AddRegister = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.date && Boolean(formik.errors.date)}
                   helperText={formik.touched.date && formik.errors.date}
-                  inputProps={{
-                    min: todayDate,
-                    style: {
-                      height: '25px'
-                    }
-                  }}
+                  
                 />
               </Grid>
 

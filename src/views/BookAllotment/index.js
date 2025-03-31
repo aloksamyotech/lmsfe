@@ -244,23 +244,30 @@ const Allotment = () => {
     setCartItems([]);
   };
 
-  useEffect(() => {
-    if (submissionType && submissionDate) {
-      const selectedType = studentData.find((type) => type._id === submissionType);
-      setCalculatedAmount(selectedType ? selectedType.amount : 0);
-    } else {
-      setCalculatedAmount(null);
-    }
-  }, [submissionType, submissionDate, studentData]);
+  const handleTypeChange = (event) => {
+    const newType = event.target.value;
+    setSubmissionType(newType);
 
-  const handleDateChange = (event) => {
-    setSubmissionDate(event.target.value);
-    const selectedType = studentData.find((type) => type._id === submissionType);
-    setCalculatedAmount(selectedType ? selectedType.amount : 0);
+    const selectedType = studentData.find((type) => type._id === newType);
+
+    if (selectedType && selectedType.numberOfDays) {
+      const today = new Date();
+      today.setDate(today.getDate() + selectedType.numberOfDays);
+      const autoFilledDate = today.toISOString().split('T')[0];
+
+      setSubmissionDate(autoFilledDate);
+
+      setCalculatedAmount(selectedType.amount);
+    }
   };
 
-  const handleTypeChange = (event) => {
-    setSubmissionType(event.target.value);
+  const handleDateChange = (event) => {
+    const newDate = event.target.value;
+    setSubmissionDate(newDate);
+    if (submissionType) {
+      const selectedType = studentData.find((type) => type._id === submissionType);
+      setCalculatedAmount(selectedType ? selectedType.amount : 0);
+    }
   };
 
   const handleSubmitCart = () => {

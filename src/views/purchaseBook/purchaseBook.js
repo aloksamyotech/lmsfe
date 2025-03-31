@@ -76,7 +76,7 @@ const AddPurchaseBook = (props) => {
         // const response = await axios.get('http://localhost:4300/user/bookManagement');
 
         // const response = await getBookManagement(url.bookManagenent.bookManagement);
-        const response=await axios.get(url.bookManagenent.bookmanagementTable)
+        const response = await axios.get(url.bookManagenent.bookmanagementTable);
         console.log('Fetched Book Data:', response.data);
         setBookData(response.data?.data);
       } catch (error) {
@@ -112,7 +112,7 @@ const AddPurchaseBook = (props) => {
     fetchVendor();
     fetchPublisher();
   }, []);
-  
+
   const handleQuantityPriceChange = (field, value) => {
     const newValue = value === '' ? '' : value.replace(/[^0-9.]/g, '');
     formik.setFieldValue(field, newValue);
@@ -143,6 +143,7 @@ const AddPurchaseBook = (props) => {
                     <Autocomplete
                       id="bookId"
                       name="bookId"
+                      size="small"
                       value={bookData.find((book) => book._id === formik.values.bookId) || null}
                       onChange={(event, newValue) => formik.setFieldValue('bookId', newValue ? newValue._id : '')}
                       options={bookData}
@@ -164,6 +165,7 @@ const AddPurchaseBook = (props) => {
                     <Autocomplete
                       id="vendorId"
                       name="vendorId"
+                      size="small"
                       value={studentData.find((item) => item._id === formik.values.vendorId) || null}
                       onChange={(event, newValue) => formik.setFieldValue('vendorId', newValue?._id || '')}
                       options={studentData}
@@ -191,8 +193,7 @@ const AddPurchaseBook = (props) => {
                     value={formik.values.bookIssueDate}
                     onChange={formik.handleChange}
                     inputProps={{
-                      min: new Date().toISOString().slice(0, 10),
-                      style: { height: '30px' }
+                      min: new Date().toISOString().slice(0, 10)
                     }}
                   />
                 </Grid>
@@ -209,7 +210,6 @@ const AddPurchaseBook = (props) => {
                     error={formik.touched.quantity && Boolean(formik.errors.quantity)}
                     helperText={formik.touched.quantity && formik.errors.quantity}
                     inputProps={{ maxLength: 5 }}
-                    InputProps={{ style: { height: '50px' } }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={5} md={5}>
@@ -224,7 +224,6 @@ const AddPurchaseBook = (props) => {
                     error={formik.touched.price && Boolean(formik.errors.price)}
                     helperText={formik.touched.price && formik.errors.price}
                     inputProps={{ maxLength: 5 }}
-                    InputProps={{ style: { height: '50px' } }}
                   />
                 </Grid>
 
@@ -239,7 +238,6 @@ const AddPurchaseBook = (props) => {
                     error={formik.touched.totalPrice && Boolean(formik.errors.totalPrice)}
                     helperText={formik.touched.totalPrice && formik.errors.totalPrice}
                     inputProps={{ maxLength: 5 }}
-                    InputProps={{ style: { height: '50px' } }}
                     disabled
                   />
                 </Grid>

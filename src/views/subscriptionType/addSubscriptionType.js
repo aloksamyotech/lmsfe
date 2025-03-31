@@ -33,11 +33,10 @@ const AddSubscription = (props) => {
       .positive('Number Of Days must be a positive number')
       .typeError('Number Of Days must be a valid number'),
     discount: Yup.number()
+      .required('Discount is required') 
       .min(0, 'Discount must be at least 0')
-      .max(100, 'Discount cannot be more than 5')
-      .optional()
-      .typeError('Discount must be a valid number'),
-    desc: Yup.string().required('Description is required').min(10, 'Description must be at least 10 characters long')
+      .max(100, 'Discount cannot be more than 100')
+      .typeError('Discount must be a valid number')
   });
 
   const formik = useFormik({

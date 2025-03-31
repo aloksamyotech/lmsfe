@@ -159,6 +159,7 @@ const AddLead = (props) => {
                   <Autocomplete
                     id="publisherName"
                     name="publisherName"
+                    size="small"
                     value={formik.values.publisherName}
                     onChange={(event, newValue) => formik.setFieldValue('publisherName', newValue)}
                     options={publisherData.map((item) => item.publisherName)}

@@ -73,7 +73,7 @@ const ReceiveBook = () => {
   const [allotmentId, setAllotmentId] = useState(null);
 
   const handleOpen = (book) => {
-    setAmount(''); 
+    setAmount('');
     setReason('');
     setFineid(book);
     setOpen(true);
@@ -537,27 +537,20 @@ const ReceiveBook = () => {
               <Autocomplete
                 id="studentId"
                 name="studentId"
+                size="small"
                 value={matchedStudents.find((student) => student._id === formik.values.studentId) || null}
                 onChange={(event, newValue) => handleStudentChange(newValue)} // Ensure passing the selected student object
                 options={matchedStudents}
                 getOptionLabel={(option) => option.student_Name}
                 renderInput={(params) => <TextField {...params} variant="outlined" />}
                 isOptionEqualToValue={(option, value) => option._id === value?._id} // Ensure correct matching by ID
-                sx={{ height: '40px' }}
               />
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4} md={4}>
             <FormLabel>Email</FormLabel>
             <FormControl fullWidth>
-              <Select
-                id="email"
-                name="email"
-                value={formik.values.email}
-                disabled
-                onChange={formik.handleChange}
-                sx={{ height: '40px', padding: '25px' }}
-              >
+              <Select id="email" name="email" size="small" value={formik.values.email} disabled onChange={formik.handleChange}>
                 {allData.map((item) => (
                   <MenuItem key={item._id} value={item.email}>
                     {item.email}
@@ -569,13 +562,7 @@ const ReceiveBook = () => {
           <Grid item xs={12} sm={4} md={4}>
             <FormLabel>Book</FormLabel>
             <FormControl fullWidth>
-              <Select
-                id="bookId"
-                name="bookId"
-                value={formik.values.bookId}
-                onChange={formik.handleChange}
-                sx={{ height: '40px', padding: '25px' }}
-              >
+              <Select id="bookId" name="bookId" size="small" value={formik.values.bookId} onChange={formik.handleChange}>
                 {getUniqueBooks(bookData).map((item) => (
                   <MenuItem key={item.bookId} value={item.bookId}>
                     {item?.bookTitle}
@@ -699,6 +686,7 @@ const ReceiveBook = () => {
                     <TextField
                       label="Amount"
                       variant="outlined"
+                      size="small"
                       fullWidth
                       value={amount}
                       onChange={handleAmountChange}
@@ -710,6 +698,7 @@ const ReceiveBook = () => {
                     <TextField
                       label="Reason"
                       variant="outlined"
+                      size="small"
                       fullWidth
                       value={reason}
                       onChange={handleReasonChange}
