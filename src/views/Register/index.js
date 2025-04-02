@@ -21,6 +21,7 @@ const Call = () => {
   const [excelData, setExcelData] = useState();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
+  const [errors, setErrors] = useState({});
   const XLSX = require('xlsx');
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
@@ -127,6 +128,19 @@ const Call = () => {
     setEditData(register);
   };
   const handleSaveEdit = async () => {
+    setErrors({});
+    const newErrors = {};
+
+    if (!editData.email) newErrors.email = 'Email is required';
+    if (!editData.student_Name) newErrors.student_Name= 'Student Name is required';
+    if (!editData.mobile_Number) newErrors.mobile_Number = 'Mobile Numberis required';
+    
+
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     try {
       // const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
 
@@ -338,6 +352,10 @@ const Call = () => {
                 onChange={(e) => setEditData({ ...editData, email: e.target.value })}
                 fullWidth
                 margin="normal"
+                size='small'
+                inputProps={{ maxLength: 50 }}
+                error={!!errors.email}
+                helperText={errors.email}
               />
               <TextField
                 label="Student Name"
@@ -345,6 +363,10 @@ const Call = () => {
                 onChange={(e) => setEditData({ ...editData, student_Name: e.target.value })}
                 fullWidth
                 margin="normal"
+                size='small'
+                inputProps={{ maxLength: 50 }}
+                error={!!errors.student_Name}
+                helperText={errors.student_Name}
               />
               <TextField
                 label="Mobile Number"
@@ -352,6 +374,10 @@ const Call = () => {
                 onChange={(e) => setEditData({ ...editData, mobile_Number: e.target.value })}
                 fullWidth
                 margin="normal"
+                size='small'
+                inputProps={{ maxLength: 50 }}
+                error={!!errors.mobile_Number}
+                helperText={errors.mobile_Number}
               />
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save

@@ -22,7 +22,7 @@ const Lead = () => {
   const [bookToDelete, setBookToDelete] = useState(null);
   const [excelData, setExcelData] = useState([]);
   const fileInput = useRef([]);
-
+  const [errors, setErrors] = useState({});
   const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
 
   const XLSX = require('xlsx');
@@ -52,12 +52,12 @@ const Lead = () => {
       headerName: 'Book Image',
       flex: 1,
       renderCell: (params) => {
-        console.log(`params`, params.row);
+        // console.log(`params`, params.row);
 
         // const imageUrl = `http://localhost:4300/${params?.row?.upload_Book}`;
 
         const imageUrl = `http://localhost:4300/${params?.row?.upload_Book}`;
-        console.log('imageUrl>>>>>>>>>>>>>>.', imageUrl);
+        // console.log('imageUrl>>>>>>>>>>>>>>.', imageUrl);
 
         return (
           <img
@@ -113,7 +113,7 @@ const Lead = () => {
     try {
       // const response = await axios.get('http://localhost:4300/user/bookManagement');
       const response=await axios.get(url.bookManagenent.bookmanagementTable)
-      console.log("response ---------", response)
+      // console.log("response ---------", response)
       const fetchedData = response?.data?.data?.map((item) =>  ({
         id: item._id,
         bookName: item.bookName,
@@ -141,6 +141,19 @@ const Lead = () => {
   };
 
   const handleSaveEdit = async () => {
+    setErrors({});
+    const newErrors = {};
+
+    if (!editData.bookName) newErrors.bookName = 'Book Name is required';
+    if (!editData.title) newErrors.title = 'Book Title is required';
+    if (!editData.publisherName) newErrors.publisherName = 'Publisher Name is required';
+    if (!editData.author) newErrors.author = 'Author Name is required';
+
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     try {
       // const response = await axios.put(`http://localhost:4300/user/editBook/${editData.id}`, editData);
       const response = await editBook(`${url.bookManagenent.editBook}${editData.id}`, editData);
@@ -292,6 +305,9 @@ const Lead = () => {
                 onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
                 fullWidth
                 margin="normal"
+                error={!!errors.bookName}
+                helperText={errors.bookName}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Book Title"
@@ -299,6 +315,9 @@ const Lead = () => {
                 onChange={(e) => setEditData({ ...editData, title: e.target.value })}
                 fullWidth
                 margin="normal"
+                error={!!errors.title}
+                helperText={errors.title}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Publisher Name"
@@ -306,6 +325,9 @@ const Lead = () => {
                 onChange={(e) => setEditData({ ...editData, publisherName: e.target.value })}
                 fullWidth
                 margin="normal"
+                error={!!errors.publisherName}
+                helperText={errors.publisherName}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Author Name"
@@ -313,6 +335,9 @@ const Lead = () => {
                 onChange={(e) => setEditData({ ...editData, author: e.target.value })}
                 fullWidth
                 margin="normal"
+                error={!!errors.author}
+                helperText={errors.author}
+                inputProps={{ maxLength: 50 }}
               />
 
               <Button onClick={handleSaveEdit} variant="contained" color="primary">

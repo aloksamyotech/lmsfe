@@ -10,7 +10,7 @@ const ProfileCard = ({ name, role, img, onClick }) => {
   return (
     <Card
       sx={{
-        width: '100%',
+        width: '80%',
         marginTop: 4,
         borderRadius: 2,
         overflow: 'hidden',
@@ -28,13 +28,13 @@ const ProfileCard = ({ name, role, img, onClick }) => {
       role="button"
       tabIndex={0}
     >
-      <CardMedia component="img" height="250" image={img} alt={`${name} background`} />
+      <CardMedia component="img" height="150" image={img} alt={`${name} background`} />
       <CardContent sx={{ textAlign: 'center' }}>
         <Typography variant="h6" component="div">
           {name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {role}
+          {/* {role} */}
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 2 }}>
           <Facebook sx={{ color: '#3b5998', cursor: 'pointer' }} />

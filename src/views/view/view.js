@@ -63,11 +63,11 @@ const View = () => {
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
-    {
-      field: 'paymentType',
-      headerName: 'Payment Type',
-      flex: 1
-    },
+    // {
+    //   field: 'paymentType',
+    //   headerName: 'Payment Type',
+    //   flex: 1
+    // },
     {
       field: 'amount',
       headerName: 'Amount',
@@ -322,7 +322,7 @@ const View = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

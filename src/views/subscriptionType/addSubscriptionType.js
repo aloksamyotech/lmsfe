@@ -36,7 +36,8 @@ const AddSubscription = (props) => {
       .required('Discount is required') 
       .min(0, 'Discount must be at least 0')
       .max(100, 'Discount cannot be more than 100')
-      .typeError('Discount must be a valid number')
+      .typeError('Discount must be a valid number'),
+    desc:  Yup.string().max(500, 'Comment cannot exceed 500 characters').required('Discription  is required')
   });
 
   const formik = useFormik({

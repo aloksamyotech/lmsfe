@@ -28,7 +28,7 @@ const ImageGallery = () => {
           <Link href="/" underline="hover" color="inherit">
             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
           </Link>
-          <Link href="/account-profile" underline="hover" color="inherit">
+          <Link href="/dashboard/default" underline="hover" color="inherit">
             <h4> Book Details</h4>
           </Link>
         </Breadcrumbs>

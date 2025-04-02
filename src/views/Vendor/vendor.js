@@ -23,8 +23,8 @@ const AddPolicy = (props) => {
 
   // -----------  validationSchema
   const validationSchema = yup.object({
-    vendorName: yup.string().required('Book Title is required'),
-    companyName: yup.string().required('Book Title is required'),
+    vendorName: yup.string().required('vendor Name is required'),
+    companyName: yup.string().required('Company Name is required'),
     address: yup.string().required('Address is required'),
     phoneNumber: yup
       .string()

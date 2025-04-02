@@ -41,7 +41,7 @@ const Publications = () => {
   const [editData, setEditData] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
-
+  const [errors, setErrors] = useState({});
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     console.log('Breadcrumb clicked');
@@ -190,6 +190,18 @@ const Publications = () => {
   // };
 
   const handleSaveEdit = async () => {
+    setErrors({});
+    const newErrors = {};
+
+    if (!editData.publisherName) newErrors.publisherName = 'Publisher Name is required';
+    if (!editData.address) newErrors.address = 'Address is required';
+    if (!editData.description) newErrors.description = 'Description is required';
+    
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     try {
       // Ensure you're passing the correct data
       const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; // Make sure the startDate is a valid Date
@@ -282,7 +294,7 @@ const Publications = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -301,6 +313,10 @@ const Publications = () => {
                 onChange={(e) => setEditData({ ...editData, publisherName: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.publisherName}
+                helperText={errors.publisherName}
+                inputProps={{ maxLength: 50 }}
               />
               {/* <TextField
                 label="Book Name"
@@ -315,6 +331,10 @@ const Publications = () => {
                 onChange={(e) => setEditData({ ...editData, address: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.address}
+                helperText={errors.address}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Description"
@@ -322,6 +342,10 @@ const Publications = () => {
                 onChange={(e) => setEditData({ ...editData, description: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.description}
+                helperText={errors.description}
+                inputProps={{ maxLength: 50 }}
               />
 
               <Button onClick={handleSaveEdit} variant="contained" color="primary">

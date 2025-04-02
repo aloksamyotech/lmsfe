@@ -20,7 +20,7 @@ const SubscriptType = () => {
   const [editData, setEditData] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
-
+  const [errors, setErrors] = useState({});
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     console.log('Breadcrumb clicked');
@@ -122,6 +122,20 @@ const SubscriptType = () => {
   };
 
   const handleSaveEdit = async () => {
+
+    setErrors({});
+    const newErrors = {};
+
+    if (!editData.title) newErrors.title = 'Title is required';
+    if (!editData.amount) newErrors.amount = 'Amount is required';
+    if (!editData.discount) newErrors.discount = 'Discount is required';
+    if (!editData.numberOfDays) newErrors.numberOfDays = 'Number Of Days is required';
+
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     try {
       // const response = await axios.put(`http://localhost:4300/user/editSubscriptionType/${editData.id}`, editData);
 
@@ -229,6 +243,9 @@ const SubscriptType = () => {
                 onChange={(e) => setEditData({ ...editData, title: e.target.value })}
                 fullWidth
                 margin="normal"
+                error={!!errors.title}
+                helperText={errors.title}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Amount"
@@ -236,6 +253,9 @@ const SubscriptType = () => {
                 onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
                 fullWidth
                 margin="normal"
+                error={!!errors.amount}
+                helperText={errors.amount}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Discount"
@@ -243,6 +263,9 @@ const SubscriptType = () => {
                 onChange={(e) => setEditData({ ...editData, discount: e.target.value })}
                 fullWidth
                 margin="normal"
+                error={!!errors.discount}
+                helperText={errors.discount}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Number Of Days"
@@ -250,6 +273,9 @@ const SubscriptType = () => {
                 onChange={(e) => setEditData({ ...editData, numberOfDays: e.target.value })}
                 fullWidth
                 margin="normal"
+                error={!!errors.numberOfDays}
+                helperText={errors.numberOfDays}
+                inputProps={{ maxLength: 50 }}
               />
               <Button onClick={handleSaveEdit} variant="contained" color="primary" style={{ marginLeft: '16px' }}>
                 Save

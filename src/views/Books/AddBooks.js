@@ -17,7 +17,7 @@ import { url } from 'core/url';
 import { addBook, getPublications } from 'core/helperFurtion';
 
 const validationSchema = yup.object({
-  bookName: yup.string().required('Book Name is required').max(100, 'Book Name must be less than or equal to 100 characters'),
+  bookName: yup.string().required('Book Name is required').max(50, 'Book Name must be less than or equal to 50 characters'),
   title: yup.string().required('Title is required').max(50, 'Title must be less than or equal to 50 characters'),
   author: yup.string().required('Author is required').max(50, 'Author Name must be less than or equal to 50 characters'),
   publisherName: yup.string().required('Publisher is required'),
@@ -121,6 +121,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.bookName && Boolean(formik.errors.bookName)}
                   helperText={formik.touched.bookName && formik.errors.bookName}
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
 

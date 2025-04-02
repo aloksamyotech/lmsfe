@@ -436,7 +436,7 @@ const Allotment = () => {
           <Link href="/" underline="hover" color="inherit">
             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
           </Link>
-          <Link href="/account-profile" underline="hover" color="inherit">
+          <Link href="/dashboard/bookAllotment" underline="hover" color="inherit">
             <h4>Books Management / Allocate Book</h4>
           </Link>
         </Breadcrumbs>
@@ -631,7 +631,7 @@ const Allotment = () => {
             <DialogContent>
               <FormControl fullWidth sx={{ marginBottom: 2 }}>
                 <FormLabel>Submission Type</FormLabel>
-                <Select value={submissionType} onChange={handleTypeChange} label="Submission Type">
+                <Select value={submissionType} onChange={handleTypeChange} label="Submission Type" size='small'>
                   {studentData.length > 0 &&
                     studentData.map((type) => (
                       <MenuItem key={type._id} value={type._id}>
@@ -652,6 +652,7 @@ const Allotment = () => {
                 fullWidth
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
+                size='small'
               />
 
               <Typography variant="h6" color="primary">

@@ -30,7 +30,7 @@ const validationSchema = yup.object({
     .max(1000, 'Quantity cannot exceed 1000'),
   price: yup.number().required('Price is required').positive('Price must be a positive number').min(0.1, 'Price must be at least 0.1'),
   // totalPrice: yup.number().required('Total Price is required').positive('Total price must be positive'),
-  bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters')
+  bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters').required('Comment is required')
 });
 
 const AddPurchaseBook = (props) => {

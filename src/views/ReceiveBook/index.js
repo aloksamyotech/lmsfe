@@ -184,7 +184,7 @@ const ReceiveBook = () => {
     const getAllSubmitBookDetails = async () => {
       try {
         const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
-        //  console.log("submitted diksha ",submitResponse);
+         console.log("submitted diksha ",submitResponse);
         const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => ({
           serial: index + 1,
           id: item?._id,
@@ -192,10 +192,11 @@ const ReceiveBook = () => {
           bookName: item?.bookDetails[0]?.bookName,
           title: item?.paymentDetails[0]?.title,
           amount: item?.paymentDetails[0]?.amount,
+          quantity: item?.books?.quantity,
           bookIssueDate: formatDate(item?.books?.bookIssueDate),
           submissionDate: formatDate(item?.books?.submissionDate)
-        }));
-        // console.log('selectedStudentId>>>>>>>', fetchedData);
+        })); 
+        console.log('selectedStudentId>>>>>>>', fetchedData);
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching submit book data:', error);
@@ -494,7 +495,7 @@ const ReceiveBook = () => {
           <Link href="/" underline="hover" color="inherit">
             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
           </Link>
-          <Link href="/account-profile" underline="hover" color="inherit">
+          <Link href="/dashboard/Receive" underline="hover" color="inherit">
             <h4>Books Management / Receive Book</h4>
           </Link>
         </Breadcrumbs>

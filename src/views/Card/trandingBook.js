@@ -30,7 +30,8 @@ const TrandingBook = () => {
           alignItems: 'center',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           height: '50px',
-              marginBottom: '-25px'
+          marginBottom: '-25px',
+          marginTop:'-20px'
         }}
       >
         <Breadcrumbs aria-label="breadcrumb">
