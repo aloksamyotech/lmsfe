@@ -195,7 +195,7 @@ const ReceiveBook = () => {
           quantity: item?.books?.quantity,
           bookIssueDate: formatDate(item?.books?.bookIssueDate),
           submissionDate: formatDate(item?.books?.submissionDate)
-        })); 
+        }));
         console.log('selectedStudentId>>>>>>>', fetchedData);
         setData(fetchedData);
       } catch (error) {
@@ -213,7 +213,7 @@ const ReceiveBook = () => {
     };
     const fetchReceiveBook = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/receiveBook');
+        const  response= await axios.get(url.allotmentManagement.receiveBook)
         // console.log(`response00011 is coming or nott==============>`, response?.data);
         setFetchReceiveBook(response.data.books);
         setFetchReceiveBooks(response.data.books || []);
@@ -447,7 +447,6 @@ const ReceiveBook = () => {
       const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
       console.log('response', response);
 
-      
       const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
         const fineAmount = item?.fineAmount;
@@ -624,6 +623,9 @@ const ReceiveBook = () => {
                     }}
                   >
                     <strong>Submission Date:</strong> {formatDate(book?.submissionDate) || 'Loading...'}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Quantity:</strong> {book?.quantity|| 'Loading...'}
                   </Typography>
                 </Grid>
               </Grid>

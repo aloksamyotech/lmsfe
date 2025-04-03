@@ -91,7 +91,6 @@ const Allotment = () => {
     setShowModal(false);
   };
   const fetchCategory = async () => {
-    // const response = await axios.get('http://localhost:4300/user/alotmentsbooks');
     const response = await axios.get(url.bookManagenent.bookmanagementTable);
     console.log('response------------------------', response);
     setCategoryData(response.data.data);
@@ -99,7 +98,7 @@ const Allotment = () => {
 
   const fetchSubscription = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+      const response = await axios.get(url.subscription.findSubscription);
       setStudentData(response.data?.SubscriptionType);
     } catch (error) {
       console.error('Error fetching SubscriptionType', error);
@@ -113,7 +112,8 @@ const Allotment = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/registerManagement');
+      const response = await axios.get(url.studentRegister.getRegisterManagement);
+
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
 
@@ -130,7 +130,7 @@ const Allotment = () => {
 
   const fetchinvoice = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getdataalocated');
+      const response = await getBookAllotmentHistory(url.bookAllotmentHistory.getdataalocated);
       const formattedData = response.data.response.map((item) => ({
         id: item._id || Math.random().toString(),
         studentName: item.studentName,
@@ -631,7 +631,7 @@ const Allotment = () => {
             <DialogContent>
               <FormControl fullWidth sx={{ marginBottom: 2 }}>
                 <FormLabel>Submission Type</FormLabel>
-                <Select value={submissionType} onChange={handleTypeChange} label="Submission Type" size='small'>
+                <Select value={submissionType} onChange={handleTypeChange} label="Submission Type" size="small">
                   {studentData.length > 0 &&
                     studentData.map((type) => (
                       <MenuItem key={type._id} value={type._id}>
@@ -652,7 +652,7 @@ const Allotment = () => {
                 fullWidth
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
-                size='small'
+                size="small"
               />
 
               <Typography variant="h6" color="primary">

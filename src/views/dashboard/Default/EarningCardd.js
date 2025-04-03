@@ -76,7 +76,6 @@ const EarningCardd = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getPublicationsCount');
 
         const response = await getPublicationsCount(url.publications.getPublicationsCount);
         setBookCount(response.data.count);

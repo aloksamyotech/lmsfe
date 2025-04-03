@@ -54,7 +54,6 @@ const AddPurchaseBook = (props) => {
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
       try {
-        // const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
         const response = await purchaseBook(url.purchaseBook.purchaseBook, values);
 
         console.log('Form submitted successfully>>>>>>>:', response);
@@ -73,7 +72,6 @@ const AddPurchaseBook = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/bookManagement');
 
         // const response = await getBookManagement(url.bookManagenent.bookManagement);
         const response = await axios.get(url.bookManagenent.bookmanagementTable);
@@ -86,7 +84,6 @@ const AddPurchaseBook = (props) => {
 
     const fetchVendor = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/venderManagement');
 
         const response = await viewVender(url.vendorManagement.viewVender);
         // console.log('Vendor Data:', response);
@@ -98,7 +95,6 @@ const AddPurchaseBook = (props) => {
 
     const fetchPublisher = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getPublications');
 
         const response = await getPublications(url.publications.getPublications);
         // console.log('Publisher Data:', response);
@@ -125,7 +121,11 @@ const AddPurchaseBook = (props) => {
       formik.setFieldValue('totalPrice', totalPrice);
     }
   };
-
+  useEffect(() => {
+    if (open) {
+      formik.resetForm();
+    }
+  }, [open]);
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">

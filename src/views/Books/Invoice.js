@@ -57,7 +57,6 @@ const InvoicePage = () => {
         </Typography>
         <Typography variant="body1">Name: {studentName}</Typography>
         <Typography variant="body1">Email: {studentEmail}</Typography>
-        <Typography variant="body1">Invoice ID: {id}</Typography>
         <Typography variant="body1">Invoice Date: {new Date().toLocaleDateString()}</Typography>
       </Paper>
 

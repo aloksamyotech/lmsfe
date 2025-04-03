@@ -17,7 +17,8 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 import chartData from './chart-data/total-growth-bar-chart';
-
+import { url } from 'core/url';
+import { allotmentManagement } from 'core/helperFurtion';
 const status = [
   {
     value: 'today',
@@ -55,7 +56,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookAllotmentCount = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getBookAllotedCount');
+        const response = await axios.get(url.allotmentManagement.getBookAllotedCount);
+
         // console.log('response', response);
         setBookCount(response.data.count);
         // setBookCount(response.data.count);
@@ -68,7 +70,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
 
     const fetchBookMonthVise = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getBookMonthVise');
+        const response = await axios.get(url.allotmentManagement.getBookMonthVise);
+
         console.log('response Data', response.data);
 
         var countArray = response.data.map((item) => item.count);

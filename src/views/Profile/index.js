@@ -66,9 +66,7 @@ const View = () => {
       if (formData.logo) {
         formDataToSend.append('logo', formData.logo);
       }
-      // const response = await axios.put(`http://localhost:4300/user/adminEditProfilePage/${formData.id}`, formDataToSend, {
-      //   headers: { 'Content-Type': 'multipart/form-data' }
-      // });
+      
 
       const response = await editAdmin(`${url.admin.edit}${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -92,7 +90,6 @@ const View = () => {
     setStudentId(extractedId);
     const fetchProfileData = async () => {
       try {
-        // const response = await axios.get(`http://localhost:4300/user/adminProfilePage`);
         const response = await axios.get(url.admin.adminProfile);
         // const response = await uploadLogoAdmin(url.admin.admin);
         console.log(' response>>>>>>>>', response.data.students[0].logo);

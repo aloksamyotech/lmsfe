@@ -67,7 +67,6 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getVenderCount');
 
         const response = await getVenderCount(url.vendorManagement.venderCount);
         setBookCount(response.data.count);

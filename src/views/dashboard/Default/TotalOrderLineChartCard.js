@@ -65,7 +65,6 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getBookCount');
 
         const response = await getBookCount(url.bookManagenent.bookCount);
         console.log('API Response:', response.data);

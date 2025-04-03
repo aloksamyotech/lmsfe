@@ -111,7 +111,6 @@ const Lead = () => {
 
   const fetchData = async () => {
     try {
-      // const response = await axios.get('http://localhost:4300/user/bookManagement');
       const response=await axios.get(url.bookManagenent.bookmanagementTable)
       // console.log("response ---------", response)
       const fetchedData = response?.data?.data?.map((item) =>  ({
@@ -138,6 +137,7 @@ const Lead = () => {
 
   const handleEdit = (book) => {
     setEditData(book);
+    setErrors({});
   };
 
   const handleSaveEdit = async () => {
@@ -155,7 +155,6 @@ const Lead = () => {
       return;
     }
     try {
-      // const response = await axios.put(`http://localhost:4300/user/editBook/${editData.id}`, editData);
       const response = await editBook(`${url.bookManagenent.editBook}${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
@@ -176,7 +175,6 @@ const Lead = () => {
     try {
       console.log('delete API...');
 
-      // await axios.delete(`http://localhost:4300/user/deleteBook/${bookToDelete}`);
       await deleteBook(`${url.bookManagenent.delete}${bookToDelete}`);
 
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
@@ -218,7 +216,6 @@ const Lead = () => {
         return;
       }
       console.log('excelData>>>>>>', excelData);
-      // const response = await axios.post('http://localhost:4300/user/addManyBooks', excelData);
       const response = await addManyBooks(url.bookManagenent.addManyBooks, excelData);
       toast.success(`Data Uploaded Successfully`);
       setTimeout(() => {

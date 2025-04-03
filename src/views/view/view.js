@@ -115,7 +115,6 @@ const View = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
       // console.log('Data', response);
 
       const updatedRegister = response.data;
@@ -132,7 +131,6 @@ const View = () => {
 
   const confirmDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4300/user/deleteRegister/${id}`);
       setData((prevData) => prevData.filter((register) => register.id !== id));
     } catch (error) {
       // console.error('Error deleting Register:', error);
@@ -163,7 +161,6 @@ const View = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        // const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
 
         const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
         
@@ -192,7 +189,6 @@ const View = () => {
     const fetchData = async () => {
       try {
         // console.log('findHistoryBookAllotmentUser');
-        // const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
 
         const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
         // console.log('findHistoryBookAllotmentUser----------', response);
@@ -215,43 +211,7 @@ const View = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
-  //       console.log('Student ', response);
-  //       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
-  //         id: item._id,
-  //         student_id: item.student_id,
-  //         student_Name: item.student_Name,
-  //         email: item.email,
-  //         mobile_Number: item.mobile_Number,
-  //         register_Date: formatDate(item.register_Date)
-  //       }));
-  //       setData(fetchedData);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   const fetchStudentData = async () => {
-  //     try {
-  //       console.log('Student Data........');
-
-  //       const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
-  //       console.log('Student ', response);
-
-  //       setStudentData(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching student data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  //   fetchStudentData();
-  // }, []);
-
-  // console.log(`allData`, allData?.user?.email);
+  
   return (
     <>
       <Box

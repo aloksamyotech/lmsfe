@@ -11,7 +11,7 @@ const ViewAllottedBooks = () => {
   useEffect(() => {
     const fetchAllottedBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/getBookAllotmentHistory');
+
         setAllottedBooks(response.data);
         setLoading(false);
       } catch (err) {

@@ -67,7 +67,6 @@ const Lead = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/bookManagement');
         const response = await axios.get(url.bookManagenent.bookManagement);
         const fetchedData = response?.data?.BookManagement?.map((item) => ({
           id: item._id,
@@ -96,7 +95,6 @@ const Lead = () => {
 
   const handleSaveEdit = async () => {
     try {
-      // const response = await axios.put(`http://localhost:4300/user/editBook/${editData.id}`, editData);
 
       const response = await axios.put(`${url.bookManagenent.editBook}${editData.id}`, editData);
       const updatedBook = response.data;
@@ -114,7 +112,6 @@ const Lead = () => {
 
   const confirmDelete = async () => {
     try {
-      // await axios.delete(`http://localhost:4300/user/deleteBook/${bookToDelete}`);
 
       await axios.delete(`${url.bookManagenent.delete}${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));

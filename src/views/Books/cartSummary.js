@@ -2,11 +2,13 @@ import React from 'react';
 import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
+import { url } from 'core/url';
+import { allotmentManagement } from 'core/helperFurtion';
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
   const navigate = useNavigate();
   const { setCartcontextItems } = useCart();
-  
+
   const handleCreateInvoice = async () => {
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
@@ -19,7 +21,7 @@ const CartSummary = ({ summaryData }) => {
     }));
 
     try {
-      const response = await fetch('http://localhost:4300/user/manyBookAllotment', {
+      const response = await fetch(url.allotmentManagement.manyBookAllotment, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -32,7 +34,7 @@ const CartSummary = ({ summaryData }) => {
         console.log('response===============>', result.allotment.studentId);
 
         console.log('Books allotted successfully:', result);
-        setCartcontextItems([]); 
+        setCartcontextItems([]);
         localStorage.setItem('librarycart', JSON.stringify([]));
         navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
           state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }

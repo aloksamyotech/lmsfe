@@ -63,11 +63,9 @@ const StudentInvoice = () => {
 
   const fetchData = async () => {
     console.log(`fetchData`);
-    // const url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
 
     const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
     console.log(`Url`, Url);
-    // const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
 
     const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
     console.log('Invoice Data ----------', response?.data[0]);

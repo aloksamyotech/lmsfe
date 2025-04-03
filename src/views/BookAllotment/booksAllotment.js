@@ -65,13 +65,11 @@ const AddAllotment = (props) => {
         bookDetails: dataToSend
       };
       try {
-        // const response = await axios.post('http://localhost:4300/user/manyBookAllotment', dataToSend);
 
         const response = await manyBookAllotment(url.allotmentManagement.manyBookAllotment, dataToSend);
 
         if (response) {
           console.log(`response  Gopal ---->>>>`, response);
-          // const Bookresponse = await axios.post('http://localhost:4300/user/bookAllotmentHistory', newData);
           const Bookresponse = await bookAllotmentHistory(url.bookAllotmentHistory.bookAllotmentHistory, newData);
           console.log('Bookresponse', Bookresponse);
 
@@ -96,7 +94,6 @@ const AddAllotment = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/bookManagement');
         const response = await getBookManagement(url.bookManagenent.bookManagement);
         const filteredBooks = response.data?.BookManagement.filter((book) => book.quantity > 0);
         console.log('response Aman-2', response);
@@ -107,7 +104,6 @@ const AddAllotment = (props) => {
     };
     const fetchStudents = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/registerManagement');
         const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
         console.log('response Aman', response);
         setAllData(response?.data?.RegisterManagement);
@@ -136,7 +132,6 @@ const AddAllotment = (props) => {
     }
     formik.setFieldValue('studentId', studentId);
     try {
-      // const response = await axios.get(`http://localhost:4300/user/bookAllotmentCount/${studentId}`);
 
       const response = await bookAllotmentCount(`${url.allotmentManagement.bookAllotmentCount}${studentId}`);
       const count = response?.data?.allotmentsCount || 0;

@@ -75,6 +75,7 @@ const AddFine = ({ fineid, open, handleClose }) => {
           error={!!errors.reason}
           helperText={errors.reason}
           sx={{ marginBottom: 2 }}
+          inputProps={{ maxLength: 30 }}
         />
       </DialogContent>
       <DialogActions>

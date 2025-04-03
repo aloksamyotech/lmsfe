@@ -143,7 +143,6 @@ const Publications = () => {
     try {
       console.log('useEffect-----------');
 
-      // const response = await axios.get('http://localhost:4300/user/getPublications');
 
       const response = await getPublications(url.publications.getPublications);
 
@@ -176,18 +175,10 @@ const Publications = () => {
   const handleCloseAdd = () => setOpenAdd(false);
 
   const handleEdit = (publications) => {
+    setErrors({});
     setEditData(publications);
   };
-  // const handleSaveEdit = async () => {
-  //   try {
-  //     const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, editData);
-  //     const updatedPublications = response.data;
-  //     setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
-  //     setEditData(null);
-  //   } catch (error) {
-  //     console.error('Error updating Publications:', error);
-  //   }
-  // };
+ 
 
   const handleSaveEdit = async () => {
     setErrors({});
@@ -206,7 +197,6 @@ const Publications = () => {
       // Ensure you're passing the correct data
       const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; // Make sure the startDate is a valid Date
 
-      // const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, updatedPublications);
 
       const response = await editPublications(`${url.publications.editPublications}${editData.id}`, updatedPublications);
 
@@ -228,7 +218,6 @@ const Publications = () => {
 
   const confirmDelete = async () => {
     try {
-      // await axios.delete(`http://localhost:4300/user/deletePublications/${bookToDelete}`);
 
       await deletePublications(`${url.publications.delete}${bookToDelete}`);
 

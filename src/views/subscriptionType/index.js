@@ -91,7 +91,6 @@ const SubscriptType = () => {
 
   const fetchData = async () => {
     try {
-      // const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
       const response = await axios.get(url.subscription.findSubscription);
       // const response = await findSubscription(url.subscription.findSub);
 
@@ -118,6 +117,7 @@ const SubscriptType = () => {
   const handleCloseAdd = () => setOpenAdd(false);
 
   const handleEdit = (book) => {
+    setErrors({});
     setEditData(book);
   };
 
@@ -128,29 +128,32 @@ const SubscriptType = () => {
 
     if (!editData.title) newErrors.title = 'Title is required';
     if (!editData.amount) newErrors.amount = 'Amount is required';
+    else if (isNaN(editData.amount) || editData.amount <= 0) newErrors.amount = 'Amount must be a valid positive number';
+  
     if (!editData.discount) newErrors.discount = 'Discount is required';
-    if (!editData.numberOfDays) newErrors.numberOfDays = 'Number Of Days is required';
-
-    // If there are validation errors, don't proceed
+    else if (isNaN(editData.discount) || editData.discount < 0) newErrors.discount = 'Discount must be a valid number';
+  
+    if (!editData.numberOfDays) newErrors.numberOfDays = 'Number of Days is required';
+    else if (isNaN(editData.numberOfDays) || editData.numberOfDays <= 0) newErrors.numberOfDays = 'Number of Days must be a valid positive number';
+  
+   
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
     try {
-      // const response = await axios.put(`http://localhost:4300/user/editSubscriptionType/${editData.id}`, editData);
 
       const response = await axios.put(`${url.subscription.update}${editData.id}`, editData);
-
-      // const response = await updateSubscription(`${url.subscription.update}${editData.id}`, editData);
-
       console.log('Data', response);
       const updatedBook = response.data;
-      setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
+      setData((prevData) =>
+        prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item))
+      );
       setEditData(null);
 
       toast.success('Subscription details Edit successfully');
     } catch (error) {
-      console.error('Error updating book:', error);
+      console.error('Error updating subscription:', error);
     }
     fetchData();
   };
@@ -164,7 +167,6 @@ const SubscriptType = () => {
     try {
       console.log('delete API...');
 
-      // await axios.delete(`http://localhost:4300/user/deleteSubscriptionType/${bookToDelete}`);
 
       await axios.delete(`${url.subscription.delete}${bookToDelete}`);
       // await deleteSubscription(`${url.subscription.delete}${bookToDelete}`);
@@ -255,7 +257,7 @@ const SubscriptType = () => {
                 margin="normal"
                 error={!!errors.amount}
                 helperText={errors.amount}
-                inputProps={{ maxLength: 50 }}
+                inputProps={{ maxLength: 6 }}
               />
               <TextField
                 label="Discount"
@@ -265,7 +267,7 @@ const SubscriptType = () => {
                 margin="normal"
                 error={!!errors.discount}
                 helperText={errors.discount}
-                inputProps={{ maxLength: 50 }}
+                inputProps={{ maxLength: 2 }}
               />
               <TextField
                 label="Number Of Days"
@@ -275,7 +277,7 @@ const SubscriptType = () => {
                 margin="normal"
                 error={!!errors.numberOfDays}
                 helperText={errors.numberOfDays}
-                inputProps={{ maxLength: 50 }}
+                inputProps={{ maxLength: 3 }}
               />
               <Button onClick={handleSaveEdit} variant="contained" color="primary" style={{ marginLeft: '16px' }}>
                 Save

@@ -67,7 +67,6 @@ const EarningCard = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getRegisterStudentCount');
 
         const response = await getRegisterStudentCount(url.studentRegister.getRegisterStudentCount);
         setBookCount(response.data.count);

@@ -52,7 +52,6 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      // const response = await axios.get('http://localhost:4300/user/bookManagement/');
       const  response =await axios.get(url.allotmentManagement.trendingBooks);
       // console.log("response ---------", response)
       const fetchedData = response?.data?.data?.map((item) =>  ({

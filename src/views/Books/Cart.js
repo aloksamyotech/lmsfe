@@ -18,6 +18,8 @@ import CartSummary from './cartSummary';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useCart } from './CartContext';
+import { getRegisterManagement } from 'core/helperFurtion';
+import { url } from 'core/url';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantity }) => {
   const [summary, setSummary] = useState(null);
@@ -61,7 +63,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 
     setSummary(cartSummary);
     setIsPopupOpen(true);
-    setCartItems([0]);
+    // setCartItems([0]);
   };
 
   const handleClosePopup = () => {
@@ -71,7 +73,8 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/registerManagement');
+      const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
+      console.log('rfefjefefefef', response);
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
         name: item.student_Name || 'N/A',
@@ -297,4 +300,3 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 };
 
 export default Cart;
-

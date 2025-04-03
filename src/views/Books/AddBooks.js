@@ -58,10 +58,6 @@ const AddLead = (props) => {
       }
 
       try {
-        // const response = await axios.post('http://localhost:4300/user/addBook', formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
         const response = await addBook(url.bookManagenent.addBook, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -83,7 +79,6 @@ const AddLead = (props) => {
   useEffect(() => {
     const fetchPublisher = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getPublications');
         const response = await getPublications(url.publications.getPublications);
         console.log(`response ---------`, response.BookManagement);
 
@@ -99,7 +94,11 @@ const AddLead = (props) => {
     const file = event.target.files[0];
     formik.setFieldValue('upload_Book', file);
   };
-
+  useEffect(() => {
+    if (open) {
+      formik.resetForm();
+    }
+  }, [open]);
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
       <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>

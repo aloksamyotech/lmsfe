@@ -9,7 +9,8 @@ import { Stack } from '@mui/material';
 import { Box, Card, Paper, TableContainer } from '@mui/material';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import IconButton from '@mui/material/IconButton';
-
+import { url } from 'core/url';
+import { getBookAllotmentHistory } from 'core/helperFurtion';
 const History = ({ allotmentId }) => {
   const [students, setStudents] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
@@ -18,7 +19,7 @@ const History = ({ allotmentId }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getdataalocated');
+      const response = await getBookAllotmentHistory(url.bookAllotmentHistory.getdataalocated);
       console.log('response-----', response);
       const formattedData = response.data.response.map((item) => ({
         id: item._id || Math.random().toString(),

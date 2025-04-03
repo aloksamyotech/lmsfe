@@ -112,6 +112,7 @@ export const url = {
     bookAllotmentHistory: base_url + 'user/bookAllotmentHistory/',
     getBookAllotmentHistory: base_url + 'user/getBookAllotmentHistory/',
     getBookDetailHistoryStudentId: base_url + 'user/getBookDetailHistoryStudentId/',
-    getBookAllotmentInvoice: base_url + 'user/getBookAllotmentInvoice/'
+    getBookAllotmentInvoice: base_url + 'user/getBookAllotmentInvoice/',
+    getdataalocated:base_url +'user/getdataalocated'
   }
 };

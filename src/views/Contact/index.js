@@ -102,7 +102,6 @@ const Contact = () => {
   };
   const fetchData = async () => {
     try {
-      // const response = await axios.get('http://localhost:4300/user/getMarkFavorite');
 
       const response = await getMarkFavorite(url.studentRegister.getMarkFavorite);
       console.log('response', response);
@@ -135,7 +134,6 @@ const Contact = () => {
   const handleConfirmDelete = async () => {
     try {
       if (contactToDelete) {
-        // await axios.delete(`http://localhost:4300/user/deleteContact/${contactToDelete}`);
         await deleteMarkFavorite(`${url.favoriteStudents.delete}${contactToDelete}`);
         setData((prevData) => prevData.filter((item) => item.id !== contactToDelete));
         setContactToDelete(null);
@@ -155,7 +153,6 @@ const Contact = () => {
     try {
       console.log('Student ID', student);
 
-      // const response = await axios.post(`http://localhost:4300/user/markFavorite/${student}`);
 
       const response = await markFavorite(`${url.studentRegister.markFavorite}${student}`);
       console.log('Favorite response>>>>>>>-------', response);

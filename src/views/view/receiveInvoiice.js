@@ -66,20 +66,14 @@ const ReceiveInvoice = () => {
     return `${day}/${month}/${year}`;
   };
   const fetchData = async () => {
-    // console.log(`fetchData`);
-    // const Url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
-    // const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
-    // console.log(`Url`, Url);
-    // const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
     const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
     // console.log('Invoice Data ----------', response?.data?._id);
- 
+
     const allotmentId = response?.data?._id;
     setAllotmentId(allotmentId);
     const studentId = response?.data?.studentId?._id;
-  
 
-    const bookId = response?.data?.books?.[0]?._id;  // Assuming books is an array, accessing first element.
+    const bookId = response?.data?.books?.[0]?._id; // Assuming books is an array, accessing first element.
 
     const student_Name = response?.data?.studentId?.student_Name;
     setStudentName(student_Name);
@@ -97,10 +91,8 @@ const ReceiveInvoice = () => {
 
     const bookName = response?.data?.books[0]?.bookId?.bookName;
     setBookName(bookName);
-  
 
-    const paymentType=response?.data?.books[0]?.paymentType;
- 
+    const paymentType = response?.data?.books[0]?.paymentType;
 
     const amount = response?.data.books[0]?.amount;
     setStudentAmount(amount);
@@ -118,26 +110,7 @@ const ReceiveInvoice = () => {
     const quantity = response?.data?.books[0]?.quantity;
     setBookQuantity(quantity);
 
-    // try {
-    //   // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
-
-    //   const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
-
-    //   console.log(`Fine data  >>>>>>>>`, response?.data);
-    //   const fine = response?.data?.map((item) => {
-    //     const reason = item?.reason;
-    //     const fineAmount = item?.fineAmount;
-    //     return { reason, fineAmount };
-    //   });
-    //   setAllFineData(fine);
-    //   console.log('fine>>>>>>>>', fine);
-    // } catch (error) {
-    //   console.log(`error`, error);
-    // }
-
     try {
-      // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
-
       // const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
 
       // console.log(`Fine data  >>>>>>>>`, response?.data);

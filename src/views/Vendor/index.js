@@ -94,7 +94,6 @@ const PolicyManagement = () => {
   };
   const fetchData = async () => {
     try {
-      // const response = await axios.get('http://localhost:4300/user/venderManagement');
 
       const response = await viewVender(url.vendorManagement.viewVender);
       const fetchedData = response?.data?.VenderManagement?.map((item) => ({
@@ -120,6 +119,7 @@ const PolicyManagement = () => {
   const handleCloseAdd = () => setOpenAdd(false);
 
   const handleEdit = (book) => {
+    setErrors({});
     setEditData(book);
   };
   const handleSaveEdit = async () => {
@@ -137,7 +137,6 @@ const PolicyManagement = () => {
       return;
     }
     try {
-      // const response = await axios.put(`http://localhost:4300/user/editVender/${editData.id}`, editData);
       const response = await editVender(`${url.vendorManagement.editVender}${editData.id}`, editData);
 
       const updatedVender = response.data;
@@ -156,7 +155,6 @@ const PolicyManagement = () => {
   };
   const confirmDelete = async () => {
     try {
-      // await axios.delete(`http://localhost:4300/user/deleteVender/${bookToDelete}`);
       await deleteVender(`${url.vendorManagement.delete}${bookToDelete}`);
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
@@ -228,7 +226,7 @@ const PolicyManagement = () => {
                 onChange={(e) => setEditData({ ...editData, vendorName: e.target.value })}
                 fullWidth
                 margin="normal"
-                size='small'
+                size="small"
                 error={!!errors.vendorName}
                 helperText={errors.vendorName}
                 inputProps={{ maxLength: 50 }}
@@ -239,7 +237,7 @@ const PolicyManagement = () => {
                 onChange={(e) => setEditData({ ...editData, companyName: e.target.value })}
                 fullWidth
                 margin="normal"
-                size='small'
+                size="small"
                 error={!!errors.companyName}
                 helperText={errors.companyName}
                 inputProps={{ maxLength: 50 }}
@@ -247,21 +245,28 @@ const PolicyManagement = () => {
               <TextField
                 label="Phone Number"
                 value={editData.phoneNumber}
-                onChange={(e) => setEditData({ ...editData, phoneNumber: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Restrict the input to only numbers
+                  if (/^\d*$/.test(value)) {
+                    setEditData({ ...editData, phoneNumber: value });
+                  }
+                }}
                 fullWidth
                 margin="normal"
-                size='small'
+                size="small"
                 error={!!errors.phoneNumber}
                 helperText={errors.phoneNumber}
-                inputProps={{ maxLength: 50 }}
+                inputProps={{ maxLength: 10 }}
               />
+
               <TextField
                 label="Address"
                 value={editData.address}
                 onChange={(e) => setEditData({ ...editData, address: e.target.value })}
                 fullWidth
                 margin="normal"
-                size='small'
+                size="small"
                 error={!!errors.address}
                 helperText={errors.address}
                 inputProps={{ maxLength: 50 }}
