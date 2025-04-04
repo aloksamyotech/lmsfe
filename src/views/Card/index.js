@@ -58,7 +58,7 @@ const App = () => {
         id: item.bookId,
         name: item.title,
         role: item.author,
-        img: item.upload_Book ? `${url}${item.upload_Book}` : defaultBook
+        img: item.img ? `${url.baseurl.baseurl}${item.img}` : defaultBook
       }));
       // console.log(fetchedData);
       setData(fetchedData);

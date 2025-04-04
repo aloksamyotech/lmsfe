@@ -123,7 +123,7 @@ const AddRegister = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.student_Name && Boolean(formik.errors.student_Name)}
                   helperText={formik.touched.student_Name && formik.errors.student_Name}
-                  inputProps={{ maxLength: 20 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -182,7 +182,7 @@ const AddRegister = (props) => {
                   type="date"
                   size="small"
                   fullWidth
-                  value={formik.values.date}
+                  value={formik.values.date || todayDate}
                   onChange={formik.handleChange}
                   error={formik.touched.date && Boolean(formik.errors.date)}
                   helperText={formik.touched.date && formik.errors.date}

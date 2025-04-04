@@ -347,7 +347,7 @@ const Call = () => {
                 fullWidth
                 margin="normal"
                 size="small"
-                inputProps={{ maxLength: 50 }}
+                inputProps={{ maxLength: 30 }}
                 error={!!errors.email}
                 helperText={errors.email}
               />
@@ -358,7 +358,7 @@ const Call = () => {
                 fullWidth
                 margin="normal"
                 size="small"
-                inputProps={{ maxLength: 50 }}
+                inputProps={{ maxLength: 30 }}
                 error={!!errors.student_Name}
                 helperText={errors.student_Name}
               />

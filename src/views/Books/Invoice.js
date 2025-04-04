@@ -1,6 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import moment from 'moment';
+import invoice from '../view/invoice.png';
 
 const InvoicePage = () => {
   const { id } = useParams();
@@ -8,7 +10,9 @@ const InvoicePage = () => {
   const navigate = useNavigate();
   const printRef = useRef();
   const { invoiceData, studentName, studentEmail, totalAmount, cartItems } = state;
-
+  useEffect(() => {
+    console.log('cartitems------------', cartItems);
+  }, []);
   const handlePrint = () => {
     const printContents = printRef.current.innerHTML;
     const printWindow = window.open('', '_blank');
@@ -47,12 +51,28 @@ const InvoicePage = () => {
       }}
       ref={printRef}
     >
-      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ textAlign: 'center' }}>
-        Samyotech Library Management
+      <Box display="flex" alignItems="center" justifyContent="center">
+        <Box style={{ marginRight: '50px' }}>
+          <img src={invoice} alt="Screenshot" style={{ width: '100px', height: 'auto' }} />
+        </Box>
+        <Box style={{ marginRight: '100px' }}>
+          <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
+            SAMYOTECH
+          </Typography>
+          <Typography variant="h2" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="10vh">
+            LIBRARY MANAGEMENT SYSTEM
+          </Typography>
+        </Box>
+      </Box>
+      <Typography variant="h3" fontWeight="bold" mt={3}>
+        Invoice
+      </Typography>
+      <Typography variant="h4" align="right" mb={3}>
+        Date: {moment().format('MMMM D, YYYY')}
       </Typography>
 
       <Paper sx={{ padding: 1, marginBottom: 1 }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h4" gutterBottom>
           Student Information
         </Typography>
         <Typography variant="body1">Name: {studentName}</Typography>
@@ -61,7 +81,7 @@ const InvoicePage = () => {
       </Paper>
 
       <Paper sx={{ padding: 3, marginTop: 2 }}>
-        <Typography variant="h6" fontWeight="bold" gutterBottom>
+        <Typography variant="h4" fontWeight="bold" gutterBottom>
           Book Details
         </Typography>
         <TableContainer component={Paper}>

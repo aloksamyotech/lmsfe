@@ -12,6 +12,7 @@ export const url = {
     baseurl: base_url
   },
   admin: {
+    createuser:base_url+'user/createUser',
     adminProfile: base_url + 'user/adminProfilePage/',
     edit: base_url + 'user/adminEditProfilePage/',
     logo: base_url + 'user/adminGetLogo/',

@@ -53,7 +53,8 @@ const Lead = () => {
       flex: 1,
       renderCell: (params) => {
         // console.log(`params`, params.row);
-        const imageUrl = `${url.baseurl.baseurl.replace(/\/$/, '')}/${params?.row?.upload_Book.replace(/\\/g, '/')}`;        console.log('imageUrl>>>>>>>>>>>>>>.', imageUrl);
+        const imageUrl = `${url.baseurl.baseurl.replace(/\/$/, '')}/${params?.row?.upload_Book.replace(/\\/g, '/')}`;      
+        console.log('imageUrl>>>>>>>>>>>>>>.', imageUrl);
 
         return (
           <img

@@ -176,7 +176,7 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}
                     helperText={formik.touched.publisherName && formik.errors.publisherName}
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
                 {/* <Grid item xs={12} sm={6} md={6}>
@@ -250,7 +250,7 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.address && Boolean(formik.errors.address)}
                     helperText={formik.touched.address && formik.errors.address}
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>

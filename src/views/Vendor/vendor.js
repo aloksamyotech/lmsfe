@@ -96,7 +96,7 @@ const AddPolicy = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.vendorName && Boolean(formik.errors.vendorName)}
                     helperText={formik.touched.vendorName && formik.errors.vendorName}
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
@@ -110,7 +110,7 @@ const AddPolicy = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.companyName && Boolean(formik.errors.companyName)}
                     helperText={formik.touched.companyName && formik.errors.companyName}
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
@@ -132,14 +132,13 @@ const AddPolicy = (props) => {
                   <FormLabel>Phone Number</FormLabel>
                   <TextField
                     name="phoneNumber"
-                    type="number"
+                    type="text" // Use "text" instead of "number"
                     size="small"
-                    fullWidth
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
                     error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
                     helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                    inputProps={{ maxLength: 10 }}
+                    inputProps={{ maxLength: 10 }} // This will limit input to 10 characters
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>

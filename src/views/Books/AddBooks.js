@@ -120,7 +120,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.bookName && Boolean(formik.errors.bookName)}
                   helperText={formik.touched.bookName && formik.errors.bookName}
-                  inputProps={{ maxLength: 50 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
 
@@ -135,7 +135,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.title && Boolean(formik.errors.title)}
                   helperText={formik.touched.title && formik.errors.title}
-                  inputProps={{ maxLength: 50 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
 
@@ -150,7 +150,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.author && Boolean(formik.errors.author)}
                   helperText={formik.touched.author && formik.errors.author}
-                  inputProps={{ maxLength: 50 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
               <Grid item xs={12} sm={4} md={4}>
