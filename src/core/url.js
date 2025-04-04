@@ -8,7 +8,9 @@ export const url = {
   //       com_rul = url.baseUrl + url.BookManagement.put + id
   //       payload = data
   //     update(com_url , payload),
-
+  baseurl: {
+    baseurl: base_url
+  },
   admin: {
     adminProfile: base_url + 'user/adminProfilePage/',
     edit: base_url + 'user/adminEditProfilePage/',

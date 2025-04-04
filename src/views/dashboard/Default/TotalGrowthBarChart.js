@@ -223,7 +223,6 @@ export default TotalGrowthBarChart;
 
 //   const fetchBookMonthWiseData = async () => {
 //     try {
-//       const response = await axios.get('http://localhost:4300/user/getBookMonthVise');
 //       const formattedData = response.data.map((item) => item.count);
 //       setSeriesData(formattedData);
 //     } catch (error) {
@@ -238,7 +237,6 @@ export default TotalGrowthBarChart;
 //   useEffect(() => {
 //     const fetchBookAllotmentCount = async () => {
 //       try {
-//         const response = await axios.get('http://localhost:4300/user/getBookAllotedCount');
 //         setBookCount(response.data.count);
 //       } catch (error) {
 //         console.error('Error fetching book count:', error);

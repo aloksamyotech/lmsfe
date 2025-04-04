@@ -519,7 +519,6 @@ const Allotment = () => {
                       >
                         <CardMedia
                           component="img"
-                          image={product.upload_Book ? `http://localhost:4300/${product.upload_Book}` : ''}
                           sx={{
                             objectFit: 'cover',
                             height: '80px',
@@ -573,7 +572,7 @@ const Allotment = () => {
                       >
                         <CardMedia
                           component="img"
-                          image={product.upload_Book ? `http://localhost:4300/${product.upload_Book}` : ''}
+                          image={product.upload_Book ? `${url.baseurl.baseurl}${product.upload_Book}` : ''}
                           sx={{
                             objectFit: 'cover',
                             height: '80px',

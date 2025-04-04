@@ -58,8 +58,7 @@ const App = () => {
         id: item.bookId,
         name: item.title,
         role: item.author,
-        img: item.img ? `http://localhost:4300/${item.img}` : defaultBook
-        // img: item.upload_Book ? `${url}${item.upload_Book}` : defaultBook
+        img: item.upload_Book ? `${url}${item.upload_Book}` : defaultBook
       }));
       // console.log(fetchedData);
       setData(fetchedData);

@@ -180,7 +180,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                     <TableRow key={item._id + item.submissionType}>
                       <TableCell sx={{ textAlign: 'center' }}>
                         <img
-                          src={`http://localhost:4300/${item.upload_Book}`}
+                          src={`${url.baseurl.baseurl}${item.upload_Book}`}
                           alt={item.title}
                           style={{
                             width: 60,
