@@ -52,17 +52,12 @@ const Lead = () => {
       headerName: 'Book Image',
       flex: 1,
       renderCell: (params) => {
-        // console.log(`params`, params.row);
-        const imageUrl = `${url.baseurl.baseurl.replace(/\/$/, '')}/${params?.row?.upload_Book.replace(/\\/g, '/')}`;      
+        const uploadBook = params?.row?.upload_Book;
+        const imageUrl = uploadBook ? `${url.baseurl.baseurl.replace(/\/$/, '')}/${uploadBook.replace(/\\/g, '/')}` : defaultBook;
+
         console.log('imageUrl>>>>>>>>>>>>>>.', imageUrl);
 
-        return (
-          <img
-            src={params?.row?.upload_Book ? imageUrl : defaultBook}
-            alt="Book"
-            style={{ width: '60px', height: '33px', objectFit: 'contain' }}
-          />
-        );
+        return <img src={imageUrl} alt="Book" style={{ width: '60px', height: '33px', objectFit: 'contain' }} />;
       }
     },
     {
@@ -108,16 +103,16 @@ const Lead = () => {
 
   const fetchData = async () => {
     try {
-      const response=await axios.get(url.bookManagenent.bookmanagementTable)
+      const response = await axios.get(url.bookManagenent.bookmanagementTable);
       // console.log("response ---------", response)
-      const fetchedData = response?.data?.data?.map((item) =>  ({
+      const fetchedData = response?.data?.data?.map((item) => ({
         id: item._id,
         bookName: item.bookName,
         upload_Book: item.upload_Book,
         title: item.title,
         publisherName: item.publisherName,
         author: item.author,
-        quantity: item.bookQuantity> 0 ? item.bookQuantity : 'Not Available'
+        quantity: item.bookQuantity > 0 ? item.bookQuantity : 'Not Available'
       }));
       setData(fetchedData);
     } catch (error) {

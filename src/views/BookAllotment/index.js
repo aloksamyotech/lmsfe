@@ -156,12 +156,15 @@ const Allotment = () => {
     fetchinvoice();
   }, []);
   useEffect(() => {
+    const storedCartItems = JSON.parse(localStorage.getItem('librarycart')) || [];
+    setCartItems(storedCartItems);
+    setCartcontextItems(storedCartItems);
+  }, []);
+  useEffect(() => {
     console.log('Cart items----------', cartItems);
     console.log('Cart items length', cartItems.length);
-    setCartcontextItems(cartItems);
     localStorage.setItem('librarycart', JSON.stringify(cartItems));
-
-    // console.log('Cart update successful===============================================>>>>>>>>>>>>>>>>>>>>>');
+    setCartcontextItems(cartItems);
   }, [cartItems, setCartcontextItems]);
   useEffect(() => {
     fetchCategory();

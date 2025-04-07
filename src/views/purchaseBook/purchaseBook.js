@@ -209,7 +209,7 @@ const AddPurchaseBook = (props) => {
                     onChange={(e) => handleQuantityPriceChange('quantity', e.target.value)}
                     error={formik.touched.quantity && Boolean(formik.errors.quantity)}
                     helperText={formik.touched.quantity && formik.errors.quantity}
-                    inputProps={{ maxLength: 5 }}
+                    inputProps={{ maxLength: 3 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={5} md={5}>

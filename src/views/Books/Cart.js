@@ -20,6 +20,7 @@ import axios from 'axios';
 import { useCart } from './CartContext';
 import { getRegisterManagement } from 'core/helperFurtion';
 import { url } from 'core/url';
+import defaultBook from './bookDummy.jpeg';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantity }) => {
   const [summary, setSummary] = useState(null);
@@ -31,7 +32,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('librarycart')) || [];
     setCartItems(storedCartItems);
-    // console.log('storedCartItems11111111111111111', storedCartItems.length);
+    console.log('storedCartItems11111111111111111', cartItems);
   }, []);
 
   console.log('Cart item ================', cartItems.length);
@@ -180,7 +181,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                     <TableRow key={item._id + item.submissionType}>
                       <TableCell sx={{ textAlign: 'center' }}>
                         <img
-                          src={`${url.baseurl.baseurl}${item.upload_Book}`}
+                          src={item.upload_Book ? `${url.baseurl.baseurl}${item.upload_Book}` : defaultBook}
                           alt={item.title}
                           style={{
                             width: 60,

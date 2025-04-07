@@ -708,6 +708,7 @@ const ReceiveBook = () => {
                       error={reasonError}
                       helperText={reasonHelperText}
                       sx={{ marginBottom: 2 }}
+                      inputProps={{ maxLength: 30 }}
                     />
                   </DialogContent>
                   <DialogActions>

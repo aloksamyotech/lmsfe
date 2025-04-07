@@ -57,7 +57,7 @@ const ImageGallery = () => {
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)'
             }}
           >
-            The Adventures of a Dreamer
+            {/* The Adventures of a Dreamer */}
           </Typography>
         </Paper>
         <Paper sx={{ flex: 1, padding: 2 }}>
