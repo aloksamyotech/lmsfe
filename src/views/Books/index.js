@@ -53,13 +53,26 @@ const Lead = () => {
       flex: 1,
       renderCell: (params) => {
         const uploadBook = params?.row?.upload_Book;
-        const imageUrl = uploadBook ? `${url.baseurl.baseurl.replace(/\/$/, '')}/${uploadBook.replace(/\\/g, '/')}` : defaultBook;
-
+        const imageUrl = uploadBook 
+          ? `${url.baseurl.baseurl.replace(/\/$/, '')}/${uploadBook.replace(/\\/g, '/')}` 
+          : defaultBook;
+    
         console.log('imageUrl>>>>>>>>>>>>>>.', imageUrl);
-
-        return <img src={imageUrl} alt="Book" style={{ width: '60px', height: '33px', objectFit: 'contain' }} />;
+    
+        return (
+          <img 
+            src={imageUrl} 
+            alt="Book" 
+            style={{
+              width: '40px',
+              height: '40px',  
+              objectFit: 'cover', 
+              borderRadius: '50%', 
+            }} 
+          />
+        );
       }
-    },
+    },    
     {
       field: 'title',
       headerName: 'Book Title',
@@ -82,8 +95,22 @@ const Lead = () => {
       headerName: 'Available Quantity',
       flex: 1,
       align: 'center',
-      headerAlign: 'center'
+      headerAlign: 'center',
+      renderCell: (params) => {
+        const quantity = params.value;
+        return (
+          <Typography
+            sx={{
+              color: quantity === 'Not Available' ? 'red' : 'black',
+              fontWeight: quantity === 'Not Available' ? 'bold' : 'normal',
+            }}
+          >
+            {quantity}
+          </Typography>
+        );
+      },
     },
+    
     {
       field: 'action',
       headerName: 'Action',

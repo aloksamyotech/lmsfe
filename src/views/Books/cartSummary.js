@@ -17,7 +17,7 @@ const CartSummary = ({ summaryData }) => {
       submissionDate: item.submissionDate || null,
       paymentType: item.submissionType,
       quantity: item.quantity,
-      amount: item.amount || 0
+      amount: item.amount || 0,
     }));
 
     try {
@@ -28,16 +28,25 @@ const CartSummary = ({ summaryData }) => {
         },
         body: JSON.stringify(invoiceData)
       });
-
       if (response.ok) {
         const result = await response.json();
-        console.log('response===============>', result.allotment.studentId);
+        console.log('response===============>', result.allotmentId);
 
         console.log('Books allotted successfully:', result);
         setCartcontextItems([]);
         localStorage.setItem('librarycart', JSON.stringify([]));
-        navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
-          state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }
+        // navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
+        //   state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }
+        // });
+        navigate(`/dashboard/bookAllotmentInvoice/${result.allotment._id}`, {
+          state: {
+            allotmentId: result.allotment._id,  // Pass the allotmentId here
+            invoiceData,
+            cartItems,
+            studentName,
+            studentEmail,
+            totalAmount
+          }
         });
       } else {
         console.error('Failed to allot books:', response.statusText);

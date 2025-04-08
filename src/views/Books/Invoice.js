@@ -11,7 +11,7 @@ const InvoicePage = () => {
   const printRef = useRef();
   const { invoiceData, studentName, studentEmail, totalAmount, cartItems } = state;
   useEffect(() => {
-    console.log('cartitems------------', cartItems);
+    console.log('cartitems------------', invoiceData );
   }, []);
   const handlePrint = () => {
     const printContents = printRef.current.innerHTML;

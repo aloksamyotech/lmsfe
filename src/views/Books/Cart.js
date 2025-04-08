@@ -276,9 +276,9 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
             color="primary"
             onClick={handleSubmit}
             sx={{
-              width: '40%',
+              width: '35%',
               fontSize: '16px',
-              padding: '8px',
+              padding: '5px',
               // fontWeight: 'bold',
               borderRadius: '8px'
             }}

@@ -59,11 +59,6 @@ const History = ({ allotmentId }) => {
       flex: 1
     },
     {
-      field: 'totalAmount',
-      headerName: 'Total Amount',
-      flex: 1
-    },
-    {
       field: 'studentEmail',
       headerName: 'Email',
       flex: 1,
@@ -75,6 +70,12 @@ const History = ({ allotmentId }) => {
       headerName: 'Mobile',
       flex: 1
     },
+    {
+      field: 'totalAmount',
+      headerName: 'Paid Amount',
+      flex: 1
+    },
+
     {
       field: 'generateInvoice',
       headerName: 'Generate Invoice',
