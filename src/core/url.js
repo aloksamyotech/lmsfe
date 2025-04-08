@@ -12,7 +12,7 @@ export const url = {
     baseurl: base_url
   },
   admin: {
-    createuser:base_url+'user/createUser',
+    createuser: base_url + 'user/createUser',
     adminProfile: base_url + 'user/adminProfilePage/',
     edit: base_url + 'user/adminEditProfilePage/',
     logo: base_url + 'user/adminGetLogo/',
@@ -33,8 +33,7 @@ export const url = {
     viewBook: base_url + 'user/viewBookUser/',
     bookManagement: base_url + 'user/bookManagement/',
     bookCount: base_url + 'user/getBookCount/',
-    bookmanagementTable :base_url+'user/bookmangmentTable/',
-    
+    bookmanagementTable: base_url + 'user/bookmangmentTable/'
   },
   vendorManagement: {
     addVender: base_url + 'user/addVenderBook/',
@@ -92,7 +91,8 @@ export const url = {
     getBookMonthVise: base_url + 'user/getBookMonthVise/',
     getBookAllotedCount: base_url + 'user/getBookAllotedCount/',
     bookAllotmentReport: base_url + 'user/bookAllotmentReport/',
-    trendingBooks :base_url + 'user/trendingBooks/',
+    trendingBooks: base_url + 'user/trendingBooks/',
+    submissionReport:base_url+'user/submissionReport/',
   },
   fine: {
     addFineBook: base_url + 'user/addFineBook/',
@@ -101,7 +101,7 @@ export const url = {
     findByStudentId: base_url + 'user/findByStudentId/',
     findFine: base_url + 'user/findFineInvoice/',
     fineDetails: base_url + 'user/findFine/',
-    findFinebyAllotmentId : base_url+'user/findFinebyAllotmentId/',
+    findFinebyAllotmentId: base_url + 'user/findFinebyAllotmentId/'
   },
   purchaseBook: {
     purchaseBook: base_url + 'user/purchaseBook/',
@@ -109,13 +109,14 @@ export const url = {
     updatePurchaseBook: base_url + 'user/updatePurchaseBook/',
     purchaseManagement: base_url + 'user/purchaseManagement/',
     getPurchaseInvoice: base_url + 'user/getPurchaseInvoice/',
-    edit: base_url + 'user/editPurchaseBook/'
+    edit: base_url + 'user/editPurchaseBook/',
+    purchaseReport: base_url + 'user/purchaseReport/'
   },
   bookAllotmentHistory: {
     bookAllotmentHistory: base_url + 'user/bookAllotmentHistory/',
     getBookAllotmentHistory: base_url + 'user/getBookAllotmentHistory/',
     getBookDetailHistoryStudentId: base_url + 'user/getBookDetailHistoryStudentId/',
     getBookAllotmentInvoice: base_url + 'user/getBookAllotmentInvoice/',
-    getdataalocated:base_url +'user/getdataalocated'
+    getdataalocated: base_url + 'user/getdataalocated'
   }
 };
