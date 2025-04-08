@@ -53,7 +53,6 @@ const AddContact = (props) => {
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        // const response = await axios.post('http://localhost:4300/user/addContact', values);
 
         const response = await axios.post(url.favoriteStudents.addContact, values);
         console.log('Form submitted successfully:', response);

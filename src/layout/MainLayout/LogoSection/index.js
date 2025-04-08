@@ -15,7 +15,7 @@ const LogoSection = () => {
     try {
       const response = await axios.get(url.admin.adminProfile);
       // console.log('response>>>>>>>>', response.data.students[0].logo);
-      const logo = `http://localhost:4300/${response.data.students[0].logo}`;
+      const logo = response.data.students[0].logo ? `${url.baseurl.baseurl}${response.data.students[0].logo}` : '';
       // const logo = response.data.students[0].logo;
       console.log(`logo`, logo);
       if (logo) {

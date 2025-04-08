@@ -18,6 +18,9 @@ import CartSummary from './cartSummary';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useCart } from './CartContext';
+import { getRegisterManagement } from 'core/helperFurtion';
+import { url } from 'core/url';
+import defaultBook from './bookDummy.jpeg';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantity }) => {
   const [summary, setSummary] = useState(null);
@@ -29,7 +32,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('librarycart')) || [];
     setCartItems(storedCartItems);
-    // console.log('storedCartItems11111111111111111', storedCartItems.length);
+    console.log('storedCartItems11111111111111111', cartItems);
   }, []);
 
   console.log('Cart item ================', cartItems.length);
@@ -61,7 +64,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 
     setSummary(cartSummary);
     setIsPopupOpen(true);
-    setCartItems([0]);
+    // setCartItems([0]);
   };
 
   const handleClosePopup = () => {
@@ -71,7 +74,8 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/registerManagement');
+      const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
+      console.log('rfefjefefefef', response);
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
         name: item.student_Name || 'N/A',
@@ -177,7 +181,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                     <TableRow key={item._id + item.submissionType}>
                       <TableCell sx={{ textAlign: 'center' }}>
                         <img
-                          src={`http://localhost:4300/${item.upload_Book}`}
+                          src={item.upload_Book ? `${url.baseurl.baseurl}${item.upload_Book}` : defaultBook}
                           alt={item.title}
                           style={{
                             width: 60,
@@ -272,9 +276,9 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
             color="primary"
             onClick={handleSubmit}
             sx={{
-              width: '40%',
+              width: '35%',
               fontSize: '16px',
-              padding: '8px',
+              padding: '5px',
               // fontWeight: 'bold',
               borderRadius: '8px'
             }}
@@ -297,4 +301,3 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 };
 
 export default Cart;
-

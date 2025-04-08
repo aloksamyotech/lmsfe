@@ -50,10 +50,12 @@ const ReceiveInvoice = () => {
   const [studentTitle, setStudentTitle] = useState('');
   const [studentAmount, setStudentAmount] = useState('');
   const [discount, setDiscount] = useState('');
+  const [issueDate, setIssueDate] = useState('');
   const [submissionDate, setSubmissionDate] = useState('');
+  const [bookQuantity, setBookQuantity] = useState('');
   const [allFineData, setAllFineData] = useState([]);
   const [amount, setAmount] = useState();
-  const [allotmentId , setAllotmentId]= useState([]);
+  const [allotmentId, setAllotmentId] = useState([]);
   const containerRef = useRef();
 
   const formatDate = (dateString) => {
@@ -64,20 +66,14 @@ const ReceiveInvoice = () => {
     return `${day}/${month}/${year}`;
   };
   const fetchData = async () => {
-    // console.log(`fetchData`);
-    // const Url = `http://localhost:4300/user/getInvoice/${rowData?.id}`;
-    // const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
-    // console.log(`Url`, Url);
-    // const response = await axios.get(`http://localhost:4300/user/getInvoice/${rowData?.id}`);
     const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
     // console.log('Invoice Data ----------', response?.data?._id);
- 
+
     const allotmentId = response?.data?._id;
     setAllotmentId(allotmentId);
     const studentId = response?.data?.studentId?._id;
-  
 
-    const bookId = response?.data?.books?.[0]?._id;  // Assuming books is an array, accessing first element.
+    const bookId = response?.data?.books?.[0]?._id; // Assuming books is an array, accessing first element.
 
     const student_Name = response?.data?.studentId?.student_Name;
     setStudentName(student_Name);
@@ -95,48 +91,30 @@ const ReceiveInvoice = () => {
 
     const bookName = response?.data?.books[0]?.bookId?.bookName;
     setBookName(bookName);
-  
 
-    const paymentType=response?.data?.books[0]?.paymentType;
- 
+    const paymentType = response?.data?.books[0]?.paymentType;
 
     const amount = response?.data.books[0]?.amount;
     setStudentAmount(amount);
 
-    const title = response?.data[0]?.subscriptionDetails?.title;
+    const title = response?.data?.books[0]?.paymentType?.title;
     setStudentTitle(title);
 
     const discount = response?.data[0]?.subscriptionDetails?.discount;
     setDiscount(discount);
 
-    const bookIssueDate = response?.data[0]?.bookIssueDate;
+    const bookissueDate = response?.data?.books[0]?.bookIssueDate;
+    setIssueDate(formatDate(bookissueDate));
     const submissionDate = response?.data?.books[0]?.submissionDate;
     setSubmissionDate(formatDate(submissionDate));
-
-    // try {
-    //   // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
-
-    //   const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
-
-    //   console.log(`Fine data  >>>>>>>>`, response?.data);
-    //   const fine = response?.data?.map((item) => {
-    //     const reason = item?.reason;
-    //     const fineAmount = item?.fineAmount;
-    //     return { reason, fineAmount };
-    //   });
-    //   setAllFineData(fine);
-    //   console.log('fine>>>>>>>>', fine);
-    // } catch (error) {
-    //   console.log(`error`, error);
-    // }
+    const quantity = response?.data?.books[0]?.quantity;
+    setBookQuantity(quantity);
 
     try {
-      // const data = await axios.get(`http://localhost:4300/user/findFineInvoice/${studentId}/${bookId}`);
-
       // const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
 
       // console.log(`Fine data  >>>>>>>>`, response?.data);
-       const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
+      const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
       //  console.log("99999999999999999999", response);
       const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
@@ -235,6 +213,36 @@ const ReceiveInvoice = () => {
             Date: {moment().format('MMMM D, YYYY')}
           </Typography>
           <Typography variant="h4" mb={3} mt={3}>
+            Book Information
+          </Typography>
+          <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Book Name:
+              </Typography>
+              <Typography variant="body2">{bookName || 'N/A'}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Book Quantity:
+              </Typography>
+              <Typography variant="body2">{bookQuantity || 'N/A'}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Issue Date :
+              </Typography>
+              <Typography variant="body2">{issueDate || 'N/A'}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Submission Date:
+              </Typography>
+              <Typography variant="body2">{submissionDate}</Typography>
+            </Grid>
+          </Grid>
+          <Typography variant="h4" mb={3} mt={3}>
             Student Information
           </Typography>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
@@ -277,57 +285,31 @@ const ReceiveInvoice = () => {
           <Grid container spacing={1}>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
-                Book Name:
-              </Typography>
-              <Typography variant="body2">{bookName || 'N/A'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Total Price:
-              </Typography>
-              <Typography variant="body2">{`₹${studentAmount}` || '₹0'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Payment Type:
+                Subscription Type:
               </Typography>
               <Typography variant="body2">{studentTitle || 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
-                Discount:
+                Subscription Price:
               </Typography>
-              <Typography variant="body2">{discount ? `₹${discount}` : '₹0' || '₹0'}</Typography>
+              <Typography variant="body2">{`₹${studentAmount}` || '₹0'}</Typography>
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Submission Date:
-              </Typography>
-              <Typography variant="body2">{submissionDate}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Paid Amount:
-              </Typography>
-              <Typography variant="body2">
-                {allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount
-                  ? `₹${
-                      allBookingData?.bookingData?.[0]?.payments?.[0]?.totalPaidAmount -
-                      allBookingData?.bookingData?.[0]?.payments?.[0]?.discount
-                    }`
-                  : '₹0' || '₹0'}
-              </Typography>
-            </Grid>
-            <div>
-              <Grid container spacing={2}>
+
+            {/* Fine Details within Payment Section */}
+            <Typography variant="h4" mb={3} mt={3}>
+              Fine Details
+            </Typography>
+            {allFineData?.length > 0 ? (
+              <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
                 {allFineData?.map((item, index) => (
                   <Grid item xs={12} key={index}>
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
                         <Typography variant="body1" fontWeight="bold">
-                          Fine Reason :
+                          Fine Reason:
                         </Typography>
-                        <Typography variant="body2">{item.reason || 'The book has not been fined'}</Typography>
+                        <Typography variant="body2">{item.reason || 'No reason provided'}</Typography>
                       </Grid>
                       <Grid item xs={6}>
                         <Typography variant="body1" fontWeight="bold">
@@ -339,14 +321,20 @@ const ReceiveInvoice = () => {
                   </Grid>
                 ))}
               </Grid>
-            </div>
+            ) : (
+              <Typography variant="body2" color="text.secondary" sx={{ marginTop: '54px', marginBottom: '20px' }}>
+                No fines applied for this book.
+              </Typography>
+            )}
           </Grid>
-
+          <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
           <Grid container spacing={1} mt={2} mb={5}>
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-                {`₹${studentAmount + (amount || 0) - (discount || 0)}` || `₹0.00`}
+                {`₹${(studentAmount * (bookQuantity || 1) + allFineData?.reduce((acc, item) => acc + (item.fineAmount || 0), 0)).toFixed(
+                  2
+                )}` || `₹0.00`}
               </Typography>
             </Grid>
           </Grid>

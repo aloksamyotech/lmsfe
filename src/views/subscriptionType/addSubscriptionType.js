@@ -33,11 +33,11 @@ const AddSubscription = (props) => {
       .positive('Number Of Days must be a positive number')
       .typeError('Number Of Days must be a valid number'),
     discount: Yup.number()
+      .required('Discount is required')
       .min(0, 'Discount must be at least 0')
-      .max(100, 'Discount cannot be more than 5')
-      .optional()
+      .max(100, 'Discount cannot be more than 100')
       .typeError('Discount must be a valid number'),
-    desc: Yup.string().required('Description is required').min(10, 'Description must be at least 10 characters long')
+    desc: Yup.string().max(500, 'Comment cannot exceed 500 characters').required('Discription  is required')
   });
 
   const formik = useFormik({
@@ -49,11 +49,11 @@ const AddSubscription = (props) => {
       numberOfDays: ''
     },
     validationSchema,
-
+    validateOnBlur: false,
+    validateOnChange: false,
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        // const response = await axios.post('http://localhost:4300/user/subscriptionType', values);
 
         // const response = await axios.post(url.subscription.Subscription, values);
 
@@ -71,7 +71,12 @@ const AddSubscription = (props) => {
       handleClose();
     }
   });
-
+  useEffect(() => {
+    if (open) {
+      // Reset the form whenever the dialog is opened
+      formik.resetForm();
+    }
+  }, [open]);
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     formik.setFieldValue('upload_Book', file);
@@ -98,7 +103,7 @@ const AddSubscription = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.title && Boolean(formik.errors.title)}
                   helperText={formik.touched.title && formik.errors.title}
-                  inputProps={{ maxLength: 50 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
               <Grid item xs={12} sm={5} md={5}>
@@ -112,7 +117,7 @@ const AddSubscription = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.amount && Boolean(formik.errors.amount)}
                   helperText={formik.touched.amount && formik.errors.amount}
-                  inputProps={{ maxLength: 8 }}
+                  inputProps={{ maxLength: 6 }}
                 />
               </Grid>
               <Grid item xs={12} sm={5} md={5}>
@@ -126,7 +131,7 @@ const AddSubscription = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.discount && Boolean(formik.errors.discount)}
                   helperText={formik.touched.discount && formik.errors.discount}
-                  inputProps={{ maxLength: 5 }}
+                  inputProps={{ maxLength: 2 }}
                 />
               </Grid>
               <Grid item xs={12} sm={5} md={5}>
@@ -140,7 +145,7 @@ const AddSubscription = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.numberOfDays && Boolean(formik.errors.numberOfDays)}
                   helperText={formik.touched.numberOfDays && formik.errors.numberOfDays}
-                  inputProps={{ maxLength: 5 }}
+                  inputProps={{ maxLength: 3 }}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>

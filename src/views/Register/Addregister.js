@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -69,7 +70,6 @@ const AddRegister = (props) => {
 
       try {
         console.log('try bolck');
-        // const response = await axios.post('http://localhost:4300/user/addRegister', formData, {
         const response = await addRegister(url.studentRegister.addRegister, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -90,7 +90,11 @@ const AddRegister = (props) => {
     const file = event.target.files[0];
     formik.setFieldValue('upload_identity', file);
   };
-
+  useEffect(() => {
+    if (open) {
+      formik.resetForm();
+    }
+  }, [open]);
   return (
     <Dialog open={open} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
       <DialogTitle
@@ -119,12 +123,7 @@ const AddRegister = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.student_Name && Boolean(formik.errors.student_Name)}
                   helperText={formik.touched.student_Name && formik.errors.student_Name}
-                  inputProps={{ maxLength: 50 }}
-                  InputProps={{
-                    style: {
-                      height: '50px'
-                    }
-                  }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -139,11 +138,7 @@ const AddRegister = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
-                  InputProps={{
-                    style: {
-                      height: '50px'
-                    }
-                  }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -158,11 +153,6 @@ const AddRegister = (props) => {
                   error={formik.touched.mobile_Number && Boolean(formik.errors.mobile_Number)}
                   helperText={formik.touched.mobile_Number && formik.errors.mobile_Number}
                   inputProps={{ maxLength: 10 }}
-                  InputProps={{
-                    style: {
-                      height: '50px'
-                    }
-                  }}
                 />
               </Grid>
 
@@ -172,6 +162,7 @@ const AddRegister = (props) => {
                   <Select
                     id="select_identity"
                     name="select_identity"
+                    size="small"
                     value={formik.values.select_identity}
                     onChange={formik.handleChange}
                     error={formik.touched.select_identity && Boolean(formik.errors.select_identity)}
@@ -187,8 +178,7 @@ const AddRegister = (props) => {
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Register Date</FormLabel>
                 <TextField
-                  id="register_Date"
-                  name="register_Date"
+                  name="date"
                   type="date"
                   size="small"
                   fullWidth
@@ -196,12 +186,7 @@ const AddRegister = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.date && Boolean(formik.errors.date)}
                   helperText={formik.touched.date && formik.errors.date}
-                  inputProps={{
-                    min: todayDate,
-                    style: {
-                      height: '25px'
-                    }
-                  }}
+                  inputProps={{ min: todayDate }}
                 />
               </Grid>
 

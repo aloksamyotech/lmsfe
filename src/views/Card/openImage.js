@@ -28,7 +28,7 @@ const ImageGallery = () => {
           <Link href="/" underline="hover" color="inherit">
             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
           </Link>
-          <Link href="/account-profile" underline="hover" color="inherit">
+          <Link href="/dashboard/default" underline="hover" color="inherit">
             <h4> Book Details</h4>
           </Link>
         </Breadcrumbs>
@@ -57,7 +57,7 @@ const ImageGallery = () => {
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)'
             }}
           >
-            The Adventures of a Dreamer
+            {/* The Adventures of a Dreamer */}
           </Typography>
         </Paper>
         <Paper sx={{ flex: 1, padding: 2 }}>

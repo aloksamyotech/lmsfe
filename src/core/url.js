@@ -8,8 +8,11 @@ export const url = {
   //       com_rul = url.baseUrl + url.BookManagement.put + id
   //       payload = data
   //     update(com_url , payload),
-
+  baseurl: {
+    baseurl: base_url
+  },
   admin: {
+    createuser:base_url+'user/createUser',
     adminProfile: base_url + 'user/adminProfilePage/',
     edit: base_url + 'user/adminEditProfilePage/',
     logo: base_url + 'user/adminGetLogo/',
@@ -25,7 +28,8 @@ export const url = {
     addBook: base_url + 'user/addBook/',
     addManyBooks: base_url + 'user/addManyBooks/',
     delete: base_url + 'user/deleteBook/',
-    editBook: base_url + 'user/updateBook/',
+    // editBook: base_url + 'user/updateBook/',
+    editBook: base_url + 'user/editBook/',
     viewBook: base_url + 'user/viewBookUser/',
     bookManagement: base_url + 'user/bookManagement/',
     bookCount: base_url + 'user/getBookCount/',
@@ -111,6 +115,7 @@ export const url = {
     bookAllotmentHistory: base_url + 'user/bookAllotmentHistory/',
     getBookAllotmentHistory: base_url + 'user/getBookAllotmentHistory/',
     getBookDetailHistoryStudentId: base_url + 'user/getBookDetailHistoryStudentId/',
-    getBookAllotmentInvoice: base_url + 'user/getBookAllotmentInvoice/'
+    getBookAllotmentInvoice: base_url + 'user/getBookAllotmentInvoice/',
+    getdataalocated:base_url +'user/getdataalocated'
   }
 };

@@ -68,7 +68,6 @@ const FinePerDay = () => {
   //       try {
   //         console.log('useEffect-----------');
 
-  //         const response = await axios.get('http://localhost:4300/user/contactManagement');
   //         const fetchedData = response?.data?.ContactManagement.map((item) => ({
   //           id: item._id,
   //           firstName: item.firstName,
@@ -97,7 +96,6 @@ const FinePerDay = () => {
   };
   //   const handleSaveEdit = async () => {
   //     try {
-  //       const response = await axios.put(`http://localhost:4300/user/editContact/${editData.id}`, editData);
   //       const updatedContact = response.data;
   //       setData((prevData) => prevData.map((item) => (item.id === updatedContact.id ? updatedContact : item)));
   //       setEditData(null);
@@ -110,7 +108,6 @@ const FinePerDay = () => {
   //     try {
   //       console.log('Contact', contact);
 
-  //       await axios.delete(`http://localhost:4300/user/deleteContact/${contact}`);
   //       console.log('Contact', contact.id);
 
   //       setData((prevData) => prevData.filter((item) => item.id !== contact.id));

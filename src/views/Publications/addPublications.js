@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -123,7 +124,6 @@ const AddPublications = (props) => {
     onSubmit: async (values) => {
       console.log('Submitted values', values);
       try {
-        // const response = await axios.post('http://localhost:4300/user/addPublications', values);
         const response = await addPublications(url.publications.addPublications, values);
         console.log('Form submitted successfully:', response);
         console.log();
@@ -137,7 +137,11 @@ const AddPublications = (props) => {
       handleClose();
     }
   });
-
+  useEffect(() => {
+    if (open) {
+      formik.resetForm();
+    }
+  }, [open]);
   return (
     <div>
       <Dialog open={open} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -172,7 +176,7 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}
                     helperText={formik.touched.publisherName && formik.errors.publisherName}
-                    inputProps={{ maxLength: 50 }}
+                    inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
                 {/* <Grid item xs={12} sm={6} md={6}>
@@ -246,7 +250,7 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.address && Boolean(formik.errors.address)}
                     helperText={formik.touched.address && formik.errors.address}
-                    inputProps={{ maxLength: 100 }}
+                    inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>

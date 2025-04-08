@@ -21,6 +21,7 @@ const Call = () => {
   const [excelData, setExcelData] = useState();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
+  const [errors, setErrors] = useState({});
   const XLSX = require('xlsx');
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
@@ -99,7 +100,6 @@ const Call = () => {
   const fetchData = async () => {
     try {
       console.log('Data');
-      // const response = await axios.get('http://localhost:4300/user/registerManagement');
 
       const response = await axios.get(url.studentRegister.getRegisterManagement);
       console.log('data API------------', response);
@@ -124,11 +124,23 @@ const Call = () => {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
   const handleEdit = (register) => {
+    setErrors({});
     setEditData(register);
   };
   const handleSaveEdit = async () => {
+    setErrors({});
+    const newErrors = {};
+
+    if (!editData.email) newErrors.email = 'Email is required';
+    if (!editData.student_Name) newErrors.student_Name = 'Student Name is required';
+    if (!editData.mobile_Number) newErrors.mobile_Number = 'Mobile Numberis required';
+
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     try {
-      // const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
 
       const response = await axios.put(`${url.studentRegister.editRegister}${editData.id}`, editData);
 
@@ -149,7 +161,6 @@ const Call = () => {
   };
   const confirmDelete = async (id) => {
     try {
-      // await axios.delete(`http://localhost:4300/user/deleteRegister/${bookToDelete}`);
 
       await axios.delete(`${url.studentRegister.deleteRegister}${bookToDelete}`);
 
@@ -195,7 +206,6 @@ const Call = () => {
     console.log(`click on like`);
     try {
       console.log('Student ID', student.id);
-      // const response = await axios.post(`http://localhost:4300/user/markFavorite/${student.id}`);
 
       const response = await axios.post(`${url.studentRegister.markFavorite}${student.id}`);
       console.log('Favorite response-------', response);
@@ -221,7 +231,6 @@ const Call = () => {
     try {
       console.log('handleSubscription---------');
       const updatedSubscription = !row.subscription;
-      // const response = await axios.post(`http://localhost:4300/user/markSubscription/${row.id}`, {
 
       const response = await axios.post(`${url.studentRegister.markSubscription}${row.id}`, {
         subscription: updatedSubscription
@@ -255,7 +264,6 @@ const Call = () => {
   const handleBulkUpload = async () => {
     try {
       console.log('excelData>>>>>>>>', excelData);
-      // const response = await axios.post('http://localhost:4300/user/registerMany', excelData);
 
       const response = await axios.post(url.studentRegister.registerMany, excelData);
       toast.success(`upload Successfully`);
@@ -320,7 +328,7 @@ const Call = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -338,6 +346,10 @@ const Call = () => {
                 onChange={(e) => setEditData({ ...editData, email: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                inputProps={{ maxLength: 30 }}
+                error={!!errors.email}
+                helperText={errors.email}
               />
               <TextField
                 label="Student Name"
@@ -345,13 +357,27 @@ const Call = () => {
                 onChange={(e) => setEditData({ ...editData, student_Name: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                inputProps={{ maxLength: 30 }}
+                error={!!errors.student_Name}
+                helperText={errors.student_Name}
               />
               <TextField
                 label="Mobile Number"
                 value={editData.mobile_Number}
-                onChange={(e) => setEditData({ ...editData, mobile_Number: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Restrict the input to only numbers
+                  if (/^\d*$/.test(value)) {
+                    setEditData({ ...editData, mobile_Number: e.target.value });
+                  }
+                }}
                 fullWidth
                 margin="normal"
+                size="small"
+                inputProps={{ maxLength: 10 }}
+                error={!!errors.mobile_Number}
+                helperText={errors.mobile_Number}
               />
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save

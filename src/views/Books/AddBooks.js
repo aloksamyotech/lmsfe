@@ -17,7 +17,7 @@ import { url } from 'core/url';
 import { addBook, getPublications } from 'core/helperFurtion';
 
 const validationSchema = yup.object({
-  bookName: yup.string().required('Book Name is required').max(100, 'Book Name must be less than or equal to 100 characters'),
+  bookName: yup.string().required('Book Name is required').max(50, 'Book Name must be less than or equal to 50 characters'),
   title: yup.string().required('Title is required').max(50, 'Title must be less than or equal to 50 characters'),
   author: yup.string().required('Author is required').max(50, 'Author Name must be less than or equal to 50 characters'),
   publisherName: yup.string().required('Publisher is required'),
@@ -58,10 +58,6 @@ const AddLead = (props) => {
       }
 
       try {
-        // const response = await axios.post('http://localhost:4300/user/addBook', formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
         const response = await addBook(url.bookManagenent.addBook, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -83,7 +79,6 @@ const AddLead = (props) => {
   useEffect(() => {
     const fetchPublisher = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getPublications');
         const response = await getPublications(url.publications.getPublications);
         console.log(`response ---------`, response.BookManagement);
 
@@ -99,7 +94,11 @@ const AddLead = (props) => {
     const file = event.target.files[0];
     formik.setFieldValue('upload_Book', file);
   };
-
+  useEffect(() => {
+    if (open) {
+      formik.resetForm();
+    }
+  }, [open]);
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
       <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -121,6 +120,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.bookName && Boolean(formik.errors.bookName)}
                   helperText={formik.touched.bookName && formik.errors.bookName}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
 
@@ -135,7 +135,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.title && Boolean(formik.errors.title)}
                   helperText={formik.touched.title && formik.errors.title}
-                  inputProps={{ maxLength: 50 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
 
@@ -150,7 +150,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.author && Boolean(formik.errors.author)}
                   helperText={formik.touched.author && formik.errors.author}
-                  inputProps={{ maxLength: 50 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
               <Grid item xs={12} sm={4} md={4}>
@@ -159,6 +159,7 @@ const AddLead = (props) => {
                   <Autocomplete
                     id="publisherName"
                     name="publisherName"
+                    size="small"
                     value={formik.values.publisherName}
                     onChange={(event, newValue) => formik.setFieldValue('publisherName', newValue)}
                     options={publisherData.map((item) => item.publisherName)}

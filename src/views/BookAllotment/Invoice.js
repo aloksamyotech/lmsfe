@@ -16,6 +16,7 @@ import {
   Breadcrumbs,
   Link
 } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
@@ -49,16 +50,16 @@ const BookInvoice = () => {
     setCurrentUrl(urlWindow);
     const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
-    // const response = await axios.get(`http://localhost:4300/user/getBookAllotmentInvoice/${extractedId}`);
-    const response = await axios.get(`${url.bookAllotmentHistory.getBookAllotmentInvoice}${extractedId}`);
-    console.log('Invoice Data ----------', response?.data);
-    setAllInvoiceData(response?.data);
+    const response = await axios.get(`${url.allotmentManagement.getInvoice}${extractedId}`);
+    setAllInvoiceData(response);
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-
+  useEffect(() => {
+    console.log(allInvoiceData);
+  }, [allInvoiceData]);
   useEffect(() => {
     setAllItemData(allBookingData?.items);
   }, [allBookingData?.items]);
@@ -74,11 +75,12 @@ const BookInvoice = () => {
     };
     html2pdf().set(options).from(element).save();
   };
-  const totalAmount = allInvoiceData?.allotmentDetails?.reduce((acc, item) => {
-    return acc + (item?.amount ?? 0);
-  }, 0);
+  const totalAmount = allInvoiceData?.data?.books?.reduce((acc, book) => {
+    const bookAmount = book?.amount ?? 0;
+    const bookQuantity = book?.quantity ?? 1;
 
-  const totalAmountAfterDiscount = totalAmount - (discount ?? 0);
+    return acc + bookAmount * bookQuantity;
+  }, 0);
 
   return (
     <>
@@ -143,6 +145,41 @@ const BookInvoice = () => {
             Date: {moment().format('MMMM D, YYYY')}
           </Typography>
           <Typography variant="h4" mb={3} mt={3}>
+            Book Information
+          </Typography>
+          <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
+          {allInvoiceData?.data?.books?.map((book, index) => (
+            <Grid container spacing={1} key={index}>
+              {' '}
+              {/* Add the "key" prop here */}
+              <Grid item xs={6}>
+                <Typography variant="body1" fontWeight="bold">
+                  Book Name:
+                </Typography>
+                <Typography variant="body2">{book?.bookId?.bookName ?? 'N/A'}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="body1" fontWeight="bold">
+                  Quantity:
+                </Typography>
+                <Typography variant="body2">{book?.quantity ?? '1'}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="body1" fontWeight="bold">
+                  Issue Date:
+                </Typography>
+                <Typography variant="body2">{book?.bookIssueDate ? moment(book.bookIssueDate).format('DD/MM/YY') : 'N/A'}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="body1" fontWeight="bold">
+                  Submission Date:
+                </Typography>
+                <Typography variant="body2">{book?.submissionDate ? moment(book.submissionDate).format('DD/MM/YYYY') : 'N/A'}</Typography>
+              </Grid>
+            </Grid>
+          ))}
+
+          <Typography variant="h4" mb={3} mt={3}>
             Student Information
           </Typography>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
@@ -151,100 +188,66 @@ const BookInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Name:
               </Typography>
-              <Typography variant="body2">{allInvoiceData?.studentDetails?.student_Name ?? 'N/A'}</Typography>
+              <Typography variant="body2">{allInvoiceData?.data?.studentId?.student_Name ?? 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Phone:
               </Typography>
-              <Typography variant="body2">{allInvoiceData?.studentDetails?.mobile_Number ?? 'N/A'}</Typography>
+              <Typography variant="body2">{allInvoiceData?.data?.studentId?.mobile_Number ?? 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Email:
               </Typography>
-              <Typography variant="body2">{allInvoiceData?.studentDetails?.email ?? 'N/A'}</Typography>
+              <Typography variant="body2">{allInvoiceData?.data?.studentId?.email ?? 'N/A'}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Select Identity:
               </Typography>
-              <Typography variant="body2">{allInvoiceData?.studentDetails?.select_identity ?? 'N/A'}</Typography>
+              <Typography variant="body2">{allInvoiceData?.data?.studentId?.select_identity ?? 'N/A'}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" fontWeight="bold">
                 Register Date:
               </Typography>
-              <Typography variant="body2">{formatDate(allInvoiceData?.studentDetails?.register_Date ?? 'N/A')}</Typography>
+              <Typography variant="body2">{formatDate(allInvoiceData?.data?.studentId?.register_Date ?? 'N/A')}</Typography>
             </Grid>
           </Grid>
           <Typography variant="h4" mb={3} mt={3}>
             Payment Information
           </Typography>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
-          {allInvoiceData?.allotmentDetails?.map((item, index) => {
-            console.log(`item`, item?.bookDetails?.bookName);
-            return (
-              <div key={index}>
-                <Grid container spacing={1}>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Book Name:
-                    </Typography>
-                    <Typography variant="body2">{item?.bookDetails?.bookName ?? 'N/A'}</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Total Price:
-                    </Typography>
-                    <Typography variant="body2">{`₹${item?.amount ?? '0'}`}</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Advance Payment:
-                    </Typography>
-                    <Typography variant="body2">{'₹0'}</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Discount:
-                    </Typography>
-                    <Typography variant="body2">{discount ? `₹${discount}` : '₹0'}</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Payment Type:
-                    </Typography>
-                    <Typography variant="body2">{item?.paymentDetails?.title ?? 'N/A'}</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Paid Amount:
-                    </Typography>
-                    <Typography variant="body2">{`₹${'0'}`}</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Submission Date:
-                    </Typography>
-                    <Typography variant="body2">{formatDate(item?.submissionDate ?? 'N/A')}</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Total Paid Amount:
-                    </Typography>
-                    <Typography variant="body2">{`₹${item?.amount ?? '0'}`}</Typography>
-                  </Grid>
-                </Grid>
-                <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
-              </div>
-            );
-          })}
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Subscription type:
+              </Typography>
+              <Typography variant="body2">{allInvoiceData?.data?.books?.[0]?.paymentType?.title ?? 'N/A'}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Amount:
+              </Typography>
+              <Typography variant="body2">
+                {allInvoiceData?.data?.books?.[0]?.amount != null ? `₹${allInvoiceData.data.books[0].amount}` : 'N/A'}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Item:
+              </Typography>
+              <Typography variant="body2">{allInvoiceData?.data?.books?.[0]?.quantity ?? '1'}</Typography>
+            </Grid>
+          </Grid>
+
           <Grid container spacing={1} mt={2} mb={5}>
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-                {`₹${totalAmountAfterDiscount ?? `₹0.00`}`}
+                {totalAmount ? `₹${totalAmount.toFixed(2)}` : '₹0.00'}
               </Typography>
             </Grid>
           </Grid>

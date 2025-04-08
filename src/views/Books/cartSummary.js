@@ -2,11 +2,13 @@ import React from 'react';
 import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
+import { url } from 'core/url';
+import { allotmentManagement } from 'core/helperFurtion';
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
   const navigate = useNavigate();
   const { setCartcontextItems } = useCart();
-  
+
   const handleCreateInvoice = async () => {
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
@@ -15,27 +17,36 @@ const CartSummary = ({ summaryData }) => {
       submissionDate: item.submissionDate || null,
       paymentType: item.submissionType,
       quantity: item.quantity,
-      amount: item.amount || 0
+      amount: item.amount || 0,
     }));
 
     try {
-      const response = await fetch('http://localhost:4300/user/manyBookAllotment', {
+      const response = await fetch(url.allotmentManagement.manyBookAllotment, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(invoiceData)
       });
-
       if (response.ok) {
         const result = await response.json();
-        console.log('response===============>', result.allotment.studentId);
+        console.log('response===============>', result.allotmentId);
 
         console.log('Books allotted successfully:', result);
-        setCartcontextItems([]); 
+        setCartcontextItems([]);
         localStorage.setItem('librarycart', JSON.stringify([]));
-        navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
-          state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }
+        // navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
+        //   state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }
+        // });
+        navigate(`/dashboard/bookAllotmentInvoice/${result.allotment._id}`, {
+          state: {
+            allotmentId: result.allotment._id,  // Pass the allotmentId here
+            invoiceData,
+            cartItems,
+            studentName,
+            studentEmail,
+            totalAmount
+          }
         });
       } else {
         console.error('Failed to allot books:', response.statusText);

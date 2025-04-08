@@ -95,7 +95,6 @@ const PurchaseBook = () => {
     try {
       console.log('fetch data ');
 
-      // const response = await axios.get('http://localhost:4300/user/purchaseManagement');
 
       const response = await getPurchaseBook(url.purchaseBook.purchaseManagement);
 
@@ -132,7 +131,6 @@ const PurchaseBook = () => {
     console.log(`editData`, editData);
 
     try {
-      // const response = await axios.put(`http://localhost:4300/user/editPurchaseBook/${editData.id}`, editData);
 
       const response = await updatePurchaseBook(`${url.purchaseBook.edit}${editData.id}`, editData);
       console.log('Data', response);
@@ -161,7 +159,6 @@ const PurchaseBook = () => {
     console.log(`id`, id);
 
     try {
-      // await axios.delete(`http://localhost:4300/user/deletePurchaseBook/${id}`);
       await deletePurchaseBook(`${url.purchaseBook.deletePurchaseBook}${id}`);
       setData((prevData) => prevData.filter((book) => book.id !== id));
       toast.success('Purchase Book add  successfully');

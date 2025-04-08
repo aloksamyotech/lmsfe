@@ -41,7 +41,7 @@ const Publications = () => {
   const [editData, setEditData] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
-
+  const [errors, setErrors] = useState({});
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     console.log('Breadcrumb clicked');
@@ -143,7 +143,6 @@ const Publications = () => {
     try {
       console.log('useEffect-----------');
 
-      // const response = await axios.get('http://localhost:4300/user/getPublications');
 
       const response = await getPublications(url.publications.getPublications);
 
@@ -176,25 +175,28 @@ const Publications = () => {
   const handleCloseAdd = () => setOpenAdd(false);
 
   const handleEdit = (publications) => {
+    setErrors({});
     setEditData(publications);
   };
-  // const handleSaveEdit = async () => {
-  //   try {
-  //     const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, editData);
-  //     const updatedPublications = response.data;
-  //     setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
-  //     setEditData(null);
-  //   } catch (error) {
-  //     console.error('Error updating Publications:', error);
-  //   }
-  // };
+ 
 
   const handleSaveEdit = async () => {
+    setErrors({});
+    const newErrors = {};
+
+    if (!editData.publisherName) newErrors.publisherName = 'Publisher Name is required';
+    if (!editData.address) newErrors.address = 'Address is required';
+    if (!editData.description) newErrors.description = 'Description is required';
+    
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     try {
       // Ensure you're passing the correct data
       const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; // Make sure the startDate is a valid Date
 
-      // const response = await axios.put(`http://localhost:4300/user/editPublications/${editData.id}`, updatedPublications);
 
       const response = await editPublications(`${url.publications.editPublications}${editData.id}`, updatedPublications);
 
@@ -216,7 +218,6 @@ const Publications = () => {
 
   const confirmDelete = async () => {
     try {
-      // await axios.delete(`http://localhost:4300/user/deletePublications/${bookToDelete}`);
 
       await deletePublications(`${url.publications.delete}${bookToDelete}`);
 
@@ -282,7 +283,7 @@ const Publications = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -301,6 +302,10 @@ const Publications = () => {
                 onChange={(e) => setEditData({ ...editData, publisherName: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.publisherName}
+                helperText={errors.publisherName}
+                inputProps={{ maxLength: 50 }}
               />
               {/* <TextField
                 label="Book Name"
@@ -315,6 +320,10 @@ const Publications = () => {
                 onChange={(e) => setEditData({ ...editData, address: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.address}
+                helperText={errors.address}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Description"
@@ -322,6 +331,10 @@ const Publications = () => {
                 onChange={(e) => setEditData({ ...editData, description: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.description}
+                helperText={errors.description}
+                inputProps={{ maxLength: 50 }}
               />
 
               <Button onClick={handleSaveEdit} variant="contained" color="primary">

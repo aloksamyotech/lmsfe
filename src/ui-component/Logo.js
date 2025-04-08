@@ -1,6 +1,7 @@
 import { useTheme } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { url } from 'core/url';
 import { Box } from '@mui/system';
 
 const Logo = () => {
@@ -10,13 +11,12 @@ const Logo = () => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/adminGetLogo');
+        const response = await axios.get(url.admin.logo)
         console.log('Logo data received:', response?.data.students[0]?.logo);
 
         const image = response?.data.students[0]?.logo;
-        const baseUrl = 'http://localhost:4300/';
 
-        const fullImageUrl = `${baseUrl}${image}`;
+        const fullImageUrl = `${url.baseurl.baseurl}${image}`;
 
         console.log('fullImageUrl', fullImageUrl);
         setLogoData(fullImageUrl);

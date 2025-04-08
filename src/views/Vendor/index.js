@@ -21,7 +21,7 @@ const PolicyManagement = () => {
   const [editData, setEditData] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
-
+  const [errors, setErrors] = useState({});
   const columns = [
     {
       field: 'vendorName',
@@ -94,7 +94,6 @@ const PolicyManagement = () => {
   };
   const fetchData = async () => {
     try {
-      // const response = await axios.get('http://localhost:4300/user/venderManagement');
 
       const response = await viewVender(url.vendorManagement.viewVender);
       const fetchedData = response?.data?.VenderManagement?.map((item) => ({
@@ -120,11 +119,24 @@ const PolicyManagement = () => {
   const handleCloseAdd = () => setOpenAdd(false);
 
   const handleEdit = (book) => {
+    setErrors({});
     setEditData(book);
   };
   const handleSaveEdit = async () => {
+    setErrors({});
+    const newErrors = {};
+
+    if (!editData.vendorName) newErrors.vendorName = 'Vendor Name is required';
+    if (!editData.companyName) newErrors.companyName = 'Company Name is required';
+    if (!editData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
+    if (!editData.address) newErrors.address = 'Address is required';
+
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     try {
-      // const response = await axios.put(`http://localhost:4300/user/editVender/${editData.id}`, editData);
       const response = await editVender(`${url.vendorManagement.editVender}${editData.id}`, editData);
 
       const updatedVender = response.data;
@@ -143,7 +155,6 @@ const PolicyManagement = () => {
   };
   const confirmDelete = async () => {
     try {
-      // await axios.delete(`http://localhost:4300/user/deleteVender/${bookToDelete}`);
       await deleteVender(`${url.vendorManagement.delete}${bookToDelete}`);
       // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
@@ -197,7 +208,7 @@ const PolicyManagement = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -215,6 +226,10 @@ const PolicyManagement = () => {
                 onChange={(e) => setEditData({ ...editData, vendorName: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.vendorName}
+                helperText={errors.vendorName}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Company Name"
@@ -222,20 +237,39 @@ const PolicyManagement = () => {
                 onChange={(e) => setEditData({ ...editData, companyName: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.companyName}
+                helperText={errors.companyName}
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 label="Phone Number"
                 value={editData.phoneNumber}
-                onChange={(e) => setEditData({ ...editData, phoneNumber: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Restrict the input to only numbers
+                  if (/^\d*$/.test(value)) {
+                    setEditData({ ...editData, phoneNumber: value });
+                  }
+                }}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.phoneNumber}
+                helperText={errors.phoneNumber}
+                inputProps={{ maxLength: 10 }}
               />
+
               <TextField
                 label="Address"
                 value={editData.address}
                 onChange={(e) => setEditData({ ...editData, address: e.target.value })}
                 fullWidth
                 margin="normal"
+                size="small"
+                error={!!errors.address}
+                helperText={errors.address}
+                inputProps={{ maxLength: 50 }}
               />
               <Button onClick={handleSaveEdit} variant="contained" color="primary">
                 Save

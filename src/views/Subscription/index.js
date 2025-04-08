@@ -51,7 +51,6 @@ const Contact = () => {
 
   const fetchData = async () => {
     try {
-      // const response = await axios.get('http://localhost:4300/user/getSubscription');
 
       const response = await axios.get(url.studentRegister.getSubscription);
       console.log('response>>>>>>>>>>', response);

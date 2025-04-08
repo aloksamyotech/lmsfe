@@ -73,7 +73,7 @@ const ReceiveBook = () => {
   const [allotmentId, setAllotmentId] = useState(null);
 
   const handleOpen = (book) => {
-    setAmount(''); 
+    setAmount('');
     setReason('');
     setFineid(book);
     setOpen(true);
@@ -184,7 +184,7 @@ const ReceiveBook = () => {
     const getAllSubmitBookDetails = async () => {
       try {
         const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
-        //  console.log("submitted diksha ",submitResponse);
+         console.log("submitted diksha ",submitResponse);
         const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => ({
           serial: index + 1,
           id: item?._id,
@@ -192,10 +192,11 @@ const ReceiveBook = () => {
           bookName: item?.bookDetails[0]?.bookName,
           title: item?.paymentDetails[0]?.title,
           amount: item?.paymentDetails[0]?.amount,
+          quantity: item?.books?.quantity,
           bookIssueDate: formatDate(item?.books?.bookIssueDate),
           submissionDate: formatDate(item?.books?.submissionDate)
         }));
-        // console.log('selectedStudentId>>>>>>>', fetchedData);
+        console.log('selectedStudentId>>>>>>>', fetchedData);
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching submit book data:', error);
@@ -212,7 +213,7 @@ const ReceiveBook = () => {
     };
     const fetchReceiveBook = async () => {
       try {
-        const response = await axios.get('http://localhost:4300/user/receiveBook');
+        const  response= await axios.get(url.allotmentManagement.receiveBook)
         // console.log(`response00011 is coming or nott==============>`, response?.data);
         setFetchReceiveBook(response.data.books);
         setFetchReceiveBooks(response.data.books || []);
@@ -446,7 +447,6 @@ const ReceiveBook = () => {
       const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
       console.log('response', response);
 
-      
       const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
         const fineAmount = item?.fineAmount;
@@ -494,7 +494,7 @@ const ReceiveBook = () => {
           <Link href="/" underline="hover" color="inherit">
             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
           </Link>
-          <Link href="/account-profile" underline="hover" color="inherit">
+          <Link href="/dashboard/Receive" underline="hover" color="inherit">
             <h4>Books Management / Receive Book</h4>
           </Link>
         </Breadcrumbs>
@@ -537,27 +537,20 @@ const ReceiveBook = () => {
               <Autocomplete
                 id="studentId"
                 name="studentId"
+                size="small"
                 value={matchedStudents.find((student) => student._id === formik.values.studentId) || null}
                 onChange={(event, newValue) => handleStudentChange(newValue)} // Ensure passing the selected student object
                 options={matchedStudents}
                 getOptionLabel={(option) => option.student_Name}
                 renderInput={(params) => <TextField {...params} variant="outlined" />}
                 isOptionEqualToValue={(option, value) => option._id === value?._id} // Ensure correct matching by ID
-                sx={{ height: '40px' }}
               />
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4} md={4}>
             <FormLabel>Email</FormLabel>
             <FormControl fullWidth>
-              <Select
-                id="email"
-                name="email"
-                value={formik.values.email}
-                disabled
-                onChange={formik.handleChange}
-                sx={{ height: '40px', padding: '25px' }}
-              >
+              <Select id="email" name="email" size="small" value={formik.values.email} disabled onChange={formik.handleChange}>
                 {allData.map((item) => (
                   <MenuItem key={item._id} value={item.email}>
                     {item.email}
@@ -569,13 +562,7 @@ const ReceiveBook = () => {
           <Grid item xs={12} sm={4} md={4}>
             <FormLabel>Book</FormLabel>
             <FormControl fullWidth>
-              <Select
-                id="bookId"
-                name="bookId"
-                value={formik.values.bookId}
-                onChange={formik.handleChange}
-                sx={{ height: '40px', padding: '25px' }}
-              >
+              <Select id="bookId" name="bookId" size="small" value={formik.values.bookId} onChange={formik.handleChange}>
                 {getUniqueBooks(bookData).map((item) => (
                   <MenuItem key={item.bookId} value={item.bookId}>
                     {item?.bookTitle}
@@ -636,6 +623,9 @@ const ReceiveBook = () => {
                     }}
                   >
                     <strong>Submission Date:</strong> {formatDate(book?.submissionDate) || 'Loading...'}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Quantity:</strong> {book?.quantity|| 'Loading...'}
                   </Typography>
                 </Grid>
               </Grid>
@@ -699,6 +689,7 @@ const ReceiveBook = () => {
                     <TextField
                       label="Amount"
                       variant="outlined"
+                      size="small"
                       fullWidth
                       value={amount}
                       onChange={handleAmountChange}
@@ -710,12 +701,14 @@ const ReceiveBook = () => {
                     <TextField
                       label="Reason"
                       variant="outlined"
+                      size="small"
                       fullWidth
                       value={reason}
                       onChange={handleReasonChange}
                       error={reasonError}
                       helperText={reasonHelperText}
                       sx={{ marginBottom: 2 }}
+                      inputProps={{ maxLength: 30 }}
                     />
                   </DialogContent>
                   <DialogActions>

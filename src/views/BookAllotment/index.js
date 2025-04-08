@@ -91,7 +91,6 @@ const Allotment = () => {
     setShowModal(false);
   };
   const fetchCategory = async () => {
-    // const response = await axios.get('http://localhost:4300/user/alotmentsbooks');
     const response = await axios.get(url.bookManagenent.bookmanagementTable);
     console.log('response------------------------', response);
     setCategoryData(response.data.data);
@@ -99,7 +98,7 @@ const Allotment = () => {
 
   const fetchSubscription = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getSubscriptionType');
+      const response = await axios.get(url.subscription.findSubscription);
       setStudentData(response.data?.SubscriptionType);
     } catch (error) {
       console.error('Error fetching SubscriptionType', error);
@@ -113,7 +112,8 @@ const Allotment = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/registerManagement');
+      const response = await axios.get(url.studentRegister.getRegisterManagement);
+
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
 
@@ -130,7 +130,7 @@ const Allotment = () => {
 
   const fetchinvoice = async () => {
     try {
-      const response = await axios.get('http://localhost:4300/user/getdataalocated');
+      const response = await getBookAllotmentHistory(url.bookAllotmentHistory.getdataalocated);
       const formattedData = response.data.response.map((item) => ({
         id: item._id || Math.random().toString(),
         studentName: item.studentName,
@@ -156,12 +156,15 @@ const Allotment = () => {
     fetchinvoice();
   }, []);
   useEffect(() => {
+    const storedCartItems = JSON.parse(localStorage.getItem('librarycart')) || [];
+    setCartItems(storedCartItems);
+    setCartcontextItems(storedCartItems);
+  }, []);
+  useEffect(() => {
     console.log('Cart items----------', cartItems);
     console.log('Cart items length', cartItems.length);
-    setCartcontextItems(cartItems);
     localStorage.setItem('librarycart', JSON.stringify(cartItems));
-
-    // console.log('Cart update successful===============================================>>>>>>>>>>>>>>>>>>>>>');
+    setCartcontextItems(cartItems);
   }, [cartItems, setCartcontextItems]);
   useEffect(() => {
     fetchCategory();
@@ -244,23 +247,30 @@ const Allotment = () => {
     setCartItems([]);
   };
 
-  useEffect(() => {
-    if (submissionType && submissionDate) {
-      const selectedType = studentData.find((type) => type._id === submissionType);
-      setCalculatedAmount(selectedType ? selectedType.amount : 0);
-    } else {
-      setCalculatedAmount(null);
-    }
-  }, [submissionType, submissionDate, studentData]);
+  const handleTypeChange = (event) => {
+    const newType = event.target.value;
+    setSubmissionType(newType);
 
-  const handleDateChange = (event) => {
-    setSubmissionDate(event.target.value);
-    const selectedType = studentData.find((type) => type._id === submissionType);
-    setCalculatedAmount(selectedType ? selectedType.amount : 0);
+    const selectedType = studentData.find((type) => type._id === newType);
+
+    if (selectedType && selectedType.numberOfDays) {
+      const today = new Date();
+      today.setDate(today.getDate() + selectedType.numberOfDays);
+      const autoFilledDate = today.toISOString().split('T')[0];
+
+      setSubmissionDate(autoFilledDate);
+
+      setCalculatedAmount(selectedType.amount);
+    }
   };
 
-  const handleTypeChange = (event) => {
-    setSubmissionType(event.target.value);
+  const handleDateChange = (event) => {
+    const newDate = event.target.value;
+    setSubmissionDate(newDate);
+    if (submissionType) {
+      const selectedType = studentData.find((type) => type._id === submissionType);
+      setCalculatedAmount(selectedType ? selectedType.amount : 0);
+    }
   };
 
   const handleSubmitCart = () => {
@@ -368,12 +378,6 @@ const Allotment = () => {
   //   setCalculatedAmount(null);
   //   console.log('-------------------------------- index page', cartItems);
   // };
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-    if (newValue === 1) {
-      navigate('/dashboard/receive');
-    }
-  };
 
   const filteredProducts = categoryData.filter((product) => product.title.toLowerCase().includes(search.toLowerCase()));
 
@@ -429,51 +433,33 @@ const Allotment = () => {
           <Link href="/" underline="hover" color="inherit">
             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
           </Link>
-          <Link href="/account-profile" underline="hover" color="inherit">
+          <Link href="/dashboard/bookAllotment" underline="hover" color="inherit">
             <h4>Books Management / Allocate Book</h4>
           </Link>
         </Breadcrumbs>
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
 
-      {/* <Tabs value={tabValue} onChange={(event, newValue) => setTabValue(newValue)} sx={{ marginBottom: 2, marginTop: 2 }}>
-        <Tab value={0} label="Allotment" />
-        <Tab value={1} label="Receive " />
-      </Tabs> */}
-
-      {/* <Tabs value={tabValue} onChange={handleTabChange} sx={{ marginBottom: 2, marginTop: 2 }}>
-        <Tab value={0} label="Allotment" />
-        <Tab value={1} label="Receive" />
-      </Tabs> */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        <Tabs value={tabValue} onChange={handleTabChange} sx={{ marginBottom: 2, marginTop: 2 }}>
-          <Tab value={0} label="Allotment" />
-          <Tab value={1} label="Receive" />
-        </Tabs>
-
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            height: '40px',
-            width: '35%',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            marginTop: '25px'
-          }}
-        >
-          <SearchIcon />
-          <InputBase placeholder="Search Product..." sx={{ flex: 1, ml: 1 }} onChange={handleSearch} value={search} />
-        </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          backgroundColor: 'white',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          height: '40px',
+          width: '35%',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          marginTop: '25px'
+        }}
+      >
+        <SearchIcon />
+        <InputBase placeholder="Search Product..." sx={{ flex: 1, ml: 1 }} onChange={handleSearch} value={search} />
       </Box>
 
-      {tabValue === 0 && (
-        <>
-          <Box sx={{ display: 'flex', flexDirection: 'row', mb: 2 }}>
-            <Grid container spacing={4}>
-              {/* <Grid item xs={12} sm={4}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', mb: 2 }}>
+        <Grid container spacing={4}>
+          {/* <Grid item xs={12} sm={4}>
                 <Autocomplete
                   options={students}
                   getOptionLabel={(student) => student.name || ''}
@@ -491,63 +477,10 @@ const Allotment = () => {
                   renderInput={(params) => <TextField {...params} label="Select Email" fullWidth />}
                 />
               </Grid> */}
-            </Grid>
-          </Box>
+        </Grid>
+      </Box>
 
-          {/* <Grid container spacing={2}>
-            <Grid item xs={12} md={9} lg={12}>
-              <Box sx={{ height: '70vh' }}>
-                <Grid container spacing={2}>
-                  {filteredProducts.map((product) => (
-                    <Grid item xs={12} sm={6} md={2} key={product._id}>
-                      <Card
-                        sx={{
-                          transition: 'box-shadow 0.3s, transform 0.3s',
-                          border: '1px solid #ccc',
-                          height: '25vh',
-                          '&:hover': { transform: 'scale(1.05)', boxShadow: 4 },
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => handleAddToCart(product)}
-                      >
-                        <CardMedia
-                          component="img"
-                          image={product.upload_Book ? `http://localhost:4300/${product.upload_Book}` : ''}
-                          sx={{
-                            objectFit: 'cover',
-                            height: '80px',
-                            display: product.upload_Book ? 'block' : 'none' // Hide if no image
-                          }}
-                        />
-
-                        {!product.upload_Book && (
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: '80px',
-                              backgroundColor: '#f0f0f0'
-                            }}
-                          >
-                            <LibraryBooksIcon sx={{ fontSize: '50px', color: '#757575' }} />
-                          </Box>
-                        )}
-
-                        <Box sx={{ p: 2 }}>
-                          <Typography variant="h6">{product.title}</Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {product.author}
-                          </Typography>
-                        </Box>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            </Grid>
-          </Grid> */}
-          <Grid container spacing={2}>
+      {/* <Grid container spacing={2}>
             <Grid item xs={12} md={9} lg={12}>
               <Box sx={{ height: '70vh' }}>
                 <Grid container spacing={2}>
@@ -566,10 +499,12 @@ const Allotment = () => {
                       >
                         <CardMedia
                           component="img"
-                          image={product.upload_Book ? `http://localhost:4300/${product.upload_Book}` : ''}
+                          image={product.upload_Book ? `${url.baseurl.baseurl}${product.upload_Book}` : ''}
                           sx={{
                             objectFit: 'cover',
                             height: '80px',
+                            padding:'5px',
+                            borderRadius: '10px ',
                             display: product.upload_Book ? 'block' : 'none' // Hide if no image
                           }}
                         />
@@ -587,10 +522,9 @@ const Allotment = () => {
                           </Box>
                         )}
 
-                        <Box sx={{ p: 2 }}>
-                          <Typography variant="h6">{product.title}</Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {product.author}
+                        <Box >
+                          <Typography variant="h6" sx={{ fontSize: '10px', marginTop: '7px' }}>
+                            {product.title}
                           </Typography>
                         </Box>
                       </Card>
@@ -599,85 +533,176 @@ const Allotment = () => {
                 </Grid>
               </Box>
             </Grid>
-          </Grid>
+          </Grid> */}
+      <Grid container spacing={0}>
+        {' '}
+        {/* Reduced spacing to 0 */}
+        <Grid item xs={12} md={9} lg={12}>
+          <Box sx={{ height: '70vh' }}>
+            <Grid container spacing={0}>
+              {' '}
+              {/* Reduced spacing to 0 */}
+              {currentBooks.map((product) => (
+                <Grid item xs={12} sm={6} md={2} key={product._id}>
+                  <Card
+                    sx={{
+                      transition: 'box-shadow 0.3s, transform 0.3s',
+                      border: '1px solid #ccc',
+                      height: '25vh',
+                      '&:hover': { transform: 'scale(1.05)', boxShadow: 4 },
+                      cursor: 'pointer',
+                      width: '90%', // Use 100% width to fit the grid
+                      position: 'relative',
+                      margin: '0' // No margin between cards
+                    }}
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    <CardMedia
+                      component="img"
+                      image={product.upload_Book ? `${url.baseurl.baseurl}${product.upload_Book}` : ''}
+                      sx={{
+                        objectFit: 'cover',
+                        height: '80px',
+                        padding: '5px',
+                        borderRadius: '10px',
+                        display: product.upload_Book ? 'block' : 'none' // Hide if no image
+                      }}
+                    />
+                    {!product.upload_Book && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          height: '80px',
+                          backgroundColor: '#f0f0f0'
+                        }}
+                      >
+                        <LibraryBooksIcon sx={{ fontSize: '50px', color: '#757575' }} />
+                      </Box>
+                    )}
 
-          {/* Pagination */}
-          <Stack
-            spacing={2}
-            sx={{
-              mt: 2,
-              display: 'flex',
-              justifyContent: 'flex-end', // Aligns content to the right horizontally
-              alignItems: 'flex-end' // Ensures the Pagination is aligned to the right edge
-            }}
-          >
-            <Pagination
-              count={Math.ceil(filteredProducts.length / booksPerPage)} // Total pages
-              page={currentPage}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </Stack>
+                    <Box sx={{ textAlign: 'center' }}>
+                      {/* Book Title */}
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontSize: '10px',
+                          marginTop: '7px',
+                          display: 'inline-block'
+                        }}
+                      >
+                        {product.bookName}
+                      </Typography>
 
-          <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-            <DialogTitle>Enter Submission Details</DialogTitle>
-            <DialogContent>
-              <FormControl fullWidth sx={{ marginBottom: 2 }}>
-                <FormLabel>Submission Type</FormLabel>
-                <Select value={submissionType} onChange={handleTypeChange} label="Submission Type">
-                  {studentData.length > 0 &&
-                    studentData.map((type) => (
-                      <MenuItem key={type._id} value={type._id}>
-                        {type.title}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              <FormLabel>Submission Date</FormLabel>
-              <TextField
-                type="date"
-                inputProps={{
-                  min: new Date().toISOString().split('T')[0]
-                }}
-                value={submissionDate}
-                onChange={handleDateChange}
-                label=""
-                fullWidth
-                variant="outlined"
-                sx={{ marginBottom: 2 }}
-              />
+                      {/* Show Book Quantity or Out of Stock */}
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center', // Horizontally centers the Typography
+                          alignItems: 'center', // Vertically centers the Typography
+                          height: '100%' // Ensures it takes the full height of the container
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontSize: '12px',
+                            color: product.bookQuantity === 0 ? 'red' : 'green',
+                            fontWeight: product.bookQuantity === 0 ? 'bold' : 'normal'
+                          }}
+                        >
+                          {product.bookQuantity === 0 ? 'Out of Stock' : `In Stock: ${product.bookQuantity}`}
+                        </Typography>
+                      </Box>
+                    </Box>
 
-              <Typography variant="h6" color="primary">
-                Amount: ₹{calculatedAmount}
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenModal(false)} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handleSubmitCart} color="primary">
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      )}
-      {/* {tabValue === 1 && (
-        <TableContainer component={Paper}>
-          <Box width="100%" mt={3}>
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
-              <DataGrid
-                rows={studentss}
-                columns={columns}
-                checkboxSelection
-                getRowId={(row) => row.id}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{ toolbar: { showQuickFilter: true } }}
-              />
-            </Card>
+                    {/* You can also add an overlay if the book is out of stock */}
+                    {product.bookQuantity === 0 && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '0',
+                          left: '0',
+                          right: '0',
+                          bottom: '0',
+                          // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                          color: 'white',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderRadius: '10px'
+                        }}
+                      ></Box>
+                    )}
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
           </Box>
-        </TableContainer>
-      )} */}
+        </Grid>
+      </Grid>
+
+      {/* Pagination */}
+      <Stack
+        spacing={2}
+        sx={{
+          mt: 2,
+          display: 'flex',
+          justifyContent: 'flex-end', // Aligns content to the right horizontally
+          alignItems: 'flex-end' // Ensures the Pagination is aligned to the right edge
+        }}
+      >
+        <Pagination
+          count={Math.ceil(filteredProducts.length / booksPerPage)} // Total pages
+          page={currentPage}
+          onChange={handlePageChange}
+          color="primary"
+        />
+      </Stack>
+
+      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+        <DialogTitle>Enter Submission Details</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth sx={{ marginBottom: 2 }}>
+            <FormLabel>Submission Type</FormLabel>
+            <Select value={submissionType} onChange={handleTypeChange} label="Submission Type" size="small">
+              {studentData.length > 0 &&
+                studentData.map((type) => (
+                  <MenuItem key={type._id} value={type._id}>
+                    {type.title}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+          <FormLabel>Submission Date</FormLabel>
+          <TextField
+            type="date"
+            inputProps={{
+              min: new Date().toISOString().split('T')[0]
+            }}
+            value={submissionDate}
+            onChange={handleDateChange}
+            label=""
+            fullWidth
+            variant="outlined"
+            sx={{ marginBottom: 2 }}
+            size="small"
+          />
+
+          <Typography variant="h6" color="primary" sx={{ fontSize: '18px' }}>
+            Amount: ₹{calculatedAmount}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenModal(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmitCart} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <div>
         <BooksModal show={showModal} handleClose={handleCloseModal} books={selectedBooks} studentName={studentName} />

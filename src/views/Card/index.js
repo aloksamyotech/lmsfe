@@ -10,7 +10,8 @@ const ProfileCard = ({ name, role, img, onClick }) => {
   return (
     <Card
       sx={{
-        width: '100%',
+        width: '60%',
+        height: '80%',
         marginTop: 4,
         borderRadius: 2,
         overflow: 'hidden',
@@ -28,13 +29,13 @@ const ProfileCard = ({ name, role, img, onClick }) => {
       role="button"
       tabIndex={0}
     >
-      <CardMedia component="img" height="250" image={img} alt={`${name} background`} />
-      <CardContent sx={{ textAlign: 'center' }}>
+      <CardMedia component="img" height="100" padding="5" image={img} alt={`${name} background`} />
+      <CardContent sx={{ textAlign: 'center', marginTop:'-15px' }}>
         <Typography variant="h6" component="div">
           {name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {role}
+          {/* {role} */}
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 2 }}>
           <Facebook sx={{ color: '#3b5998', cursor: 'pointer' }} />
@@ -52,15 +53,13 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      // const response = await axios.get('http://localhost:4300/user/bookManagement/');
-      const  response =await axios.get(url.allotmentManagement.trendingBooks);
+      const response = await axios.get(url.allotmentManagement.trendingBooks);
       // console.log("response ---------", response)
-      const fetchedData = response?.data?.data?.map((item) =>  ({
+      const fetchedData = response?.data?.data?.map((item) => ({
         id: item.bookId,
         name: item.title,
         role: item.author,
-        img: item.img ? `http://localhost:4300/${item.img}` : defaultBook
-        // img: item.upload_Book ? `${url}${item.upload_Book}` : defaultBook
+        img: item.img ? `${url.baseurl.baseurl}${item.img}` : defaultBook
       }));
       // console.log(fetchedData);
       setData(fetchedData);

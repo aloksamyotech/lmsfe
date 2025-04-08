@@ -27,7 +27,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Google from 'assets/images/icons/social-google.svg';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
+import { url } from 'core/url';
+import {admin} from 'core/helperFurtion';
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
@@ -58,9 +59,8 @@ const FirebaseLogin = ({ ...others }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            const response = await axios.post('http://localhost:4300/user/login', values);
+            const response=await axios.post (url.admin.login , values)
             console.log('resppppppppppppppppp', response);
-
             if (response?.status === 200) {
               console.log('Response:', response?.data?.message);
               if (response?.data?.message === 'Password Not Match') {

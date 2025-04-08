@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { FormControl, FormHelperText, FormLabel, Grid, MenuItem, Select, TextField } from '@mui/material';
@@ -23,8 +24,8 @@ const AddPolicy = (props) => {
 
   // -----------  validationSchema
   const validationSchema = yup.object({
-    vendorName: yup.string().required('Book Title is required'),
-    companyName: yup.string().required('Book Title is required'),
+    vendorName: yup.string().required('vendor Name is required'),
+    companyName: yup.string().required('Company Name is required'),
     address: yup.string().required('Address is required'),
     phoneNumber: yup
       .string()
@@ -47,7 +48,6 @@ const AddPolicy = (props) => {
 
     onSubmit: async (values) => {
       try {
-        // const response = await axios.post('http://localhost:4300/user/addVenderBook', values);
         const response = await addVender(url.vendorManagement.addVender, values);
 
         console.log('Form submitted successfully:', response);
@@ -61,7 +61,11 @@ const AddPolicy = (props) => {
       handleClose();
     }
   });
-
+  useEffect(() => {
+    if (open) {
+      formik.resetForm();
+    }
+  }, [open]);
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -92,7 +96,7 @@ const AddPolicy = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.vendorName && Boolean(formik.errors.vendorName)}
                     helperText={formik.touched.vendorName && formik.errors.vendorName}
-                    inputProps={{ maxLength: 50 }}
+                    inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
@@ -106,7 +110,7 @@ const AddPolicy = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.companyName && Boolean(formik.errors.companyName)}
                     helperText={formik.touched.companyName && formik.errors.companyName}
-                    inputProps={{ maxLength: 50 }}
+                    inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
@@ -128,14 +132,13 @@ const AddPolicy = (props) => {
                   <FormLabel>Phone Number</FormLabel>
                   <TextField
                     name="phoneNumber"
-                    type="number"
+                    type="text" // Use "text" instead of "number"
                     size="small"
-                    fullWidth
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
                     error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
                     helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                    inputProps={{ maxLength: 10 }}
+                    inputProps={{ maxLength: 10 }} // This will limit input to 10 characters
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
@@ -163,7 +166,7 @@ const AddPolicy = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.address && Boolean(formik.errors.address)}
                     helperText={formik.touched.address && formik.errors.address}
-                    inputProps={{ maxLength: 100 }}
+                    inputProps={{ maxLength: 50 }}
                   />
                 </Grid>
               </Grid>

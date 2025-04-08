@@ -63,11 +63,11 @@ const View = () => {
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
-    {
-      field: 'paymentType',
-      headerName: 'Payment Type',
-      flex: 1
-    },
+    // {
+    //   field: 'paymentType',
+    //   headerName: 'Payment Type',
+    //   flex: 1
+    // },
     {
       field: 'amount',
       headerName: 'Amount',
@@ -79,23 +79,36 @@ const View = () => {
       flex: 1
     },
     {
+      field:'time',
+      headerName:'Issue Time',
+      flex:1
+    },
+    {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 1
+    },
+    {
+      field: 'isSubmit',
+      headerName: 'Status',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => {
+        const isSubmitted = params.value; // Get the value (true/false)
+    
+        return (
+          <Typography
+            sx={{
+              color: isSubmitted ? 'green' : 'red',  // Green if true, red if false
+              fontWeight: isSubmitted ? 'bold' : 'normal',  // Bold if true, normal if false
+            }}
+          >
+            {isSubmitted ? 'Submitted' : 'Not Submitted'}  {/* Display text based on value */}
+          </Typography>
+        );
+      }
     }
-
-    // {
-    //   field: 'invoice',
-    //   headerName: 'Invoice',
-    //   flex: 1,
-    //   renderCell: (params) => (
-    //     <div>
-    //       <Button color="primary" onClick={() => handleInvoice(params.row)} style={{ margin: '-9px' }}>
-    //         <ReceiptIcon />
-    //       </Button>
-    //     </div>
-    //   )
-    // }
   ];
 
   const formatDate = (dateString) => {
@@ -115,7 +128,6 @@ const View = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:4300/user/editRegister/${editData.id}`, editData);
       // console.log('Data', response);
 
       const updatedRegister = response.data;
@@ -132,7 +144,6 @@ const View = () => {
 
   const confirmDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4300/user/deleteRegister/${id}`);
       setData((prevData) => prevData.filter((register) => register.id !== id));
     } catch (error) {
       // console.error('Error deleting Register:', error);
@@ -163,7 +174,6 @@ const View = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-        // const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
 
         const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
         
@@ -191,67 +201,47 @@ const View = () => {
     setId(extractedId);
     const fetchData = async () => {
       try {
-        // console.log('findHistoryBookAllotmentUser');
-        // const response = await axios.get(`http://localhost:4300/user/findHistoryBookAllotmentUser/${extractedId}`);
-
+        // Fetch data from API
         const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
-        // console.log('findHistoryBookAllotmentUser----------', response);
-        const fetchedData = response?.data?.map((item) => ({
-          id: item._id,
-          bookName: item.books?.[0]?.bookId?.bookName,  
-          student_Name: item.studentId?.student_Name,  
-          paymentType: item.paymentType?.title,  
-          amount: item.books?.[0]?.amount,  
-          bookIssueDate: formatDate(item.books?.[0]?.bookIssueDate),  
-          submissionDate: formatDate(item.books?.[0]?.submissionDate) 
-        }));
-
+        console.log('findHistoryBookAllotmentUser----------', response);
+    
+        const fetchedData = response?.data?.map((item) => {
+          const dateObj = new Date(item.createdAt);
+          const istTime = dateObj.toLocaleTimeString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true, 
+          });
+    
+          const quantity = item.books?.[0]?.quantity || 1;
+          const amountPerBook = item.books?.[0]?.amount || 0;
+          const totalAmount = quantity > 0 ? quantity * amountPerBook : 0;
+    
+          return {
+            id: item._id,
+            bookName: item.books?.[0]?.bookId?.bookName,
+            student_Name: item.studentId?.student_Name,
+            paymentType: item.paymentType?.title,
+            amount: totalAmount,  // Calculate total amount (quantity * amount)
+            bookIssueDate: formatDate(item.books?.[0]?.bookIssueDate),
+            submissionDate: formatDate(item.books?.[0]?.submissionDate),
+            time: istTime, 
+            quantity: item.books?.[0]?.quantity,  // Corrected here
+            isSubmit: item.books?.[0]?.submit, 
+          };
+        });
+    
+        // Set the data state
         setData(fetchedData);
       } catch (error) {
-        // console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
-  //       console.log('Student ', response);
-  //       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
-  //         id: item._id,
-  //         student_id: item.student_id,
-  //         student_Name: item.student_Name,
-  //         email: item.email,
-  //         mobile_Number: item.mobile_Number,
-  //         register_Date: formatDate(item.register_Date)
-  //       }));
-  //       setData(fetchedData);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   const fetchStudentData = async () => {
-  //     try {
-  //       console.log('Student Data........');
-
-  //       const response = await axios.get(`http://localhost:4300/user/viewBookAllotmentUser/${extractedId}`);
-  //       console.log('Student ', response);
-
-  //       setStudentData(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching student data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  //   fetchStudentData();
-  // }, []);
-
-  // console.log(`allData`, allData?.user?.email);
+  
   return (
     <>
       <Box
@@ -281,7 +271,7 @@ const View = () => {
       <Container>
         <Card></Card>
         <Paper
-          elevation={4}
+          // elevation={4}
           style={{
             padding: '20px',
             display: 'flex',
@@ -322,7 +312,7 @@ const View = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

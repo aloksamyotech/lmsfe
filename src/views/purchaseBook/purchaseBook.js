@@ -30,7 +30,7 @@ const validationSchema = yup.object({
     .max(1000, 'Quantity cannot exceed 1000'),
   price: yup.number().required('Price is required').positive('Price must be a positive number').min(0.1, 'Price must be at least 0.1'),
   // totalPrice: yup.number().required('Total Price is required').positive('Total price must be positive'),
-  bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters')
+  bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters').required('Comment is required')
 });
 
 const AddPurchaseBook = (props) => {
@@ -54,7 +54,6 @@ const AddPurchaseBook = (props) => {
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
       try {
-        // const response = await axios.post('http://localhost:4300/user/purchaseBook', values);
         const response = await purchaseBook(url.purchaseBook.purchaseBook, values);
 
         console.log('Form submitted successfully>>>>>>>:', response);
@@ -73,10 +72,9 @@ const AddPurchaseBook = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/bookManagement');
 
         // const response = await getBookManagement(url.bookManagenent.bookManagement);
-        const response=await axios.get(url.bookManagenent.bookmanagementTable)
+        const response = await axios.get(url.bookManagenent.bookmanagementTable);
         console.log('Fetched Book Data:', response.data);
         setBookData(response.data?.data);
       } catch (error) {
@@ -86,7 +84,6 @@ const AddPurchaseBook = (props) => {
 
     const fetchVendor = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/venderManagement');
 
         const response = await viewVender(url.vendorManagement.viewVender);
         // console.log('Vendor Data:', response);
@@ -98,7 +95,6 @@ const AddPurchaseBook = (props) => {
 
     const fetchPublisher = async () => {
       try {
-        // const response = await axios.get('http://localhost:4300/user/getPublications');
 
         const response = await getPublications(url.publications.getPublications);
         // console.log('Publisher Data:', response);
@@ -112,7 +108,7 @@ const AddPurchaseBook = (props) => {
     fetchVendor();
     fetchPublisher();
   }, []);
-  
+
   const handleQuantityPriceChange = (field, value) => {
     const newValue = value === '' ? '' : value.replace(/[^0-9.]/g, '');
     formik.setFieldValue(field, newValue);
@@ -125,7 +121,11 @@ const AddPurchaseBook = (props) => {
       formik.setFieldValue('totalPrice', totalPrice);
     }
   };
-
+  useEffect(() => {
+    if (open) {
+      formik.resetForm();
+    }
+  }, [open]);
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -143,6 +143,7 @@ const AddPurchaseBook = (props) => {
                     <Autocomplete
                       id="bookId"
                       name="bookId"
+                      size="small"
                       value={bookData.find((book) => book._id === formik.values.bookId) || null}
                       onChange={(event, newValue) => formik.setFieldValue('bookId', newValue ? newValue._id : '')}
                       options={bookData}
@@ -164,6 +165,7 @@ const AddPurchaseBook = (props) => {
                     <Autocomplete
                       id="vendorId"
                       name="vendorId"
+                      size="small"
                       value={studentData.find((item) => item._id === formik.values.vendorId) || null}
                       onChange={(event, newValue) => formik.setFieldValue('vendorId', newValue?._id || '')}
                       options={studentData}
@@ -191,8 +193,7 @@ const AddPurchaseBook = (props) => {
                     value={formik.values.bookIssueDate}
                     onChange={formik.handleChange}
                     inputProps={{
-                      min: new Date().toISOString().slice(0, 10),
-                      style: { height: '30px' }
+                      min: new Date().toISOString().slice(0, 10)
                     }}
                   />
                 </Grid>
@@ -208,8 +209,7 @@ const AddPurchaseBook = (props) => {
                     onChange={(e) => handleQuantityPriceChange('quantity', e.target.value)}
                     error={formik.touched.quantity && Boolean(formik.errors.quantity)}
                     helperText={formik.touched.quantity && formik.errors.quantity}
-                    inputProps={{ maxLength: 5 }}
-                    InputProps={{ style: { height: '50px' } }}
+                    inputProps={{ maxLength: 3 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={5} md={5}>
@@ -224,7 +224,6 @@ const AddPurchaseBook = (props) => {
                     error={formik.touched.price && Boolean(formik.errors.price)}
                     helperText={formik.touched.price && formik.errors.price}
                     inputProps={{ maxLength: 5 }}
-                    InputProps={{ style: { height: '50px' } }}
                   />
                 </Grid>
 
@@ -239,7 +238,6 @@ const AddPurchaseBook = (props) => {
                     error={formik.touched.totalPrice && Boolean(formik.errors.totalPrice)}
                     helperText={formik.touched.totalPrice && formik.errors.totalPrice}
                     inputProps={{ maxLength: 5 }}
-                    InputProps={{ style: { height: '50px' } }}
                     disabled
                   />
                 </Grid>
