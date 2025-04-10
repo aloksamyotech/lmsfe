@@ -107,11 +107,9 @@ const FinePerDay = () => {
     };
 
     const fetchAllStudents = async () => {
-      console.log('HRitik ..........');
 
       try {
         const response = await axios.get(url.fine.getAllFineBooks);
-        console.log('response>>>>>>>>', response?.data);
 
         setAllData(response?.data);
         const fetchedData = response?.data?.map((item) => ({
@@ -143,7 +141,6 @@ const FinePerDay = () => {
 
   const handleStudentChange = async (event) => {
     const selectedStudentId = event.target.value;
-    console.log(`selectedStudentId`, selectedStudentId);
 
     setSelectedStudentId(selectedStudentId);
     formik.setFieldValue('studentId', selectedStudentId);
@@ -156,7 +153,6 @@ const FinePerDay = () => {
     try {
       const fineResponse = await axios.get(`${url.fine.getFineBook}${selectedStudentId}`);
 
-      console.log(`Fine Response`, fineResponse?.data);
 
       const fetchedData = fineResponse?.data?.map((item) => ({
         id: item._id,
@@ -176,10 +172,6 @@ const FinePerDay = () => {
 
     formik.handleChange(event);
   };
-
-  // function refreshPage() {
-  //   window.location.reload();
-  // }
   useEffect(() => {
     if (selectedStudentId) {
       const filteredBooks = fetchReceiveBook.filter((receiveBookItem) => receiveBookItem.studentId === selectedStudentId);
@@ -193,17 +185,14 @@ const FinePerDay = () => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
   };
   const handleRemove = async (bookId) => {
-    console.log('submit click>>>>>', bookId);
 
     try {
       setLoading(true);
 
       const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
-      console.log('removeResponse', removeResponse);
 
       toast.success('Book removed successfully');
 
-      // window.location.reload();
       setLoading(false);
     } catch (error) {
       console.error('Error:', error);
@@ -212,9 +201,7 @@ const FinePerDay = () => {
     }
 
     const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
-    console.log('submitResponse', submitResponse);
 
-    // toast.success('Book submitted successfully');
   };
   return (
     <Container>

@@ -1,14 +1,24 @@
 import React from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
 import { url } from 'core/url';
 import { allotmentManagement } from 'core/helperFurtion';
+import { fetchCurrency } from 'core/comman';
+
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
   const navigate = useNavigate();
   const { setCartcontextItems } = useCart();
-
+  const [currencySymbol, setCurrencySymbol] = useState('');
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const handleCreateInvoice = async () => {
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
@@ -30,17 +40,12 @@ const CartSummary = ({ summaryData }) => {
       });
       if (response.ok) {
         const result = await response.json();
-        console.log('response===============>', result.allotmentId);
 
-        console.log('Books allotted successfully:', result);
         setCartcontextItems([]);
         localStorage.setItem('librarycart', JSON.stringify([]));
-        // navigate(`/dashboard/invoice/${result.allotment.studentId}`, {
-        //   state: { invoiceData, cartItems, studentName, studentEmail, totalAmount }
-        // });
         navigate(`/dashboard/bookAllotmentInvoice/${result.allotment._id}`, {
           state: {
-            allotmentId: result.allotment._id,  // Pass the allotmentId here
+            allotmentId: result.allotment._id,
             invoiceData,
             cartItems,
             studentName,
@@ -100,7 +105,7 @@ const CartSummary = ({ summaryData }) => {
                   <Typography variant="body2">{item.quantity || 0}</Typography>
                 </TableCell>
                 <TableCell sx={{ padding: 1 }}>
-                  <Typography variant="body2">₹{(item.amount || 0).toFixed(2)}</Typography>
+                  <Typography variant="body2">{currencySymbol}{(item.amount || 0).toFixed(2)}</Typography>
                 </TableCell>
                 <TableCell sx={{ padding: 1 }}>
                   <Typography variant="body2">{item.submissionTypeName || 'N/A'}</Typography>

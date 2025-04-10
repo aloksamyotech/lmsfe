@@ -12,6 +12,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddSubscription from './addSubscriptionType';
 import { url } from 'core/url';
+import { fetchCurrency } from 'core/comman';
+
 import { deleteSubscription, findSubscription, updateSubscription } from 'core/helperFurtion';
 
 const SubscriptType = () => {
@@ -23,9 +25,16 @@ const SubscriptType = () => {
   const [errors, setErrors] = useState({});
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
+  const [currencySymbol, setCurrencySymbol] = useState('');
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
 
   useEffect(() => {
     const url = window.location.href;
@@ -48,10 +57,13 @@ const SubscriptType = () => {
     {
       field: 'amount',
       headerName: 'Amount',
-      flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
-      align: 'center',
-      headerAlign: 'center'
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
     },
     {
       field: 'discount',
@@ -92,9 +104,7 @@ const SubscriptType = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(url.subscription.findSubscription);
-      // const response = await findSubscription(url.subscription.findSub);
 
-      console.log('response>>>>>>>>>', response);
 
       const fetchedData = response?.data?.SubscriptionType?.map((item) => ({
         id: item._id,
@@ -144,7 +154,6 @@ const SubscriptType = () => {
     try {
 
       const response = await axios.put(`${url.subscription.update}${editData.id}`, editData);
-      console.log('Data', response);
       const updatedBook = response.data;
       setData((prevData) =>
         prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item))
@@ -165,11 +174,9 @@ const SubscriptType = () => {
 
   const confirmDelete = async () => {
     try {
-      console.log('delete API...');
 
 
       await axios.delete(`${url.subscription.delete}${bookToDelete}`);
-      // await deleteSubscription(`${url.subscription.delete}${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);
@@ -226,7 +233,6 @@ const SubscriptType = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

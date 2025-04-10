@@ -10,17 +10,25 @@ import { Box, Card, Paper, TableContainer } from '@mui/material';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import IconButton from '@mui/material/IconButton';
 import { url } from 'core/url';
+import { fetchCurrency } from 'core/comman';
 import { getBookAllotmentHistory } from 'core/helperFurtion';
 const History = ({ allotmentId }) => {
   const [students, setStudents] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [studentName, setStudentName] = useState('');
-  const navigate = useNavigate();
+  const [currencySymbol, setCurrencySymbol] = useState('');
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const fetchData = async () => {
     try {
       const response = await getBookAllotmentHistory(url.bookAllotmentHistory.getdataalocated);
-      console.log('response-----', response);
       const formattedData = response.data.response.map((item) => ({
         id: item._id || Math.random().toString(),
         studentName: item.studentName,
@@ -42,15 +50,11 @@ const History = ({ allotmentId }) => {
   }, []);
 
   const handleGenerateInvoice = (row) => {
-    // Make sure row.allotmentId exists and is valid
     const allotmentId = row.allotmentId;
 
-    // Ensure you are passing the correct allotmentId in the state
     navigate(`/dashboard/bookAllotmentInvoice/${allotmentId}`, {
-      state: { allotmentId } // Sending allotmentId in state
+      state: { allotmentId }
     });
-
-    console.log('Allotment ID:------- ', allotmentId); // Check if it logs the correct value
   };
   const columns = [
     {
@@ -72,10 +76,15 @@ const History = ({ allotmentId }) => {
     },
     {
       field: 'totalAmount',
-      headerName: 'Paid Amount',
-      flex: 1
+      headerName: 'Total Amount',
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
     },
-
     {
       field: 'generateInvoice',
       headerName: 'Generate Invoice',
@@ -86,7 +95,6 @@ const History = ({ allotmentId }) => {
         <IconButton
           style={{
             color: '#007bff',
-            // backgroundColor: '#f0f0f0',
             borderRadius: '50%',
             padding: '8px'
           }}

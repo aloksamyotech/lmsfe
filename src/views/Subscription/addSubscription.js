@@ -20,29 +20,22 @@ const AddRegister = (props) => {
   const { open, handleClose, fetchData } = props;
   const userid = localStorage.getItem('user_id');
 
-  // -----------  validationSchema
   const validationSchema = yup.object({
-    // student_id: yup.string().required('Student is required'),
     student_Name: yup
       .string()
-      // .matches(/^[a-zA-Z]+$/, 'Only characters are allowed')
       .required('Student Name is required'),
     email: yup.string().email('Invalid email').required('Email is required'),
     mobile_Number: yup
       .string()
       .matches(/^[0-9]{10}$/, 'Phone number is invalid')
       .required('Phone number is required'),
-    // select_identity: yup.string().required('Select Identity is required'),
     select_identity: yup.string().required('Select Identity is required'),
-    // upload_identity: yup.mixed().required('Student identity image is required'),
-    //  yup.string(),
     register_Date: yup.string().required('Register Date is required'),
     upload_identity: yup.mixed().required('Select a file to upload')
   });
 
   const formik = useFormik({
     initialValues: {
-      // student_id: '',
       student_Name: '',
       email: '',
       mobile_Number: '',
@@ -53,8 +46,6 @@ const AddRegister = (props) => {
     validationSchema,
 
     onSubmit: async (values) => {
-      console.log('on submit');
-      console.log(`values`, values);
 
       const formData = new FormData();
       formData.append('student_id', values.student_id);
@@ -66,14 +57,12 @@ const AddRegister = (props) => {
       formData.append('register_Date', values.register_Date);
 
       try {
-        console.log('try bolck');
 
         const response = await axios.post(url.studentRegister.a, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log('Form submitted successfully:', response);
         toast.success('Register details added successfully');
         fetchData();
         handleClose();

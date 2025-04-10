@@ -23,20 +23,12 @@ import { useLocation } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
 import { url } from 'core/url';
+import { fetchCurrency } from 'core/comman';
 
 const ReceiveInvoice = () => {
   const location = useLocation();
   const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
-  // console.log('Location State:', location.state);
-
-  
-  // console.log('Received Row Data:', rowData);
-  
-  // const student_Id =  rowData?.student_id;
-  // const book_Id = rowData?.id;
-  // console.log('Received book id :', book_Id);
-  // console.log('Received student id :', student_Id);
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
   const [allItemData, setAllItemData] = useState([]);
@@ -56,8 +48,16 @@ const ReceiveInvoice = () => {
   const [allFineData, setAllFineData] = useState([]);
   const [amount, setAmount] = useState();
   const [allotmentId, setAllotmentId] = useState([]);
-  const containerRef = useRef();
+  const [currencySymbol, setCurrencySymbol] = useState('');
 
+  const containerRef = useRef();
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -67,13 +67,12 @@ const ReceiveInvoice = () => {
   };
   const fetchData = async () => {
     const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
-    // console.log('Invoice Data ----------', response?.data?._id);
 
     const allotmentId = response?.data?._id;
     setAllotmentId(allotmentId);
     const studentId = response?.data?.studentId?._id;
 
-    const bookId = response?.data?.books?.[0]?._id; // Assuming books is an array, accessing first element.
+    const bookId = response?.data?.books?.[0]?._id; 
 
     const student_Name = response?.data?.studentId?.student_Name;
     setStudentName(student_Name);
@@ -111,11 +110,7 @@ const ReceiveInvoice = () => {
     setBookQuantity(quantity);
 
     try {
-      // const response = await axios.get(`${url.fine.findFine}${studentId}/${bookId}`);
-
-      // console.log(`Fine data  >>>>>>>>`, response?.data);
       const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
-      //  console.log("99999999999999999999", response);
       const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
         const fineAmount = item?.fineAmount;
@@ -125,10 +120,8 @@ const ReceiveInvoice = () => {
       const amount = fine.reduce((total, item) => total + item.fineAmount, 0);
       setAmount(amount);
       setAllFineData(fine);
-      console.log('fine>>>>>>>>', fine);
-      console.log('Total Fine Amount: ', amount);
     } catch (error) {
-      console.log(`error`, error);
+      console.error(`error`, error);
     }
   };
 
@@ -293,10 +286,9 @@ const ReceiveInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Subscription Price:
               </Typography>
-              <Typography variant="body2">{`₹${studentAmount}` || '₹0'}</Typography>
+              <Typography variant="body2">{`${currencySymbol}${studentAmount}` || `${currencySymbol}0.00`}</Typography>
             </Grid>
 
-            {/* Fine Details within Payment Section */}
             <Typography variant="h4" mb={3} mt={3}>
               Fine Details
             </Typography>
@@ -315,7 +307,9 @@ const ReceiveInvoice = () => {
                         <Typography variant="body1" fontWeight="bold">
                           Fine Amount:
                         </Typography>
-                        <Typography variant="body2">{item.fineAmount ? `₹${item.fineAmount}` : '₹0'}</Typography>
+                        <Typography variant="body2">
+                          {item.fineAmount ? `${currencySymbol}${item.fineAmount}` : `${currencySymbol}0.00`}
+                        </Typography>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -332,9 +326,10 @@ const ReceiveInvoice = () => {
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-                {`₹${(studentAmount * (bookQuantity || 1) + allFineData?.reduce((acc, item) => acc + (item.fineAmount || 0), 0)).toFixed(
-                  2
-                )}` || `₹0.00`}
+                {`${currencySymbol}${(
+                  studentAmount * (bookQuantity || 1) +
+                  allFineData?.reduce((acc, item) => acc + (item.fineAmount || 0), 0)
+                ).toFixed(2)}` || `${currencySymbol}0.00`}
               </Typography>
             </Grid>
           </Grid>

@@ -41,7 +41,6 @@ const Contact = () => {
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
 
@@ -104,7 +103,6 @@ const Contact = () => {
     try {
 
       const response = await getMarkFavorite(url.studentRegister.getMarkFavorite);
-      console.log('response', response);
       const fetchedData = response?.data?.students?.map((item) => ({
         id: item._id,
         student_id: item.student_id,
@@ -115,7 +113,6 @@ const Contact = () => {
       }));
 
       setData(fetchedData);
-      console.log('fetchedData', fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -149,13 +146,10 @@ const Contact = () => {
     setOpenDeleteDialog(false);
   };
   const handleFavorite = async (student) => {
-    console.log(`click on like`);
     try {
-      console.log('Student ID', student);
 
 
       const response = await markFavorite(`${url.studentRegister.markFavorite}${student}`);
-      console.log('Favorite response>>>>>>>-------', response);
       const updatedStudent = response.data.student;
 
       if (response) {

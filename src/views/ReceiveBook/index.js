@@ -35,7 +35,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { allotmentManagement } from 'core/helperFurtion';
-// import Button from '@mui/material/Button';
+import { fetchCurrency } from 'core/comman';
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
@@ -71,7 +71,15 @@ const ReceiveBook = () => {
   const [allFineData, setAllFineData] = useState([]);
   const [fineid, setFineid] = useState([]);
   const [allotmentId, setAllotmentId] = useState(null);
+  const [currencySymbol, setCurrencySymbol] = useState('');
 
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const handleOpen = (book) => {
     setAmount('');
     setReason('');
@@ -105,7 +113,13 @@ const ReceiveBook = () => {
     {
       field: 'amount',
       headerName: 'Amount',
-      flex: 1
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
     },
     {
       field: 'bookIssueDate',
@@ -178,13 +192,11 @@ const ReceiveBook = () => {
     const parts = url.split('/');
     const extractedId = parts[parts.length - 1];
     setStudentId(extractedId);
-    // getBookAllotmentData();
   }, []);
   useEffect(() => {
     const getAllSubmitBookDetails = async () => {
       try {
         const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
-         console.log("submitted diksha ",submitResponse);
         const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => ({
           serial: index + 1,
           id: item?._id,
@@ -196,7 +208,6 @@ const ReceiveBook = () => {
           bookIssueDate: formatDate(item?.books?.bookIssueDate),
           submissionDate: formatDate(item?.books?.submissionDate)
         }));
-        console.log('selectedStudentId>>>>>>>', fetchedData);
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching submit book data:', error);
@@ -208,18 +219,14 @@ const ReceiveBook = () => {
         const response = await axios.get(url.subscription.findSubscription);
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
-        // console.error('Error fetching SubscriptionType', error);
+        console.error('Error fetching SubscriptionType', error);
       }
     };
     const fetchReceiveBook = async () => {
       try {
-        const  response= await axios.get(url.allotmentManagement.receiveBook)
-        // console.log(`response00011 is coming or nott==============>`, response?.data);
+        const response = await axios.get(url.allotmentManagement.receiveBook);
         setFetchReceiveBook(response.data.books);
         setFetchReceiveBooks(response.data.books || []);
-        // console.log('response data =======>', response.data.books);
-
-        // console.log('fetchReaciverBook is coming after sate in=========>', fetchReceiveBook);
       } catch (error) {
         console.error('Error fetching Receive Book', error);
       }
@@ -305,33 +312,6 @@ const ReceiveBook = () => {
       }
     }
   });
-  // const handleStudentChange = async (event) => {
-  //   console.log('handlestudent changes function calling ---');
-  //   const selectedStudentId = event.target.value;
-
-  //   setSelectedStudentId(selectedStudentId);
-  //   console.log('selecteed student ', selectedStudentId);
-  //   formik.setFieldValue('studentId', selectedStudentId);
-  //   const selectedStudent = allData.find((student) => student._id === selectedStudentId);
-  //   if (selectedStudent) {
-  //     formik.setFieldValue('email', selectedStudent.email);
-  //   }
-  //   try {
-  //     const submitResponse = await axios.get(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
-  //     const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
-  //       id: item._id,
-  //       student_Name: item?.studentDetails?.[0]?.student_Name,
-  //       title: item?.paymentDetails?.[0]?.title,
-  //       amount: item?.paymentDetails?.[0]?.amount,
-  //       bookIssueDate: formatDate(item?.bookIssueDate),
-  //       submissionDate: formatDate(item?.submissionDate)
-  //     }));
-  //     setData(fetchedData);
-  //   } catch (error) {
-  //     console.error('Error fetching submit book data:', error);
-  //   }
-  //   formik.handleChange(event);
-  // };
   const handleStudentChange = async (newValue) => {
     if (!newValue) {
       console.error('No student selected');
@@ -368,22 +348,15 @@ const ReceiveBook = () => {
   }
   useEffect(() => {
     if (selectedStudentId) {
-      // console.log('selected student is is===========>', selectedStudentId);
-
       const filteredBooks = booksss.filter((receiveBookItem) => receiveBookItem.student.studentId === selectedStudentId);
-      console.log(`filteredBooks is coming or nottt`, filteredBooks);
       const allotmentId = filteredBooks[0].allotmentId;
       setAllotmentId(allotmentId);
-      console.log('Allotment ID:', allotmentId);
 
       setBookData(filteredBooks);
     }
   }, [selectedStudentId, booksss]);
 
-  //
   const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
-
-  // console.log('filter books are coming after filter==========>', filteredBooks);
 
   const handleInvoice = (row) => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
@@ -392,7 +365,6 @@ const ReceiveBook = () => {
   const handleFineSubmit = async () => {
     const idBook = formik.values.bookId;
     const _id = formik.values._id;
-    // console.log('fadsgffdsgfhdhf====================>', fineid._id);
     try {
       const data = {
         amount: amount,
@@ -404,16 +376,13 @@ const ReceiveBook = () => {
       };
 
       const response = await axios.post(url.fine.addFineBook, data);
-      console.log('response is send to addfine ', response);
       const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
         const fineAmount = item?.fineAmount;
         return { reason, fineAmount };
       });
-      // console.log('fine data ', fine);
       toast.success('Fine Book successfully added');
       findFineData();
-      console.log('fine data to print -', fineDataa);
     } catch (error) {
       toast.error('Error Fine submitting form');
       console.error('Error Fine submitting form:', error);
@@ -421,8 +390,6 @@ const ReceiveBook = () => {
     setOpen(false);
   };
   const handleRemove = async (bookId) => {
-    // console.log('submit click>>>>>', bookId);
-
     const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
 
     toast.success('Book submitted successfully');
@@ -445,24 +412,19 @@ const ReceiveBook = () => {
   const findFineData = async () => {
     try {
       const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
-      console.log('response', response);
 
       const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
         const fineAmount = item?.fineAmount;
         return { reason, fineAmount };
       });
-      // console.log('fine data for this book ', fine);
 
-      // Storing the fine data in state
-      setFineDataa(fine); // No need to use setAllFineData if not required
+      setFineDataa(fine);
     } catch (error) {
-      console.log('error', error);
+      console.error('error', error);
     }
   };
-  if (formik.values.bookId) {
-    // findFineData()
-  }
+
   useEffect(() => {
     findFineData();
   }, [formik.values.bookId]);
@@ -471,7 +433,6 @@ const ReceiveBook = () => {
     return [...new Map(bookData.filter((item) => item.active === true).map((item) => [item.bookId, item])).values()];
   }
   function getFilteredBooksss(book) {
-    // console.log(book._id);
     const alocationIdToFind = book._id;
     const filteredDataArray = allFineData.filter((item) => item.alocationId === alocationIdToFind);
     setFineDataa(fine);
@@ -512,25 +473,6 @@ const ReceiveBook = () => {
         }}
       >
         <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-          {/* <Grid item xs={12} sm={4} md={4}>
-            <FormLabel>Student</FormLabel>
-            <FormControl fullWidth sx={{ height: '40px' }}>
-              <Select
-                id="studentId"
-                name="studentId"
-                value={formik.values.studentId}
-                onChange={handleStudentChange}
-                sx={{ height: '40px', padding: '25px' }}
-              >
-                {matchedStudents.map((item) => (
-                  <MenuItem key={item._id} value={item._id}>
-                    {item.student_Name}
-                  </MenuItem>
-                ))}
-              </Select> 
-              
-            </FormControl>
-          </Grid>*/}
           <Grid item xs={12} sm={4} md={4}>
             <FormLabel>Student</FormLabel>
             <FormControl fullWidth sx={{ height: '40px' }}>
@@ -539,11 +481,11 @@ const ReceiveBook = () => {
                 name="studentId"
                 size="small"
                 value={matchedStudents.find((student) => student._id === formik.values.studentId) || null}
-                onChange={(event, newValue) => handleStudentChange(newValue)} // Ensure passing the selected student object
+                onChange={(event, newValue) => handleStudentChange(newValue)}
                 options={matchedStudents}
                 getOptionLabel={(option) => option.student_Name}
                 renderInput={(params) => <TextField {...params} variant="outlined" />}
-                isOptionEqualToValue={(option, value) => option._id === value?._id} // Ensure correct matching by ID
+                isOptionEqualToValue={(option, value) => option._id === value?._id}
               />
             </FormControl>
           </Grid>
@@ -637,28 +579,15 @@ const ReceiveBook = () => {
                   </Typography>
                 </AccordionSummary>
                 <div>
-                  {/* <AccordionDetails sx={{ marginTop: '-20px' }}>
-                    {getFilteredBooksss(book).map((item, index) => (
-                      <div key={index}>
-                        <Typography variant="body1">
-                          <strong>Reason:</strong> {item?.reason || 'Loading...'}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>Fine Amount:</strong> ₹{item?.fineAmount ?? '0'}
-                        </Typography>
-                      </div>
-                    ))}
-                  </AccordionDetails> */}
                   <AccordionDetails sx={{ marginTop: '-20px' }}>
                     {fineDataa.length > 0 ? (
                       <ol style={{ paddingLeft: '20px' }}>
                         {' '}
-                        {/* Ordered list to auto-number */}
                         {fineDataa.map((item, index) => (
                           <li key={index}>
                             <Typography variant="body1">
                               <strong>Reason:</strong> {item?.reason || 'Loading...'}
-                              <strong style={{ marginLeft: '50px' }}>Fine Amount:</strong> ₹{item?.fineAmount ?? '0'}
+                              <strong style={{ marginLeft: '50px' }}>Fine Amount:</strong> {currencySymbol}{item?.fineAmount ?? `${currencySymbol}0.00`}
                             </Typography>
                           </li>
                         ))}
@@ -744,7 +673,6 @@ const ReceiveBook = () => {
             <DataGrid
               rows={data}
               columns={columns}
-              // checkboxSelection
               getRowId={(row) => row.serial}
               slots={{ toolbar: GridToolbar }}
               slotProps={{ toolbar: { showQuickFilter: true } }}

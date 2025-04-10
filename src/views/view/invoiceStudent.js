@@ -19,19 +19,17 @@ import {
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
-// import { url } from 'api/url';
+
 
 import moment from 'moment';
 import axios from 'axios';
 import { url } from 'core/url';
-// import html2pdf from 'html2pdf.js';
-// import { allBooking, allItems } from 'api/apis';
+
 
 const StudentInvoice = () => {
   const location = useLocation();
   const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
-  console.log('Received Row Data:', rowData?.id);
 
   const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
   const bookingId = row?._id ? row?._id : bookingData?._id;
@@ -62,15 +60,11 @@ const StudentInvoice = () => {
   };
 
   const fetchData = async () => {
-    console.log(`fetchData`);
 
     const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
-    console.log(`Url`, Url);
 
     const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
-    console.log('Invoice Data ----------', response?.data[0]);
 
-    // const student_Name = response?.data[0]?.studentDetails?.student_Name;
 
     const student_Name = response?.data[0]?.studentDetails?.student_Name;
 
@@ -90,8 +84,7 @@ const StudentInvoice = () => {
 
     const bookName = response?.data[0]?.bookDetails?.bookName;
     setBookName(bookName);
-    // const bookName = response?.data[0]?.bookDetails?.bookName;
-    // const bookName = response?.data[0]?.bookDetails?.bookName;
+  
 
     const amount = response?.data[0]?.subscriptionDetails?.amount;
     setStudentAmount(amount);
@@ -106,11 +99,6 @@ const StudentInvoice = () => {
     const submissionDate = response?.data[0]?.submissionDate;
     setSubmissionDate(formatDate(submissionDate));
 
-    console.log('bookName', bookName);
-    console.log('student Name >>', student_Name);
-    console.log('email >>', email);
-    console.log(' amount >>', amount);
-    console.log('bookIssueDate', bookIssueDate);
   };
 
   useEffect(() => {
@@ -139,7 +127,6 @@ const StudentInvoice = () => {
         <Backdrop
           sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
           open={loading}
-          // onClick={handleClose}
         >
           <CircularProgress color="inherit" />
         </Backdrop>

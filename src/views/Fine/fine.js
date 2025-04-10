@@ -1,18 +1,13 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from 'react';
-// @mui
+
 import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField } from '@mui/material';
 import TableStyle from '../../ui-component/TableStyle';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect } from 'react';
 import axios from 'axios';
-// import {useState} from 'react';
 
 import Iconify from '../../ui-component/iconify';
-// import AddContact from './addContact.js';
 
-// ----------------------------------------------------------------------
  
 const FinePerDay = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -63,62 +58,15 @@ const FinePerDay = () => {
     }
   ];
 
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         console.log('useEffect-----------');
-
-  //         const fetchedData = response?.data?.ContactManagement.map((item) => ({
-  //           id: item._id,
-  //           firstName: item.firstName,
-  //           lastName: item.lastName,
-  //           dateOfBirth: item.dateOfBirth,
-  //           phoneNumber: item.phoneNumber,
-  //           email: item.email,
-  //           gender: item.gender,
-  //           address: item.address
-  //         }));
-
-  //         setData(fetchedData);
-  //       } catch (error) {
-  //         console.error('Error fetching data:', error);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }, []);
-
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
   const handleEdit = (book) => {
     setEditData(book);
   };
-  //   const handleSaveEdit = async () => {
-  //     try {
-  //       const updatedContact = response.data;
-  //       setData((prevData) => prevData.map((item) => (item.id === updatedContact.id ? updatedContact : item)));
-  //       setEditData(null);
-  //     } catch (error) {
-  //       console.error('Error updating book:', error);
-  //     }
-  //   };
-
-  //   const handleDelete = async (contact) => {
-  //     try {
-  //       console.log('Contact', contact);
-
-  //       console.log('Contact', contact.id);
-
-  //       setData((prevData) => prevData.filter((item) => item.id !== contact.id));
-  //     } catch (error) {
-  //       console.error('Error deleting vendor:', error);
-  //     }
-  //   };
 
   return (
     <>
-      {/* <AddContact open={openAdd} handleClose={handleCloseAdd} /> */}
       <Container>
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
           <Typography variant="h4">Manage-Fine</Typography>

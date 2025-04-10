@@ -58,8 +58,6 @@ const AddAllotment = (props) => {
       setAddBook((prevBooks) => [...prevBooks, values]);
 
       const dataToSend = addBook && Object.keys(addBook).length > 0 ? addBook : [values];
-      console.log('Gopal>>>>>>>>>>', dataToSend);
-      console.log('Gopal Chotu>>>>>>>>>>', dataToSend[0]?.amount);
       const newData = {
         studentId: dataToSend?.[0]?.studentId,
         bookDetails: dataToSend
@@ -69,9 +67,7 @@ const AddAllotment = (props) => {
         const response = await manyBookAllotment(url.allotmentManagement.manyBookAllotment, dataToSend);
 
         if (response) {
-          console.log(`response  Gopal ---->>>>`, response);
           const Bookresponse = await bookAllotmentHistory(url.bookAllotmentHistory.bookAllotmentHistory, newData);
-          console.log('Bookresponse', Bookresponse);
 
           toast.success('Book details added successfully');
           fetchData();
@@ -96,7 +92,6 @@ const AddAllotment = (props) => {
       try {
         const response = await getBookManagement(url.bookManagenent.bookManagement);
         const filteredBooks = response.data?.BookManagement.filter((book) => book.quantity > 0);
-        console.log('response Aman-2', response);
         setBookData(filteredBooks);
       } catch (error) {
         console.error('Error fetching books:', error);
@@ -105,7 +100,6 @@ const AddAllotment = (props) => {
     const fetchStudents = async () => {
       try {
         const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
-        console.log('response Aman', response);
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -125,7 +119,6 @@ const AddAllotment = (props) => {
   }, []);
   const handleStudentChange = async (event) => {
     const studentId = event.target.value;
-    console.log('studentId New ', event.target.value);
     if (!studentId) {
       toast.error('Please select a valid student.');
       return;
@@ -174,7 +167,6 @@ const AddAllotment = (props) => {
       amount: ''
     });
   };
-  console.log(`addBook`, addBook);
   const handleRemoveBook = (bookId) => {
     setAddBook((prevBooks) => prevBooks.filter((book) => book.bookId !== bookId));
   };

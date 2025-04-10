@@ -31,6 +31,7 @@ const formatDate = (date: string) => {
   return `${day}/${month}/${year}`;
 };
 const View = () => {
+
   const [formData, setFormData] = useState({
     student_Name: '',
     mobile_Number: '',
@@ -38,15 +39,27 @@ const View = () => {
     register_Date: '',
     select_identity: '',
     logo: null,
-    currency: '' // Added currency field to formData
+    currency: '',
+    currencySymbol: ''
   });
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const currencySymbols = {
+    USD: '$',
+    EUR: '€',
+    INR: '₹',
+    GBP: '£'
+  };
+  const handleChange = (e: React.ChangeEvent<any>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+      ...(name === 'currency' && {
+        currencySymbol: currencySymbols[value] || ''
+      })
     }));
   };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setFormData((prev) => ({
@@ -65,15 +78,24 @@ const View = () => {
       formDataToSend.append('email', formData.email);
       formDataToSend.append('register_Date', formData.register_Date);
       formDataToSend.append('select_identity', formData.select_identity);
-      formDataToSend.append('currency', formData.currency); // Append currency to formData
+      formDataToSend.append('currencyCode', formData.currency);
+      formDataToSend.append('currencySymbol', formData.currencySymbol);
+
       if (formData.logo) {
         formDataToSend.append('logo', formData.logo);
       }
-      
-
       const response = await editAdmin(`${url.admin.edit}${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+      const updatedUser = {
+        _id: formData.id,
+        email: formData.email,
+        currencyCode: formData.currency,
+        currencySymbol: formData.currencySymbol,
+        logo: response?.data?.updatedRegister?.logo || ''
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
       toast.success('Update Profile details successfully');
       refreshPage();
     } catch (error) {
@@ -90,16 +112,19 @@ const View = () => {
       try {
         const response = await axios.get(url.admin.adminProfile);
         if (response.data.status) {
-          const formattedDate = formatDate(response.data.students[0].register_Date);
+          const student = response.data.students[0];
+          const formattedDate = formatDate(student.register_Date);
+          const currency = student.currencyCode || 'INR';
           setFormData({
-            id: response.data.students[0]?._id,
-            student_Name: response.data.students[0].student_Name,
-            mobile_Number: response.data.students[0].mobile_Number,
-            email: response.data.students[0].email,
+            id: student._id,
+            student_Name: student.student_Name,
+            mobile_Number: student.mobile_Number,
+            email: student.email,
             register_Date: formattedDate,
-            select_identity: response.data.students[0].select_identity,
-            logo: response.data.students[0].logo,
-            currency: response.data.students[0].currency || 'INR' // Set default currency if not set
+            select_identity: student.select_identity,
+            logo: student.logo,
+            currency: currency,
+            currencySymbol: currencySymbols[currency]
           });
         }
       } catch (error) {
@@ -131,7 +156,7 @@ const View = () => {
             <HomeIcon sx={{ mr: 0.5, color: '#6A1B9A' }} />
           </Link>
           <Link href="/dashboard/profile" underline="hover" color="inherit">
-            <h4> Account Profile</h4>
+            <h4>Account Profile</h4>
           </Link>
         </Breadcrumbs>
       </Box>
@@ -188,6 +213,7 @@ const View = () => {
                 <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
               </FormControl>
             </Grid>
+            {/* Currency Dropdown */}
             <Grid item xs={6}>
               <FormControl fullWidth>
                 <InputLabel id="currency-label">Currency</InputLabel>
@@ -201,9 +227,19 @@ const View = () => {
                   <MenuItem value="EUR">EUR</MenuItem>
                   <MenuItem value="INR">INR</MenuItem>
                   <MenuItem value="GBP">GBP</MenuItem>
-                  {/* Add more currencies here */}
                 </Select>
               </FormControl>
+            </Grid>
+
+            {/* Read-only Symbol Field */}
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Currency Symbol"
+                name="currencySymbol"
+                value={formData.currencySymbol}
+                InputProps={{ readOnly: true }}
+              />
             </Grid>
           </Grid>
           <Button variant="contained" color="primary" onClick={handleSaveEdit} sx={{ mt: 3 }}>

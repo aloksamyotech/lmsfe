@@ -9,7 +9,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
-// import * as yup from 'yup';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -52,15 +51,12 @@ const AddSubscription = (props) => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      console.log('Submitted values', values);
       try {
 
-        // const response = await axios.post(url.subscription.Subscription, values);
 
         const response = await createSubscription(url.subscription.Subscription, values);
 
-        console.log('Form submitted successfully:', response);
-        console.log();
+        
         fetchData();
         handleClose();
       } catch (error) {
@@ -73,7 +69,6 @@ const AddSubscription = (props) => {
   });
   useEffect(() => {
     if (open) {
-      // Reset the form whenever the dialog is opened
       formik.resetForm();
     }
   }, [open]);

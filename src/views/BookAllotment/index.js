@@ -92,7 +92,6 @@ const Allotment = () => {
   };
   const fetchCategory = async () => {
     const response = await axios.get(url.bookManagenent.bookmanagementTable);
-    console.log('response------------------------', response);
     setCategoryData(response.data.data);
   };
 
@@ -161,8 +160,6 @@ const Allotment = () => {
     setCartcontextItems(storedCartItems);
   }, []);
   useEffect(() => {
-    console.log('Cart items----------', cartItems);
-    console.log('Cart items length', cartItems.length);
     localStorage.setItem('librarycart', JSON.stringify(cartItems));
     setCartcontextItems(cartItems);
   }, [cartItems, setCartcontextItems]);
@@ -176,7 +173,6 @@ const Allotment = () => {
   };
 
   const handleAddToCart = (product) => {
-    console.log('product==================>>>>>', product);
     if (product.bookQuantity <= 0) {
       toast.error('Sorry, this book is out of stock!');
       return;
@@ -322,71 +318,15 @@ const Allotment = () => {
     setSubmissionDate('');
     setSubmissionType('');
     setCalculatedAmount(null);
-    // console.log('Updated cartItems:333333333333333', cartItems);
   };
 
-  useEffect(() => {
-    console.log('Updated cartItems:', cartItems);
-  }, [cartItems]);
-  // const handleSubmitCart = () => {
-  //   const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
-  //   if (totalQuantity >= 10) {
-  //     toast.error('You can only add up to 10 books to your cart.');
-  //     setOpenModal(false);
-  //     return;
-  //   }
-
-  //   if (!submissionDate || !submissionType) {
-  //     toast.error('Please select both submission date and type.');
-  //     return;
-  //   }
-
-  //   const selectedType = studentData.find((type) => type._id === submissionType);
-  //   const typeCharge = selectedType ? selectedType.amount : 0;
-  //   const typeName = selectedType ? selectedType.title : 'N/A';
-
-  //   setCartItems((prevCartItems) => {
-  //     const existingItemIndex = prevCartItems.findIndex(
-  //       (item) => item._id === selectedProduct._id && item.submissionType === submissionType
-  //     );
-
-  //     if (existingItemIndex >= 0) {
-  //       const updatedCartItems = [...prevCartItems];
-  //       updatedCartItems[existingItemIndex].quantity += 1;
-  //       updatedCartItems[existingItemIndex].submissionDate = submissionDate;
-  //       updatedCartItems[existingItemIndex].amount += typeCharge;
-  //       return updatedCartItems;
-  //     } else {
-  //       return [
-  //         ...prevCartItems,
-  //         {
-  //           ...selectedProduct,
-  //           quantity: 1,
-  //           submissionDate,
-  //           submissionType,
-  //           submissionTypeName: typeName,
-  //           amount: typeCharge
-  //         }
-  //       ];
-  //     }
-  //   });
-  //   toast.success("Book successfully added to cart");
-  //   addToCart(cartItems)
-  //   setOpenModal(false);
-  //   setSubmissionDate('');
-  //   setSubmissionType('');
-  //   setCalculatedAmount(null);
-  //   console.log('-------------------------------- index page', cartItems);
-  // };
 
   const filteredProducts = categoryData.filter((product) => product.title.toLowerCase().includes(search.toLowerCase()));
 
   const getBookCount = async (bookId) => {
     try {
       const response = await getBookManagement(url.bookManagenent.bookManagement);
-      console.log('response data:', response.data); // Log the full response to check the structure
 
-      // Map the fetched data
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
         bookName: item.bookName,
@@ -396,17 +336,11 @@ const Allotment = () => {
         author: item.author,
         quantity: item.quantity > 0 ? item.quantity : 'Not Available'
       }));
-
-      console.log('fetchedData:', fetchedData);
-
-      // Find the book by bookId
-      const book = fetchedData.find((item) => item.id === bookId); // Find the book with the given bookId
+      const book = fetchedData.find((item) => item.id === bookId); 
 
       if (book) {
-        console.log(`Book Quantity for ${item._id}:`, book.quantity); // Print the quantity of the book
-        return book.quantity; // Optionally return the quantity if you need it
+        return book.quantity;
       } else {
-        console.log('Book not found!');
         return null;
       }
     } catch (error) {
@@ -463,12 +397,10 @@ const Allotment = () => {
       </Box>
       <Grid container spacing={0}>
         {' '}
-        {/* Reduced spacing to 0 */}
         <Grid item xs={12} md={9} lg={12}>
           <Box sx={{ height: '70vh' }}>
             <Grid container spacing={0}>
               {' '}
-              {/* Reduced spacing to 0 */}
               {currentBooks.map((product) => (
                 <Grid item xs={12} sm={6} md={2} key={product._id}>
                   <Card
@@ -478,9 +410,9 @@ const Allotment = () => {
                       height: '25vh',
                       '&:hover': { transform: 'scale(1.05)', boxShadow: 4 },
                       cursor: 'pointer',
-                      width: '90%', // Use 100% width to fit the grid
+                      width: '90%', 
                       position: 'relative',
-                      margin: '0', // No margin between cards
+                      margin: '0',
                       marginBottom:'20px'
                     }}
                     onClick={() => handleAddToCart(product)}
@@ -493,7 +425,7 @@ const Allotment = () => {
                         height: '80px',
                         padding: '5px',
                         borderRadius: '10px',
-                        display: product.upload_Book ? 'block' : 'none' // Hide if no image
+                        display: product.upload_Book ? 'block' : 'none' 
                       }}
                     />
                     {!product.upload_Book && (
@@ -511,7 +443,6 @@ const Allotment = () => {
                     )}
 
                     <Box sx={{ textAlign: 'center' }}>
-                      {/* Book Title */}
                       <Typography
                         variant="h6"
                         sx={{
@@ -523,13 +454,12 @@ const Allotment = () => {
                         {product.bookName}
                       </Typography>
 
-                      {/* Show Book Quantity or Out of Stock */}
                       <Box
                         sx={{
                           display: 'flex',
-                          justifyContent: 'center', // Horizontally centers the Typography
-                          alignItems: 'center', // Vertically centers the Typography
-                          height: '100%' // Ensures it takes the full height of the container
+                          justifyContent: 'center', 
+                          alignItems: 'center', 
+                          height: '100%' 
                         }}
                       >
                         <Typography
@@ -545,7 +475,6 @@ const Allotment = () => {
                       </Box>
                     </Box>
 
-                    {/* You can also add an overlay if the book is out of stock */}
                     {product.bookQuantity === 0 && (
                       <Box
                         sx={{
@@ -554,7 +483,6 @@ const Allotment = () => {
                           left: '0',
                           right: '0',
                           bottom: '0',
-                          // backgroundColor: 'rgba(0, 0, 0, 0.5)',
                           color: 'white',
                           display: 'flex',
                           justifyContent: 'center',
@@ -571,18 +499,17 @@ const Allotment = () => {
         </Grid>
       </Grid>
 
-      {/* Pagination */}
       <Stack
         spacing={2}
         sx={{
           mt: 2,
           display: 'flex',
-          justifyContent: 'flex-end', // Aligns content to the right horizontally
-          alignItems: 'flex-end' // Ensures the Pagination is aligned to the right edge
+          justifyContent: 'flex-end', 
+          alignItems: 'flex-end' 
         }}
       >
         <Pagination
-          count={Math.ceil(filteredProducts.length / booksPerPage)} // Total pages
+          count={Math.ceil(filteredProducts.length / booksPerPage)} 
           page={currentPage}
           onChange={handlePageChange}
           color="primary"

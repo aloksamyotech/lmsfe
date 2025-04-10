@@ -50,7 +50,6 @@ const AddPolicy = (props) => {
       try {
         const response = await addVender(url.vendorManagement.addVender, values);
 
-        console.log('Form submitted successfully:', response);
         fetchData();
         handleClose();
       } catch (error) {

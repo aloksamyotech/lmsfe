@@ -14,10 +14,7 @@ const LogoSection = () => {
   const logoData = async () => {
     try {
       const response = await axios.get(url.admin.adminProfile);
-      // console.log('response>>>>>>>>', response.data.students[0].logo);
       const logo = response.data.students[0].logo ? `${url.baseurl.baseurl}${response.data.students[0].logo}` : '';
-      // const logo = response.data.students[0].logo;
-      console.log(`logo`, logo);
       if (logo) {
         setLogoImg(logo);
       }

@@ -51,11 +51,9 @@ const AddContact = (props) => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log('Submitted values', values);
       try {
 
         const response = await axios.post(url.favoriteStudents.addContact, values);
-        console.log('Form submitted successfully:', response);
         toast.success('Contact added successfully');
         fetchData();
         handleClose();

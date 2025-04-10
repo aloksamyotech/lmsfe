@@ -14,119 +14,36 @@ import TextField from '@mui/material/TextField';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-// import { useEffect, useState } from 'react';
 import { FormControl, FormHelperText, FormLabel, MenuItem, Select } from '@mui/material';
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import { url } from 'core/url';
 import { addPublications } from 'core/helperFurtion';
-// import { apiget, apipost } from '../../service/api';
+
 
 const AddPublications = (props) => {
   const { open, handleClose, fetchData } = props;
-  //   const [leadData, setLeadData] = useState([]);
-  //   const [contactData, setContactData] = useState([]);
 
-  //   const userid = localStorage.getItem('user_id');
-  //   const userRole = localStorage.getItem('userRole');
-
-  // -----------  validationSchema
   const validationSchema = yup.object({
     publisherName: yup.string().required('Book Title is required'),
-    // bookName: yup.string().required('Book Title is required'),
-    // title: yup.string().required('Book Title is required'),
-    // author: yup.string().required('Book Title is required'),
+
     address: yup.string().required('Address is required'),
-    // startDate: yup.string().required('Start Date is required'),
     description: yup.string().required('Description is required')
   });
 
-  // -----------   initialValues
-  // const initialValues = {
-  //   subject: '',
-  //   status: '',
-  //   startDate: '',
-  //   assignedUser: ''
-  // endDate: '',
-  // duration: '',
-  // location: '',
-  // relatedTo: '',
-  // note: ''
-  // createdBy: userid,
-  // lead_id: _id,
-  // contact_id: _id
-  // };
-
-  // add meeting api
-  //   const addMeeting = async (values) => {
-  //     const data = values;
-  //     const result = await apipost('meeting/add', data);
-  //     setUserAction(result);
-
-  //     if (result && result.status === 201) {
-  //       formik.resetForm();
-  //       handleClose();
-  //       toast.success(result.data.message);
-  //     }
-  //   };
-
-  // formik
-  // const formik = useFormik({
-  //   initialValues,
-  //   validationSchema,
-  //   onSubmit: async (values, { resetForm }) => {
-  //     //   addMeeting(values);
-  //     console.log('MeetingsValues', values);
-  //     handleClose();
-  //     toast.success('Meeting Add successfully');
-  //     resetForm();
-  //   }
-  // });
-
-  // lead api
-  //   const fetchLeadData = async () => {
-  //     const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`);
-  //     if (result && result.status === 200) {
-  //       setLeadData(result?.data?.result);
-  //     }
-  //   };
-
-  // contact api
-  //   const fetchContactData = async () => {
-  //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`);
-  //     if (result && result.status === 200) {
-  //       setContactData(result?.data?.result);
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     fetchLeadData();
-  //     fetchContactData();
-  //     // formik.values.meetingAttendes = data?.emailAddress
-  //   }, [open, data]);
-
-  // const initialValues = yup.object({
-  //   subject: yup.string().required('').typeError('Publications')
-  // });
   const formik = useFormik({
     initialValues: {
       publisherName: '',
-      // bookName: '',
-      // title: '',
-      // author: '',
+
       address: '',
-      // startDate: '',
       description: ''
     },
     validationSchema,
 
     onSubmit: async (values) => {
-      console.log('Submitted values', values);
       try {
         const response = await addPublications(url.publications.addPublications, values);
-        console.log('Form submitted successfully:', response);
-        console.log();
         fetchData();
         handleClose();
       } catch (error) {
@@ -151,8 +68,6 @@ const AddPublications = (props) => {
             style={{
               display: 'flex',
               justifyContent: 'space-between'
-              // backgroundColor: "#2b4054",
-              // color: "white",
             }}
           >
             <Typography variant="h6">Add Publications </Typography>

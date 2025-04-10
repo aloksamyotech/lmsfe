@@ -29,7 +29,6 @@ const validationSchema = yup.object({
     .min(1, 'Minimum quantity is 1')
     .max(1000, 'Quantity cannot exceed 1000'),
   price: yup.number().required('Price is required').positive('Price must be a positive number').min(0.1, 'Price must be at least 0.1'),
-  // totalPrice: yup.number().required('Total Price is required').positive('Total price must be positive'),
   bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters').required('Comment is required')
 });
 
@@ -52,11 +51,9 @@ const AddPurchaseBook = (props) => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log('Submitting form with values:', values);
       try {
         const response = await purchaseBook(url.purchaseBook.purchaseBook, values);
 
-        console.log('Form submitted successfully>>>>>>>:', response);
         toast.success('Purchase Book added successfully');
         fetchData();
         handleClose();
@@ -73,9 +70,7 @@ const AddPurchaseBook = (props) => {
     const fetchBooks = async () => {
       try {
 
-        // const response = await getBookManagement(url.bookManagenent.bookManagement);
         const response = await axios.get(url.bookManagenent.bookmanagementTable);
-        console.log('Fetched Book Data:', response.data);
         setBookData(response.data?.data);
       } catch (error) {
         console.error('Error fetching books:', error);
@@ -86,7 +81,6 @@ const AddPurchaseBook = (props) => {
       try {
 
         const response = await viewVender(url.vendorManagement.viewVender);
-        // console.log('Vendor Data:', response);
         setStudentData(response.data?.VenderManagement);
       } catch (error) {
         console.error('Error fetching vendors:', error);
@@ -95,9 +89,7 @@ const AddPurchaseBook = (props) => {
 
     const fetchPublisher = async () => {
       try {
-
         const response = await getPublications(url.publications.getPublications);
-        // console.log('Publisher Data:', response);
         setPublisherData(response.data?.PublicationsManagement);
       } catch (error) {
         console.error('Error fetching publishers:', error);

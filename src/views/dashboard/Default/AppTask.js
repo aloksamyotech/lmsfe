@@ -1,14 +1,10 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-// form
 import { useForm, Controller } from 'react-hook-form';
-// @mui
 import { Card, Stack, Divider, Popover, Checkbox, MenuItem, IconButton, CardHeader, FormControlLabel } from '@mui/material';
-// components
 
 import Iconify from '../../../ui-component/iconify';
 
-// ----------------------------------------------------------------------
 
 AppTasks.propTypes = {
   title: PropTypes.string,
@@ -51,7 +47,6 @@ export default function AppTasks({ title, subheader, list, ...other }) {
   );
 }
 
-// ----------------------------------------------------------------------
 
 TaskItem.propTypes = {
   checked: PropTypes.bool,
@@ -75,22 +70,18 @@ function TaskItem({ task, checked, onChange }) {
 
   const handleMarkComplete = () => {
     handleCloseMenu();
-    console.log('MARK COMPLETE', task.id);
   };
 
   const handleShare = () => {
     handleCloseMenu();
-    console.log('SHARE', task.id);
   };
 
   const handleEdit = () => {
     handleCloseMenu();
-    console.log('EDIT', task.id);
   };
 
   const handleDelete = () => {
     handleCloseMenu();
-    console.log('DELETE', task.id);
   };
 
   return (

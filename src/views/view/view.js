@@ -6,12 +6,11 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TableStyle from '../../ui-component/TableStyle';
 import axios from 'axios';
 import AddRegister from 'views/Register/Addregister';
-// import StudentInvoice from './invoiceStudent';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 import { url } from 'core/url';
+import { fetchCurrency } from 'core/comman';
 
-// import PaymentReceipt from './berry';
 
 const View = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -23,6 +22,8 @@ const View = () => {
   const [currentUrl, setCurrentUrl] = useState('');
   const [id, setId] = useState(null);
   const [allData, setAllData] = useState([]);
+  const [currencySymbol, setCurrencySymbol] = useState('');
+  
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState({
@@ -31,7 +32,6 @@ const View = () => {
     email: '',
     mobile_Number: '',
     register_Date: ''
-    // address: ''
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,14 +40,16 @@ const View = () => {
       [name]: value
     }));
   };
-
-  const handleSubmit = () => {
-    // console.log('Form Data Submitted:', formData);
-  };
+    useEffect(() => {
+      const getCurrency = async () => {
+        const symbol = await fetchCurrency();
+        setCurrencySymbol(symbol);
+      };
+      getCurrency();
+    }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    // console.log('Breadcrumb clicked');
   };
 
   const columns = [
@@ -63,15 +65,16 @@ const View = () => {
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
-    // {
-    //   field: 'paymentType',
-    //   headerName: 'Payment Type',
-    //   flex: 1
-    // },
     {
       field: 'amount',
       headerName: 'Amount',
-      flex: 1
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
     },
     {
       field: 'bookIssueDate',
@@ -128,13 +131,12 @@ const View = () => {
 
   const handleSaveEdit = async () => {
     try {
-      // console.log('Data', response);
 
       const updatedRegister = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
       setEditData(null);
     } catch (error) {
-      // console.error('Error updating Register:', error);
+      console.error('Error updating Register:', error);
     }
   };
   const handleDelete = (id) => {
@@ -164,12 +166,10 @@ const View = () => {
 
   useEffect(() => {
     const Url = window.location.href;
-    // console.log('Current Url', Url);
     setCurrentUrl(Url);
 
     const parts = Url.split('/');
     const extractedId = parts[parts.length - 1];
-    // console.log('Id', extractedId);
 
     setId(extractedId);
     const sendIdToBackend = async () => {
@@ -178,9 +178,8 @@ const View = () => {
         const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
         
         setAllData(response.data);
-        console.log("response from profile",response)
       } catch (error) {
-        // console.error('Error sending ID to backend:', error);
+        console.error('Error sending ID to backend:', error);
       }
     };
 
@@ -191,19 +190,15 @@ const View = () => {
 
   useEffect(() => {
     const rul = window.location.href;
-    // console.log('Current Url', rul);
     setCurrentUrl(rul);
 
     const parts = rul.split('/');
     const extractedId = parts[parts.length - 1];
-    // console.log('Id', extractedId);
 
     setId(extractedId);
     const fetchData = async () => {
       try {
-        // Fetch data from API
         const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
-        console.log('findHistoryBookAllotmentUser----------', response);
     
         const fetchedData = response?.data?.map((item) => {
           const dateObj = new Date(item.createdAt);
@@ -271,14 +266,11 @@ const View = () => {
       <Container>
         <Card></Card>
         <Paper
-          // elevation={4}
           style={{
             padding: '20px',
             display: 'flex',
-            // alignItems: 'center',
             maxWidth: '500px',
             margin: '20px'
-            // marginRight: '-5%'
           }}
         >
           <Avatar
@@ -312,7 +304,6 @@ const View = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

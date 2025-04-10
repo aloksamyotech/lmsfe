@@ -29,7 +29,6 @@ const Lead = () => {
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
 
@@ -57,7 +56,6 @@ const Lead = () => {
           ? `${url.baseurl.baseurl.replace(/\/$/, '')}/${uploadBook.replace(/\\/g, '/')}` 
           : defaultBook;
     
-        console.log('imageUrl>>>>>>>>>>>>>>.', imageUrl);
     
         return (
           <img 
@@ -131,7 +129,6 @@ const Lead = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(url.bookManagenent.bookmanagementTable);
-      // console.log("response ---------", response)
       const fetchedData = response?.data?.data?.map((item) => ({
         id: item._id,
         bookName: item.bookName,
@@ -192,7 +189,6 @@ const Lead = () => {
 
   const confirmDelete = async () => {
     try {
-      console.log('delete API...');
 
       await deleteBook(`${url.bookManagenent.delete}${bookToDelete}`);
 
@@ -223,7 +219,6 @@ const Lead = () => {
       const worksheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(worksheet);
       setExcelData(data);
-      console.log('Parsed Excel Data:', data);
     };
     reader.readAsBinaryString(file);
   };
@@ -234,7 +229,6 @@ const Lead = () => {
         toast.error('No data to upload');
         return;
       }
-      console.log('excelData>>>>>>', excelData);
       const response = await addManyBooks(url.bookManagenent.addManyBooks, excelData);
       toast.success(`Data Uploaded Successfully`);
       setTimeout(() => {
