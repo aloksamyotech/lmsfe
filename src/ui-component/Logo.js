@@ -12,13 +12,11 @@ const Logo = () => {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(url.admin.logo)
-        console.log('Logo data received:', response?.data.students[0]?.logo);
 
         const image = response?.data.students[0]?.logo;
 
         const fullImageUrl = `${url.baseurl.baseurl}${image}`;
 
-        console.log('fullImageUrl', fullImageUrl);
         setLogoData(fullImageUrl);
       } catch (error) {
         console.error('Error fetching logo:', error);

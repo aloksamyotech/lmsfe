@@ -1,13 +1,7 @@
-// const base_url = 'http://localhost:4300/';
 const base_url = 'http://localhost:4300/';
 
 export const url = {
-  //   url.baseUrl = http://localhost:4300
-  //       url.BookManagement.put = user/editBook
-  //       id = editData.id
-  //       com_rul = url.baseUrl + url.BookManagement.put + id
-  //       payload = data
-  //     update(com_url , payload),
+
   baseurl: {
     baseurl: base_url
   },
@@ -28,7 +22,6 @@ export const url = {
     addBook: base_url + 'user/addBook/',
     addManyBooks: base_url + 'user/addManyBooks/',
     delete: base_url + 'user/deleteBook/',
-    // editBook: base_url + 'user/updateBook/',
     editBook: base_url + 'user/editBook/',
     viewBook: base_url + 'user/viewBookUser/',
     bookManagement: base_url + 'user/bookManagement/',

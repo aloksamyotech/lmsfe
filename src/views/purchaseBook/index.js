@@ -15,6 +15,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 import { deletePurchaseBook, getPurchaseBook, updatePurchaseBook } from 'core/helperFurtion';
 import { url } from 'core/url';
+import { fetchCurrency } from 'core/comman';
 
 const PurchaseBook = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -22,11 +23,18 @@ const PurchaseBook = () => {
   const [editData, setEditData] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
+  const [currencySymbol, setCurrencySymbol] = useState('');
+  
   const navigate = useNavigate();
-
+   useEffect(() => {
+      const getCurrency = async () => {
+        const symbol = await fetchCurrency();
+        setCurrencySymbol(symbol);
+      };
+      getCurrency();
+    }, []);
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
 
@@ -52,7 +60,7 @@ const PurchaseBook = () => {
     },
     {
       field: 'quantity',
-      headerName: 'Available Quantity',
+      headerName: 'Quantity',
       flex: 1,
       align: 'center',
       headerAlign: 'center'
@@ -60,10 +68,14 @@ const PurchaseBook = () => {
 
     {
       field: 'price',
-      headerName: 'Par Book Price',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center'
+      headerName: 'Per Book Price',
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
     },
     {
       field: 'invoice',
@@ -93,12 +105,10 @@ const PurchaseBook = () => {
 
   const fetchData = async () => {
     try {
-      console.log('fetch data ');
 
 
       const response = await getPurchaseBook(url.purchaseBook.purchaseManagement);
 
-      console.log('response-----===', response);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
@@ -125,15 +135,11 @@ const PurchaseBook = () => {
   };
 
   const handleSaveEdit = async () => {
-    console.log('satrt>>>>>>>>>>>>>>');
-
-    console.log(`id `, editData.id);
-    console.log(`editData`, editData);
+    
 
     try {
 
       const response = await updatePurchaseBook(`${url.purchaseBook.edit}${editData.id}`, editData);
-      console.log('Data', response);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
@@ -154,9 +160,6 @@ const PurchaseBook = () => {
 
   const confirmDelete = async () => {
     const id = bookToDelete?.id;
-    console.log(`bookToDelete>>>>>>>>>>>`, bookToDelete);
-
-    console.log(`id`, id);
 
     try {
       await deletePurchaseBook(`${url.purchaseBook.deletePurchaseBook}${id}`);
@@ -220,7 +223,6 @@ const PurchaseBook = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -249,13 +251,6 @@ const PurchaseBook = () => {
                 fullWidth
                 margin="normal"
               />
-              {/* <TextField
-                label="Total Price"
-                value={editData.price}
-                onChange={(e) => setEditData({ ...editData, publisherId: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
               <TextField
                 label="Quantity"
                 value={editData.quantity}

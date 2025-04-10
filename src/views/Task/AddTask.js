@@ -1,4 +1,3 @@
- 
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -7,7 +6,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {
-  //   Autocomplete,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -19,98 +17,37 @@ import {
   Select,
   TextField
 } from '@mui/material';
-// import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Typography from '@mui/material/Typography';
 import ClearIcon from '@mui/icons-material/Clear';
 import { toast } from 'react-toastify';
-// import { apiget, apipost } from '../../service/api';
 
 const AddTask = ({ open, handleClose }) => {
-  //   const [user, setUser] = useState([]);
-  //   const [leadData, setLeadData] = useState([]);
-  //   const [contactData, setContactData] = useState([]);
-  //   const userid = localStorage.getItem('user_id');
-  //   const userRole = localStorage.getItem('userRole');
-  //   const userdata = JSON.parse(localStorage.getItem('user'));
 
   const validationSchema = yup.object({
     bookName: yup.string().required('Book Name is required'),
     candidateName: yup.string().required('Candidate Name is required'),
-    // status: yup.string().required('Status is required'),
     startDate: yup.string().required('Start Date is required'),
-    endDate: yup.string().required('End date is required'),
-    // priority: yup.string().required('Priority is required'),
-    // assignTo: yup.string().required('Assign To is required'),
-    // relatedTo: yup.string().required('Related To is required')
+    endDate: yup.string().required('End date is required')
+
   });
 
-  const formik = useFormik({ 
-    initialValues:{
-    bookName: '',
-    candidateName: '',
-    // status: '',
-    startDate: '',
-    endDate: '',
-    // note: ''
-    //lead_id: _id
-    // contact_id: _id,
-    // createdBy: userid
-  },
-  //   const addTask = async (values) => {
-  //     const data = values;
-  //     const result = await apipost('task/add', data);
-  //     setUserAction(result);
-  //     if (result && result.status === 201) {
-  //       handleClose();
-  //       formik.resetForm();
-  //       toast.success(result?.data?.message);
-  //     }
-  //   };
+  const formik = useFormik({
+    initialValues: {
+      bookName: '',
+      candidateName: '',
+      startDate: '',
+      endDate: ''
+    },
 
-  // formik
     validationSchema,
     onSubmit: async (values) => {
-      //   addTask(values);
-      console.log('Request Values', values);
       handleClose();
       formik.resetForm();
       toast.success('Request Add successfully');
     }
   });
-
-  console.log('errror', formik.errors);
-
-  // user api
-  //   const fetchdata = async () => {
-  //     const result = await apiget('user/list');
-  //     if (result && result.status === 200) {
-  //       setUser(result?.data?.result);
-  //     }
-  //   };
-
-  // lead api
-  //   const fetchLeadData = async () => {
-  //     const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`);
-  //     if (result && result.status === 200) {
-  //       setLeadData(result?.data?.result);
-  //     }
-  //   };
-
-  // contact api
-  //   const fetchContactData = async () => {
-  //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`);
-  //     if (result && result.status === 200) {
-  //       setContactData(result?.data?.result);
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     fetchdata();
-  //     fetchLeadData();
-  //     fetchContactData();
-  //   }, [open]);
 
   return (
     <div>
@@ -120,8 +57,6 @@ const AddTask = ({ open, handleClose }) => {
           style={{
             display: 'flex',
             justifyContent: 'space-between'
-            // backgroundColor: "#2b4054",
-            // color: "white",
           }}
         >
           <Typography variant="h6">Create Request </Typography>
@@ -162,7 +97,7 @@ const AddTask = ({ open, handleClose }) => {
                     helperText={formik.touched.candidateName && formik.errors.candidateName}
                   />
                 </Grid>
-                
+
                 {/* <Grid item xs={12} sm={4}>
                   <FormLabel>Status</FormLabel>
                   <FormControl fullWidth>

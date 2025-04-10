@@ -25,7 +25,6 @@ const Call = () => {
   const XLSX = require('xlsx');
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
   useEffect(() => {
@@ -99,10 +98,8 @@ const Call = () => {
   };
   const fetchData = async () => {
     try {
-      console.log('Data');
 
       const response = await axios.get(url.studentRegister.getRegisterManagement);
-      console.log('data API------------', response);
       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
         id: item._id,
         student_id: item.student_id,
@@ -135,7 +132,6 @@ const Call = () => {
     if (!editData.student_Name) newErrors.student_Name = 'Student Name is required';
     if (!editData.mobile_Number) newErrors.mobile_Number = 'Mobile Numberis required';
 
-    // If there are validation errors, don't proceed
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -144,7 +140,6 @@ const Call = () => {
 
       const response = await axios.put(`${url.studentRegister.editRegister}${editData.id}`, editData);
 
-      console.log('Data', response);
       const updatedRegister = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
       setEditData(null);
@@ -164,7 +159,6 @@ const Call = () => {
 
       await axios.delete(`${url.studentRegister.deleteRegister}${bookToDelete}`);
 
-      // await axios.delete(`${url}${bookToDelete}`);
 
       setData((prevData) => prevData.filter((register) => register.id !== bookToDelete));
       toast.success('Register details Deleted successfully');
@@ -178,15 +172,11 @@ const Call = () => {
     setBookToDelete(null);
   };
   const handleView = (row) => {
-    console.log('Viewing', row);
     window.location.href = `/dashboard/view/${row.id}`;
     const fetchStudent = async () => {
       try {
-        console.log('Student');
-        // const response = await axios.get('/user/viewBookAllotmentUser/:id');
 
         const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${id}`);
-        console.log('data API------------', response);
         const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
           id: item._id,
           student_id: item.student_id,
@@ -203,12 +193,9 @@ const Call = () => {
     fetchStudent();
   };
   const handleFavorite = async (student) => {
-    console.log(`click on like`);
     try {
-      console.log('Student ID', student.id);
 
       const response = await axios.post(`${url.studentRegister.markFavorite}${student.id}`);
-      console.log('Favorite response-------', response);
       const updatedStudent = response.data.student;
       setData((prevData) => prevData.map((item) => (item.id === updatedStudent.id ? updatedStudent : item)));
       if (response) {
@@ -229,13 +216,11 @@ const Call = () => {
   };
   const handleSubscription = async (row) => {
     try {
-      console.log('handleSubscription---------');
       const updatedSubscription = !row.subscription;
 
       const response = await axios.post(`${url.studentRegister.markSubscription}${row.id}`, {
         subscription: updatedSubscription
       });
-      console.log('response', response);
       if (response.status === 200) {
         setData((prevData) => prevData.map((item) => (item.id === row.id ? { ...item, subscription: updatedSubscription } : item)));
       }
@@ -263,7 +248,6 @@ const Call = () => {
   };
   const handleBulkUpload = async () => {
     try {
-      console.log('excelData>>>>>>>>', excelData);
 
       const response = await axios.post(url.studentRegister.registerMany, excelData);
       toast.success(`upload Successfully`);
@@ -328,7 +312,6 @@ const Call = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -367,7 +350,6 @@ const Call = () => {
                 value={editData.mobile_Number}
                 onChange={(e) => {
                   const value = e.target.value;
-                  // Restrict the input to only numbers
                   if (/^\d*$/.test(value)) {
                     setEditData({ ...editData, mobile_Number: e.target.value });
                   }

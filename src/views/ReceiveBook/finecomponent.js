@@ -45,7 +45,6 @@ const AddFine = ({ fineid, open, handleClose }) => {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      console.log('Submitting Fine:', fineData);
       handleClose();
     }
   };

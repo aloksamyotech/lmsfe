@@ -24,19 +24,17 @@ import {
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
-// import { url } from 'api/url';
 
 import moment from 'moment';
 import axios from 'axios';
 import { url } from 'core/url';
-// import html2pdf from 'html2pdf.js';
-// import { allBooking, allItems } from 'api/apis';
+import { fetchCurrency } from 'core/comman';
+
 
 const PurchaseInvoice = () => {
   const location = useLocation();
   const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
-  console.log('Received Row Data:', rowData?.id);
 
   const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
   const bookingId = row?._id ? row?._id : bookingData?._id;
@@ -56,6 +54,7 @@ const PurchaseInvoice = () => {
   const [discount, setDiscount] = useState('');
   const [submissionDate, setSubmissionDate] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [currencySymbol, setCurrencySymbol] = useState('');
 
   const containerRef = useRef();
 
@@ -66,11 +65,14 @@ const PurchaseInvoice = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const fetchData = async () => {
-    console.log(`fetchData>>>>>>>>>>>>>>`);
-    // console.log(`Url`, Url);
-
     const response = await axios.get(`${url.purchaseBook.getPurchaseInvoice}${rowData?.id}`);
 
     const student_Name = response?.data[0]?.vendorDetails?.vendorName;
@@ -107,11 +109,6 @@ const PurchaseInvoice = () => {
     const submissionDate = response?.data[0]?.bookIssueDate;
     setSubmissionDate(formatDate(submissionDate));
 
-    console.log('bookName', bookName);
-    console.log('student Name >>', student_Name);
-    console.log('email >>', email);
-    console.log(' amount >>', amount);
-    console.log('bookIssueDate', bookIssueDate);
   };
 
   useEffect(() => {
@@ -160,11 +157,7 @@ const PurchaseInvoice = () => {
       </Box>
       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
       {loading && (
-        <Backdrop
-          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-          open={loading}
-          // onClick={handleClose}
-        >
+        <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={loading}>
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
@@ -256,19 +249,19 @@ const PurchaseInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Par Book Price:
               </Typography>
-              <Typography variant="body2">{`₹${studentAmount}` || '₹0'}</Typography>
+              <Typography variant="body2">{`${currencySymbol}${studentAmount}` || `${currencySymbol}0.00`}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Advance Payment:
               </Typography>
-              <Typography variant="body2">{'₹0'}</Typography>
+              <Typography variant="body2">{`${currencySymbol}0.00`}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
                 Discount:
               </Typography>
-              <Typography variant="body2">{discount ? `₹${discount}` : '₹0' || '₹0'}</Typography>
+              <Typography variant="body2">{discount ? `${currencySymbol}${discount}` : `${currencySymbol}0.00` || `${currencySymbol}0.00`}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
@@ -287,7 +280,7 @@ const PurchaseInvoice = () => {
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-                {`₹${studentAmount * quantity || `₹0.00`}`}
+                {`${currencySymbol}${studentAmount * quantity || `${currencySymbol}0.00`}`}
               </Typography>
             </Grid>
           </Grid>

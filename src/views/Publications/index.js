@@ -15,7 +15,6 @@ import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { url } from 'core/url';
 import { deletePublications, editPublications, getPublications } from 'core/helperFurtion';
-// ----------------------------------------------------------------------
 
 const meetingData = [
   {
@@ -26,12 +25,6 @@ const meetingData = [
     address: 'indore',
     startDate: '08/01/2024',
     action: 'Edit'
-    // subject: 'Task Testing',
-    // status: 'In progress',
-    // endDate: '09/01/2024',
-    // duration: '30 min',
-    // relatedTo: 'petter max',
-    // assignedUser: 'active user',
   }
 ];
 
@@ -44,7 +37,6 @@ const Publications = () => {
   const [errors, setErrors] = useState({});
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
 
   const [studentId, setStudentId] = useState(null);
@@ -63,27 +55,6 @@ const Publications = () => {
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
-    // {
-    //   field: 'bookName',
-    //   headerName: 'Book Name',
-    //   flex: 1
-    // },
-    // {
-    //   field: 'title',
-    //   headerName: 'Title',
-    //   flex: 1
-    // },
-    // {
-    //   field: 'author',
-    //   headerName: 'Author',
-    //   flex: 1
-    // },
-
-    // {
-    //   field: 'startDate',
-    //   headerName: ' Start Date',
-    //   flex: 1
-    // },
     {
       field: 'address',
       headerName: 'Address',
@@ -94,27 +65,6 @@ const Publications = () => {
       headerName: 'Description',
       flex: 1
     },
-    // {
-    //   field: 'duration',
-    //   headerName: 'Duration',
-    //   flex: 1
-    // },
-    // {
-    //   field: 'status',
-    //   headerName: 'Status',
-    //   flex: 1,
-    //   cellClassName: 'name-column--cell--capitalize'
-    // },
-    // {
-    //   field: 'relatedTo',
-    //   headerName: 'Related To',
-    //   flex: 1
-    // },
-    // {
-    //   field: 'assignedUser',
-    //   headerName: 'Assigned User',
-    //   flex: 1
-    // },
     {
       field: 'action',
       headerName: 'Action',
@@ -141,23 +91,15 @@ const Publications = () => {
 
   const fetchData = async () => {
     try {
-      console.log('useEffect-----------');
 
 
       const response = await getPublications(url.publications.getPublications);
 
-      console.log('After API------------', response);
-      console.log('Id -----', response?.data?.PublicationsManagement);
       const fetchedData = await response?.data?.PublicationsManagement.map((item) => {
-        console.log(item);
         return {
           id: item._id,
           publisherName: item.publisherName,
-          // bookName: item.bookName,
-          // title: item.title,
-          // author: item.author,
           address: item.address,
-          // startDate: formatDate(item.startDate),
           description: item.description,
           action: item.action
         };
@@ -188,22 +130,18 @@ const Publications = () => {
     if (!editData.address) newErrors.address = 'Address is required';
     if (!editData.description) newErrors.description = 'Description is required';
     
-    // If there are validation errors, don't proceed
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
     try {
-      // Ensure you're passing the correct data
-      const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; // Make sure the startDate is a valid Date
+      const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; 
 
 
       const response = await editPublications(`${url.publications.editPublications}${editData.id}`, updatedPublications);
 
-      // After successful edit, update your data array
       setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
 
-      // Close the edit dialog
       setEditData(null);
       toast.success('Publication details Edit successfully');
     } catch (error) {
@@ -221,9 +159,7 @@ const Publications = () => {
 
       await deletePublications(`${url.publications.delete}${bookToDelete}`);
 
-      // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
-      console.log('Deleting book with ID:', bookToDelete);
       toast.success('Publication details Deleted successfully');
       setOpenDeleteDialog(false);
     } catch (error) {
@@ -239,14 +175,7 @@ const Publications = () => {
     <>
       <AddMeetings open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-          <Typography variant="h4">Publications List</Typography>
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              New Publications
-            </Button>
-          </Stack>
-        </Stack> */}
+ 
         <Box
           sx={{
             backgroundColor: 'white',
@@ -283,7 +212,6 @@ const Publications = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -307,13 +235,7 @@ const Publications = () => {
                 helperText={errors.publisherName}
                 inputProps={{ maxLength: 50 }}
               />
-              {/* <TextField
-                label="Book Name"
-                value={editData.bookName}
-                onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
-                fullWidth
-                margin="normal"
-              /> */}
+             
               <TextField
                 label="Address"
                 value={editData.address}

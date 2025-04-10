@@ -44,7 +44,6 @@ const AddLead = (props) => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log('Submitting form with values:', values);
       const formData = new FormData();
 
       Object.keys(values).forEach((key) => {
@@ -64,7 +63,6 @@ const AddLead = (props) => {
           }
         });
 
-        console.log('Form submitted successfully:', response);
         fetchData();
         toast.success('Book details added successfully');
         formik.resetForm();
@@ -80,7 +78,6 @@ const AddLead = (props) => {
     const fetchPublisher = async () => {
       try {
         const response = await getPublications(url.publications.getPublications);
-        console.log(`response ---------`, response.BookManagement);
 
         setPublisherData(response.data.PublicationsManagement);
       } catch (error) {

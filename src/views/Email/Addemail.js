@@ -13,54 +13,33 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-// import { apipost } from "src/service/api";
 import { toast } from 'react-toastify';
 import { FormLabel } from '@mui/material';
 
 const AddEmails = (props) => {
   const { open, handleClose } = props;
 
-  //   const user = JSON.parse(localStorage.getItem('user'));
 
-  // -----------  validationSchema
   const validationSchema = yup.object({
     subject: yup.string().required('Subject is required'),
     receiver: yup.string().email().required('Receiver is required'),
     message: yup.string().required('Message is required')
   });
 
-  // -----------   initialValues
   const initialValues = {
     sender: '',
     subject: '',
     receiver: '',
     message: ''
-    // lead_id: _id,
-    // contact_id: _id,
-    // createdBy: user?._id,
-    // policy_id: _id
   };
 
-  // add claim api
-  //   const addClaim = async (values) => {
-  //     const data = values;
-  //     const result = await apipost('email/add', data);
-  //     setUserAction(result);
-
-  //     if (result && result.status === 201) {
-  //       handleClose();
-  //       formik.resetForm();
-  //       toast.success(result.data.message);
-  //     }
-  //   };
-  // formik
+ 
   const formik = useFormik({
     initialValues,
     validationSchema,
     enableReinitialize: true,
     onSubmit: async (values, { resetForm }) => {
-      // addClaim(values);
-      console.log('EmailValues', values);
+
       handleClose();
       formik.resetForm();
       toast.success('Email Add successfully');
@@ -76,8 +55,6 @@ const AddEmails = (props) => {
           style={{
             display: 'flex',
             justifyContent: 'space-between'
-            // backgroundColor: "#2b4054",
-            // color: "white",
           }}
         >
           <Typography variant="h6">Email </Typography>

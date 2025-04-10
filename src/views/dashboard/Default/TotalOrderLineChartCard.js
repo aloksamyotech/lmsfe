@@ -1,19 +1,18 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-// material-ui
+
 import { useTheme, styled } from '@mui/material/styles';
 import { Avatar, Box, Grid, Typography } from '@mui/material';
-import MenuBookIcon from '@mui/icons-material/MenuBook'; // Import the MenuBookIcon
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
-// project imports
+
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
 import { url } from 'core/url';
 import { getBookCount } from 'core/helperFurtion';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-  // backgroundColor: theme.palette.error.dark, // Change the background color
   color: '#fff',
   overflow: 'hidden',
   position: 'relative',
@@ -50,7 +49,6 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
   }
 }));
 
-// ==============================|| DASHBOARD - TOTAL ORDER LINE CHART CARD ||============================== //
 
 const TotalOrderLineChartCard = ({ isLoading }) => {
   const theme = useTheme();
@@ -67,7 +65,6 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
       try {
 
         const response = await getBookCount(url.bookManagenent.bookCount);
-        console.log('API Response:', response.data);
         setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);
@@ -110,7 +107,6 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                       {bookCount}
                     </Typography>
                   </Grid>
-                  {/* Add the MenuBookIcon next to the book count */}
 
                   <Grid item xs={12}>
                     <Typography

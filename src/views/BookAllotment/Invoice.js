@@ -21,6 +21,8 @@ import { useLocation } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
 import { url } from 'core/url';
+import { fetchCurrency } from 'core/comman';
+
 
 const BookInvoice = () => {
   const location = useLocation();
@@ -35,6 +37,8 @@ const BookInvoice = () => {
   const [newData, setNewData] = useState('');
   const [mappedData, setMappedData] = useState('');
   const [payment, setPayment] = useState('');
+  const [currencySymbol, setCurrencySymbol] = useState('');
+
   const containerRef = useRef();
 
   const formatDate = (dateString) => {
@@ -44,7 +48,13 @@ const BookInvoice = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const fetchData = async () => {
     const urlWindow = window.location.href;
     setCurrentUrl(urlWindow);
@@ -57,9 +67,6 @@ const BookInvoice = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  useEffect(() => {
-    console.log(allInvoiceData);
-  }, [allInvoiceData]);
   useEffect(() => {
     setAllItemData(allBookingData?.items);
   }, [allBookingData?.items]);
@@ -151,7 +158,6 @@ const BookInvoice = () => {
           {allInvoiceData?.data?.books?.map((book, index) => (
             <Grid container spacing={1} key={index}>
               {' '}
-              {/* Add the "key" prop here */}
               <Grid item xs={6}>
                 <Typography variant="body1" fontWeight="bold">
                   Book Name:
@@ -231,7 +237,7 @@ const BookInvoice = () => {
                 Amount:
               </Typography>
               <Typography variant="body2">
-                {allInvoiceData?.data?.books?.[0]?.amount != null ? `₹${allInvoiceData.data.books[0].amount}` : 'N/A'}
+                {allInvoiceData?.data?.books?.[0]?.amount != null ? `${currencySymbol}${allInvoiceData.data.books[0].amount}` : 'N/A'}
               </Typography>
             </Grid>
 
@@ -247,7 +253,7 @@ const BookInvoice = () => {
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-                {totalAmount ? `₹${totalAmount.toFixed(2)}` : '₹0.00'}
+              {totalAmount ? `${currencySymbol}${totalAmount.toFixed(2)}` : `${currencySymbol}0.00`}
               </Typography>
             </Grid>
           </Grid>

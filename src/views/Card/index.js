@@ -54,14 +54,12 @@ const App = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(url.allotmentManagement.trendingBooks);
-      // console.log("response ---------", response)
       const fetchedData = response?.data?.data?.map((item) => ({
         id: item.bookId,
         name: item.title,
         role: item.author,
         img: item.img ? `${url.baseurl.baseurl}${item.img}` : defaultBook
       }));
-      // console.log(fetchedData);
       setData(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);

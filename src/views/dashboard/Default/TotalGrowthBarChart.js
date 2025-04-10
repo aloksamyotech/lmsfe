@@ -58,9 +58,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
       try {
         const response = await axios.get(url.allotmentManagement.getBookAllotedCount);
 
-        // console.log('response', response);
         setBookCount(response.data.count);
-        // setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);
       }
@@ -71,13 +69,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
     const fetchBookMonthVise = async () => {
       try {
         const response = await axios.get(url.allotmentManagement.getBookMonthVise);
-
-        console.log('response Data', response.data);
-
         var countArray = response.data.map((item) => item.count);
         setBookMonthVise(countArray);
-        // setBookMonthVise(response.data.count);
-        // setBookMonthVise(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);
       }

@@ -21,6 +21,8 @@ import { useCart } from './CartContext';
 import { getRegisterManagement } from 'core/helperFurtion';
 import { url } from 'core/url';
 import defaultBook from './bookDummy.jpeg';
+import { fetchCurrency } from 'core/comman';
+
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantity }) => {
   const [summary, setSummary] = useState(null);
@@ -28,14 +30,20 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [cartItems, setCartItems] = useState([]);
+  const [currencySymbol, setCurrencySymbol] = useState('');
+
   const { setCartcontextItems } = useCart();
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('librarycart')) || [];
     setCartItems(storedCartItems);
-    console.log('storedCartItems11111111111111111', cartItems);
   }, []);
-
-  console.log('Cart item ================', cartItems.length);
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const totalAmount = cartItems.reduce((total, item) => total + item.amount * item.quantity, 0);
   const handleSubmit = async () => {
     if (cartItems.length === 0) {
@@ -64,7 +72,6 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 
     setSummary(cartSummary);
     setIsPopupOpen(true);
-    // setCartItems([0]);
   };
 
   const handleClosePopup = () => {
@@ -75,7 +82,6 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   const fetchData = async () => {
     try {
       const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
-      console.log('rfefjefefefef', response);
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
         name: item.student_Name || 'N/A',
@@ -99,7 +105,6 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
     setCartcontextItems(updatedCartItems);
     localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
 
-    // console.log('Cart items after removal:', updatedCartItems);
   };
 
   const handleIncreaseQuantity = (id, submissionType) => {
@@ -115,7 +120,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   const handleDecrementQuantity = (id, submissionType) => {
     const updatedCartItems = cartItems.map((item) => {
       if (item._id === id && item.submissionType === submissionType && item.quantity > 1) {
-        return { ...item, quantity: item.quantity - 1 }; // Decrease quantity
+        return { ...item, quantity: item.quantity - 1 }; 
       }
       return item;
     });
@@ -148,14 +153,12 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
       </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-        {/* Cart Items Table */}
         <Box
           sx={{
             flex: 1,
             overflowY: 'auto',
             paddingBottom: '80px',
             padding: '10px'
-            // width: '40vh'
           }}
         >
           {cartItems.length === 0 ? (
@@ -232,7 +235,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                           </Button>
                         </Box>
                       </TableCell>
-                      <TableCell sx={{ textAlign: 'center' }}>₹{(item.amount || 0).toFixed(2)}</TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}>{currencySymbol}{(item.amount || 0).toFixed(2)}</TableCell>
                       <TableCell sx={{ textAlign: 'center' }}>
                         <Button color="error" onClick={() => handleRemoveFromCart(item._id, item.submissionType)}>
                           <IconTrash stroke={2} size={20} />
@@ -247,9 +250,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
         </Box>
         <Box
           sx={{
-            // display: 'flex',
             justifyContent: 'space-between',
-            // alignItems: 'center',
             padding: '10px 20px',
             backgroundColor: 'white',
             borderTop: '1px solid #ccc',
@@ -268,7 +269,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
             Total Items : {cartItems.reduce((total, item) => total + (item.quantity || 0), 0)}
           </Typography>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            Total Amount: ₹{cartItems.reduce((total, item) => total + item.amount * item.quantity, 0).toFixed(2)}
+            Total Amount: {currencySymbol}{cartItems.reduce((total, item) => total + item.amount * item.quantity, 0).toFixed(2)}
           </Typography>
           <hr></hr>
           <Button
@@ -279,7 +280,6 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
               width: '35%',
               fontSize: '16px',
               padding: '5px',
-              // fontWeight: 'bold',
               borderRadius: '8px'
             }}
           >

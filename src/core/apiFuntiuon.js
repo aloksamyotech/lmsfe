@@ -17,8 +17,6 @@ export const deleteData = async (com_url) => {
 
 export const editData = async (com_url, payload) => {
   const response = await axios.put(com_url, payload);
-  console.log(`response in main`, response);
-
   return response;
 };
 

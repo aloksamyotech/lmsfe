@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Container, Grid, Typography, Box, FormLabel, TextField, Button, Tabs, Tab } from '@mui/material';
+import { Card, Container, Grid, Typography, Box, FormLabel, TextField, Button, Tabs, Tab, CardContent } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Formik, Form } from 'formik';
 import moment from 'moment';
@@ -7,7 +7,8 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import { bookAllotmentReport, purchaseAllotmentReport, submissionDetailsReport } from 'core/helperFurtion'; // Assuming these are API functions
+import { bookAllotmentReport, purchaseAllotmentReport, submissionDetailsReport } from 'core/helperFurtion';
+import { fetchCurrency } from 'core/comman';
 import { url } from 'core/url';
 import BooksModal from 'views/BookAllotment/viewbooks';
 import { useTheme, styled } from '@mui/material/styles';
@@ -16,11 +17,12 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import BookmarkAddRoundedIcon from '@mui/icons-material/BookmarkAddRounded';
 import MoneyOffCsredIcon from '@mui/icons-material/MoneyOffCsred';
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
+
 const EmailTemplates = () => {
-  const [selectedTab, setSelectedTab] = useState(0); // Track selected tab
-  const [bookAllotmentData, setBookAllotmentData] = useState([]); // For Book Allotment data
-  const [purchaseData, setPurchaseData] = useState([]); // For Purchase data
-  const [submissionData, setSubmissionData] = useState([]); // For Submission data
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [bookAllotmentData, setBookAllotmentData] = useState([]);
+  const [purchaseData, setPurchaseData] = useState([]);
+  const [submissionData, setSubmissionData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(moment().subtract(1, 'days').format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
@@ -28,48 +30,18 @@ const EmailTemplates = () => {
   const [totalAllotmetAmount, setTotalAllotmentAmount] = useState(0);
   const [totalfineAmount, setTotalfineAmount] = useState(0);
   const [submissionCount, setSubmissionCount] = useState(0);
-  const CardWrapper = styled(MainCard)(({ theme }) => ({
-    // backgroundColor: theme.palette.error.dark, // Change the background color
-    color: '#fff',
-    overflow: 'hidden',
-    position: 'relative',
-    '&>div': {
-      position: 'relative',
-      zIndex: 5
-    }
-    // '&:before': {
-    //   content: '""',
-    //   position: 'absolute',
-    //   zIndex: 1,
-    //   width: 210,
-    //   height: 210,
-    //   background: 'linear-gradient(140.9deg, rgb(255, 193, 7) -14.02%, rgba(144, 202, 249, 0) 70.5%)',
-    //   borderRadius: '50%',
-    //   top: -160,
-    //   right: -130,
-    //   opacity: 0.5,
-    //   [theme.breakpoints.down('sm')]: {
-    //     top: -155,
-    //     right: -70
-    //   }
-    // },
-    // '&:after': {
-    //   content: '""',
-    //   position: 'absolute',
-    //   zIndex: 1,
-    //   width: 210,
-    //   height: 210,
-    //   background: 'linear-gradient(140.9deg, rgb(255, 193, 7) -14.02%, rgba(144, 202, 249, 0) 70.5%)',
-    //   borderRadius: '50%',
-    //   top: -30,
-    //   right: -180
-    // }
-  }));
+  const [currencySymbol, setCurrencySymbol] = useState('');
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
 
   const [studentId, setStudentId] = useState(null);
   useEffect(() => {
@@ -98,7 +70,6 @@ const EmailTemplates = () => {
     setSubmissionCount();
 
     try {
-      // Fetching Book Allotment Data
       const bookAllotmentResponse = await bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`);
       const bookAllotmentFinalData = bookAllotmentResponse?.data?.map((item) => {
         const allotment = item.books[0] || {};
@@ -120,10 +91,8 @@ const EmailTemplates = () => {
       });
       const totalallotmentAmount = bookAllotmentFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
       setTotalAllotmentAmount(totalallotmentAmount);
-      console.log('total allotment data::', totalallotmentAmount);
       setBookAllotmentData(bookAllotmentFinalData);
 
-      // Fetching Purchase Allotment Data
       const purchaseResponse = await axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`);
       const purchaseFinalData = purchaseResponse?.data?.map((item) => {
         const purchaseAmount = item.price || 0;
@@ -143,7 +112,6 @@ const EmailTemplates = () => {
       setPurchaseData(purchaseFinalData);
       const totalpurchaseAmount = purchaseFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
       setTotalPurchaseAmount(totalpurchaseAmount);
-      console.log('total purchase data::', totalpurchaseAmount);
       const submissionResponse = await axios.get(`${url.allotmentManagement.submissionReport}${startDate}/${endDate}`);
       const submissionFinalData = submissionResponse?.data?.map((item) => {
         const allotment = item.books[0] || {};
@@ -168,19 +136,15 @@ const EmailTemplates = () => {
           submissionDate,
           fine: allotment.fine || 'NULL',
           fineamount: finedetails.fineAmount || 0,
-          bookCount // Store the bookCount here
+          bookCount
         };
       });
 
-      // To calculate the total book count, sum up the bookCount values from submissionFinalData
       const totalBookCount = submissionFinalData.reduce((sum, item) => sum + item.bookCount, 0);
-      console.log('Total books count: ', totalBookCount); // Log the total count of books
       setSubmissionCount(totalBookCount);
-      // To calculate the total fine amount
       const totalfineAmount = submissionFinalData.reduce((sum, item) => sum + item.fineamount, 0);
       setTotalfineAmount(totalfineAmount);
 
-      // Set the submission data to state
       setSubmissionData(submissionFinalData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -197,33 +161,79 @@ const EmailTemplates = () => {
     setSelectedTab(newValue);
   };
   const columnsForBookAllotment = [
-    // {
-    //   field: 'serialNo',
-    //   headerName: 'Serial No.',
-    //   flex: 0.5,
-    //   renderCell: (params) => {
-    //     return params.rowIndex + 1; // Serial number starts from 1
-    //   },
-    // },
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
     { field: 'student_Name', headerName: 'Student Name', flex: 1 },
     { field: 'paymentType', headerName: 'Payment Type', flex: 1 },
     { field: 'quantity', headerName: 'Quantity', flex: 0.5 },
-    { field: 'amount', headerName: 'Amount', flex: 0.5 },
-    { field: 'totalAmount', headerName: 'Total Amount', flex: 0.5 },
+    {
+      field: 'amount',
+      headerName: 'Amount',
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
+    },
+    {
+      field: 'totalAmount',
+      headerName: 'Total Amount',
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
+    }
   ];
-  
 
   const columnsForPurchase = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
     { field: 'vender_Name', headerName: 'Vender Name', flex: 1 },
-    { field: 'purchaseAmount', headerName: 'Price per book', flex: 1 },
+    {
+      field: 'purchaseAmount',
+      headerName: 'Price per book',
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
+    },
     { field: 'quantity', headerName: 'Quantity', flex: 1 },
-    { field: 'totalAmount', headerName: 'Total Amount', flex: 1 },
+    {
+      field: 'totalAmount',
+      headerName: 'Total Amount',
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
+    },
     { field: 'purchaseDate', headerName: 'Purchase Date', flex: 1 }
   ];
 
   const columnsForSubmission = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     { field: 'student_Name', headerName: 'Student Name', flex: 1 },
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
     { field: 'submissionDate', headerName: 'Submission Date', flex: 1 },
@@ -232,11 +242,9 @@ const EmailTemplates = () => {
       headerName: 'Fine Status',
       flex: 1,
       valueGetter: (params) => {
-        // If 'fine' is true, display 'Applied'. If false, display 'Not'.
         return params.row.fine === true ? 'Applied' : 'Not Applied';
       }
     }
-    // {field :'fineamount',headerName:'Fine Amount', flex:1},
   ];
 
   return (
@@ -319,184 +327,117 @@ const EmailTemplates = () => {
         </Formik>
       </Card>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-        <CardWrapper border={false} content={false} sx={{ marginTop: '30px', width: '22%', height: '40%' }}>
-          <Box sx={{ paddingLeft: '50px' }}>
-            <Grid container direction="column">
-              <Grid container justifyContent="space-between">
-                <Grid item>
-                  <AddShoppingCartIcon
-                    sx={{
-                      fontSize: 45,
-                      verticalAlign: 'middle',
-                      marginRight: 1,
-                      color: 'black',
-                      borderRadius: '50%',
-                      padding: 1
-                    }}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item sx={{ mb: 0.75 }}>
-                <Grid container alignItems="center">
-                  <Grid item xs={12}>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        fontWeight: 500,
-                        mr: 1,
-                        mt: 1.75,
-                        mb: 0.75,
-                        color: 'black'
-                      }}
-                    >
-                      {`Total Purchase`}
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography sx={{ fontSize: '15px', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
-                      {totalPurchaseAmount}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Box>
-        </CardWrapper>
-        <CardWrapper border={false} content={false} sx={{ marginTop: '30px', width: '22%' }}>
-          <Box sx={{ paddingLeft: '48px' }}>
-            <Grid container direction="column">
-              <Grid item>
-                <Grid container justifyContent="space-between">
-                  <Grid item>
-                    <BookmarkRemoveIcon
-                      sx={{
-                        fontSize: 45,
-                        verticalAlign: 'middle',
-                        marginRight: 1,
-                        color: 'black',
-                        borderRadius: '50%',
-                        padding: 1
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item sx={{ mb: 0.75 }}>
-                <Grid container alignItems="center">
-                  <Grid item xs={12}>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        fontWeight: 500,
-                        mr: 1,
-                        mt: 1.75,
-                        mb: 0.75,
-                        color: 'black'
-                      }}
-                    >
-                      {`Total Book Allotment`}
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography sx={{ fontSize: '15px', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
-                      {totalAllotmetAmount}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Box>
-        </CardWrapper>
-        <CardWrapper border={false} content={false} sx={{ marginTop: '30px', width: '22%' }}>
-          <Box sx={{ paddingLeft: '48px' }}>
-            <Grid container direction="column">
-              <Grid item>
-                <Grid container justifyContent="space-between">
-                  <Grid item>
-                    <MoneyOffCsredIcon
-                      sx={{
-                        fontSize: 45,
-                        verticalAlign: 'middle',
-                        marginRight: 1,
-                        color: 'black',
-                        borderRadius: '50%',
-                        padding: 1
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item sx={{ mb: 0.75 }}>
-                <Grid container alignItems="center">
-                  <Grid item xs={12}>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        fontWeight: 500,
-                        mr: 1,
-                        mt: 1.75,
-                        mb: 0.75,
-                        color: 'black'
-                      }}
-                    >
-                      {`Total Fine`}
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography sx={{ fontSize: '15px', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
-                      {totalfineAmount}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Box>
-        </CardWrapper>
-        <CardWrapper border={false} content={false} sx={{ marginTop: '30px', width: '22%' }}>
-          <Box sx={{ paddingLeft: '50px' }}>
-            <Grid container direction="column">
-              <Grid item>
-                <Grid container justifyContent="space-between">
-                  <Grid item>
-                    <BookmarkAddRoundedIcon
-                      sx={{
-                        fontSize: 45,
-                        verticalAlign: 'middle',
-                        marginRight: 1,
-                        color: 'black',
-                        borderRadius: '50%',
-                        padding: 1
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item sx={{ mb: 0.75 }}>
-                <Grid container alignItems="center">
-                  <Grid item xs={12}>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        fontWeight: 500,
-                        mr: 1,
-                        mt: 1.75,
-                        mb: 0.75,
-                        color: 'black'
-                      }}
-                    >
-                      {`Total Book recive`}
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography sx={{ fontSize: '15px', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
-                      {submissionCount}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Box>
-        </CardWrapper>
+        <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px', paddingBottom: '0' }}>
+          <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
+            <Box
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 60,
+                height: 60,
+                backgroundColor: '#0769b4'
+              }}
+            >
+              <AddShoppingCartIcon sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
+                {`Total Purchase`}
+              </Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                {currencySymbol}
+                {totalPurchaseAmount ? totalPurchaseAmount.toFixed(2) : '0.00'}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+        <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px' }}>
+          <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
+            <Box
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 60,
+                height: 60,
+                backgroundColor: '#28a745'
+              }}
+            >
+              <MoneyOffCsredIcon sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
+                {`Total Fine`}
+              </Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                {currencySymbol}
+                {totalfineAmount ? totalfineAmount.toFixed(2) : '0.00'}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+        <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px' }}>
+          <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
+            <Box
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 60,
+                height: 60,
+                backgroundColor: '#ffc107'
+              }}
+            >
+              <BookmarkRemoveIcon sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '14px' }}>
+                {`Book Allotment`}
+              </Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                {currencySymbol}
+                {totalAllotmetAmount ? totalAllotmetAmount.toFixed(2) : '0.00'}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+        <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px' }}>
+          <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
+            <Box
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 60,
+                height: 60,
+                backgroundColor: '#dc3545'
+              }}
+            >
+              <BookmarkAddRoundedIcon sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
+                {`Book Recieve`}
+              </Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+              {submissionCount ? submissionCount : '0'}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
       </Box>
       <Tabs value={selectedTab} onChange={handleTabChange} aria-label="Book Allotment Tabs" sx={{ marginTop: '20px' }}>
         <Tab label="Book Allotment" />
@@ -513,7 +454,7 @@ const EmailTemplates = () => {
             (bookAllotmentData.length > 0 ? (
               <Box sx={{ height: 'auto', overflow: 'auto', backgroundColor: 'white' }}>
                 <DataGrid
-                  rows={bookAllotmentData}
+                  rows={bookAllotmentData.map((row, index) => ({ ...row, sNo: index + 1 }))}
                   columns={columnsForBookAllotment}
                   pageSize={5}
                   components={{ Toolbar: GridToolbar }}
@@ -529,7 +470,12 @@ const EmailTemplates = () => {
           {selectedTab === 1 &&
             (purchaseData.length > 0 ? (
               <Card sx={{ height: 'auto' }}>
-                <DataGrid rows={purchaseData} columns={columnsForPurchase} pageSize={5} components={{ Toolbar: GridToolbar }} />
+                <DataGrid
+                  rows={purchaseData.map((row, index) => ({ ...row, sNo: index + 1 }))}
+                  columns={columnsForPurchase}
+                  pageSize={5}
+                  components={{ Toolbar: GridToolbar }}
+                />
               </Card>
             ) : (
               <Typography variant="h6" color="textSecondary" align="center">
@@ -540,7 +486,12 @@ const EmailTemplates = () => {
           {selectedTab === 2 &&
             (submissionData.length > 0 ? (
               <Card sx={{ height: 'auto' }}>
-                <DataGrid rows={submissionData} columns={columnsForSubmission} pageSize={5} components={{ Toolbar: GridToolbar }} />
+                <DataGrid
+                  rows={submissionData.map((row, index) => ({ ...row, sNo: index + 1 }))}
+                  columns={columnsForSubmission}
+                  pageSize={5}
+                  components={{ Toolbar: GridToolbar }}
+                />
               </Card>
             ) : (
               <Typography variant="h6" color="textSecondary" align="center">

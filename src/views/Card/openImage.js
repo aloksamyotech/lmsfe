@@ -6,7 +6,6 @@ import HomeIcon from '@mui/icons-material/Home';
 const ImageGallery = () => {
   const location = useLocation();
   const rowData = location.state?.rowData;
-  console.log(`rowData`, rowData);
 
   return (
     <Box sx={{ padding: 2 }}>

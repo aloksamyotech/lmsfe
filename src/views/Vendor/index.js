@@ -35,17 +35,7 @@ const PolicyManagement = () => {
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
-    // {
-    //   field: 'address',
-    //   headerName: 'Address',
-    //   flex: 1,
-    //   cellClassName: 'name-column--cell--capitalize'
-    // },
-    // {
-    //   field: 'cityName',
-    //   headerName: 'City',
-    //   flex: 1
-    // },
+ 
     {
       field: 'date',
       headerName: 'Date',
@@ -74,7 +64,6 @@ const PolicyManagement = () => {
   ];
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
 
@@ -101,7 +90,6 @@ const PolicyManagement = () => {
         vendorName: item.vendorName,
         companyName: item.companyName,
         email: item.email,
-        // cityName: item.cityName,
         date: formatDate(item.date),
         phoneNumber: item.phoneNumber,
         address: item.address
@@ -131,7 +119,6 @@ const PolicyManagement = () => {
     if (!editData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
     if (!editData.address) newErrors.address = 'Address is required';
 
-    // If there are validation errors, don't proceed
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -149,17 +136,14 @@ const PolicyManagement = () => {
     }
   };
   const handleDelete = (id) => {
-    console.log('Selected ID for deletion:', id);
     setBookToDelete(id);
     setOpenDeleteDialog(true);
   };
   const confirmDelete = async () => {
     try {
       await deleteVender(`${url.vendorManagement.delete}${bookToDelete}`);
-      // setData((prevData) => prevData.filter((item) => item._id !== bookToDelete));
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
       cancelDelete();
-      console.log('Deleting book with ID:', bookToDelete);
       toast.success('Vender details Deleted successfully');
     } catch (error) {
       console.error('Error deleting Vender:', error);
@@ -208,7 +192,6 @@ const PolicyManagement = () => {
               <DataGrid
                 rows={data}
                 columns={columns}
-                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -247,7 +230,6 @@ const PolicyManagement = () => {
                 value={editData.phoneNumber}
                 onChange={(e) => {
                   const value = e.target.value;
-                  // Restrict the input to only numbers
                   if (/^\d*$/.test(value)) {
                     setEditData({ ...editData, phoneNumber: value });
                   }

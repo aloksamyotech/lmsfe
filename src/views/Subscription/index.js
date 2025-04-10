@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-// @mui
 import { Stack, Grid, Dialog, TextField, DialogActions, DialogContent, DialogTitle, Typography, Divider, Avatar } from '@mui/material';
 import TableStyle from '../../ui-component/TableStyle';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
@@ -18,7 +17,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, Container } from '@mui/system';
 import { url } from 'core/url';
 
-// ----------------------------------------------------------------------
 
 const Contact = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -30,7 +28,6 @@ const Contact = () => {
   let pin = '1234';
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
 
@@ -53,7 +50,6 @@ const Contact = () => {
     try {
 
       const response = await axios.get(url.studentRegister.getSubscription);
-      console.log('response>>>>>>>>>>', response);
       const fetchedData = response?.data?.students?.map((item) => ({
         id: item._id,
         student_id: item.student_id,
@@ -64,7 +60,6 @@ const Contact = () => {
       }));
 
       setData(fetchedData);
-      console.log('fetchedData', fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }

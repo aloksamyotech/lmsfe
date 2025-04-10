@@ -61,7 +61,6 @@ const ViewBookAllotment = () => {
 
     const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
-    console.log('getting id from dashboard', extractedId);
 
     setId(extractedId);
     const sendIdToBackend = async () => {
@@ -69,9 +68,7 @@ const ViewBookAllotment = () => {
 
         const response = await axios.get(`${url.bookAllotmentHistory.getBookDetailHistoryStudentId}${extractedId}`);
 
-        console.log(`response---from all history api-->>>>`, response?.data?.allotmentDetails[0]?.bookDetails?.bookName);
 
-        console.log(`response----->>>>`, response?.data);
 
         const student_Name = response?.data?.studentDetails?.student_Name;
         const mobile_Number = response?.data?.studentDetails?.mobile_Number;
@@ -91,11 +88,7 @@ const ViewBookAllotment = () => {
         setAmount(response?.data?.allotmentDetails);
 
         const SubmissionDate = response?.data[0].submissionDate;
-        console.log('Submission Date', SubmissionDate);
 
-        console.log('student', student_Name);
-        console.log('upload_Book', upload_Book);
-        console.log('currentDate', currentDate);
       } catch (error) {
         console.error('Error sending ID to backend:', error);
       }

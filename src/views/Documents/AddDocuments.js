@@ -12,52 +12,25 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { FormLabel } from '@mui/material';
-// import { apipost } from '../../service/api';
 
 const AddDocuments = (props) => {
   const { open, handleClose } = props;
-  //   const userid = localStorage.getItem('user_id');
-
-  // -----------  validationSchema
   const validationSchema = yup.object({
     file: yup.string().required('File is required'),
     fileName: yup.string().required('File Name is required')
   });
 
-  // -----------   initialValues
   const initialValues = {
     file: '',
     fileName: ''
-    // createdBy: userid
   };
 
-  // add contact api
-  //   const fileUpload = async (values) => {
-  //     const data = new FormData();
-  //     data.append('name', values.file.name);
-  //     data.append('file', values.file);
-  //     data.append('fileName', values.fileName);
-  //     data.append('createdBy', values.createdBy);
-
-  //     const result = await apipost('document/upload', data);
-  //     setUserAction(result);
-
-  //     if (result && result.status === 200) {
-  //       formik.resetForm();
-  //       handleClose();
-  //       // toast.success(result.data.message)
-  //     }
-  //   };
-
-  // formik
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values) => {
-      console.log('AddDocument', values);
       handleClose();
       toast.success('Add Documents upload successfully');
-      //   fileUpload(values);
     }
   });
   return (
@@ -116,13 +89,7 @@ const AddDocuments = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={formik.handleSubmit}
-            style={{ textTransform: 'capitalize' }}
-            // startIcon={<FiSave />}
-          >
+          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }}>
             Save
           </Button>
           <Button

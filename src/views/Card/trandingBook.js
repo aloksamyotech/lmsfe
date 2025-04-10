@@ -8,7 +8,6 @@ import axios from 'axios';
 const TrandingBook = () => {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    console.log('Breadcrumb clicked');
   };
   const [studentId, setStudentId] = useState(null);
 
