@@ -459,81 +459,8 @@ const Allotment = () => {
 
       <Box sx={{ display: 'flex', flexDirection: 'row', mb: 2 }}>
         <Grid container spacing={4}>
-          {/* <Grid item xs={12} sm={4}>
-                <Autocomplete
-                  options={students}
-                  getOptionLabel={(student) => student.name || ''}
-                  value={students.find((s) => s.id === selectedStudent) || null}
-                  onChange={(event, newValue) => setSelectedStudent(newValue ? newValue.id : null)}
-                  renderInput={(params) => <TextField {...params} label="Select Student" fullWidth />}
-                />
-              </Grid> 
-               <Grid item xs={12} sm={4}>
-                <Autocomplete
-                  options={students}
-                  getOptionLabel={(student) => student.email || ''}
-                  value={students.find((s) => s.id === selectedStudent) || null}
-                  onChange={(event, newValue) => setSelectedStudent(newValue ? newValue.id : null)}
-                  renderInput={(params) => <TextField {...params} label="Select Email" fullWidth />}
-                />
-              </Grid> */}
         </Grid>
       </Box>
-
-      {/* <Grid container spacing={2}>
-            <Grid item xs={12} md={9} lg={12}>
-              <Box sx={{ height: '70vh' }}>
-                <Grid container spacing={2}>
-                  {currentBooks.map((product) => (
-                    <Grid item xs={12} sm={6} md={2} key={product._id}>
-                      <Card
-                        sx={{
-                          transition: 'box-shadow 0.3s, transform 0.3s',
-                          border: '1px solid #ccc',
-                          height: '25vh',
-                          '&:hover': { transform: 'scale(1.05)', boxShadow: 4 },
-                          cursor: 'pointer',
-                          width: '70%'
-                        }}
-                        onClick={() => handleAddToCart(product)}
-                      >
-                        <CardMedia
-                          component="img"
-                          image={product.upload_Book ? `${url.baseurl.baseurl}${product.upload_Book}` : ''}
-                          sx={{
-                            objectFit: 'cover',
-                            height: '80px',
-                            padding:'5px',
-                            borderRadius: '10px ',
-                            display: product.upload_Book ? 'block' : 'none' // Hide if no image
-                          }}
-                        />
-                        {!product.upload_Book && (
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: '80px',
-                              backgroundColor: '#f0f0f0'
-                            }}
-                          >
-                            <LibraryBooksIcon sx={{ fontSize: '50px', color: '#757575' }} />
-                          </Box>
-                        )}
-
-                        <Box >
-                          <Typography variant="h6" sx={{ fontSize: '10px', marginTop: '7px' }}>
-                            {product.title}
-                          </Typography>
-                        </Box>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            </Grid>
-          </Grid> */}
       <Grid container spacing={0}>
         {' '}
         {/* Reduced spacing to 0 */}
@@ -553,7 +480,8 @@ const Allotment = () => {
                       cursor: 'pointer',
                       width: '90%', // Use 100% width to fit the grid
                       position: 'relative',
-                      margin: '0' // No margin between cards
+                      margin: '0', // No margin between cards
+                      marginBottom:'20px'
                     }}
                     onClick={() => handleAddToCart(product)}
                   >

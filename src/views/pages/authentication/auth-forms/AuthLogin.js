@@ -59,7 +59,7 @@ const FirebaseLogin = ({ ...others }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            const response=await axios.post (url.admin.login , values)
+            const response = await axios.post(url.admin.login, values);
             console.log('resppppppppppppppppp', response);
             if (response?.status === 200) {
               console.log('Response:', response?.data?.message);
@@ -73,10 +73,14 @@ const FirebaseLogin = ({ ...others }) => {
 
                 toast.success('Login Successfully');
                 // const loginToken = response?.data?.userToken;
-                const loginToken = response?.data;
+                const loginToken = response?.data.userToken;
                 console.log('loginToken', loginToken);
 
+                const userData = response?.data.payload;
+                console.log('userData', userData);
+
                 localStorage.setItem('loginToken', loginToken);
+                localStorage.setItem('user', JSON.stringify(userData));
                 // setTimeout(() => {
                 window.location.replace('/dashboard/default');
                 // }, 1000);

@@ -12,7 +12,10 @@ import { url } from 'core/url';
 import BooksModal from 'views/BookAllotment/viewbooks';
 import { useTheme, styled } from '@mui/material/styles';
 import MainCard from 'ui-component/cards/MainCard';
-
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import BookmarkAddRoundedIcon from '@mui/icons-material/BookmarkAddRounded';
+import MoneyOffCsredIcon from '@mui/icons-material/MoneyOffCsred';
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 const EmailTemplates = () => {
   const [selectedTab, setSelectedTab] = useState(0); // Track selected tab
   const [bookAllotmentData, setBookAllotmentData] = useState([]); // For Book Allotment data
@@ -21,6 +24,10 @@ const EmailTemplates = () => {
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(moment().subtract(1, 'days').format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+  const [totalPurchaseAmount, setTotalPurchaseAmount] = useState(0);
+  const [totalAllotmetAmount, setTotalAllotmentAmount] = useState(0);
+  const [totalfineAmount, setTotalfineAmount] = useState(0);
+  const [submissionCount, setSubmissionCount] = useState(0);
   const CardWrapper = styled(MainCard)(({ theme }) => ({
     // backgroundColor: theme.palette.error.dark, // Change the background color
     color: '#fff',
@@ -29,49 +36,35 @@ const EmailTemplates = () => {
     '&>div': {
       position: 'relative',
       zIndex: 5
-    },
-    '&:before': {
-      content: '""',
-      position: 'absolute',
-      zIndex: 1,
-      width: 210,
-      height: 210,
-      background: 'linear-gradient(140.9deg, rgb(255, 193, 7) -14.02%, rgba(144, 202, 249, 0) 70.5%)',
-      borderRadius: '50%',
-      top: -160,
-      right: -130,
-      opacity: 0.5,
-      [theme.breakpoints.down('sm')]: {
-        top: -155,
-        right: -70
-      }
-    },
-    '&:after': {
-      content: '""',
-      position: 'absolute',
-      zIndex: 1,
-      width: 210,
-      height: 210,
-      background: 'linear-gradient(140.9deg, rgb(255, 193, 7) -14.02%, rgba(144, 202, 249, 0) 70.5%)',
-      borderRadius: '50%',
-      top: -30,
-      right: -180
     }
+    // '&:before': {
+    //   content: '""',
+    //   position: 'absolute',
+    //   zIndex: 1,
+    //   width: 210,
+    //   height: 210,
+    //   background: 'linear-gradient(140.9deg, rgb(255, 193, 7) -14.02%, rgba(144, 202, 249, 0) 70.5%)',
+    //   borderRadius: '50%',
+    //   top: -160,
+    //   right: -130,
+    //   opacity: 0.5,
+    //   [theme.breakpoints.down('sm')]: {
+    //     top: -155,
+    //     right: -70
+    //   }
+    // },
+    // '&:after': {
+    //   content: '""',
+    //   position: 'absolute',
+    //   zIndex: 1,
+    //   width: 210,
+    //   height: 210,
+    //   background: 'linear-gradient(140.9deg, rgb(255, 193, 7) -14.02%, rgba(144, 202, 249, 0) 70.5%)',
+    //   borderRadius: '50%',
+    //   top: -30,
+    //   right: -180
+    // }
   }));
-
-  // Handle Tab Change
-  const handleTabChange = (event, newValue) => {
-    setSelectedTab(newValue);
-
-    // Clear data when changing tab
-    if (newValue === 0) {
-      setBookAllotmentData([]); // Clear Book Allotment data
-    } else if (newValue === 1) {
-      setPurchaseData([]); // Clear Purchase data
-    } else if (newValue === 2) {
-      setSubmissionData([]); // Clear Submission data
-    }
-  };
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
@@ -94,108 +87,132 @@ const EmailTemplates = () => {
     return `${day}/${month}/${year}`;
   };
 
-  // Function to handle API calls based on selected tab
   const fetchDataForTab = async () => {
-    setBookAllotmentData([]);
     setLoading(true);
+    setBookAllotmentData([]);
+    setPurchaseData([]);
+    setSubmissionData([]);
+    setTotalAllotmentAmount();
+    setTotalPurchaseAmount();
+    setTotalfineAmount();
+    setSubmissionCount();
+
     try {
-      if (selectedTab === 0) {
-        // Book Allotment Tab
-        const response = await bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`);
-        console.log('Response from allotment tab:', response);
+      // Fetching Book Allotment Data
+      const bookAllotmentResponse = await bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`);
+      const bookAllotmentFinalData = bookAllotmentResponse?.data?.map((item) => {
+        const allotment = item.books[0] || {};
+        const book = item.bookDetails || {};
+        const student = item.studentDetails || {};
+        const paymentType = item.paymentType || {};
+        const quantity = allotment.quantity || 0;
+        const amount = allotment.amount || 0;
+        const totalAmount = quantity * amount || 0;
+        return {
+          id: item._id,
+          bookName: book.bookName || 'No Book Name',
+          student_Name: student.student_Name || 'Unknown Student',
+          paymentType: paymentType.title || 'Unknown Payment Type',
+          quantity,
+          amount,
+          totalAmount
+        };
+      });
+      const totalallotmentAmount = bookAllotmentFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
+      setTotalAllotmentAmount(totalallotmentAmount);
+      console.log('total allotment data::', totalallotmentAmount);
+      setBookAllotmentData(bookAllotmentFinalData);
 
-        const finalData = response.data.map((item) => {
-          const allotment = item.books[0] || {};
-          const book = item.bookDetails || {};
-          const student = item.studentDetails || {};
-          const paymentType = item.paymentType || {};
-          const quantity = allotment.quantity || 0; // Default to 0 if quantity is not available
-          const amount = allotment.amount || 0; // Default to 0 if amount is not available
-          const totalAmount = quantity * amount || 0; // Calculate total amount
+      // Fetching Purchase Allotment Data
+      const purchaseResponse = await axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`);
+      const purchaseFinalData = purchaseResponse?.data?.map((item) => {
+        const purchaseAmount = item.price || 0;
+        const quantity = item.quantity || 0;
+        const totalAmount = purchaseAmount * quantity;
+        return {
+          id: item._id,
+          bookName: item.bookDetails.bookName || 'Unknown Book',
+          vender_Name: item.vendorDetails.vendorName || 'Unknown Vendor',
+          purchaseAmount,
+          quantity,
+          totalAmount,
+          purchaseDate: formatDate(item.bookIssueDate)
+        };
+      });
 
-          return {
-            id: item._id,
-            bookName: book.bookName ? `${book.bookName}` : 'No Book Name', // Book Name
-            student_Name: student.student_Name || 'Unknown Student', // Student Name
-            paymentType: paymentType.title || 'Unknown Payment Type', // Payment Type
-            quantity: quantity || 'NULL', // Quantity (or NULL if unavailable)
-            amount: amount || 'NULL', // Amount (or NULL if unavailable)
-            totalAmount: totalAmount || 'NULL' // Total Amount (calculated as quantity * amount)
-          };
-        });
+      setPurchaseData(purchaseFinalData);
+      const totalpurchaseAmount = purchaseFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
+      setTotalPurchaseAmount(totalpurchaseAmount);
+      console.log('total purchase data::', totalpurchaseAmount);
+      const submissionResponse = await axios.get(`${url.allotmentManagement.submissionReport}${startDate}/${endDate}`);
+      const submissionFinalData = submissionResponse?.data?.map((item) => {
+        const allotment = item.books[0] || {};
+        const book = item.bookDetails || {};
+        const student = item.studentDetails || {};
+        const finedetails = item.finedetalis || {};
+        const paymentType = item.paymentType || {};
+        const quantity = allotment.quantity || 0;
+        const amount = allotment.amount || 0;
+        const totalAmount = quantity * amount || 0;
+        const submissionDate = formatDate(item.updatedAt);
+        const bookCount = item.books ? item.books.length : 0;
 
-        console.log('Fetched data from Book Allotment tab:', finalData);
-        setBookAllotmentData(finalData); // Update the state with the final data
-      } else if (selectedTab === 1) {
-        // Purchase Allotment Tab
-        const response = await axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`);
-        console.log('Response from purchase tab:', response);
+        return {
+          id: item._id,
+          bookName: book.bookName || 'No Book Name',
+          student_Name: student.student_Name || 'Unknown Student',
+          paymentType: paymentType.title || 'Unknown Payment Type',
+          quantity,
+          amount,
+          totalAmount,
+          submissionDate,
+          fine: allotment.fine || 'NULL',
+          fineamount: finedetails.fineAmount || 0,
+          bookCount // Store the bookCount here
+        };
+      });
 
-        const finalData = response.data.map((item) => {
-          const purchaseAmount = item.price || 0; // Default to 0 if purchaseAmount is not available
-          const quantity = item.quantity || 0; // Default to 0 if quantity is not available
-          const totalAmount = purchaseAmount * quantity; // Calculate totalAmount
-          return {
-            id: item._id,
-            bookName: item.bookDetails.bookName || 'Unknown Book', // Book Name
-            vender_Name: item.vendorDetails.vendorName || 'Unknown Vendor', // Vendor Name
-            purchaseAmount: purchaseAmount, // Purchase Amount
-            quantity: quantity, // Quantity
-            totalAmount: totalAmount, // Total Amount (calculated as purchaseAmount * quantity)
-            purchaseDate: formatDate(item.bookIssueDate), // Formatted Purchase Date
-          };
-        });
-        
-        console.log('Fetched data from Purchase Allotment tab:', finalData);
-        setPurchaseData(finalData); // Update the state with the final data
-      } else if (selectedTab === 2) {
-        // Submission Details Tab
-        const response = await axios.get(`${url.allotmentManagement.submissionReport}${startDate}/${endDate}`);
-        console.log('response form submission tab ', response);
-        const finalData = response.data.map((item) => {
-          const allotment = item.books[0] || {};
-          const book = item.bookDetails || {};
-          const student = item.studentDetails || {};
-          const paymentType = item.paymentType || {};
-          const quantity = allotment.quantity || 0;
-          const amount = allotment.amount || 0;
-          const totalAmount = quantity * amount || 0;
-          const submissionDate = formatDate(item.updatedAt);
+      // To calculate the total book count, sum up the bookCount values from submissionFinalData
+      const totalBookCount = submissionFinalData.reduce((sum, item) => sum + item.bookCount, 0);
+      console.log('Total books count: ', totalBookCount); // Log the total count of books
+      setSubmissionCount(totalBookCount);
+      // To calculate the total fine amount
+      const totalfineAmount = submissionFinalData.reduce((sum, item) => sum + item.fineamount, 0);
+      setTotalfineAmount(totalfineAmount);
 
-          return {
-            id: item._id,
-            bookName: book.bookName ? `${book.bookName}` : 'No Book Name',
-            student_Name: student.student_Name || 'Unknown Student',
-            paymentType: paymentType.title || 'Unknown Payment Type',
-            quantity: quantity || 'NULL',
-            amount: amount || 'NULL',
-            totalAmount: totalAmount || 'NULL',
-            submissionDate: submissionDate || 'NULL'
-          };
-        });
-        setSubmissionData(finalData);
-      }
+      // Set the submission data to state
+      setSubmissionData(submissionFinalData);
     } catch (error) {
-      // toast.error('Error fetching data. Please try again!');
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Use effect to fetch data when the selected tab changes
   useEffect(() => {
     fetchDataForTab();
-  }, [selectedTab]); // Trigger fetch when tab or date changes
+  }, []);
 
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
   const columnsForBookAllotment = [
+    // {
+    //   field: 'serialNo',
+    //   headerName: 'Serial No.',
+    //   flex: 0.5,
+    //   renderCell: (params) => {
+    //     return params.rowIndex + 1; // Serial number starts from 1
+    //   },
+    // },
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
     { field: 'student_Name', headerName: 'Student Name', flex: 1 },
     { field: 'paymentType', headerName: 'Payment Type', flex: 1 },
     { field: 'quantity', headerName: 'Quantity', flex: 0.5 },
     { field: 'amount', headerName: 'Amount', flex: 0.5 },
-    { field: 'totalAmount', headerName: ' Total Amount', flex: 0.5 }
+    { field: 'totalAmount', headerName: 'Total Amount', flex: 0.5 },
   ];
+  
 
   const columnsForPurchase = [
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
@@ -209,7 +226,17 @@ const EmailTemplates = () => {
   const columnsForSubmission = [
     { field: 'student_Name', headerName: 'Student Name', flex: 1 },
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
-    { field: 'submissionDate', headerName: 'Submission Date', flex: 1 }
+    { field: 'submissionDate', headerName: 'Submission Date', flex: 1 },
+    {
+      field: 'fine',
+      headerName: 'Fine Status',
+      flex: 1,
+      valueGetter: (params) => {
+        // If 'fine' is true, display 'Applied'. If false, display 'Not'.
+        return params.row.fine === true ? 'Applied' : 'Not Applied';
+      }
+    }
+    // {field :'fineamount',headerName:'Fine Amount', flex:1},
   ];
 
   return (
@@ -256,7 +283,10 @@ const EmailTemplates = () => {
                       value={values.startDate}
                       onChange={(e) => {
                         handleChange(e);
-                        setStartDate(e.target.value); // Set the new start date
+                        setStartDate(e.target.value);
+                      }}
+                      inputProps={{
+                        max: values.endDate
                       }}
                     />
                   </Grid>
@@ -270,10 +300,10 @@ const EmailTemplates = () => {
                       value={values.endDate}
                       onChange={(e) => {
                         handleChange(e);
-                        setEndDate(e.target.value); // Set the new end date
+                        setEndDate(e.target.value);
                       }}
                       inputProps={{
-                        min: values.startDate // Set the min attribute dynamically to startDate
+                        min: values.startDate
                       }}
                     />
                   </Grid>
@@ -288,103 +318,237 @@ const EmailTemplates = () => {
           )}
         </Formik>
       </Card>
-      <CardWrapper border={false} content={false} sx={{ height: '80%', marginTop: '30px', width: '25%' }}>
-        <Box sx={{ p: 2.25 }}>
-          <Grid container direction="column">
-            <Grid item>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+        <CardWrapper border={false} content={false} sx={{ marginTop: '30px', width: '22%', height: '40%' }}>
+          <Box sx={{ paddingLeft: '50px' }}>
+            <Grid container direction="column">
               <Grid container justifyContent="space-between">
-                <Grid item></Grid>
-              </Grid>
-            </Grid>
-            <Grid item sx={{ mb: 0.75 }}>
-              <Grid container alignItems="center">
-                <Grid item sx={{ ml: 1 }}>
-                  {/* <MenuBookIcon
-                            sx={{
-                              fontSize: 45,
-                              verticalAlign: 'middle',
-                              marginRight: 1,
-                              color: 'rgb(255, 193, 7)',
-                              background: 'rgb(255, 248, 225)',
-                              borderRadius: '50%',
-                              padding: 1
-                            }}
-                          /> */}
-                </Grid>
-                {/* <Grid item>
-                          <Typography sx={{ fontSize: '1.825rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
-                            {totalAmountSum}
-                          </Typography>
-                        </Grid> */}
-                {/* Add the MenuBookIcon next to the book count */}
-
-                <Grid item xs={12}>
-                  <Typography
+                <Grid item>
+                  <AddShoppingCartIcon
                     sx={{
-                      fontSize: '1.200rem',
-                      fontWeight: 500,
-                      mr: 1,
-                      mt: 1.75,
-                      mb: 0.75,
-                      color: 'black'
+                      fontSize: 45,
+                      verticalAlign: 'middle',
+                      marginRight: 1,
+                      color: 'black',
+                      borderRadius: '50%',
+                      padding: 1
                     }}
-                  >
-                    {`Total Purchase`}
-                  </Typography>
+                  />
+                </Grid>
+              </Grid>
+              <Grid item sx={{ mb: 0.75 }}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12}>
+                    <Typography
+                      sx={{
+                        fontSize: '15px',
+                        fontWeight: 500,
+                        mr: 1,
+                        mt: 1.75,
+                        mb: 0.75,
+                        color: 'black'
+                      }}
+                    >
+                      {`Total Purchase`}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography sx={{ fontSize: '15px', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
+                      {totalPurchaseAmount}
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      </CardWrapper>
-      
+          </Box>
+        </CardWrapper>
+        <CardWrapper border={false} content={false} sx={{ marginTop: '30px', width: '22%' }}>
+          <Box sx={{ paddingLeft: '48px' }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Grid container justifyContent="space-between">
+                  <Grid item>
+                    <BookmarkRemoveIcon
+                      sx={{
+                        fontSize: 45,
+                        verticalAlign: 'middle',
+                        marginRight: 1,
+                        color: 'black',
+                        borderRadius: '50%',
+                        padding: 1
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item sx={{ mb: 0.75 }}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12}>
+                    <Typography
+                      sx={{
+                        fontSize: '15px',
+                        fontWeight: 500,
+                        mr: 1,
+                        mt: 1.75,
+                        mb: 0.75,
+                        color: 'black'
+                      }}
+                    >
+                      {`Total Book Allotment`}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography sx={{ fontSize: '15px', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
+                      {totalAllotmetAmount}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+        </CardWrapper>
+        <CardWrapper border={false} content={false} sx={{ marginTop: '30px', width: '22%' }}>
+          <Box sx={{ paddingLeft: '48px' }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Grid container justifyContent="space-between">
+                  <Grid item>
+                    <MoneyOffCsredIcon
+                      sx={{
+                        fontSize: 45,
+                        verticalAlign: 'middle',
+                        marginRight: 1,
+                        color: 'black',
+                        borderRadius: '50%',
+                        padding: 1
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item sx={{ mb: 0.75 }}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12}>
+                    <Typography
+                      sx={{
+                        fontSize: '15px',
+                        fontWeight: 500,
+                        mr: 1,
+                        mt: 1.75,
+                        mb: 0.75,
+                        color: 'black'
+                      }}
+                    >
+                      {`Total Fine`}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography sx={{ fontSize: '15px', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
+                      {totalfineAmount}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+        </CardWrapper>
+        <CardWrapper border={false} content={false} sx={{ marginTop: '30px', width: '22%' }}>
+          <Box sx={{ paddingLeft: '50px' }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Grid container justifyContent="space-between">
+                  <Grid item>
+                    <BookmarkAddRoundedIcon
+                      sx={{
+                        fontSize: 45,
+                        verticalAlign: 'middle',
+                        marginRight: 1,
+                        color: 'black',
+                        borderRadius: '50%',
+                        padding: 1
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item sx={{ mb: 0.75 }}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12}>
+                    <Typography
+                      sx={{
+                        fontSize: '15px',
+                        fontWeight: 500,
+                        mr: 1,
+                        mt: 1.75,
+                        mb: 0.75,
+                        color: 'black'
+                      }}
+                    >
+                      {`Total Book recive`}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography sx={{ fontSize: '15px', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, color: 'black' }}>
+                      {submissionCount}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+        </CardWrapper>
+      </Box>
       <Tabs value={selectedTab} onChange={handleTabChange} aria-label="Book Allotment Tabs" sx={{ marginTop: '20px' }}>
         <Tab label="Book Allotment" />
         <Tab label="Purchase Details" />
         <Tab label="Submission Details" />
       </Tabs>
-
       {loading ? (
         <Typography variant="h6" color="textSecondary" align="center" mt={4}>
           Loading...
         </Typography>
-      ) : selectedTab === 0 ? (
-        bookAllotmentData.length > 0 ? (
-          <Box sx={{ height: 'auto', overflow: 'auto', backgroundColor: 'white', marginTop: '30px' }}>
-            <DataGrid
-              rows={bookAllotmentData}
-              columns={columnsForBookAllotment}
-              pageSize={5}
-              components={{ Toolbar: GridToolbar }}
-              style={{ height: '100%', width: '100%' }} 
-            />
-          </Box>
-        ) : (
-          <Typography variant="h6" color="textSecondary" align="center" mt={4}>
-            No data available for Book Allotment
-          </Typography>
-        )
-      ) : selectedTab === 1 ? (
-        purchaseData.length > 0 ? (
-          <Card style={{ height: 'auto', marginTop: '30px' }}>
-            <DataGrid rows={purchaseData} columns={columnsForPurchase} pageSize={5} components={{ Toolbar: GridToolbar }} />
-          </Card>
-        ) : (
-          <Typography variant="h6" color="textSecondary" align="center" mt={4}>
-            No data available for Purchase Allotment
-          </Typography>
-        )
-      ) : selectedTab === 2 ? (
-        submissionData.length > 0 ? (
-          <Card style={{ height: '600px', marginTop: '30px' }}>
-            <DataGrid rows={submissionData} columns={columnsForSubmission} pageSize={5} components={{ Toolbar: GridToolbar }} />
-          </Card>
-        ) : (
-          <Typography variant="h6" color="textSecondary" align="center" mt={4}>
-            No data available for Submission Details
-          </Typography>
-        )
-      ) : null}
+      ) : (
+        <Box sx={{ marginTop: '30px' }}>
+          {selectedTab === 0 &&
+            (bookAllotmentData.length > 0 ? (
+              <Box sx={{ height: 'auto', overflow: 'auto', backgroundColor: 'white' }}>
+                <DataGrid
+                  rows={bookAllotmentData}
+                  columns={columnsForBookAllotment}
+                  pageSize={5}
+                  components={{ Toolbar: GridToolbar }}
+                  style={{ height: '100%', width: '100%' }}
+                />
+              </Box>
+            ) : (
+              <Typography variant="h6" color="textSecondary" align="center">
+                No data available for Book Allotment
+              </Typography>
+            ))}
+
+          {selectedTab === 1 &&
+            (purchaseData.length > 0 ? (
+              <Card sx={{ height: 'auto' }}>
+                <DataGrid rows={purchaseData} columns={columnsForPurchase} pageSize={5} components={{ Toolbar: GridToolbar }} />
+              </Card>
+            ) : (
+              <Typography variant="h6" color="textSecondary" align="center">
+                No data available for Purchase Allotment
+              </Typography>
+            ))}
+
+          {selectedTab === 2 &&
+            (submissionData.length > 0 ? (
+              <Card sx={{ height: 'auto' }}>
+                <DataGrid rows={submissionData} columns={columnsForSubmission} pageSize={5} components={{ Toolbar: GridToolbar }} />
+              </Card>
+            ) : (
+              <Typography variant="h6" color="textSecondary" align="center">
+                No data available for Submission Details
+              </Typography>
+            ))}
+        </Box>
+      )}
     </Container>
   );
 };

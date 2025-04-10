@@ -13,7 +13,10 @@ import {
   FormLabel,
   FormControl,
   InputAdornment,
-  FormHelperText
+  FormHelperText,
+  Select,
+  MenuItem,
+  InputLabel
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import axios from 'axios';
@@ -34,7 +37,8 @@ const View = () => {
     email: '',
     register_Date: '',
     select_identity: '',
-    logo: null
+    logo: null,
+    currency: '' // Added currency field to formData
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,14 +59,13 @@ const View = () => {
   }
   const handleSaveEdit = async () => {
     try {
-      console.log('Data>>>>>>>>>>>>>>>>>> @123');
-      console.log('Form Data:', formData);
       const formDataToSend = new FormData();
       formDataToSend.append('student_Name', formData.student_Name);
       formDataToSend.append('mobile_Number', formData.mobile_Number);
       formDataToSend.append('email', formData.email);
       formDataToSend.append('register_Date', formData.register_Date);
       formDataToSend.append('select_identity', formData.select_identity);
+      formDataToSend.append('currency', formData.currency); // Append currency to formData
       if (formData.logo) {
         formDataToSend.append('logo', formData.logo);
       }
@@ -71,18 +74,13 @@ const View = () => {
       const response = await editAdmin(`${url.admin.edit}${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      console.log('Data>>>>>>>>>>>>>>>>>>', response);
-      // setEditData(null);
       toast.success('Update Profile details successfully');
       refreshPage();
     } catch (error) {
       console.error('Profile Update Failed:', error);
-      // toast.error(' Profile Update Failed:');
     }
-    // fetchData();
   };
   const [studentId, setStudentId] = useState(null);
-  const [data, setData] = useState([]);
   useEffect(() => {
     const urlWindow = window.location.href;
     const parts = urlWindow.split('/');
@@ -91,9 +89,6 @@ const View = () => {
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(url.admin.adminProfile);
-        // const response = await uploadLogoAdmin(url.admin.admin);
-        console.log(' response>>>>>>>>', response.data.students[0].logo);
-
         if (response.data.status) {
           const formattedDate = formatDate(response.data.students[0].register_Date);
           setFormData({
@@ -103,7 +98,8 @@ const View = () => {
             email: response.data.students[0].email,
             register_Date: formattedDate,
             select_identity: response.data.students[0].select_identity,
-            logo: response.data.students[0].logo
+            logo: response.data.students[0].logo,
+            currency: response.data.students[0].currency || 'INR' // Set default currency if not set
           });
         }
       } catch (error) {
@@ -159,25 +155,19 @@ const View = () => {
           <Typography variant="caption" color="textSecondary"></Typography>
           <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={6}>
-              <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} />
+              <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} inputProps={{ maxLength: 30 }}/>
             </Grid>
             <Grid item xs={6}>
-              <TextField fullWidth label="Phone Number" name="mobile_Number" value={formData.mobile_Number} onChange={handleChange} />
+              <TextField fullWidth label="Phone Number" name="mobile_Number" value={formData.mobile_Number} onChange={handleChange}inputProps={{ maxLength: 10 }} />
             </Grid>
             <Grid item xs={6}>
-              <TextField fullWidth label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} />
+              <TextField fullWidth label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} inputProps={{ maxLength: 30 }}/>
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="Register Date" name="register_Date" value={formData.register_Date} onChange={handleChange} />
             </Grid>
             <Grid item xs={6}>
-              <TextField
-                fullWidth
-                label="Select Identity"
-                name="select_identity"
-                value={formData.select_identity}
-                onChange={handleChange}
-              />
+              <TextField fullWidth label="Select Identity" name="select_identity" value={formData.select_identity} onChange={handleChange} />
             </Grid>
             <Grid item xs={6}>
               <FormControl fullWidth>
@@ -196,6 +186,23 @@ const View = () => {
                   }}
                 />
                 <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel id="currency-label">Currency</InputLabel>
+                <Select
+                  labelId="currency-label"
+                  name="currency"
+                  value={formData.currency}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="USD">USD</MenuItem>
+                  <MenuItem value="EUR">EUR</MenuItem>
+                  <MenuItem value="INR">INR</MenuItem>
+                  <MenuItem value="GBP">GBP</MenuItem>
+                  {/* Add more currencies here */}
+                </Select>
               </FormControl>
             </Grid>
           </Grid>
