@@ -1,7 +1,6 @@
 const base_url = 'http://localhost:4300/';
 
 export const url = {
-
   baseurl: {
     baseurl: base_url
   },
@@ -27,6 +26,10 @@ export const url = {
     bookManagement: base_url + 'user/bookManagement/',
     bookCount: base_url + 'user/getBookCount/',
     bookmanagementTable: base_url + 'user/bookmangmentTable/'
+  },
+  booksubmission: {
+    submitedBook: base_url + 'user/submitedBook/',
+    getsubmitedBook: base_url + 'user/getsubmitedBook/'
   },
   vendorManagement: {
     addVender: base_url + 'user/addVenderBook/',
@@ -85,7 +88,7 @@ export const url = {
     getBookAllotedCount: base_url + 'user/getBookAllotedCount/',
     bookAllotmentReport: base_url + 'user/bookAllotmentReport/',
     trendingBooks: base_url + 'user/trendingBooks/',
-    submissionReport:base_url+'user/submissionReport/',
+    submissionReport: base_url + 'user/submissionReport/'
   },
   fine: {
     addFineBook: base_url + 'user/addFineBook/',

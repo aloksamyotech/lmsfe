@@ -391,13 +391,24 @@ const ReceiveBook = () => {
   };
   const handleRemove = async (bookId) => {
     const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
-
     toast.success('Book submitted successfully');
+    const { submittedBook } = submitResponse.data;
+    const updatedBook = submittedBook.books.find((book) => book._id === bookId);
+    const payload = {
+      studentId: submittedBook.studentId,
+      bookId: updatedBook.bookId,
+      bookIssueDate: updatedBook.bookIssueDate,
+      submissionDate: updatedBook.submissionDate,
+      paymentType: updatedBook.paymentType,
+      quantity: updatedBook.quantity,
+      amount: updatedBook.amount,
+      submit: updatedBook.submit,
+      fine: updatedBook.fine
+    };
+    const booksubmit = await axios.post(`${url.booksubmission.submitedBook}`, payload);
     try {
       setLoading(true);
-
       const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
-
       toast.success('Book removed successfully');
       window.location.reload();
       setLoading(false);
@@ -567,7 +578,7 @@ const ReceiveBook = () => {
                     <strong>Submission Date:</strong> {formatDate(book?.submissionDate) || 'Loading...'}
                   </Typography>
                   <Typography variant="body1">
-                    <strong>Quantity:</strong> {book?.quantity|| 'Loading...'}
+                    <strong>Quantity:</strong> {book?.quantity || 'Loading...'}
                   </Typography>
                 </Grid>
               </Grid>
@@ -587,7 +598,8 @@ const ReceiveBook = () => {
                           <li key={index}>
                             <Typography variant="body1">
                               <strong>Reason:</strong> {item?.reason || 'Loading...'}
-                              <strong style={{ marginLeft: '50px' }}>Fine Amount:</strong> {currencySymbol}{item?.fineAmount ?? `${currencySymbol}0.00`}
+                              <strong style={{ marginLeft: '50px' }}>Fine Amount:</strong> {currencySymbol}
+                              {item?.fineAmount ?? `${currencySymbol}0.00`}
                             </Typography>
                           </li>
                         ))}

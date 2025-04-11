@@ -17,6 +17,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import BookmarkAddRoundedIcon from '@mui/icons-material/BookmarkAddRounded';
 import MoneyOffCsredIcon from '@mui/icons-material/MoneyOffCsred';
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
+import { height } from '@mui/system';
 
 const EmailTemplates = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -72,23 +73,25 @@ const EmailTemplates = () => {
     try {
       const bookAllotmentResponse = await bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`);
       const bookAllotmentFinalData = bookAllotmentResponse?.data?.map((item) => {
-        const allotment = item.books[0] || {};
-        const book = item.bookDetails || {};
+        const books = item.books || [];
         const student = item.studentDetails || {};
-        const paymentType = item.paymentType || {};
-        const quantity = allotment.quantity || 0;
-        const amount = allotment.amount || 0;
-        const totalAmount = quantity * amount || 0;
+
+        const bookNames = books.map((book) => book.bookDetail?.bookName || 'Unnamed Book').join(', ');
+
+        const paymentType = books[0]?.paymentDetail?.title || 'Unknown Payment Type';
+        const totalQuantity = books.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
+        const totalAmount = books.reduce((acc, curr) => acc + (curr.quantity || 0) * (curr.amount || 0), 0);
+
         return {
           id: item._id,
-          bookName: book.bookName || 'No Book Name',
+          bookName: bookNames || 'No Book Name',
           student_Name: student.student_Name || 'Unknown Student',
-          paymentType: paymentType.title || 'Unknown Payment Type',
-          quantity,
-          amount,
+          Student_email:student.email||'Email',
+          quantity: totalQuantity,
           totalAmount
         };
       });
+
       const totalallotmentAmount = bookAllotmentFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
       setTotalAllotmentAmount(totalallotmentAmount);
       setBookAllotmentData(bookAllotmentFinalData);
@@ -112,40 +115,23 @@ const EmailTemplates = () => {
       setPurchaseData(purchaseFinalData);
       const totalpurchaseAmount = purchaseFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
       setTotalPurchaseAmount(totalpurchaseAmount);
-      const submissionResponse = await axios.get(`${url.allotmentManagement.submissionReport}${startDate}/${endDate}`);
-      const submissionFinalData = submissionResponse?.data?.map((item) => {
-        const allotment = item.books[0] || {};
-        const book = item.bookDetails || {};
-        const student = item.studentDetails || {};
-        const finedetails = item.finedetalis || {};
-        const paymentType = item.paymentType || {};
-        const quantity = allotment.quantity || 0;
-        const amount = allotment.amount || 0;
-        const totalAmount = quantity * amount || 0;
-        const submissionDate = formatDate(item.updatedAt);
-        const bookCount = item.books ? item.books.length : 0;
 
-        return {
-          id: item._id,
-          bookName: book.bookName || 'No Book Name',
-          student_Name: student.student_Name || 'Unknown Student',
-          paymentType: paymentType.title || 'Unknown Payment Type',
-          quantity,
-          amount,
-          totalAmount,
-          submissionDate,
-          fine: allotment.fine || 'NULL',
-          fineamount: finedetails.fineAmount || 0,
-          bookCount
-        };
+      const getsubmitedBooks= await axios.get(`${url.booksubmission.getsubmitedBook}`)
+      const filteredData = getsubmitedBooks.data.data.filter((item) => {
+        const createdDate = moment(item.createdAt).format("YYYY-MM-DD");
+        return createdDate >= startDate && createdDate <= endDate;
       });
-
-      const totalBookCount = submissionFinalData.reduce((sum, item) => sum + item.bookCount, 0);
-      setSubmissionCount(totalBookCount);
-      const totalfineAmount = submissionFinalData.reduce((sum, item) => sum + item.fineamount, 0);
-      setTotalfineAmount(totalfineAmount);
+      const submissionFinalData = filteredData.map((item, index) => ({
+        id: item._id,
+        student_Name: item.studentName || 'Unknown Student',
+        bookName: item.bookName || 'No Book Name',
+        Student_email:item.studentEmail||"null",
+        fine: item.fine
+      }));
 
       setSubmissionData(submissionFinalData);
+
+
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -166,21 +152,15 @@ const EmailTemplates = () => {
       headerName: 'sNo.',
       flex: 0.5
     },
-    { field: 'bookName', headerName: 'Book Name', flex: 1 },
-    { field: 'student_Name', headerName: 'Student Name', flex: 1 },
-    { field: 'paymentType', headerName: 'Payment Type', flex: 1 },
-    { field: 'quantity', headerName: 'Quantity', flex: 0.5 },
     {
-      field: 'amount',
-      headerName: 'Amount',
-      width: 120,
-      valueFormatter: ({ value }) => {
-        if (value != null) {
-          return ` ${currencySymbol} ${value.toLocaleString()}`;
-        }
-        return '$0';
-      }
+      field: 'bookName',
+      headerName: 'Book Name',
+      flex: 1,
+      cellClassName: 'wrap-text'
     },
+    { field: 'student_Name', headerName: 'Student Name', flex: 1 },
+    { field: 'Student_email', headerName: 'Student Email', flex: 1 },
+    { field: 'quantity', headerName: 'Quantity', flex: 0.5 },
     {
       field: 'totalAmount',
       headerName: 'Total Amount',
@@ -235,8 +215,9 @@ const EmailTemplates = () => {
       flex: 0.5
     },
     { field: 'student_Name', headerName: 'Student Name', flex: 1 },
+    { field: 'Student_email', headerName: 'Student email', flex: 1 },
+
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
-    { field: 'submissionDate', headerName: 'Submission Date', flex: 1 },
     {
       field: 'fine',
       headerName: 'Fine Status',
@@ -433,7 +414,7 @@ const EmailTemplates = () => {
                 {`Book Recieve`}
               </Typography>
               <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
-              {submissionCount ? submissionCount : '0'}
+                {submissionCount ? submissionCount : '0'}
               </Typography>
             </Box>
           </CardContent>
@@ -459,6 +440,7 @@ const EmailTemplates = () => {
                   pageSize={5}
                   components={{ Toolbar: GridToolbar }}
                   style={{ height: '100%', width: '100%' }}
+                  getRowHeight={() => '60'} // ✅ correct
                 />
               </Box>
             ) : (
@@ -489,6 +471,7 @@ const EmailTemplates = () => {
                 <DataGrid
                   rows={submissionData.map((row, index) => ({ ...row, sNo: index + 1 }))}
                   columns={columnsForSubmission}
+                  getRowId={(row) => row.id}
                   pageSize={5}
                   components={{ Toolbar: GridToolbar }}
                 />
