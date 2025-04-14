@@ -86,7 +86,7 @@ const EmailTemplates = () => {
           id: item._id,
           bookName: bookNames || 'No Book Name',
           student_Name: student.student_Name || 'Unknown Student',
-          Student_email:student.email||'Email',
+          Student_email: student.email || 'Email',
           quantity: totalQuantity,
           totalAmount
         };
@@ -97,14 +97,17 @@ const EmailTemplates = () => {
       setBookAllotmentData(bookAllotmentFinalData);
 
       const purchaseResponse = await axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`);
-      const purchaseFinalData = purchaseResponse?.data?.map((item) => {
+      const purchaseDataArray = Array.isArray(purchaseResponse?.data) ? purchaseResponse.data : [];
+
+      const purchaseFinalData = purchaseDataArray.map((item) => {
         const purchaseAmount = item.price || 0;
         const quantity = item.quantity || 0;
         const totalAmount = purchaseAmount * quantity;
+
         return {
           id: item._id,
-          bookName: item.bookDetails.bookName || 'Unknown Book',
-          vender_Name: item.vendorDetails.vendorName || 'Unknown Vendor',
+          bookName: item.bookDetails?.bookName || 'Unknown Book',
+          vender_Name: item.vendorDetails?.vendorName || 'Unknown Vendor',
           purchaseAmount,
           quantity,
           totalAmount,
@@ -113,25 +116,36 @@ const EmailTemplates = () => {
       });
 
       setPurchaseData(purchaseFinalData);
+
       const totalpurchaseAmount = purchaseFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
       setTotalPurchaseAmount(totalpurchaseAmount);
 
-      const getsubmitedBooks= await axios.get(`${url.booksubmission.getsubmitedBook}`)
+      const getsubmitedBooks = await axios.get(`${url.booksubmission.getsubmitedBook}`);
       const filteredData = getsubmitedBooks.data.data.filter((item) => {
-        const createdDate = moment(item.createdAt).format("YYYY-MM-DD");
+        const createdDate = moment(item.createdAt).format('YYYY-MM-DD');
         return createdDate >= startDate && createdDate <= endDate;
       });
       const submissionFinalData = filteredData.map((item, index) => ({
         id: item._id,
         student_Name: item.studentName || 'Unknown Student',
         bookName: item.bookName || 'No Book Name',
-        Student_email:item.studentEmail||"null",
-        fine: item.fine
+        Student_email: item.studentEmail || 'null',
+        fine: item.fine,
+        fineAmount: item.fineAmount || 0,
+        quantity: item.quantity || 0,
+        submissionDate:formatDate(item.updatedAt),
+        
       }));
 
       setSubmissionData(submissionFinalData);
-
-
+      const totalFine = submissionFinalData.reduce((total, item) => {
+        return total + (item.fineAmount || 0);
+      }, 0);
+      setTotalfineAmount(totalFine);
+      const totalBooksSubmitted = submissionFinalData.reduce((total, item) => {
+        return total + (item.quantity || 0);
+      }, 0);
+      setSubmissionCount(totalBooksSubmitted);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -216,8 +230,8 @@ const EmailTemplates = () => {
     },
     { field: 'student_Name', headerName: 'Student Name', flex: 1 },
     { field: 'Student_email', headerName: 'Student email', flex: 1 },
-
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
+    { field: 'quantity', headerName: 'Quantity', flex: 0.5 },
     {
       field: 'fine',
       headerName: 'Fine Status',
@@ -225,7 +239,8 @@ const EmailTemplates = () => {
       valueGetter: (params) => {
         return params.row.fine === true ? 'Applied' : 'Not Applied';
       }
-    }
+    },
+    {field:'submissionDate', headerName:'Submission Date', flex:1},
   ];
 
   return (
@@ -440,7 +455,7 @@ const EmailTemplates = () => {
                   pageSize={5}
                   components={{ Toolbar: GridToolbar }}
                   style={{ height: '100%', width: '100%' }}
-                  getRowHeight={() => '60'} // ✅ correct
+                  getRowHeight={() => '60'}
                 />
               </Box>
             ) : (

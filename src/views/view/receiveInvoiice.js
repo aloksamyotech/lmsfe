@@ -17,6 +17,7 @@ import {
   Breadcrumbs,
   Link
 } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 
@@ -27,8 +28,6 @@ import { fetchCurrency } from 'core/comman';
 
 const ReceiveInvoice = () => {
   const location = useLocation();
-  const { customerData, row, bookingData } = location.state || {};
-  const { rowData } = location.state || {};
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
   const [allItemData, setAllItemData] = useState([]);
@@ -49,6 +48,12 @@ const ReceiveInvoice = () => {
   const [amount, setAmount] = useState();
   const [allotmentId, setAllotmentId] = useState([]);
   const [currencySymbol, setCurrencySymbol] = useState('');
+  const [bookList, setBookList] = useState([]);
+
+  const rowData = location.state?.rowData;
+  const bookId = location.state?.bookId;
+  const fineData = location.state?.fine;
+
 
   const containerRef = useRef();
   useEffect(() => {
@@ -67,12 +72,11 @@ const ReceiveInvoice = () => {
   };
   const fetchData = async () => {
     const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
-
     const allotmentId = response?.data?._id;
     setAllotmentId(allotmentId);
     const studentId = response?.data?.studentId?._id;
 
-    const bookId = response?.data?.books?.[0]?._id; 
+    const bookId = response?.data?.books?.[0]?._id;
 
     const student_Name = response?.data?.studentId?.student_Name;
     setStudentName(student_Name);
@@ -108,21 +112,6 @@ const ReceiveInvoice = () => {
     setSubmissionDate(formatDate(submissionDate));
     const quantity = response?.data?.books[0]?.quantity;
     setBookQuantity(quantity);
-
-    try {
-      const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
-      const fine = response?.data?.fines?.map((item) => {
-        const reason = item?.reason;
-        const fineAmount = item?.fineAmount;
-        return { reason, fineAmount };
-      });
-
-      const amount = fine.reduce((total, item) => total + item.fineAmount, 0);
-      setAmount(amount);
-      setAllFineData(fine);
-    } catch (error) {
-      console.error(`error`, error);
-    }
   };
 
   useEffect(() => {
@@ -292,32 +281,36 @@ const ReceiveInvoice = () => {
             <Typography variant="h4" mb={3} mt={3}>
               Fine Details
             </Typography>
-            {allFineData?.length > 0 ? (
-              <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
-                {allFineData?.map((item, index) => (
-                  <Grid item xs={12} key={index}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={6}>
-                        <Typography variant="body1" fontWeight="bold">
-                          Fine Reason:
-                        </Typography>
-                        <Typography variant="body2">{item.reason || 'No reason provided'}</Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography variant="body1" fontWeight="bold">
-                          Fine Amount:
-                        </Typography>
-                        <Typography variant="body2">
-                          {item.fineAmount ? `${currencySymbol}${item.fineAmount}` : `${currencySymbol}0.00`}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                ))}
-              </Grid>
+            {fineData && fineData.length > 0 ? (
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <strong>S.No.</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>Reason</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>Amount</strong>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {fineData.map((fine, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{fine.reason || 'No reason provided'}</TableCell>
+                        <TableCell>{fine.fineAmount ? `${currencySymbol}${fine.fineAmount}` : `${currencySymbol}0.00`}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             ) : (
-              <Typography variant="body2" color="text.secondary" sx={{ marginTop: '54px', marginBottom: '20px' }}>
-                No fines applied for this book.
+              <Typography variant="body2" color="text.secondary" sx={{ marginTop:'50px'}}>
+                No fines applied.
               </Typography>
             )}
           </Grid>

@@ -65,7 +65,7 @@ const ReceiveBook = () => {
   const [amountHelperText, setAmountHelperText] = useState('');
   const [reasonHelperText, setReasonHelperText] = useState('');
   const [matchedStudents, setMatchedStudents] = useState([]);
-  const [book_Id, setBook_Id] = useState();
+  const [bookId, setBook_Id] = useState();
   const [fineDataa, setFineDataa] = useState([]);
   const [fineDetails, setFineDetails] = useState(null);
   const [allFineData, setAllFineData] = useState([]);
@@ -197,17 +197,25 @@ const ReceiveBook = () => {
     const getAllSubmitBookDetails = async () => {
       try {
         const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
-        const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => ({
-          serial: index + 1,
-          id: item?._id,
-          student_Name: item?.studentDetails[0]?.student_Name,
-          bookName: item?.bookDetails[0]?.bookName,
-          title: item?.paymentDetails[0]?.title,
-          amount: item?.paymentDetails[0]?.amount,
-          quantity: item?.books?.quantity,
-          bookIssueDate: formatDate(item?.books?.bookIssueDate),
-          submissionDate: formatDate(item?.books?.submissionDate)
-        }));
+
+        const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => {
+          const fines = item?.books?.fines || [];
+
+          return {
+            serial: index + 1,
+            id: item?._id,
+            bookid: item?.books?.bookId,
+            student_Name: item?.studentDetails[0]?.student_Name,
+            bookName: item?.bookDetails[0]?.bookName,
+            title: item?.paymentDetails[0]?.title,
+            amount: item?.paymentDetails[0]?.amount,
+            quantity: item?.books?.quantity,
+            bookIssueDate: formatDate(item?.books?.bookIssueDate),
+            submissionDate: formatDate(item?.books?.submissionDate),
+            fines: fines
+          };
+        });
+
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching submit book data:', error);
@@ -359,7 +367,13 @@ const ReceiveBook = () => {
   const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
 
   const handleInvoice = (row) => {
-    navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
+    navigate(`/dashboard/receiveInvoice/${row.id}`, {
+      state: {
+        rowData: row,
+        bookId: row.bookid,
+        fine: row.fines
+      }
+    });
   };
 
   const handleFineSubmit = async () => {
