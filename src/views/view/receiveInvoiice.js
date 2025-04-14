@@ -281,34 +281,6 @@ const ReceiveInvoice = () => {
             <Typography variant="h4" mb={3} mt={3}>
               Fine Details
             </Typography>
-            {/* {allFineData?.length > 0 ? (
-              <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
-                {allFineData?.map((item, index) => (
-                  <Grid item xs={12} key={index}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={6}>
-                        <Typography variant="body1" fontWeight="bold">
-                          Fine Reason:
-                        </Typography>
-                        <Typography variant="body2">{item.reason || 'No reason provided'}</Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography variant="body1" fontWeight="bold">
-                          Fine Amount:
-                        </Typography>
-                        <Typography variant="body2">
-                          {item.fineAmount ? `${currencySymbol}${item.fineAmount}` : `${currencySymbol}0.00`}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                ))}
-              </Grid>
-            ) : (
-              <Typography variant="body2" color="text.secondary" sx={{ marginTop: '54px', marginBottom: '20px' }}>
-                No fines applied for this book.
-              </Typography>
-            )} */}
             {fineData && fineData.length > 0 ? (
               <TableContainer component={Paper}>
                 <Table>
