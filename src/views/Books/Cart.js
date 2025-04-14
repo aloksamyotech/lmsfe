@@ -110,10 +110,15 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   const handleIncreaseQuantity = (id, submissionType) => {
     const updatedCartItems = cartItems.map((item) => {
       if (item._id === id && item.submissionType === submissionType) {
+        if (item.quantity >= item.bookQuantity) {
+          toast.error("Book quantity limit reached or out of stock!");
+          return item;
+        }
         return { ...item, quantity: item.quantity + 1 };
       }
       return item;
     });
+  
     setCartItems(updatedCartItems);
   };
 
