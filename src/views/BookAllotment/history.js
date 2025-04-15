@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Breadcrumbs, Link } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
 import BooksModal from './viewbooks.js';
 import { Stack } from '@mui/material';
 import { Box, Card, Paper, TableContainer } from '@mui/material';
@@ -12,6 +10,9 @@ import IconButton from '@mui/material/IconButton';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import { getBookAllotmentHistory } from 'core/helperFurtion';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 const History = ({ allotmentId }) => {
   const [students, setStudents] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
@@ -57,6 +58,11 @@ const History = ({ allotmentId }) => {
     });
   };
   const columns = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     {
       field: 'studentName',
       headerName: 'Student Name',
@@ -108,11 +114,36 @@ const History = ({ allotmentId }) => {
 
   return (
     <>
-      <TableContainer component={Paper}>
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          height: '50px',
+          justifyContent: 'space-between',
+          marginBottom: '-18px'
+        }}
+      >
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/lead" color="inherit" underline="none">
+            Book Managment
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/History" color="inherit" underline="none">
+            History
+          </MuiLink>
+        </Breadcrumbs>
+      </Box>
+      <TableContainer component={Paper}sx={{marginTop:'40px'}}>
         <Box width="100%" mt={3}>
-          <Card style={{ height: '600px', paddingTop: '15px' }}>
+          <Card style={{ height: '600px' }}>
             <DataGrid
-              rows={students}
+              rows={students.map((row, index) => ({ ...row, sNo: index + 1 }))}
               columns={columns}
               getRowId={(row) => row.id}
               slots={{ toolbar: GridToolbar }}

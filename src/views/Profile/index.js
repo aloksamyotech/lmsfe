@@ -8,8 +8,6 @@ import {
   Grid,
   Container,
   Paper,
-  Link,
-  Breadcrumbs,
   FormLabel,
   FormControl,
   InputAdornment,
@@ -18,7 +16,9 @@ import {
   MenuItem,
   InputLabel
 } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
@@ -151,14 +151,18 @@ const View = () => {
           marginLeft: '5%'
         }}
       >
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link href="/" underline="hover" color="inherit">
-            <HomeIcon sx={{ mr: 0.5, color: '#6A1B9A' }} />
-          </Link>
-          <Link href="/dashboard/profile" underline="hover" color="inherit">
-            <h4>Account Profile</h4>
-          </Link>
-        </Breadcrumbs>
+        <Breadcrumbs
+           separator="/"
+           aria-label="breadcrumb"
+           sx={{ display: 'flex', alignItems: 'center' }}
+          >
+            <MuiLink component={Link} to="/dashboard/default" color="inherit">
+              <HomeIcon sx={{ color: '#5e35b1' }} />
+            </MuiLink>
+            <MuiLink component={Link} to="/dashboard/profile" color="inherit" underline="none">
+              Admin Profile
+            </MuiLink>
+          </Breadcrumbs>
       </Box>
       <Container>
         <Paper

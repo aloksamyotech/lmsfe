@@ -9,8 +9,9 @@ import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { Breadcrumbs, Link } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 import { deletePurchaseBook, getPurchaseBook, updatePurchaseBook } from 'core/helperFurtion';
@@ -46,6 +47,11 @@ const PurchaseBook = () => {
   }, []);
 
   const columns = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     {
       field: 'bookName',
       headerName: 'Book Name',
@@ -94,8 +100,20 @@ const PurchaseBook = () => {
       headerName: 'Action',
       flex: 1,
       renderCell: (params) => (
-        <div>
-          <Button color="secondary" onClick={() => handleDelete(params?.row)} style={{ margin: '-9px' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button
+            color="primary"
+            onClick={() => handleEdit(params.row)}
+            style={{ minWidth: 'auto', padding: '6px' }}
+          >
+            <EditIcon />
+          </Button>
+    
+          <Button
+            color="secondary"
+            onClick={() => handleDelete(params.row)}
+            style={{ minWidth: 'auto', padding: '6px' }}
+          >
             <DeleteIcon />
           </Button>
         </div>
@@ -112,6 +130,7 @@ const PurchaseBook = () => {
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
+        bookId:item.bookId,
         bookName: item.bookName,
         vendorId: item.vendorId,
         price: item.price,
@@ -138,8 +157,7 @@ const PurchaseBook = () => {
     
 
     try {
-
-      const response = await updatePurchaseBook(`${url.purchaseBook.edit}${editData.id}`, editData);
+      const response = await updatePurchaseBook(`${url.purchaseBook.updatePurchaseBook}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
@@ -200,13 +218,17 @@ const PurchaseBook = () => {
             marginBottom: '-18px'
           }}
         >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Purchase Books</h4>
-            </Link>
+          <Breadcrumbs
+           separator="/"
+           aria-label="breadcrumb"
+           sx={{ display: 'flex', alignItems: 'center' }}
+          >
+            <MuiLink component={Link} to="/dashboard/default" color="inherit">
+              <HomeIcon sx={{ color: '#5e35b1' }} />
+            </MuiLink>
+            <MuiLink component={Link} to="/dashboard/purchase" color="inherit" underline="none">
+              Purchase Management
+            </MuiLink>
           </Breadcrumbs>
 
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
@@ -221,7 +243,7 @@ const PurchaseBook = () => {
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
               <DataGrid
-                rows={data}
+                rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}

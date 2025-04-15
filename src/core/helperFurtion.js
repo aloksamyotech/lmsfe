@@ -1,4 +1,4 @@
-import { createApi, deleteData, getAll, editData } from './apiFuntiuon.js';
+import { createApi, deleteData, getAll, editData, editPurchesData } from './apiFuntiuon.js';
 
 export const createAdmin = async (com_url, payload) => {
   const response = await createApi(com_url, payload);
@@ -355,7 +355,7 @@ export const deletePurchaseBook = async (com_url) => {
 };
 
 export const updatePurchaseBook = async (com_url, payload) => {
-  const response = await editData(com_url, payload);
+  const response = await editPurchesData(com_url, payload);
   return response;
 };
 

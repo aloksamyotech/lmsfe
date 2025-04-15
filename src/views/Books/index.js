@@ -6,14 +6,16 @@ import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './AddBooks.js';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Breadcrumbs, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import defaultBook from './bookDummy.jpeg';
 import { url } from 'core/url';
 import { addManyBooks, deleteBook, editBook, getBookManagement } from 'core/helperFurtion';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { fontSize } from '@mui/system';
+
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -40,6 +42,11 @@ const Lead = () => {
   }, []);
 
   const columns = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     {
       field: 'bookName',
       headerName: 'Book Name',
@@ -257,34 +264,20 @@ const Lead = () => {
             marginBottom: '-18px'
           }}
         >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Books Management</h4>
-            </Link>
+          <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+            <MuiLink component={Link} to="/dashboard/default" color="inherit">
+              <HomeIcon sx={{ color: '#5e35b1' }} />
+            </MuiLink>
+            <MuiLink component={Link} to="/dashboard/lead" color="inherit" underline="none">
+              Book Management
+            </MuiLink>
           </Breadcrumbs>
-
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
-              Bulk Upload
-            </Button>
-
-            <Button
-              variant="outlined"
-              startIcon={<Iconify icon="eva:file-download-fill" />}
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = '/BookFile.xlsx';
-                link.download = 'SampleFile.xlsx';
-                link.click();
-              }}
-            >
-              Download Sample File
+              <Typography sx={{ fontSize: '16px' }}>Bulk Upload</Typography>              
             </Button>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Add New Book
+            <Typography sx={{ fontSize: '15px' }}>Add New Book</Typography>              
             </Button>
           </Stack>
         </Box>
@@ -294,9 +287,8 @@ const Lead = () => {
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
               <DataGrid
-                rows={data}
+                rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
-                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}
@@ -374,12 +366,32 @@ const Lead = () => {
           </Box>
         </Dialog>
         <Dialog open={openBulkUploadDialog} onClose={() => setOpenBulkUploadDialog(false)}>
-          <Box p={3}>
-            <Typography variant="h6">Upload Excel File</Typography>
-            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
-            <Button variant="contained" color="primary" onClick={handleBulkUpload} sx={{ mt: 2 }}>
-              Upload Data
-            </Button>
+          <Box p={3} width={400}>
+            <Typography variant="h6" gutterBottom>
+              Upload Excel File
+            </Typography>
+
+            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} style={{ marginBottom: '16px' }} />
+
+            <Box display="flex" justifyContent="space-between" gap={2}>
+              <Button variant="contained" color="primary" onClick={handleBulkUpload} fullWidth>
+                Upload Data
+              </Button>
+
+              <Button
+                variant="outlined"
+                startIcon={<Iconify icon="eva:file-download-fill" />}
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/BookFile.xlsx';
+                  link.download = 'SampleFile.xlsx';
+                  link.click();
+                }}
+                fullWidth
+              >
+                Download
+              </Button>
+            </Box>
           </Box>
         </Dialog>
       </Container>

@@ -51,7 +51,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { Breadcrumbs, Link } from '@mui/material';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
+import { Link } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import { array } from 'prop-types';
 import BookInvoice from './Invoice';
@@ -363,13 +365,16 @@ const Allotment = () => {
           marginBottom: '-18px'
         }}
       >
-        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '-12px' }}>
-          <Link href="/" underline="hover" color="inherit">
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-          </Link>
-          <Link href="/dashboard/bookAllotment" underline="hover" color="inherit">
-            <h4>Books Management / Allocate Book</h4>
-          </Link>
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/lead" color="inherit" underline="none">
+            Book Management
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/bookAllotment" color="inherit" underline="none">
+            Book Allotment
+          </MuiLink>
         </Breadcrumbs>
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>

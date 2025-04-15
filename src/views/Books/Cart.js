@@ -12,6 +12,8 @@ import {
   DialogContent,
   IconButton
 } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
 import { IconTrash } from '@tabler/icons-react';
 import CloseIcon from '@mui/icons-material/Close';
 import CartSummary from './cartSummary';
@@ -22,7 +24,7 @@ import { getRegisterManagement } from 'core/helperFurtion';
 import { url } from 'core/url';
 import defaultBook from './bookDummy.jpeg';
 import { fetchCurrency } from 'core/comman';
-
+import { Link } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantity }) => {
   const [summary, setSummary] = useState(null);
@@ -125,17 +127,44 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   const handleDecrementQuantity = (id, submissionType) => {
     const updatedCartItems = cartItems.map((item) => {
       if (item._id === id && item.submissionType === submissionType && item.quantity > 1) {
-        return { ...item, quantity: item.quantity - 1 }; 
+        return { ...item, quantity: item.quantity - 1 };
       }
       return item;
     });
     setCartItems(updatedCartItems);
   };
-
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+  };
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: 'row', mb: 2 }}>
-        <Grid container spacing={4}>
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          height: '50px',
+          justifyContent: 'space-between',
+          marginBottom: '-18px'
+        }}
+      >
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/bookAllotment" color="inherit" underline="none">
+            Book Allotment
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/cart" color="inherit" underline="none">
+            Cart
+          </MuiLink>
+        </Breadcrumbs>
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '50px'}}>
+        <Grid container spacing={4} alignItems="center">
           <Grid item xs={12} sm={4}>
             <Autocomplete
               options={students}
@@ -143,6 +172,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
               value={students.find((s) => s.id === selectedStudent) || null}
               onChange={(event, newValue) => setSelectedStudent(newValue ? newValue.id : null)}
               renderInput={(params) => <TextField {...params} label="Select Student" fullWidth />}
+              size="small"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -152,12 +182,19 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
               value={students.find((s) => s.id === selectedStudent) || null}
               onChange={(event, newValue) => setSelectedStudent(newValue ? newValue.id : null)}
               renderInput={(params) => <TextField {...params} label="Select Email" fullWidth />}
+              size="small"
             />
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <Button variant="contained" color="primary" sx={{ width: 120 }} onClick={() => (window.location.href = '/dashboard/bookAllotment')}>
+              Add Books
+            </Button>
           </Grid>
         </Grid>
       </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row',marginTop:'25px'}}>
         <Box
           sx={{
             flex: 1,
@@ -192,10 +229,10 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                           src={item.upload_Book ? `${url.baseurl.baseurl}${item.upload_Book}` : defaultBook}
                           alt={item.title}
                           style={{
-                            width: 60,
-                            height: 60,
+                            width: 50,
+                            height: 50,
                             objectFit: 'cover',
-                            borderRadius: '8px'
+                            borderRadius: '50%'
                           }}
                         />
                       </TableCell>
@@ -240,7 +277,10 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                           </Button>
                         </Box>
                       </TableCell>
-                      <TableCell sx={{ textAlign: 'center' }}>{currencySymbol}{(item.amount || 0).toFixed(2)}</TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}>
+                        {currencySymbol}
+                        {(item.amount || 0).toFixed(2)}
+                      </TableCell>
                       <TableCell sx={{ textAlign: 'center' }}>
                         <Button color="error" onClick={() => handleRemoveFromCart(item._id, item.submissionType)}>
                           <IconTrash stroke={2} size={20} />
@@ -258,11 +298,11 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
             justifyContent: 'space-between',
             padding: '10px 20px',
             backgroundColor: 'white',
-            borderTop: '1px solid #ccc',
+            // borderTop: '1px solid #ccc',
             borderRadius: '8px',
-            boxShadow: '0 -2px 6px rgba(0, 0, 0, 0.1)',
-            height: '40vh',
-            width: '60vh',
+            // boxShadow: '0 -2px 6px rgba(0, 0, 0, 0.1)',
+            height: '30vh',
+            width: '55vh',
             marginTop: '10px'
           }}
         >
@@ -274,7 +314,8 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
             Total Items : {cartItems.reduce((total, item) => total + (item.quantity || 0), 0)}
           </Typography>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            Total Amount: {currencySymbol}{cartItems.reduce((total, item) => total + item.amount * item.quantity, 0).toFixed(2)}
+            Total Amount: {currencySymbol}
+            {cartItems.reduce((total, item) => total + item.amount * item.quantity, 0).toFixed(2)}
           </Typography>
           <hr></hr>
           <Button

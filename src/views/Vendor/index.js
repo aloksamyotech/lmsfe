@@ -10,8 +10,9 @@ import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { Breadcrumbs, Link } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import { url } from 'core/url';
 import { deleteVender, editVender, viewVender } from 'core/helperFurtion';
 
@@ -23,6 +24,11 @@ const PolicyManagement = () => {
   const [bookToDelete, setBookToDelete] = useState(null);
   const [errors, setErrors] = useState({});
   const columns = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     {
       field: 'vendorName',
       headerName: 'Vendor Name',
@@ -170,13 +176,17 @@ const PolicyManagement = () => {
             marginBottom: '-18px'
           }}
         >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Vendor Management</h4>
-            </Link>
+          <Breadcrumbs
+           separator="/"
+           aria-label="breadcrumb"
+           sx={{ display: 'flex', alignItems: 'center' }}
+          >
+            <MuiLink component={Link} to="/dashboard/default" color="inherit">
+              <HomeIcon sx={{ color: '#5e35b1' }} />
+            </MuiLink>
+            <MuiLink component={Link} to="/dashboard/policy" color="inherit" underline="none">
+              Vander Management
+            </MuiLink>
           </Breadcrumbs>
 
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
@@ -190,7 +200,7 @@ const PolicyManagement = () => {
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
               <DataGrid
-                rows={data}
+                rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
