@@ -408,6 +408,7 @@ const ReceiveBook = () => {
     toast.success('Book submitted successfully');
     const { submittedBook } = submitResponse.data;
     const updatedBook = submittedBook.books.find((book) => book._id === bookId);
+    const totalFineAmount = (updatedBook.fines || []).reduce((sum, fine) => sum + (fine.fineAmount || 0), 0);
     const payload = {
       studentId: submittedBook.studentId,
       bookId: updatedBook.bookId,
@@ -417,7 +418,8 @@ const ReceiveBook = () => {
       quantity: updatedBook.quantity,
       amount: updatedBook.amount,
       submit: updatedBook.submit,
-      fine: updatedBook.fine
+      fine: updatedBook.fine,
+      totalFineAmount:totalFineAmount,
     };
     const booksubmit = await axios.post(`${url.booksubmission.submitedBook}`, payload);
     try {

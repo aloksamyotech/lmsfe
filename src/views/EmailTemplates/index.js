@@ -59,95 +59,123 @@ const EmailTemplates = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
   const fetchDataForTab = async () => {
     setLoading(true);
     setBookAllotmentData([]);
     setPurchaseData([]);
     setSubmissionData([]);
-    setTotalAllotmentAmount();
-    setTotalPurchaseAmount();
-    setTotalfineAmount();
-    setSubmissionCount();
-
+    setTotalAllotmentAmount(0);
+    setTotalPurchaseAmount(0);
+    setTotalfineAmount(0);
+    setSubmissionCount(0);
+  
     try {
-      const bookAllotmentResponse = await bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`);
-      const bookAllotmentFinalData = bookAllotmentResponse?.data?.map((item) => {
-        const books = item.books || [];
-        const student = item.studentDetails || {};
-
-        const bookNames = books.map((book) => book.bookDetail?.bookName || 'Unnamed Book').join(', ');
-
-        const paymentType = books[0]?.paymentDetail?.title || 'Unknown Payment Type';
-        const totalQuantity = books.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
-        const totalAmount = books.reduce((acc, curr) => acc + (curr.quantity || 0) * (curr.amount || 0), 0);
-
-        return {
-          id: item._id,
-          bookName: bookNames || 'No Book Name',
-          student_Name: student.student_Name || 'Unknown Student',
-          Student_email: student.email || 'Email',
-          quantity: totalQuantity,
-          totalAmount
-        };
-      });
-
-      const totalallotmentAmount = bookAllotmentFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
-      setTotalAllotmentAmount(totalallotmentAmount);
-      setBookAllotmentData(bookAllotmentFinalData);
-
-      const purchaseResponse = await axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`);
-      const purchaseDataArray = Array.isArray(purchaseResponse?.data) ? purchaseResponse.data : [];
-
-      const purchaseFinalData = purchaseDataArray.map((item) => {
-        const purchaseAmount = item.price || 0;
-        const quantity = item.quantity || 0;
-        const totalAmount = purchaseAmount * quantity;
-
-        return {
-          id: item._id,
-          bookName: item.bookDetails?.bookName || 'Unknown Book',
-          vender_Name: item.vendorDetails?.vendorName || 'Unknown Vendor',
-          purchaseAmount,
-          quantity,
-          totalAmount,
-          purchaseDate: formatDate(item.bookIssueDate)
-        };
-      });
-
-      setPurchaseData(purchaseFinalData);
-
-      const totalpurchaseAmount = purchaseFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
-      setTotalPurchaseAmount(totalpurchaseAmount);
-
-      const getsubmitedBooks = await axios.get(`${url.booksubmission.getsubmitedBook}`);
-      const filteredData = getsubmitedBooks.data.data.filter((item) => {
-        const createdDate = moment(item.createdAt).format('YYYY-MM-DD');
-        return createdDate >= startDate && createdDate <= endDate;
-      });
-      const submissionFinalData = filteredData.map((item, index) => ({
-        id: item._id,
-        student_Name: item.studentName || 'Unknown Student',
-        bookName: item.bookName || 'No Book Name',
-        Student_email: item.studentEmail || 'null',
-        fine: item.fine,
-        fineAmount: item.fineAmount || 0,
-        quantity: item.quantity || 0,
-        submissionDate:formatDate(item.updatedAt),
-        
-      }));
-
-      setSubmissionData(submissionFinalData);
-      const totalFine = submissionFinalData.reduce((total, item) => {
-        return total + (item.fineAmount || 0);
-      }, 0);
-      setTotalfineAmount(totalFine);
-      const totalBooksSubmitted = submissionFinalData.reduce((total, item) => {
-        return total + (item.quantity || 0);
-      }, 0);
-      setSubmissionCount(totalBooksSubmitted);
+      const [
+        bookAllotmentResult,
+        purchaseResult,
+        submissionResult
+      ] = await Promise.allSettled([
+        bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`),
+        axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`),
+        axios.get(`${url.booksubmission.getsubmitedBook}`)
+      ]);
+  
+      if (bookAllotmentResult.status === 'fulfilled') {
+        const responseData = bookAllotmentResult.value?.data;
+        const isArray = Array.isArray(responseData);
+        if (isArray && responseData.length > 0) {
+          const bookAllotmentFinalData = responseData.map((item) => {
+            const books = item.books || [];
+            const student = item.studentDetails || {};
+            const bookNames = books.map((book) => book.bookDetail?.bookName || 'Unnamed Book').join(', ');
+            const totalQuantity = books.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
+            const totalAmount = books.reduce((acc, curr) => acc + (curr.quantity || 0) * (curr.amount || 0), 0);
+  
+            return {
+              id: item._id,
+              bookName: bookNames || 'No Book Name',
+              student_Name: student.student_Name || 'Unknown Student',
+              Student_email: student.email || 'Email',
+              quantity: totalQuantity,
+              totalAmount
+            };
+          });
+  
+          const totalallotmentAmount = bookAllotmentFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
+          setTotalAllotmentAmount(totalallotmentAmount);
+          setBookAllotmentData(bookAllotmentFinalData);
+        } else {
+          console.warn("Book allotment data is empty.");
+        }
+      } else {
+        console.error("Book Allotment request failed:", bookAllotmentResult.reason);
+      }
+  
+      if (purchaseResult.status === 'fulfilled') {
+        const purchaseDataArray = Array.isArray(purchaseResult.value?.data) ? purchaseResult.value.data : [];
+        if (purchaseDataArray.length > 0) {
+          const purchaseFinalData = purchaseDataArray.map((item) => {
+            const purchaseAmount = item.price || 0;
+            const quantity = item.quantity || 0;
+            const totalAmount = purchaseAmount * quantity;
+  
+            return {
+              id: item._id,
+              bookName: item.bookDetails?.bookName || 'Unknown Book',
+              vender_Name: item.vendorDetails?.vendorName || 'Unknown Vendor',
+              purchaseAmount,
+              quantity,
+              totalAmount,
+              purchaseDate: formatDate(item.bookIssueDate)
+            };
+          });
+  
+          const totalpurchaseAmount = purchaseFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
+          setTotalPurchaseAmount(totalpurchaseAmount);
+          setPurchaseData(purchaseFinalData);
+        } else {
+          console.warn("Purchase data is empty.");
+        }
+      } else {
+        console.error("Purchase request failed:", purchaseResult.reason);
+      }
+  
+      if (submissionResult.status === 'fulfilled') {
+        const rawSubmissionData = submissionResult.value?.data?.data;
+        const submissionArray = Array.isArray(rawSubmissionData) ? rawSubmissionData : [];
+        const filteredData = submissionArray.filter((item) => {
+          const createdDate = moment(item.createdAt).format('YYYY-MM-DD');
+          return createdDate >= startDate && createdDate <= endDate;
+        });
+  
+        if (filteredData.length > 0) {
+          const submissionFinalData = filteredData.map((item) => ({
+            id: item._id,
+            student_Name: item.studentName || 'Unknown Student',
+            bookName: item.bookName || 'No Book Name',
+            Student_email: item.studentEmail || 'null',
+            fine: item.fine,
+            fineAmount: item.fineAmount || 0,
+            quantity: item.quantity || 0,
+            submissionDate: formatDate(item.updatedAt)
+          }));
+  
+          setSubmissionData(submissionFinalData);
+  
+          const totalFine = submissionFinalData.reduce((total, item) => total + (item.fineAmount || 0), 0);
+          
+          const totalBooksSubmitted = submissionFinalData.reduce((total, item) => total + (item.quantity || 0), 0);
+          setTotalfineAmount(totalFine);
+          setSubmissionCount(totalBooksSubmitted);
+        } else {
+          console.warn("Submission data is empty.");
+        }
+      } else {
+        console.error("Submission request failed:", submissionResult.reason);
+      }
+  
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Unexpected error:', error);
     } finally {
       setLoading(false);
     }
@@ -240,6 +268,8 @@ const EmailTemplates = () => {
         return params.row.fine === true ? 'Applied' : 'Not Applied';
       }
     },
+    {field:'fineAmount', headerName:'Fine Amount', flex:1},
+
     {field:'submissionDate', headerName:'Submission Date', flex:1},
   ];
 
