@@ -43,6 +43,8 @@ const CartSummary = ({ summaryData }) => {
 
         setCartcontextItems([]);
         localStorage.setItem('librarycart', JSON.stringify([]));
+        localStorage.setItem('librarycartCount', JSON.stringify(0));
+
         navigate(`/dashboard/bookAllotmentInvoice/${result.allotment._id}`, {
           state: {
             allotmentId: result.allotment._id,
@@ -134,10 +136,7 @@ const CartSummary = ({ summaryData }) => {
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
         <Button onClick={handleCreateInvoice} variant="contained" color="primary">
-          Create Invoice
-        </Button>
-        <Button variant="outlined" color="secondary">
-          Print
+          Submit
         </Button>
       </Box>
     </Box>

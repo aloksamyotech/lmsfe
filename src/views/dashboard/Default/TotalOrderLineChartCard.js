@@ -6,6 +6,7 @@ import { useTheme, styled } from '@mui/material/styles';
 import { Avatar, Box, Grid, Typography } from '@mui/material';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
+import { useNavigate } from 'react-router-dom';
 
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
@@ -49,9 +50,9 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
   }
 }));
 
-
 const TotalOrderLineChartCard = ({ isLoading }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [bookCount, setBookCount] = useState(0);
   const [timeValue, setTimeValue] = useState(false);
@@ -59,11 +60,12 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
   const handleChangeTime = (event, newValue) => {
     setTimeValue(newValue);
   };
-
+  const handleCardClick = () => {
+    navigate('/dashboard/lead');
+  };
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-
         const response = await getBookCount(url.bookManagenent.bookCount);
         setBookCount(response.data.count);
       } catch (error) {
@@ -79,8 +81,8 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
       {isLoading ? (
         <SkeletonTotalOrderCard />
       ) : (
-        <CardWrapper border={false} content={false} sx={{height: '80%'}}>
-          <Box sx={{ p: 2.25 }}>
+        <CardWrapper border={false} content={false} sx={{ height: '80%' }}>
+          <Box sx={{ p: 2.25, cursor: 'pointer' }} onClick={handleCardClick}>
             <Grid container direction="column">
               <Grid item>
                 <Grid container justifyContent="space-between">

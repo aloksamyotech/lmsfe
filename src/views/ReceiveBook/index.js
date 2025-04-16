@@ -66,13 +66,14 @@ const ReceiveBook = () => {
   const [amountHelperText, setAmountHelperText] = useState('');
   const [reasonHelperText, setReasonHelperText] = useState('');
   const [matchedStudents, setMatchedStudents] = useState([]);
-  const [bookId, setBook_Id] = useState();
+  const [book_Id, setBook_Id] = useState();
   const [fineDataa, setFineDataa] = useState([]);
   const [fineDetails, setFineDetails] = useState(null);
   const [allFineData, setAllFineData] = useState([]);
   const [fineid, setFineid] = useState([]);
   const [allotmentId, setAllotmentId] = useState(null);
   const [currencySymbol, setCurrencySymbol] = useState('');
+  const [filteredBooks, setFilteredBooks] = useState([]);
 
   useEffect(() => {
     const getCurrency = async () => {
@@ -370,7 +371,15 @@ const ReceiveBook = () => {
     }
   }, [selectedStudentId, booksss]);
 
-  const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
+  useEffect(() => {
+    const result = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
+
+    setFilteredBooks(result);
+
+    const filterbookId = result[0]?.bookId || null;
+
+    setBook_Id(filterbookId);
+  }, [formik.values.bookId, bookData]);
 
   const handleInvoice = (row) => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, {
@@ -444,7 +453,7 @@ const ReceiveBook = () => {
 
   const findFineData = async () => {
     try {
-      const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
+      const response = await axios.get(`${url.fine.findFinebyAllotmentIdAndBookId}/${allotmentId}/${book_Id}`);
 
       const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
@@ -454,13 +463,19 @@ const ReceiveBook = () => {
 
       setFineDataa(fine);
     } catch (error) {
-      console.error('error', error);
+      if (error.response?.status === 404) {
+        setFineDataa([]);
+      } else {
+        console.error('Unexpected error:', error);
+      }
     }
   };
 
   useEffect(() => {
-    findFineData();
-  }, [formik.values.bookId]);
+    if (book_Id) {
+      findFineData();
+    }
+  }, [book_Id]);
 
   function getUniqueBooks(bookData) {
     return [...new Map(bookData.filter((item) => item.active === true).map((item) => [item.bookId, item])).values()];

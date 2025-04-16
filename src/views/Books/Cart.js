@@ -102,26 +102,35 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   }, []);
 
   const handleRemoveFromCart = (id, submissionType) => {
-    const updatedCartItems = cartItems.filter((item) => !(item._id === id && item.submissionType === submissionType));
+    const updatedCartItems = cartItems.filter(
+      (item) => !(item._id === id && item.submissionType === submissionType)
+    );
+  
     setCartItems(updatedCartItems);
     setCartcontextItems(updatedCartItems);
     localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
-
+  
+    const totalQuantity = updatedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    localStorage.setItem('librarycartCount', totalQuantity);
   };
+  
 
   const handleIncreaseQuantity = (id, submissionType) => {
     const updatedCartItems = cartItems.map((item) => {
       if (item._id === id && item.submissionType === submissionType) {
         if (item.quantity >= item.bookQuantity) {
-          toast.error("Book quantity limit reached or out of stock!");
+          toast.error('Book quantity limit reached or out of stock!');
           return item;
         }
         return { ...item, quantity: item.quantity + 1 };
       }
       return item;
     });
-  
+
     setCartItems(updatedCartItems);
+    localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
+    const totalQuantity = updatedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    localStorage.setItem('librarycartCount', totalQuantity);
   };
 
   const handleDecrementQuantity = (id, submissionType) => {
@@ -131,8 +140,13 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
       }
       return item;
     });
+  
     setCartItems(updatedCartItems);
+    localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
+    const totalQuantity = updatedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    localStorage.setItem('librarycartCount', totalQuantity);
   };
+  
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
   };
@@ -329,7 +343,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
               borderRadius: '8px'
             }}
           >
-            Submit
+            Confirm
           </Button>
         </Box>
         <Dialog open={isPopupOpen} onClose={handleClosePopup} maxWidth="sm" fullWidth>

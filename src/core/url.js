@@ -97,7 +97,7 @@ export const url = {
     findByStudentId: base_url + 'user/findByStudentId/',
     findFine: base_url + 'user/findFineInvoice/',
     fineDetails: base_url + 'user/findFine/',
-    findFinebyAllotmentId: base_url + 'user/findFinebyAllotmentId/'
+    findFinebyAllotmentIdAndBookId: base_url + 'user/findFinebyAllotmentIdAndBookId',
   },
   purchaseBook: {
     purchaseBook: base_url + 'user/purchaseBook/',

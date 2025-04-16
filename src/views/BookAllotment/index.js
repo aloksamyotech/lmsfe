@@ -164,6 +164,8 @@ const Allotment = () => {
   useEffect(() => {
     localStorage.setItem('librarycart', JSON.stringify(cartItems));
     setCartcontextItems(cartItems);
+    const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    localStorage.setItem('librarycartCount', totalQuantity);
   }, [cartItems, setCartcontextItems]);
   useEffect(() => {
     fetchCategory();
@@ -287,19 +289,26 @@ const Allotment = () => {
     const selectedType = studentData.find((type) => type._id === submissionType);
     const typeCharge = selectedType ? selectedType.amount : 0;
     const typeName = selectedType ? selectedType.title : 'N/A';
-
+    let addedToCart = false;
     setCartItems((prevCartItems) => {
       const existingItemIndex = prevCartItems.findIndex(
         (item) => item._id === selectedProduct._id && item.submissionType === submissionType
       );
+      const totalQuantity = prevCartItems.reduce((acc, item) => acc + item.quantity, 0);
+      if (totalQuantity >= 5) {
+        toast.error('You can add a maximum of 5 Books only!');
+        return prevCartItems;
+      }
 
       if (existingItemIndex >= 0) {
         const updatedCartItems = [...prevCartItems];
         updatedCartItems[existingItemIndex].quantity += 1;
         updatedCartItems[existingItemIndex].submissionDate = submissionDate;
         updatedCartItems[existingItemIndex].amount += typeCharge;
+        addedToCart = true;
         return updatedCartItems;
       } else {
+        addedToCart = true;
         return [
           ...prevCartItems,
           {
@@ -314,14 +323,17 @@ const Allotment = () => {
       }
     });
 
-    toast.success('Book successfully added to cart');
-    getBookCount();
-    setOpenModal(false);
-    setSubmissionDate('');
-    setSubmissionType('');
-    setCalculatedAmount(null);
+    setTimeout(() => {
+      if (addedToCart) {
+        toast.success('Book successfully added to cart');
+        getBookCount();
+        setOpenModal(false);
+        setSubmissionDate('');
+        setSubmissionType('');
+        setCalculatedAmount(null);
+      }
+    }, 0);
   };
-
 
   const filteredProducts = categoryData.filter((product) => product.title.toLowerCase().includes(search.toLowerCase()));
 

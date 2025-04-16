@@ -171,7 +171,6 @@ const AddPurchaseBook = (props) => {
                       )}
                       isOptionEqualToValue={(option, value) => option._id === value}
                     />
-                    {/* <FormHelperText style={{ color: 'red' }}>{formik.touched.vendorId && formik.errors.vendorId}</FormHelperText> */}
                   </FormControl>
                 </Grid>
 
@@ -185,7 +184,9 @@ const AddPurchaseBook = (props) => {
                     value={formik.values.bookIssueDate}
                     onChange={formik.handleChange}
                     inputProps={{
-                      min: new Date().toISOString().slice(0, 10)
+                      min: new Date().toISOString().slice(0, 10),
+                      readOnly: true
+
                     }}
                   />
                 </Grid>

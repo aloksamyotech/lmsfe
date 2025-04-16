@@ -321,7 +321,7 @@ const ReceiveInvoice = () => {
               <Typography variant="body2" fontSize="1.1rem">
                 {`${currencySymbol}${(
                   studentAmount * (bookQuantity || 1) +
-                  allFineData?.reduce((acc, item) => acc + (item.fineAmount || 0), 0)
+                  fineData?.reduce((acc, item) => acc + (item.fineAmount || 0), 0)
                 ).toFixed(2)}` || `${currencySymbol}0.00`}
               </Typography>
             </Grid>
