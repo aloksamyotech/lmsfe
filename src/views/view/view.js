@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Avatar, Typography, Paper, Link, Breadcrumbs, Box, Card, Stack, Button } from '@mui/material';
+import { Container, Avatar, Typography, Paper, Box, Card, Stack, Button, CardContent } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TableStyle from '../../ui-component/TableStyle';
@@ -10,7 +12,8 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
-
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
+import BookmarkAddRoundedIcon from '@mui/icons-material/BookmarkAddRounded';
 
 const View = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -23,7 +26,8 @@ const View = () => {
   const [id, setId] = useState(null);
   const [allData, setAllData] = useState([]);
   const [currencySymbol, setCurrencySymbol] = useState('');
-  
+  const [totalAllotted, setTotalAllotted] = useState(0);
+  const [totalSubmitted, setTotalSubmitted] = useState(0);
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState({
@@ -60,6 +64,12 @@ const View = () => {
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
+      field: 'quantity',
+      headerName: 'Quantity',
+      flex: 0.5,
+      cellClassName: 'name-column--cell name-column--cell--capitalize'
+    },
+    {
       field: 'student_Name',
       headerName: 'Student Name',
       flex: 1,
@@ -91,27 +101,6 @@ const View = () => {
       headerName: 'Submission Date',
       flex: 1
     },
-    {
-      field: 'isSubmit',
-      headerName: 'Status',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center',
-      renderCell: (params) => {
-        const isSubmitted = params.value; // Get the value (true/false)
-    
-        return (
-          <Typography
-            sx={{
-              color: isSubmitted ? 'green' : 'red',  // Green if true, red if false
-              fontWeight: isSubmitted ? 'bold' : 'normal',  // Bold if true, normal if false
-            }}
-          >
-            {isSubmitted ? 'Submitted' : 'Not Submitted'}  {/* Display text based on value */}
-          </Typography>
-        );
-      }
-    }
   ];
 
   const formatDate = (dateString) => {
@@ -148,7 +137,7 @@ const View = () => {
     try {
       setData((prevData) => prevData.filter((register) => register.id !== id));
     } catch (error) {
-      // console.error('Error deleting Register:', error);
+      console.error('Error deleting Register:', error);
     }
   };
   const cancelDelete = () => {
@@ -199,7 +188,10 @@ const View = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
-    
+      
+        let totalAllottedCount = 0;
+        let totalSubmittedCount = 0;
+      
         const fetchedData = response?.data?.map((item) => {
           const dateObj = new Date(item.createdAt);
           const istTime = dateObj.toLocaleTimeString('en-IN', {
@@ -208,27 +200,51 @@ const View = () => {
             minute: '2-digit',
             hour12: true, 
           });
-    
-          const quantity = item.books?.[0]?.quantity || 1;
-          const amountPerBook = item.books?.[0]?.amount || 0;
-          const totalAmount = quantity > 0 ? quantity * amountPerBook : 0;
-    
+      
+          const bookNames = item.books
+            ?.map(book => book.bookId?.bookName)
+            .filter(Boolean)
+            .join(', ');
+      
+          const totalAmount = item.books?.reduce((sum, book) => {
+            const quantity = book.quantity || 1;
+            const amountPerBook = book.amount || 0;
+            return sum + quantity * amountPerBook;
+          }, 0);
+      
+          let totalQuantity = 0;
+          let submittedQuantity = 0;
+      
+          item.books?.forEach((book) => {
+            const quantity = book.quantity || 1;
+            totalQuantity += quantity;
+            if (book.submit) {
+              submittedQuantity += quantity;
+            }
+          });
+      
+          totalAllottedCount += totalQuantity;
+          totalSubmittedCount += submittedQuantity;
+      
+          const allSubmitted = item.books?.every(book => book.submit === true);
+      
           return {
             id: item._id,
-            bookName: item.books?.[0]?.bookId?.bookName,
+            bookName: bookNames,
             student_Name: item.studentId?.student_Name,
             paymentType: item.paymentType?.title,
-            amount: totalAmount,  // Calculate total amount (quantity * amount)
-            bookIssueDate: formatDate(item.books?.[0]?.bookIssueDate),
-            submissionDate: formatDate(item.books?.[0]?.submissionDate),
-            time: istTime, 
-            quantity: item.books?.[0]?.quantity,  // Corrected here
-            isSubmit: item.books?.[0]?.submit, 
+            amount: totalAmount,
+            bookIssueDate: formatDate(item.books?.[0]?.bookIssueDate), // Assuming same for all
+            submissionDate: formatDate(item.books?.[0]?.submissionDate), // Assuming same for all
+            time: istTime,
+            quantity: totalQuantity,
+            isSubmit: allSubmitted
           };
         });
-    
-        // Set the data state
+      
         setData(fetchedData);
+        setTotalAllotted(totalAllottedCount);
+        setTotalSubmitted(totalSubmittedCount);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -253,13 +269,16 @@ const View = () => {
           marginLeft: '2%'
         }}
       >
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-          </Link>
-          <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-            <h4>Student Profile</h4>
-          </Link>
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/call" color="inherit" underline="none">
+            Student Managment
+          </MuiLink>
+          <MuiLink component={Link} to="" color="inherit" underline="none">
+            Student profile
+          </MuiLink>
         </Breadcrumbs>
       </Box>
       <AddRegister open={openAdd} handleClose={handleCloseAdd} />
@@ -269,8 +288,9 @@ const View = () => {
           style={{
             padding: '20px',
             display: 'flex',
-            maxWidth: '500px',
-            margin: '20px'
+            maxWidth: '400px',
+            marginTop:'20px',
+            marginBottom:'20px'
           }}
         >
           <Avatar
@@ -283,19 +303,78 @@ const View = () => {
             }}
           />
 
-          <Box sx={{ lineHeight: 2 }}>
-            <Typography variant="h5" gutterBottom>
-              {allData?.user?.student_Name}
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              <strong>Email -: {allData?.user?.email}</strong>
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              <strong>Phone Number -: {allData?.user?.mobile_Number}</strong>
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              <strong>Register Date -: {formatDate(allData?.user?.register_Date)}</strong>
-            </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap'}}>
+            <Box sx={{ flex: 1, minWidth: 250, maxWidth: 400, lineHeight: 2, mr: 3, }}>
+              <Typography variant="h5" gutterBottom>
+                {allData?.user?.student_Name}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                <strong>Email -: {allData?.user?.email}</strong>
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                <strong>Phone Number -: {allData?.user?.mobile_Number}</strong>
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                <strong>Register Date -: {formatDate(allData?.user?.register_Date)}</strong>
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Card sx={{ width: 220, boxShadow: 3 }}>
+                <CardContent sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
+                  <Box
+                    sx={{
+                      borderRadius: 2,
+                      p: 2,
+                      mr: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: 60,
+                      height: 60,
+                      backgroundColor: '#ffc107'
+                    }}
+                  >
+                    <BookmarkRemoveIcon sx={{ fontSize: 30, color: 'white' }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '14px' }}>
+                      Books Allotmented
+                    </Typography>
+                    <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                       {totalAllotted ? totalAllotted : '0'}
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+              <Card sx={{ width: 220, boxShadow: 3 }}>
+                <CardContent sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
+                  <Box
+                    sx={{
+                      borderRadius: 2,
+                      p: 2,
+                      mr: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: 60,
+                      height: 60,
+                      backgroundColor: '#dc3545'
+                    }}
+                  >
+                    <BookmarkAddRoundedIcon sx={{ fontSize: 30, color: 'white' }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
+                      Book Recieved
+                    </Typography>
+                    <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                      {totalSubmitted ? totalSubmitted : '0'}
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
           </Box>
         </Paper>
         <TableStyle>

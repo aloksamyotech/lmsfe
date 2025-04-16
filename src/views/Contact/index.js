@@ -22,8 +22,9 @@ import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { Breadcrumbs, Link } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import { url } from 'core/url';
 import { deleteMarkFavorite, getMarkFavorite, markFavorite } from 'core/helperFurtion';
 
@@ -179,13 +180,17 @@ const Contact = () => {
             marginBottom: '-18px'
           }}
         >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Favorite Students</h4>
-            </Link>
+           <Breadcrumbs
+           separator="/"
+           aria-label="breadcrumb"
+           sx={{ display: 'flex', alignItems: 'center' }}
+          >
+            <MuiLink component={Link} to="/dashboard/default" color="inherit">
+              <HomeIcon sx={{ color: '#5e35b1' }} />
+            </MuiLink>
+            <MuiLink component={Link} to="/dashboard/contact" color="inherit" underline="none">
+            Favorite Students
+            </MuiLink>
           </Breadcrumbs>
         </Box>
 

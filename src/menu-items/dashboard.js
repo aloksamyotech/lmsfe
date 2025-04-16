@@ -12,7 +12,6 @@ import {
   IconNotebook,
   IconPhoneCheck,
   IconUsers,
-  // AddTaskIcon,
   IconPlus,
   IconBook,
   IconBookmark,
@@ -35,7 +34,6 @@ const icons = {
   IconNotebook,
   IconPhoneCheck,
   IconUsers,
-  // AddTaskIcon,
   IconPlus,
   IconBook,
   IconBookmark,
@@ -65,7 +63,6 @@ const dashboard = {
       type: 'collapse',
       url: '/dashboard/lead',
       icon: icons.IconAntennaBars5,
-      // breadcrumbs: false
       children: [
         {
           id: 'manage-Books',
@@ -79,13 +76,11 @@ const dashboard = {
           title: 'Books Allotment',
           type: 'item',
           url: '/dashboard/bookAllotment',
-          // icon: icons.IconPlus
-          // icon: icons.IconBookmark
           breadcrumbs: false
         },
         {
           id: 'History',
-          title: 'History',
+          title: 'Alloment History',
           type: 'item',
           url: '/dashboard/History',
           breadcrumbs: false
@@ -97,13 +92,6 @@ const dashboard = {
           url: '/dashboard/Receive',
           breadcrumbs: false
         }
-        // {
-        //   id: 'update-Fine',
-        //   title: 'Manage Fine',
-        //   type: 'item',
-        //   url: '/dashboard/fine',
-        //   breadcrumbs: false
-        // }
       ]
     },
     {
@@ -114,14 +102,6 @@ const dashboard = {
       icon: icons.IconUserCheck,
       breadcrumbs: false
     },
-    // {
-    //   id: '03',
-    //   title: 'Book Allotment',
-    //   type: 'item',
-    //   url: '/dashboard/bookAllotment',
-    //   // icon: icons.IconPlus
-    //   icon: icons.IconBookmark
-    // },
 
     {
       id: '04',
@@ -147,104 +127,16 @@ const dashboard = {
       icon: icons.IconNotebook,
       breadcrumbs: false
     },
-    // {
-    //   id: '04',
-    //   title: 'Request New Book',
-    //   type: 'collapse',
-    //   // url: '/dashboard/task',
-    //   icon: icons.IconChecklist,
-    //   children: [
-    //     {
-    //       id: 'add-New-Book',
-    //       title: 'Add New Book',
-    //       type: 'item',
-    //       url: 'dashboard/task',
-    //       breadcrumbs: false
-    //     },
-    //     {
-    //       id: 'manage-New-Book',
-    //       title: 'Manage New Book',
-    //       type: 'item',
-    //       url: '/dashboard/task',
-    //       breadcrumbs: false
-    //     }
-    //   ]
-    // },
+
     {
       id: '07',
       title: 'Publications',
-      // type: 'collapse',
       type: 'item',
       url: '/dashboard/meeting',
       icon: icons.IconUsers
 
-      // children: [
-      //   {
-      //     id: 'add-Publications',
-      //     title: 'Add Publications',
-      //     // type: 'item',
-      //     url: '/dashboard/meeting',
-      //     breadcrumbs: false
-      //   },
-      //   {
-      //     id: 'manage-Publications',
-      //     title: 'Manage Publications',
-      //     type: 'item',
-      //     url: '/dashboard/meeting',
-      //     breadcrumbs: false
-      //   }
-      // ]
     },
 
-    // {
-    //   id: '07',
-    //   title: 'Emails',
-    //   type: 'item',
-    //   url: '/dashboard/email',
-    //   icon: icons.IconMail,
-    //   breadcrumbs: false
-    // },
-    // {
-    //   id: '08',
-    //   title: 'Reports',
-    //   type: 'item',
-    //   url: '/dashboard/report',
-    //   icon: icons.IconCalendarEvent,
-    //   breadcrumbs: false
-    // },
-    // {
-    //   id: '09',
-    //   title: 'Calender',
-    //   type: 'item',
-    //   url: '/dashboard/calender',
-    //   icon: icons.IconCalendarEvent,
-    //   breadcrumbs: false
-    // }
-    // {
-    //   id: '09',
-    //   title: 'Document Management',
-    //   type: 'item',
-    //   url: '/dashboard/document',
-    //   icon: icons.IconFileUpload,
-    //   breadcrumbs: false
-    // },
-    // {
-    //   id: '09',
-    //   title: 'view',
-    //   type: 'item',
-    //   url: '/dashboard/view/:id',
-    //   icon: icons.IconFileUpload,
-    //   breadcrumbs: false
-    // },
-
-    // {
-    //   id: '11',
-    //   title: 'Subscription',
-    //   type: 'item',
-    //   url: '/dashboard/Subscription',
-    //   icon: IconCreditCard,
-    //   breadcrumbs: false
-    // },
     {
       id: '11',
       title: 'Subscription Type',

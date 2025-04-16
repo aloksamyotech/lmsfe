@@ -8,8 +8,9 @@ import AddRegister from './Addregister';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Breadcrumbs, Link } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Iconify from '../../ui-component/iconify';
 import { url } from 'core/url';
@@ -34,6 +35,11 @@ const Call = () => {
     setStudentId(extractedId);
   }, []);
   const columns = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     {
       field: 'email',
       headerName: 'Student Email',
@@ -98,7 +104,6 @@ const Call = () => {
   };
   const fetchData = async () => {
     try {
-
       const response = await axios.get(url.studentRegister.getRegisterManagement);
       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
         id: item._id,
@@ -137,7 +142,6 @@ const Call = () => {
       return;
     }
     try {
-
       const response = await axios.put(`${url.studentRegister.editRegister}${editData.id}`, editData);
 
       const updatedRegister = response.data;
@@ -156,9 +160,7 @@ const Call = () => {
   };
   const confirmDelete = async (id) => {
     try {
-
       await axios.delete(`${url.studentRegister.deleteRegister}${bookToDelete}`);
-
 
       setData((prevData) => prevData.filter((register) => register.id !== bookToDelete));
       toast.success('Register details Deleted successfully');
@@ -175,7 +177,6 @@ const Call = () => {
     window.location.href = `/dashboard/view/${row.id}`;
     const fetchStudent = async () => {
       try {
-
         const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${id}`);
         const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
           id: item._id,
@@ -194,7 +195,6 @@ const Call = () => {
   };
   const handleFavorite = async (student) => {
     try {
-
       const response = await axios.post(`${url.studentRegister.markFavorite}${student.id}`);
       const updatedStudent = response.data.student;
       setData((prevData) => prevData.map((item) => (item.id === updatedStudent.id ? updatedStudent : item)));
@@ -248,7 +248,6 @@ const Call = () => {
   };
   const handleBulkUpload = async () => {
     try {
-
       const response = await axios.post(url.studentRegister.registerMany, excelData);
       toast.success(`upload Successfully`);
       setTimeout(() => {
@@ -276,47 +275,33 @@ const Call = () => {
             marginBottom: '-18px'
           }}
         >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Students Management</h4>
-            </Link>
+          <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+            <MuiLink component={Link} to="/dashboard/default" color="inherit">
+              <HomeIcon sx={{ color: '#5e35b1' }} />
+            </MuiLink>
+            <MuiLink component={Link} to="/dashboard/call" color="inherit" underline="none">
+              Student Management
+            </MuiLink>
           </Breadcrumbs>
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
-              Bulk Upload
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<Iconify icon="eva:file-download-fill" />}
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = '/SampleFile.xlsx';
-                link.download = 'SampleFile.xlsx';
-                link.click();
-              }}
-            >
-              Download Sample File
+              <Typography sx={{ fontSize: '16px' }}>Bulk Upload</Typography>
             </Button>
             <Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              Register Student
+              <Typography sx={{ fontSize: '14px' }}>Register Student</Typography>
             </Button>
           </Stack>
         </Box>
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
-          <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
-              <DataGrid
-                rows={data}
-                columns={columns}
-                getRowId={(row) => row.id}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{ toolbar: { showQuickFilter: true } }}
-              />
-            </Card>
+          <Box width="100%" backgroundColor="white" borderRadius='8px'>
+            <DataGrid
+              rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
+              columns={columns}
+              getRowId={(row) => row.id}
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{ toolbar: { showQuickFilter: true } }}
+            />
           </Box>
         </TableStyle>
         {editData && (
@@ -384,12 +369,32 @@ const Call = () => {
           </Box>
         </Dialog>
         <Dialog open={openBulkUploadDialog} onClose={() => setOpenBulkUploadDialog(false)}>
-          <Box p={3}>
-            <Typography variant="h6">Upload Excel File</Typography>
-            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
-            <Button variant="contained" color="primary" onClick={handleBulkUpload} sx={{ mt: 2 }}>
-              Upload Data
-            </Button>
+          <Box p={3} width={400}>
+            <Typography variant="h6" gutterBottom>
+              Upload Excel File
+            </Typography>
+
+            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} style={{ marginBottom: '16px' }} />
+
+            <Box display="flex" justifyContent="space-between" gap={2}>
+              <Button variant="contained" color="primary" onClick={handleBulkUpload} fullWidth>
+                Upload Data
+              </Button>
+
+              <Button
+                variant="outlined"
+                startIcon={<Iconify icon="eva:file-download-fill" />}
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/SampleFile.xlsx';
+                  link.download = 'SampleFile.xlsx';
+                  link.click();
+                }}
+                fullWidth
+              >
+                Download
+              </Button>
+            </Box>
           </Box>
         </Dialog>
       </Container>

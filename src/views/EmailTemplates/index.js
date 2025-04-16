@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Container, Grid, Typography, Box, FormLabel, TextField, Button, Tabs, Tab, CardContent } from '@mui/material';
+import { Card, Container, Grid, Typography, Box, FormLabel, TextField, Button, Tabs, Tab, CardContent, CircularProgress } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Formik, Form } from 'formik';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Breadcrumbs, Link } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import { bookAllotmentReport, purchaseAllotmentReport, submissionDetailsReport } from 'core/helperFurtion';
 import { fetchCurrency } from 'core/comman';
 import { url } from 'core/url';
@@ -59,95 +60,118 @@ const EmailTemplates = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
   const fetchDataForTab = async () => {
     setLoading(true);
     setBookAllotmentData([]);
     setPurchaseData([]);
     setSubmissionData([]);
-    setTotalAllotmentAmount();
-    setTotalPurchaseAmount();
-    setTotalfineAmount();
-    setSubmissionCount();
+    setTotalAllotmentAmount(0);
+    setTotalPurchaseAmount(0);
+    setTotalfineAmount(0);
+    setSubmissionCount(0);
 
     try {
-      const bookAllotmentResponse = await bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`);
-      const bookAllotmentFinalData = bookAllotmentResponse?.data?.map((item) => {
-        const books = item.books || [];
-        const student = item.studentDetails || {};
+      const [bookAllotmentResult, purchaseResult, submissionResult] = await Promise.allSettled([
+        bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`),
+        axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`),
+        axios.get(`${url.booksubmission.getsubmitedBook}`)
+      ]);
 
-        const bookNames = books.map((book) => book.bookDetail?.bookName || 'Unnamed Book').join(', ');
+      if (bookAllotmentResult.status === 'fulfilled') {
+        const responseData = bookAllotmentResult.value?.data;
+        const isArray = Array.isArray(responseData);
+        if (isArray && responseData.length > 0) {
+          const bookAllotmentFinalData = responseData.map((item) => {
+            const books = item.books || [];
+            const student = item.studentDetails || {};
+            const bookNames = books.map((book) => book.bookDetail?.bookName || 'Unnamed Book').join(', ');
+            const totalQuantity = books.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
+            const totalAmount = books.reduce((acc, curr) => acc + (curr.quantity || 0) * (curr.amount || 0), 0);
 
-        const paymentType = books[0]?.paymentDetail?.title || 'Unknown Payment Type';
-        const totalQuantity = books.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
-        const totalAmount = books.reduce((acc, curr) => acc + (curr.quantity || 0) * (curr.amount || 0), 0);
+            return {
+              id: item._id,
+              bookName: bookNames || 'No Book Name',
+              student_Name: student.student_Name || 'Unknown Student',
+              Student_email: student.email || 'Email',
+              quantity: totalQuantity,
+              totalAmount
+            };
+          });
 
-        return {
-          id: item._id,
-          bookName: bookNames || 'No Book Name',
-          student_Name: student.student_Name || 'Unknown Student',
-          Student_email: student.email || 'Email',
-          quantity: totalQuantity,
-          totalAmount
-        };
-      });
+          const totalallotmentAmount = bookAllotmentFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
+          setTotalAllotmentAmount(totalallotmentAmount);
+          setBookAllotmentData(bookAllotmentFinalData);
+        } else {
+          console.warn('Book allotment data is empty.');
+        }
+      } else {
+        console.error('Book Allotment request failed:', bookAllotmentResult.reason);
+      }
 
-      const totalallotmentAmount = bookAllotmentFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
-      setTotalAllotmentAmount(totalallotmentAmount);
-      setBookAllotmentData(bookAllotmentFinalData);
+      if (purchaseResult.status === 'fulfilled') {
+        const purchaseDataArray = Array.isArray(purchaseResult.value?.data) ? purchaseResult.value.data : [];
+        if (purchaseDataArray.length > 0) {
+          const purchaseFinalData = purchaseDataArray.map((item) => {
+            const purchaseAmount = item.price || 0;
+            const quantity = item.quantity || 0;
+            const totalAmount = purchaseAmount * quantity;
 
-      const purchaseResponse = await axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`);
-      const purchaseDataArray = Array.isArray(purchaseResponse?.data) ? purchaseResponse.data : [];
+            return {
+              id: item._id,
+              bookName: item.bookDetails?.bookName || 'Unknown Book',
+              vender_Name: item.vendorDetails?.vendorName || 'Unknown Vendor',
+              purchaseAmount,
+              quantity,
+              totalAmount,
+              purchaseDate: formatDate(item.bookIssueDate)
+            };
+          });
 
-      const purchaseFinalData = purchaseDataArray.map((item) => {
-        const purchaseAmount = item.price || 0;
-        const quantity = item.quantity || 0;
-        const totalAmount = purchaseAmount * quantity;
+          const totalpurchaseAmount = purchaseFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
+          setTotalPurchaseAmount(totalpurchaseAmount);
+          setPurchaseData(purchaseFinalData);
+        } else {
+          console.warn('Purchase data is empty.');
+        }
+      } else {
+        console.error('Purchase request failed:', purchaseResult.reason);
+      }
 
-        return {
-          id: item._id,
-          bookName: item.bookDetails?.bookName || 'Unknown Book',
-          vender_Name: item.vendorDetails?.vendorName || 'Unknown Vendor',
-          purchaseAmount,
-          quantity,
-          totalAmount,
-          purchaseDate: formatDate(item.bookIssueDate)
-        };
-      });
+      if (submissionResult.status === 'fulfilled') {
+        const rawSubmissionData = submissionResult.value?.data?.data;
+        const submissionArray = Array.isArray(rawSubmissionData) ? rawSubmissionData : [];
+        const filteredData = submissionArray.filter((item) => {
+          const createdDate = moment(item.createdAt).format('YYYY-MM-DD');
+          return createdDate >= startDate && createdDate <= endDate;
+        });
 
-      setPurchaseData(purchaseFinalData);
+        if (filteredData.length > 0) {
+          const submissionFinalData = filteredData.map((item) => ({
+            id: item._id,
+            student_Name: item.studentName || 'Unknown Student',
+            bookName: item.bookName || 'No Book Name',
+            Student_email: item.studentEmail || 'null',
+            fine: item.fine,
+            fineAmount: item.fineAmount || 0,
+            quantity: item.quantity || 0,
+            submissionDate: formatDate(item.updatedAt)
+          }));
 
-      const totalpurchaseAmount = purchaseFinalData.reduce((sum, item) => sum + item.totalAmount, 0);
-      setTotalPurchaseAmount(totalpurchaseAmount);
+          setSubmissionData(submissionFinalData);
 
-      const getsubmitedBooks = await axios.get(`${url.booksubmission.getsubmitedBook}`);
-      const filteredData = getsubmitedBooks.data.data.filter((item) => {
-        const createdDate = moment(item.createdAt).format('YYYY-MM-DD');
-        return createdDate >= startDate && createdDate <= endDate;
-      });
-      const submissionFinalData = filteredData.map((item, index) => ({
-        id: item._id,
-        student_Name: item.studentName || 'Unknown Student',
-        bookName: item.bookName || 'No Book Name',
-        Student_email: item.studentEmail || 'null',
-        fine: item.fine,
-        fineAmount: item.fineAmount || 0,
-        quantity: item.quantity || 0,
-        submissionDate:formatDate(item.updatedAt),
-        
-      }));
+          const totalFine = submissionFinalData.reduce((total, item) => total + (item.fineAmount || 0), 0);
 
-      setSubmissionData(submissionFinalData);
-      const totalFine = submissionFinalData.reduce((total, item) => {
-        return total + (item.fineAmount || 0);
-      }, 0);
-      setTotalfineAmount(totalFine);
-      const totalBooksSubmitted = submissionFinalData.reduce((total, item) => {
-        return total + (item.quantity || 0);
-      }, 0);
-      setSubmissionCount(totalBooksSubmitted);
+          const totalBooksSubmitted = submissionFinalData.reduce((total, item) => total + (item.quantity || 0), 0);
+          setTotalfineAmount(totalFine);
+          setSubmissionCount(totalBooksSubmitted);
+        } else {
+          console.warn('Submission data is empty.');
+        }
+      } else {
+        console.error('Submission request failed:', submissionResult.reason);
+      }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Unexpected error:', error);
     } finally {
       setLoading(false);
     }
@@ -158,7 +182,11 @@ const EmailTemplates = () => {
   }, []);
 
   const handleTabChange = (event, newValue) => {
+    setLoading(true);
     setSelectedTab(newValue);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000); // 1 second delay
   };
   const columnsForBookAllotment = [
     {
@@ -240,7 +268,18 @@ const EmailTemplates = () => {
         return params.row.fine === true ? 'Applied' : 'Not Applied';
       }
     },
-    {field:'submissionDate', headerName:'Submission Date', flex:1},
+    {
+      field: 'fineAmount',
+      headerName: 'Fine Amount',
+      width: 120,
+      valueFormatter: ({ value }) => {
+        if (value != null) {
+          return ` ${currencySymbol} ${value.toLocaleString()}`;
+        }
+        return '$0';
+      }
+    },
+    { field: 'submissionDate', headerName: 'Submission Date', flex: 1 }
   ];
 
   return (
@@ -258,13 +297,13 @@ const EmailTemplates = () => {
           marginBottom: '16px'
         }}
       >
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-          </Link>
-          <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-            <h4>Book Allotment Report</h4>
-          </Link>
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/emailtemplate" color="inherit" underline="none">
+            Report
+          </MuiLink>
         </Breadcrumbs>
       </Box>
 
@@ -322,7 +361,7 @@ const EmailTemplates = () => {
           )}
         </Formik>
       </Card>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+      {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
         <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px', paddingBottom: '0' }}>
           <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
             <Box
@@ -434,16 +473,203 @@ const EmailTemplates = () => {
             </Box>
           </CardContent>
         </Card>
+      </Box> */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap', 
+          justifyContent: 'space-between',
+          width: '100%',
+        }}
+      >
+        <Card
+          sx={{
+            width: { xs: '100%', sm: '48%', md: '22%' },
+            minWidth: 200,
+            m: 1,
+            boxShadow: 3,
+            marginTop: '35px'
+          }}
+        >
+          <CardContent
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px',
+              paddingBottom: '10px !important'
+            }}
+          >
+            <Box
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 60,
+                height: 60,
+                backgroundColor: '#0769b4'
+              }}
+            >
+              <AddShoppingCartIcon sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
+                Total Purchase
+              </Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                {currencySymbol}
+                {totalPurchaseAmount ? totalPurchaseAmount.toFixed(2) : '0.00'}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Total Fine */}
+        <Card
+          sx={{
+            width: { xs: '100%', sm: '48%', md: '22%' },
+            minWidth: 200,
+            m: 1,
+            boxShadow: 3,
+            marginTop: '35px'
+          }}
+        >
+          <CardContent
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px',
+              paddingBottom: '10px !important'
+            }}
+          >
+            <Box
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 60,
+                height: 60,
+                backgroundColor: '#28a745'
+              }}
+            >
+              <MoneyOffCsredIcon sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
+                Total Fine
+              </Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                {currencySymbol}
+                {totalfineAmount ? totalfineAmount.toFixed(2) : '0.00'}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Book Allotment */}
+        <Card
+          sx={{
+            width: { xs: '100%', sm: '48%', md: '22%' },
+            minWidth: 200,
+            m: 1,
+            boxShadow: 3,
+            marginTop: '35px'
+          }}
+        >
+          <CardContent
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px',
+              paddingBottom: '10px !important'
+            }}
+          >
+            <Box
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 60,
+                height: 60,
+                backgroundColor: '#ffc107'
+              }}
+            >
+              <BookmarkRemoveIcon sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '14px' }}>
+                Book Allotment
+              </Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                {currencySymbol}
+                {totalAllotmetAmount ? totalAllotmetAmount.toFixed(2) : '0.00'}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Book Receive */}
+        <Card
+          sx={{
+            width: { xs: '100%', sm: '48%', md: '22%' },
+            minWidth: 200,
+            m: 1,
+            boxShadow: 3,
+            marginTop: '35px'
+          }}
+        >
+          <CardContent
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px',
+              paddingBottom: '10px !important'
+            }}
+          >
+            <Box
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 60,
+                height: 60,
+                backgroundColor: '#dc3545'
+              }}
+            >
+              <BookmarkAddRoundedIcon sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
+                Book Receive
+              </Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                {submissionCount ? submissionCount : '0'}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
       </Box>
+
       <Tabs value={selectedTab} onChange={handleTabChange} aria-label="Book Allotment Tabs" sx={{ marginTop: '20px' }}>
         <Tab label="Book Allotment" />
         <Tab label="Purchase Details" />
         <Tab label="Submission Details" />
       </Tabs>
       {loading ? (
-        <Typography variant="h6" color="textSecondary" align="center" mt={4}>
-          Loading...
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
       ) : (
         <Box sx={{ marginTop: '30px' }}>
           {selectedTab === 0 &&

@@ -11,8 +11,9 @@ import { Dialog, TextField } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { Breadcrumbs, Link } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import { url } from 'core/url';
 import { deletePublications, editPublications, getPublications } from 'core/helperFurtion';
 
@@ -49,6 +50,11 @@ const Publications = () => {
   }, []);
 
   const columns = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     {
       field: 'publisherName',
       headerName: 'Publisher Name',
@@ -189,13 +195,17 @@ const Publications = () => {
             marginBottom: '-18px'
           }}
         >
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" underline="hover" color="inherit" onClick={handleClick} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-            </Link>
-            <Link href="/account-profile" underline="hover" color="inherit" onClick={handleClick}>
-              <h4>Publications List</h4>
-            </Link>
+           <Breadcrumbs
+           separator="/"
+           aria-label="breadcrumb"
+           sx={{ display: 'flex', alignItems: 'center' }}
+          >
+            <MuiLink component={Link} to="/dashboard/default" color="inherit">
+              <HomeIcon sx={{ color: '#5e35b1' }} />
+            </MuiLink>
+            <MuiLink component={Link} to="/dashboard/meeting" color="inherit" underline="none">
+              Publication Management
+            </MuiLink>
           </Breadcrumbs>
 
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
@@ -210,7 +220,7 @@ const Publications = () => {
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
               <DataGrid
-                rows={data}
+                rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}

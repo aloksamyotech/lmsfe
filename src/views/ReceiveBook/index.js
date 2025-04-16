@@ -19,8 +19,9 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TableStyle from 'ui-component/TableStyle';
 import axios from 'axios';
 import Iconic from 'ui-component/iconify/Iconify';
-import { Breadcrumbs, Link } from '@mui/material';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useFormik } from 'formik';
@@ -92,6 +93,11 @@ const ReceiveBook = () => {
   };
   const [booksss, setFetchReceiveBooks] = useState([]);
   const columns = [
+    {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
     {
       field: 'student_Name',
       headerName: 'Student Name',
@@ -408,6 +414,7 @@ const ReceiveBook = () => {
     toast.success('Book submitted successfully');
     const { submittedBook } = submitResponse.data;
     const updatedBook = submittedBook.books.find((book) => book._id === bookId);
+    const totalFineAmount = (updatedBook.fines || []).reduce((sum, fine) => sum + (fine.fineAmount || 0), 0);
     const payload = {
       studentId: submittedBook.studentId,
       bookId: updatedBook.bookId,
@@ -417,7 +424,8 @@ const ReceiveBook = () => {
       quantity: updatedBook.quantity,
       amount: updatedBook.amount,
       submit: updatedBook.submit,
-      fine: updatedBook.fine
+      fine: updatedBook.fine,
+      totalFineAmount: totalFineAmount
     };
     const booksubmit = await axios.post(`${url.booksubmission.submitedBook}`, payload);
     try {
@@ -476,13 +484,16 @@ const ReceiveBook = () => {
           marginBottom: '-18px'
         }}
       >
-        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '-12px' }}>
-          <Link href="/" underline="hover" color="inherit">
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-          </Link>
-          <Link href="/dashboard/Receive" underline="hover" color="inherit">
-            <h4>Books Management / Receive Book</h4>
-          </Link>
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/lead" color="inherit" underline="none">
+            Book Management
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/Receive" color="inherit" underline="none">
+            Receive
+          </MuiLink>
         </Breadcrumbs>
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
@@ -529,7 +540,14 @@ const ReceiveBook = () => {
           <Grid item xs={12} sm={4} md={4}>
             <FormLabel>Book</FormLabel>
             <FormControl fullWidth>
-              <Select id="bookId" name="bookId" size="small" value={formik.values.bookId} onChange={formik.handleChange}>
+              <Select
+                id="bookId"
+                name="bookId"
+                size="small"
+                value={formik.values.bookId}
+                onChange={formik.handleChange}
+                disabled={!formik.values.studentId} 
+              >
                 {getUniqueBooks(bookData).map((item) => (
                   <MenuItem key={item.bookId} value={item.bookId}>
                     {item?.bookTitle}
@@ -697,7 +715,7 @@ const ReceiveBook = () => {
         <Box width="100%">
           <Card style={{ height: '600px', paddingTop: '15px' }}>
             <DataGrid
-              rows={data}
+              rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
               columns={columns}
               getRowId={(row) => row.serial}
               slots={{ toolbar: GridToolbar }}
