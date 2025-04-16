@@ -116,6 +116,13 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   
 
   const handleIncreaseQuantity = (id, submissionType) => {
+    const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  
+    if (totalQuantity >= 5) {
+      toast.error('You can only add up to 5 books in your cart!');
+      return;
+    }
+  
     const updatedCartItems = cartItems.map((item) => {
       if (item._id === id && item.submissionType === submissionType) {
         if (item.quantity >= item.bookQuantity) {
@@ -129,9 +136,11 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 
     setCartItems(updatedCartItems);
     localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
-    const totalQuantity = updatedCartItems.reduce((acc, item) => acc + item.quantity, 0);
-    localStorage.setItem('librarycartCount', totalQuantity);
+  
+    const newTotalQuantity = updatedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    localStorage.setItem('librarycartCount', newTotalQuantity);
   };
+  
 
   const handleDecrementQuantity = (id, submissionType) => {
     const updatedCartItems = cartItems.map((item) => {
@@ -208,7 +217,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
         </Grid>
       </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'row',marginTop:'25px'}}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '25px' }}>
         <Box
           sx={{
             flex: 1,

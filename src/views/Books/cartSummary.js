@@ -6,6 +6,7 @@ import { useCart } from './CartContext';
 import { url } from 'core/url';
 import { allotmentManagement } from 'core/helperFurtion';
 import { fetchCurrency } from 'core/comman';
+import { toast } from 'react-toastify';
 
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
@@ -56,12 +57,12 @@ const CartSummary = ({ summaryData }) => {
           }
         });
       } else {
-        console.error('Failed to allot books:', response.statusText);
-        alert('Failed to allot books. Please try again.');
+        const errorData = await response.json();
+        toast.error(errorData.message || 'Failed to allot books. Please try again.');
       }
     } catch (error) {
       console.error('Error allotting books:', error);
-      alert('An error occurred. Please try again.');
+      toast.error('An unexpected error occurred. Please try again.');
     }
   };
   const formattedTotalAmount = !isNaN(totalAmount) ? totalAmount.toFixed(2) : '0.00';
