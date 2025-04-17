@@ -56,6 +56,8 @@ const ReceiveBook = () => {
   const [allData, setAllData] = useState([]);
   const [fetchReceiveBook, setFetchReceiveBook] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [fineloading, setFineloading] = useState(false);
+
   const [studentId, setStudentId] = useState(null);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -66,13 +68,14 @@ const ReceiveBook = () => {
   const [amountHelperText, setAmountHelperText] = useState('');
   const [reasonHelperText, setReasonHelperText] = useState('');
   const [matchedStudents, setMatchedStudents] = useState([]);
-  const [bookId, setBook_Id] = useState();
+  const [book_Id, setBook_Id] = useState();
   const [fineDataa, setFineDataa] = useState([]);
   const [fineDetails, setFineDetails] = useState(null);
   const [allFineData, setAllFineData] = useState([]);
   const [fineid, setFineid] = useState([]);
   const [allotmentId, setAllotmentId] = useState(null);
   const [currencySymbol, setCurrencySymbol] = useState('');
+  const [filteredBooks, setFilteredBooks] = useState([]);
 
   useEffect(() => {
     const getCurrency = async () => {
@@ -370,7 +373,15 @@ const ReceiveBook = () => {
     }
   }, [selectedStudentId, booksss]);
 
-  const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
+  useEffect(() => {
+    const result = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
+
+    setFilteredBooks(result);
+
+    const filterbookId = result[0]?.bookId || null;
+
+    setBook_Id(filterbookId);
+  }, [formik.values.bookId, bookData]);
 
   const handleInvoice = (row) => {
     navigate(`/dashboard/receiveInvoice/${row.id}`, {
@@ -383,6 +394,7 @@ const ReceiveBook = () => {
   };
 
   const handleFineSubmit = async () => {
+    setFineloading(true);
     const idBook = formik.values.bookId;
     const _id = formik.values._id;
     try {
@@ -407,31 +419,39 @@ const ReceiveBook = () => {
       toast.error('Error Fine submitting form');
       console.error('Error Fine submitting form:', error);
     }
+    setFineloading(false);
     setOpen(false);
   };
   const handleRemove = async (bookId) => {
-    const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
-    toast.success('Book submitted successfully');
-    const { submittedBook } = submitResponse.data;
-    const updatedBook = submittedBook.books.find((book) => book._id === bookId);
-    const totalFineAmount = (updatedBook.fines || []).reduce((sum, fine) => sum + (fine.fineAmount || 0), 0);
-    const payload = {
-      studentId: submittedBook.studentId,
-      bookId: updatedBook.bookId,
-      bookIssueDate: updatedBook.bookIssueDate,
-      submissionDate: updatedBook.submissionDate,
-      paymentType: updatedBook.paymentType,
-      quantity: updatedBook.quantity,
-      amount: updatedBook.amount,
-      submit: updatedBook.submit,
-      fine: updatedBook.fine,
-      totalFineAmount: totalFineAmount
-    };
-    const booksubmit = await axios.post(`${url.booksubmission.submitedBook}`, payload);
+    const book = filteredBooks.find((b) => b._id === bookId);
+    const quantityToSubmit = book.quantity ;
+
     try {
+      const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`, { quantity: quantityToSubmit });
+
+      toast.success('Book submitted successfully');
+      const { submittedBook } = submitResponse.data;
+
+      const updatedBook = submittedBook.books.find((book) => book._id === bookId);
+      const totalFineAmount = (updatedBook.fines || []).reduce((sum, fine) => sum + (fine.fineAmount || 0), 0);
+
+      const payload = {
+        studentId: submittedBook.studentId,
+        bookId: updatedBook.bookId,
+        bookIssueDate: updatedBook.bookIssueDate,
+        submissionDate: updatedBook.submissionDate,
+        paymentType: updatedBook.paymentType,
+        quantity: quantityToSubmit,
+        amount: updatedBook.amount,
+        submit: updatedBook.submit,
+        fine: updatedBook.fine,
+        totalFineAmount: totalFineAmount
+      };
+
+      await axios.post(`${url.booksubmission.submitedBook}`, payload);
+
       setLoading(true);
-      const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
-      toast.success('Book removed successfully');
+      await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
       window.location.reload();
       setLoading(false);
     } catch (error) {
@@ -444,7 +464,7 @@ const ReceiveBook = () => {
 
   const findFineData = async () => {
     try {
-      const response = await axios.get(`${url.fine.findFinebyAllotmentId}${allotmentId}`);
+      const response = await axios.get(`${url.fine.findFinebyAllotmentIdAndBookId}/${allotmentId}/${book_Id}`);
 
       const fine = response?.data?.fines?.map((item) => {
         const reason = item?.reason;
@@ -454,13 +474,19 @@ const ReceiveBook = () => {
 
       setFineDataa(fine);
     } catch (error) {
-      console.error('error', error);
+      if (error.response?.status === 404) {
+        setFineDataa([]);
+      } else {
+        console.error('Unexpected error:', error);
+      }
     }
   };
 
   useEffect(() => {
-    findFineData();
-  }, [formik.values.bookId]);
+    if (book_Id) {
+      findFineData();
+    }
+  }, [book_Id]);
 
   function getUniqueBooks(bookData) {
     return [...new Map(bookData.filter((item) => item.active === true).map((item) => [item.bookId, item])).values()];
@@ -688,7 +714,7 @@ const ReceiveBook = () => {
                     <Button onClick={handleClose} color="primary">
                       Cancel
                     </Button>
-                    <Button onClick={handleSubmit} color="primary" disabled={isSubmitDisabled}>
+                    <Button onClick={handleSubmit} color="primary" disabled={isSubmitDisabled|| fineloading}>
                       Submit
                     </Button>
                   </DialogActions>

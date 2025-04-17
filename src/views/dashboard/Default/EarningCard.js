@@ -5,6 +5,7 @@ import axios from 'axios';
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
 import { Avatar, Box, Grid, Menu, MenuItem, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -63,6 +64,7 @@ const EarningCard = ({ isLoading }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [bookCount, setBookCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBookCount = async () => {
@@ -77,7 +79,9 @@ const EarningCard = ({ isLoading }) => {
 
     fetchBookCount();
   }, []);
-
+  const handleCardClick = () => {
+    navigate('/dashboard/call');
+  };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -92,8 +96,8 @@ const EarningCard = ({ isLoading }) => {
         <SkeletonEarningCard />
       ) : (
         <CardWrapper border={false} content={false} sx={{ height: '80%' }}>
-          <Box sx={{ p: 2.25 }}>
-            <Grid container direction="column">
+          <Box sx={{ p: 2.25, cursor: 'pointer' }} onClick={handleCardClick}>
+          <Grid container direction="column">
               <Grid item>
                 <Grid container justifyContent="space-between">
                   <Grid item></Grid>

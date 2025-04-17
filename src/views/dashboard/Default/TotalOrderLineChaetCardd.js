@@ -1,19 +1,17 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-// material-ui
 import { useTheme, styled } from '@mui/material/styles';
 import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 import GroupsIcon from '@mui/icons-material/Groups'; // Import the GroupsIcon
-// project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
 import { url } from 'core/url';
 import { getVenderCount } from 'core/helperFurtion';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-  // backgroundColor: theme.palette.warning.dark,
   color: '#fff',
   overflow: 'hidden',
   position: 'relative',
@@ -34,7 +32,6 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     top: -160,
     right: -130,
     opacity: 0.5,
-    // Responsive adjustments for smaller screens
     [theme.breakpoints.down('sm')]: {
       top: -155,
       right: -70
@@ -57,13 +54,16 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 const TotalOrderLineChartCardd = ({ isLoading }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [bookCount, setBookCount] = useState(0);
   const [timeValue, setTimeValue] = useState(false);
   const handleChangeTime = (event, newValue) => {
     setTimeValue(newValue);
   };
-
+  const handleCardClick = () => {
+    navigate('/dashboard/policy');
+  };
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
@@ -84,8 +84,8 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
         <SkeletonTotalOrderCard />
       ) : (
         <CardWrapper border={false} content={false} sx={{ height: '80%' }}>
-          <Box sx={{ p: 2.25 }}>
-            <Grid container direction="column">
+          <Box sx={{ p: 2.25, cursor: 'pointer' }} onClick={handleCardClick}>
+          <Grid container direction="column">
               <Grid item>
                 <Grid container justifyContent="space-between">
                   <Grid item></Grid>

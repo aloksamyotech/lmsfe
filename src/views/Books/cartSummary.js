@@ -6,6 +6,7 @@ import { useCart } from './CartContext';
 import { url } from 'core/url';
 import { allotmentManagement } from 'core/helperFurtion';
 import { fetchCurrency } from 'core/comman';
+import { toast } from 'react-toastify';
 
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
@@ -43,6 +44,8 @@ const CartSummary = ({ summaryData }) => {
 
         setCartcontextItems([]);
         localStorage.setItem('librarycart', JSON.stringify([]));
+        localStorage.setItem('librarycartCount', JSON.stringify(0));
+
         navigate(`/dashboard/bookAllotmentInvoice/${result.allotment._id}`, {
           state: {
             allotmentId: result.allotment._id,
@@ -54,12 +57,12 @@ const CartSummary = ({ summaryData }) => {
           }
         });
       } else {
-        console.error('Failed to allot books:', response.statusText);
-        alert('Failed to allot books. Please try again.');
+        const errorData = await response.json();
+        toast.error(errorData.message || 'Failed to allot books. Please try again.');
       }
     } catch (error) {
       console.error('Error allotting books:', error);
-      alert('An error occurred. Please try again.');
+      toast.error('An unexpected error occurred. Please try again.');
     }
   };
   const formattedTotalAmount = !isNaN(totalAmount) ? totalAmount.toFixed(2) : '0.00';
@@ -134,10 +137,7 @@ const CartSummary = ({ summaryData }) => {
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
         <Button onClick={handleCreateInvoice} variant="contained" color="primary">
-          Create Invoice
-        </Button>
-        <Button variant="outlined" color="secondary">
-          Print
+          Submit
         </Button>
       </Box>
     </Box>

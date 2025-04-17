@@ -31,7 +31,6 @@ const formatDate = (date: string) => {
   return `${day}/${month}/${year}`;
 };
 const View = () => {
-
   const [formData, setFormData] = useState({
     student_Name: '',
     mobile_Number: '',
@@ -42,7 +41,9 @@ const View = () => {
     currency: '',
     currencySymbol: ''
   });
-
+  const [formErrors,SetFormErrors]=useState({
+    mobile_Number: '',
+  });
   const currencySymbols = {
     USD: '$',
     EUR: '€',
@@ -71,6 +72,20 @@ const View = () => {
     window.location.reload();
   }
   const handleSaveEdit = async () => {
+    const phone = formData.mobile_Number;
+    const email = formData.email;
+    let hasError = false;
+    if (!/^\d{10}$/.test(phone)) {
+      toast.error('Phone number must be exactly 10 digits');
+      hasError = true;
+    } 
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      toast.error('Please enter a valid email address');
+      hasError = true;
+    }
+    if (hasError) {
+      return; 
+    }
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('student_Name', formData.student_Name);
@@ -100,6 +115,7 @@ const View = () => {
       refreshPage();
     } catch (error) {
       console.error('Profile Update Failed:', error);
+      toast.error('Something went wrong while updating profile');
     }
   };
   const [studentId, setStudentId] = useState(null);
@@ -151,18 +167,14 @@ const View = () => {
           marginLeft: '5%'
         }}
       >
-        <Breadcrumbs
-           separator="/"
-           aria-label="breadcrumb"
-           sx={{ display: 'flex', alignItems: 'center' }}
-          >
-            <MuiLink component={Link} to="/dashboard/default" color="inherit">
-              <HomeIcon sx={{ color: '#5e35b1' }} />
-            </MuiLink>
-            <MuiLink component={Link} to="/dashboard/profile" color="inherit" underline="none">
-              Admin Profile
-            </MuiLink>
-          </Breadcrumbs>
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/profile" color="inherit" underline="none">
+            Admin Profile
+          </MuiLink>
+        </Breadcrumbs>
       </Box>
       <Container>
         <Paper
@@ -187,7 +199,18 @@ const View = () => {
               <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} inputProps={{ maxLength: 30 }}/>
             </Grid>
             <Grid item xs={6}>
-              <TextField fullWidth label="Phone Number" name="mobile_Number" value={formData.mobile_Number} onChange={handleChange}inputProps={{ maxLength: 10 }} />
+              <TextField
+                fullWidth
+                label="Phone Number"
+                name="mobile_Number"
+                value={formData.mobile_Number}
+                onChange={handleChange}
+                inputProps={{ maxLength: 10 }}
+                error={formData.mobile_Number.length > 0 && formData.mobile_Number.length !== 10}
+                helperText={
+                  formData.mobile_Number.length > 0 && formData.mobile_Number.length !== 10 ? 'Phone number must be exactly 10 digits' : ''
+                }
+              />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} inputProps={{ maxLength: 30 }}/>
@@ -235,7 +258,6 @@ const View = () => {
               </FormControl>
             </Grid>
 
-            {/* Read-only Symbol Field */}
             <Grid item xs={6}>
               <TextField
                 fullWidth
