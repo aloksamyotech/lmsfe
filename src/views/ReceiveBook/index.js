@@ -464,7 +464,6 @@ const ReceiveBook = () => {
 
       const response = await axios.post(`${url.booksubmission.submitedBook}`, payload);
       setLoading(true);
-      // await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
       window.location.reload();
       setLoading(false);
     } catch (error) {
