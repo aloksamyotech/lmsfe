@@ -245,7 +245,9 @@ const BookInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Item:
               </Typography>
-              <Typography variant="body2">{allInvoiceData?.data?.books?.[0]?.quantity ?? '1'}</Typography>
+              <Typography variant="body2">
+                {allInvoiceData?.data?.books?.reduce((total, item) => total + (item.quantity || 0), 0)}
+              </Typography>{' '}
             </Grid>
           </Grid>
 
@@ -253,7 +255,7 @@ const BookInvoice = () => {
             <Grid item xs={12}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
-              {totalAmount ? `${currencySymbol}${totalAmount.toFixed(2)}` : `${currencySymbol}0.00`}
+                {totalAmount ? `${currencySymbol}${totalAmount.toFixed(2)}` : `${currencySymbol}0.00`}
               </Typography>
             </Grid>
           </Grid>
