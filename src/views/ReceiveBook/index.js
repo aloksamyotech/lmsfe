@@ -37,6 +37,9 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { allotmentManagement } from 'core/helperFurtion';
 import { fetchCurrency } from 'core/comman';
+import { IconButton } from '@mui/material';
+
+import { Add, Remove } from '@mui/icons-material';
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
@@ -76,7 +79,9 @@ const ReceiveBook = () => {
   const [allotmentId, setAllotmentId] = useState(null);
   const [currencySymbol, setCurrencySymbol] = useState('');
   const [filteredBooks, setFilteredBooks] = useState([]);
-
+  const [bookquantity, setBookqunatity] = useState('');
+  const [submitbookquantity, setSubmitbookqunatity] = useState(1);
+  const [remainingbooks, setRemainingbooks] = useState();
   useEffect(() => {
     const getCurrency = async () => {
       const symbol = await fetchCurrency();
@@ -110,6 +115,12 @@ const ReceiveBook = () => {
     {
       field: 'bookName',
       headerName: 'Book Name',
+      flex: 1,
+      cellClassName: 'name-column--cell--capitalize'
+    },
+    {
+      field: 'quantity',
+      headerName: 'Quantity',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
@@ -205,22 +216,22 @@ const ReceiveBook = () => {
   useEffect(() => {
     const getAllSubmitBookDetails = async () => {
       try {
-        const submitResponse = await axios.get(url.allotmentManagement.getAllSubmitBookDetails);
+        const submitResponse = await axios.get(`${url.booksubmission.getsubmitedBookinvoice}`);
 
-        const fetchedData = submitResponse?.data?.submittedBooks?.map((item, index) => {
-          const fines = item?.books?.fines || [];
+        const fetchedData = submitResponse?.data?.data?.map((item, index) => {
+          const fines = item?.fines || [];
 
           return {
             serial: index + 1,
             id: item?._id,
-            bookid: item?.books?.bookId,
-            student_Name: item?.studentDetails[0]?.student_Name,
-            bookName: item?.bookDetails[0]?.bookName,
-            title: item?.paymentDetails[0]?.title,
-            amount: item?.paymentDetails[0]?.amount,
-            quantity: item?.books?.quantity,
-            bookIssueDate: formatDate(item?.books?.bookIssueDate),
-            submissionDate: formatDate(item?.books?.submissionDate),
+            bookid: item?.bookId || 'N/A',
+            student_Name: item?.studentDetails?.student_Name || 'N/A',
+            bookName: item?.bookDetails?.bookName || 'N/A',
+            title: item?.subscriptiontypes?.[0]?.title || 'N/A',
+            amount: item?.subscriptiontypes?.[0]?.amount || 0,
+            quantity: item?.quantity || 0,
+            bookIssueDate: formatDate(item?.bookIssueDate),
+            submissionDate: formatDate(item?.submissionDate),
             fines: fines
           };
         });
@@ -377,9 +388,11 @@ const ReceiveBook = () => {
     const result = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
 
     setFilteredBooks(result);
-
+    const bookQuantity = result[0]?.quantity || 0;
+    setBookqunatity(bookQuantity);
+    const count = result[0]?.submitCount || 0;
+    setRemainingbooks(bookQuantity - count);
     const filterbookId = result[0]?.bookId || null;
-
     setBook_Id(filterbookId);
   }, [formik.values.bookId, bookData]);
 
@@ -424,18 +437,18 @@ const ReceiveBook = () => {
   };
   const handleRemove = async (bookId) => {
     const book = filteredBooks.find((b) => b._id === bookId);
-    const quantityToSubmit = book.quantity ;
+    const quantityToSubmit = submitbookquantity;
 
     try {
-      const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`, { quantity: quantityToSubmit });
+      const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`, { receivequantity: quantityToSubmit });
 
       toast.success('Book submitted successfully');
       const { submittedBook } = submitResponse.data;
-
       const updatedBook = submittedBook.books.find((book) => book._id === bookId);
       const totalFineAmount = (updatedBook.fines || []).reduce((sum, fine) => sum + (fine.fineAmount || 0), 0);
 
       const payload = {
+        allotmentId: submittedBook._id,
         studentId: submittedBook.studentId,
         bookId: updatedBook.bookId,
         bookIssueDate: updatedBook.bookIssueDate,
@@ -445,13 +458,12 @@ const ReceiveBook = () => {
         amount: updatedBook.amount,
         submit: updatedBook.submit,
         fine: updatedBook.fine,
-        totalFineAmount: totalFineAmount
+        totalFineAmount: totalFineAmount,
+        fines: updatedBook.fines
       };
 
-      await axios.post(`${url.booksubmission.submitedBook}`, payload);
-
+      const response = await axios.post(`${url.booksubmission.submitedBook}`, payload);
       setLoading(true);
-      await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
       window.location.reload();
       setLoading(false);
     } catch (error) {
@@ -622,6 +634,9 @@ const ReceiveBook = () => {
                   <Typography variant="body1">
                     <strong>Amount:</strong> {book?.amount || 'Loading...'}
                   </Typography>
+                  <Typography variant="body1">
+                    <strong> Item:</strong> {remainingbooks || 0}
+                  </Typography>
                 </Grid>
                 <Grid item xs={4}>
                   <Typography variant="body1">
@@ -635,9 +650,24 @@ const ReceiveBook = () => {
                   >
                     <strong>Submission Date:</strong> {formatDate(book?.submissionDate) || 'Loading...'}
                   </Typography>
-                  <Typography variant="body1">
-                    <strong>Quantity:</strong> {book?.quantity || 'Loading...'}
-                  </Typography>
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Typography variant="body1">
+                      <strong>Quantity:</strong>
+                    </Typography>
+
+                    <IconButton onClick={() => setSubmitbookqunatity((prev) => Math.max(1, prev - 1))} disabled={submitbookquantity <= 1}>
+                      <Remove />
+                    </IconButton>
+
+                    <Typography>{submitbookquantity}</Typography>
+
+                    <IconButton
+                      onClick={() => setSubmitbookqunatity((prev) => Math.min(remainingbooks, prev + 1))}
+                      disabled={submitbookquantity >= remainingbooks}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Box>
                 </Grid>
               </Grid>
               <Divider sx={{ marginY: 1 }} />

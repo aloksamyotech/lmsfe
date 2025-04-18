@@ -29,7 +29,8 @@ export const url = {
   },
   booksubmission: {
     submitedBook: base_url + 'user/submitedBook/',
-    getsubmitedBook: base_url + 'user/getsubmitedBook/'
+    getsubmitedBook: base_url + 'user/getsubmitedBook/',
+    getsubmitedBookinvoice:base_url+'user/getsubmitedBookinvoice/',
   },
   vendorManagement: {
     addVender: base_url + 'user/addVenderBook/',

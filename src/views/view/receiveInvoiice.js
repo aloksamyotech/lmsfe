@@ -53,7 +53,7 @@ const ReceiveInvoice = () => {
   const rowData = location.state?.rowData;
   const bookId = location.state?.bookId;
   const fineData = location.state?.fine;
-
+  const submissionId = rowData?.id;
 
   const containerRef = useRef();
   useEffect(() => {
@@ -71,47 +71,41 @@ const ReceiveInvoice = () => {
     return `${day}/${month}/${year}`;
   };
   const fetchData = async () => {
-    const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
-    const allotmentId = response?.data?._id;
-    setAllotmentId(allotmentId);
-    const studentId = response?.data?.studentId?._id;
+    try {
+      const response = await axios.get(url.booksubmission.getsubmitedBookinvoice);
+      const allData = response?.data?.data || [];
 
-    const bookId = response?.data?.books?.[0]?._id;
+      const filteredSubmission = allData.find((item) => item._id === submissionId);
 
-    const student_Name = response?.data?.studentId?.student_Name;
-    setStudentName(student_Name);
-    const email = response?.data?.studentId?.email;
-    setStudentEmail(email);
+      if (!filteredSubmission) {
+        console.warn('No data found for the given submissionId');
+        return;
+      }
 
-    const mobile_Number = response?.data?.studentId?.mobile_Number;
-    setStudentMobile_Number(mobile_Number);
+      setAllotmentId(filteredSubmission?.allotmentId);
 
-    const select_identity = response?.data?.studentId?.select_identity;
-    setStudentSelectIdentity(select_identity);
+      const student = filteredSubmission?.studentDetails;
+      setStudentName(student?.student_Name || 'N/A');
+      setStudentEmail(student?.email || 'N/A');
+      setStudentMobile_Number(student?.mobile_Number || 'N/A');
+      setStudentSelectIdentity(student?.select_identity || 'N/A');
+      setStudentRegister_Date(formatDate(student?.register_Date));
 
-    const register_Date = response?.data?.studentId?.register_Date;
-    setStudentRegister_Date(formatDate(register_Date));
+      const book = filteredSubmission?.bookDetails;
+      setBookName(book?.bookName || 'N/A');
 
-    const bookName = response?.data?.books[0]?.bookId?.bookName;
-    setBookName(bookName);
+      const subscription = filteredSubmission?.subscriptiontypes?.[0];
+      setStudentAmount(filteredSubmission?.amount || 0);
+      setBookQuantity(filteredSubmission?.quantity || 0);
+      setStudentTitle(subscription?.title || 'N/A');
+      setDiscount(subscription?.discount || 0);
 
-    const paymentType = response?.data?.books[0]?.paymentType;
+      setIssueDate(formatDate(filteredSubmission?.bookIssueDate));
+      setSubmissionDate(formatDate(filteredSubmission?.submissionDate));
 
-    const amount = response?.data.books[0]?.amount;
-    setStudentAmount(amount);
-
-    const title = response?.data?.books[0]?.paymentType?.title;
-    setStudentTitle(title);
-
-    const discount = response?.data[0]?.subscriptionDetails?.discount;
-    setDiscount(discount);
-
-    const bookissueDate = response?.data?.books[0]?.bookIssueDate;
-    setIssueDate(formatDate(bookissueDate));
-    const submissionDate = response?.data?.books[0]?.submissionDate;
-    setSubmissionDate(formatDate(submissionDate));
-    const quantity = response?.data?.books[0]?.quantity;
-    setBookQuantity(quantity);
+    } catch (error) {
+      console.error('Error fetching submission data:', error);
+    }
   };
 
   useEffect(() => {
