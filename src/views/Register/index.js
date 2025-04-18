@@ -23,6 +23,7 @@ const Call = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
   const [errors, setErrors] = useState({});
+  const [isloading, setIsloading] = useState(false);
   const XLSX = require('xlsx');
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
@@ -130,6 +131,7 @@ const Call = () => {
     setEditData(register);
   };
   const handleSaveEdit = async () => {
+    setIsloading(true);
     setErrors({});
     const newErrors = {};
 
@@ -149,6 +151,7 @@ const Call = () => {
       setEditData(null);
       fetchData();
       toast.success('Register details Edit successfully');
+      setIsloading(false);
     } catch (error) {
       console.error('Error updating Register:', error);
     }
@@ -247,15 +250,19 @@ const Call = () => {
     reader.readAsBinaryString(file);
   };
   const handleBulkUpload = async () => {
+    setIsloading(true);
     try {
       const response = await axios.post(url.studentRegister.registerMany, excelData);
       toast.success(`upload Successfully`);
       setTimeout(() => {
         window.location.reload();
       }, 1000);
+      setIsloading(false);
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');
+      setIsloading(false);
+
     }
   };
   return (
@@ -294,14 +301,23 @@ const Call = () => {
         </Box>
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
-          <Box width="100%" backgroundColor="white" borderRadius='8px' height="600px">
-            <DataGrid
-              rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
-              columns={columns}
-              getRowId={(row) => row.id}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{ toolbar: { showQuickFilter: true } }}
-            />
+          <Box width="100%">
+            <Card style={{ height: 'auto', paddingTop: '15px' }}>
+              <DataGrid
+                pageSizeOptions={[5, 10, 25]}
+                initialState={{
+                  pagination: {
+                    paginationModel: { pageSize: 10, page: 0 }
+                  }
+                }}
+                pagination
+                rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
+                columns={columns}
+                getRowId={(row) => row.id}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{ toolbar: { showQuickFilter: true } }}
+              />
+            </Card>
           </Box>
         </TableStyle>
         {editData && (
@@ -346,7 +362,7 @@ const Call = () => {
                 error={!!errors.mobile_Number}
                 helperText={errors.mobile_Number}
               />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary">
+              <Button onClick={handleSaveEdit} variant="contained" color="primary" disabled={isloading}>
                 Save
               </Button>
               <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
@@ -359,7 +375,7 @@ const Call = () => {
           <Box p={3}>
             <Typography variant="h6">Are you sure you want to delete this book?</Typography>
             <Stack direction="row" spacing={2} justifyContent="flex-end" mt={3}>
-              <Button onClick={cancelDelete} variant="outlined" color="secondary">
+              <Button onClick={cancelDelete} variant="outlined" color="secondary" disabled={isloading}>
                 Cancel
               </Button>
               <Button onClick={confirmDelete} variant="contained" color="primary">
@@ -377,7 +393,7 @@ const Call = () => {
             <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} style={{ marginBottom: '16px' }} />
 
             <Box display="flex" justifyContent="space-between" gap={2}>
-              <Button variant="contained" color="primary" onClick={handleBulkUpload} fullWidth>
+              <Button variant="contained" color="primary" onClick={handleBulkUpload} fullWidth disabled={isloading}>
                 Upload Data
               </Button>
 

@@ -242,6 +242,13 @@ const PurchaseBook = () => {
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
               <DataGrid
+                pageSizeOptions={[5, 10, 25]}
+                initialState={{
+                  pagination: {
+                    paginationModel: { pageSize: 10, page: 0 }
+                  }
+                }}
+                pagination
                 rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
                 getRowId={(row) => row.id}
