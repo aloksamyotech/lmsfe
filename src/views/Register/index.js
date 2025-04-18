@@ -294,7 +294,7 @@ const Call = () => {
         </Box>
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
-          <Box width="100%" backgroundColor="white" borderRadius='8px'>
+          <Box width="100%" backgroundColor="white" borderRadius='8px' height="600px">
             <DataGrid
               rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
               columns={columns}

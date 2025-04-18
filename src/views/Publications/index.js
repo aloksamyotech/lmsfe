@@ -59,7 +59,6 @@ const Publications = () => {
       field: 'publisherName',
       headerName: 'Publisher Name',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'address',

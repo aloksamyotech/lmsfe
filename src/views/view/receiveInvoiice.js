@@ -3,24 +3,12 @@ import invoice from '../view/invoice.png';
 const html2pdf = require('html2pdf.js');
 import HomeIcon from '@mui/icons-material/Home';
 
-import {
-  Stack,
-  Button,
-  Container,
-  Typography,
-  Box,
-  Divider,
-  Paper,
-  Grid,
-  Backdrop,
-  CircularProgress,
-  Breadcrumbs,
-  Link
-} from '@mui/material';
+import { Stack, Button, Container, Typography, Box, Divider, Paper, Grid, Backdrop, CircularProgress } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
-
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
 import { url } from 'core/url';
@@ -140,13 +128,13 @@ const ReceiveInvoice = () => {
           width: '95%'
         }}
       >
-        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '-12px' }}>
-          <Link href="/" underline="hover" color="inherit">
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-          </Link>
-          <Link href="/account-profile" underline="hover" color="inherit">
-            <h4>Receive Books Invoice</h4>
-          </Link>
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
+          <MuiLink component={Link} to="/dashboard/Receive" color="inherit" underline="none">
+            Receive Invoice
+          </MuiLink>
         </Breadcrumbs>
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>

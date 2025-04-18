@@ -54,7 +54,6 @@ const SubscriptType = () => {
       field: 'title',
       headerName: 'Title',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
 
     {

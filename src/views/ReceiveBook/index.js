@@ -432,8 +432,8 @@ const ReceiveBook = () => {
       toast.error('Error Fine submitting form');
       console.error('Error Fine submitting form:', error);
     }
-    setFineloading(false);
     setOpen(false);
+    setFineloading(false);
   };
   const handleRemove = async (bookId) => {
     const book = filteredBooks.find((b) => b._id === bookId);
@@ -744,8 +744,8 @@ const ReceiveBook = () => {
                     <Button onClick={handleClose} color="primary">
                       Cancel
                     </Button>
-                    <Button onClick={handleSubmit} color="primary" disabled={isSubmitDisabled|| fineloading}>
-                      Submit
+                    <Button onClick={handleFineSubmit} color="primary" disabled={isSubmitDisabled || fineloading}>
+                      {fineloading ? 'Submitting...' : 'Submit'}
                     </Button>
                   </DialogActions>
                 </Dialog>
@@ -768,16 +768,14 @@ const ReceiveBook = () => {
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
       <TableStyle>
-        <Box width="100%">
-          <Card style={{ height: '600px', paddingTop: '15px' }}>
-            <DataGrid
-              rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
-              columns={columns}
-              getRowId={(row) => row.serial}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{ toolbar: { showQuickFilter: true } }}
-            />
-          </Card>
+        <Box width="100%" backgroundColor="white" height="600px">
+          <DataGrid
+            rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
+            columns={columns}
+            getRowId={(row) => row.serial}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{ toolbar: { showQuickFilter: true } }}
+          />
         </Box>
       </TableStyle>
     </Container>

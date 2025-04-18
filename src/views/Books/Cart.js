@@ -276,6 +276,10 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                               justifyContent: 'center',
                               alignItems: 'center'
                             }}
+                            disabled={
+                              item.quantity >= item.bookQuantity || // book-level quantity limit
+                              cartItems.reduce((acc, i) => acc + i.quantity, 0) >= 5 // total cart quantity limit
+                            }
                           >
                             +
                           </Button>
@@ -286,6 +290,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                             variant="outlined"
                             color="secondary"
                             onClick={() => handleDecrementQuantity(item._id, item.submissionType)}
+                            disabled={item.quantity === 1} 
                             sx={{
                               minWidth: 30,
                               height: 30,
