@@ -34,6 +34,24 @@ const App = () => {
               position: 'relative'
             }}
           >
+            {loading && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                  zIndex: 9999
+                }}
+              >
+                <CirclesWithBar height="80" width="80" radius="9" color="#7951BF" ariaLabel="loading" visible={true} />
+              </Box>
+            )}
             <NavigationScroll>
               <Routes />
             </NavigationScroll>

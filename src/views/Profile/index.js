@@ -76,11 +76,9 @@ const View = () => {
     const email = formData.email;
     let hasError = false;
     if (!/^\d{10}$/.test(phone)) {
-      toast.error('Phone number must be exactly 10 digits');
       hasError = true;
     } 
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      toast.error('Please enter a valid email address');
       hasError = true;
     }
     if (hasError) {
@@ -196,7 +194,7 @@ const View = () => {
           <Typography variant="caption" color="textSecondary"></Typography>
           <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={6}>
-              <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} inputProps={{ maxLength: 30 }}/>
+              <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} inputProps={{ maxLength: 30 ,readOnly: true }}/>
             </Grid>
             <Grid item xs={6}>
               <TextField
@@ -205,7 +203,7 @@ const View = () => {
                 name="mobile_Number"
                 value={formData.mobile_Number}
                 onChange={handleChange}
-                inputProps={{ maxLength: 10 }}
+                inputProps={{ maxLength: 10  ,readOnly: true }}
                 error={formData.mobile_Number.length > 0 && formData.mobile_Number.length !== 10}
                 helperText={
                   formData.mobile_Number.length > 0 && formData.mobile_Number.length !== 10 ? 'Phone number must be exactly 10 digits' : ''
@@ -213,13 +211,13 @@ const View = () => {
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField fullWidth label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} inputProps={{ maxLength: 30 }}/>
+              <TextField fullWidth label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} inputProps={{ maxLength: 30 ,readOnly: true }}/>
             </Grid>
             <Grid item xs={6}>
-              <TextField fullWidth label="Register Date" name="register_Date" value={formData.register_Date} onChange={handleChange} />
+              <TextField fullWidth label="Register Date" name="register_Date" value={formData.register_Date} onChange={handleChange} inputProps={{ maxLength: 30 ,readOnly: true }}/>
             </Grid>
             <Grid item xs={6}>
-              <TextField fullWidth label="Select Identity" name="select_identity" value={formData.select_identity} onChange={handleChange} />
+              <TextField fullWidth label="Select Identity" name="select_identity" value={formData.select_identity} onChange={handleChange}inputProps={{readOnly: true }} />
             </Grid>
             <Grid item xs={6}>
               <FormControl fullWidth>

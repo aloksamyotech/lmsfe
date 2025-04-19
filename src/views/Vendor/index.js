@@ -33,7 +33,6 @@ const PolicyManagement = () => {
       field: 'vendorName',
       headerName: 'Vendor Name',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'companyName',

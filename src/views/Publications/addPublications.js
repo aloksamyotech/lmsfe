@@ -94,64 +94,6 @@ const AddPublications = (props) => {
                     inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
-                {/* <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>Book Name</FormLabel>
-                  <TextField
-                    id="bookName"
-                    name="bookName"
-                    size="small"
-                    maxRows={10}
-                    fullWidth
-                    value={formik.values.bookName}
-                    onChange={formik.handleChange}
-                    error={formik.touched.bookName && Boolean(formik.errors.bookName)}
-                    helperText={formik.touched.bookName && formik.errors.bookName}
-                    inputProps={{ maxLength: 50 }}
-                  />
-                </Grid> */}
-                {/* <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>Title</FormLabel>
-                  <TextField
-                    id="title"
-                    name="title"
-                    size="small"
-                    maxRows={10}
-                    fullWidth
-                    value={formik.values.title}
-                    onChange={formik.handleChange}
-                    error={formik.touched.title && Boolean(formik.errors.title)}
-                    helperText={formik.touched.title && formik.errors.title}
-                    inputProps={{ maxLength: 50 }}
-                  />
-                </Grid> */}
-                {/* <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>Author</FormLabel>
-                  <TextField
-                    id="author"
-                    name="author"
-                    size="small"
-                    maxRows={10}
-                    fullWidth
-                    value={formik.values.author}
-                    onChange={formik.handleChange}
-                    error={formik.touched.author && Boolean(formik.errors.author)}
-                    helperText={formik.touched.author && formik.errors.author}
-                    inputProps={{ maxLength: 50 }}
-                  />
-                </Grid> */}
-                {/* <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>Start Date</FormLabel>
-                  <TextField
-                    name="startDate"
-                    type={'datetime-local'}
-                    size="small"
-                    fullWidth
-                    value={dayjs(formik.values.startDate).format('YYYY-MM-DD HH:mm:ss')}
-                    onChange={formik.handleChange}
-                    error={formik.touched.startDate && Boolean(formik.errors.startDate)}
-                    helperText={formik.touched.startDate && formik.errors.startDate}
-                  />
-                </Grid> */}
 
                 <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Address</FormLabel>

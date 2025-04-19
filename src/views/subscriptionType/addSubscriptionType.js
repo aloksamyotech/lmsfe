@@ -20,6 +20,7 @@ const AddSubscription = (props) => {
   const { open, handleClose, fetchData } = props;
   const [publisherData, setPublisherData] = useState([]);
   const [borrowedBooksCount, setBorrowedBooksCount] = useState(0);
+  const [isloading, SetIsloading] = useState(false);
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Title is required').min(3, 'Title must be at least 3 characters long'),
@@ -52,17 +53,16 @@ const AddSubscription = (props) => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-
-
+        SetIsloading(true);
         const response = await createSubscription(url.subscription.Subscription, values);
 
-        
         fetchData();
         handleClose();
       } catch (error) {
         console.error('Error submitting form:', error);
       }
       toast.success('Subscription Type details added successfully');
+      SetIsloading(false);
       formik.resetForm();
       handleClose();
     }
@@ -162,8 +162,8 @@ const AddSubscription = (props) => {
             </Grid>
           </DialogContentText>
           <DialogActions>
-            <Button type="submit" variant="contained" color="primary" disabled={formik.isSubmitting}>
-              Save
+            <Button type="submit" variant="contained" color="primary" disabled={isloading}>
+              {isloading ? 'Saving...' : 'Save'}
             </Button>
             <Button
               onClick={() => {

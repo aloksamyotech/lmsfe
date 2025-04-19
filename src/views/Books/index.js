@@ -26,7 +26,7 @@ const Lead = () => {
   const fileInput = useRef([]);
   const [errors, setErrors] = useState({});
   const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
-
+  const [isloading, setIsloading] = useState(false);
   const XLSX = require('xlsx');
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -231,6 +231,7 @@ const Lead = () => {
   };
 
   const handleBulkUpload = async () => {
+    setIsloading(true)
     try {
       if (!excelData || excelData.length === 0) {
         toast.error('No data to upload');
@@ -240,10 +241,13 @@ const Lead = () => {
       toast.success(`Data Uploaded Successfully`);
       setTimeout(() => {
         window.location.reload();
-      }, 2000);
+      }, 1000);
+      setIsloading(false)
+
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');
+      setIsloading(false)
     }
   };
 
@@ -285,8 +289,15 @@ const Lead = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
+            <Card style={{ paddingTop: '15px' }}>
               <DataGrid
+                pageSizeOptions={[5, 10, 25]}
+                initialState={{
+                  pagination: {
+                    paginationModel: { pageSize: 10, page: 0 }
+                  }
+                }}
+                pagination
                 rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
                 getRowId={(row) => row.id}
@@ -374,7 +385,7 @@ const Lead = () => {
             <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} style={{ marginBottom: '16px' }} />
 
             <Box display="flex" justifyContent="space-between" gap={2}>
-              <Button variant="contained" color="primary" onClick={handleBulkUpload} fullWidth>
+              <Button variant="contained" color="primary" onClick={handleBulkUpload} fullWidth disabled={isloading}>
                 Upload Data
               </Button>
 

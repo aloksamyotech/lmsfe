@@ -24,6 +24,7 @@ const SubscriptType = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
   const [errors, setErrors] = useState({});
+  const [isloading, SetIsloading] = useState(false);
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
   };
@@ -54,7 +55,6 @@ const SubscriptType = () => {
       field: 'title',
       headerName: 'Title',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
 
     {
@@ -106,6 +106,7 @@ const SubscriptType = () => {
 
   const fetchData = async () => {
     try {
+      SetIsloading(true)
       const response = await axios.get(url.subscription.findSubscription);
 
 
@@ -118,6 +119,7 @@ const SubscriptType = () => {
         numberOfDays: item.numberOfDays
       }));
       setData(fetchedData);
+      SetIsloading(false)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -143,9 +145,7 @@ const SubscriptType = () => {
     if (!editData.amount) newErrors.amount = 'Amount is required';
     else if (isNaN(editData.amount) || editData.amount <= 0) newErrors.amount = 'Amount must be a valid positive number';
   
-    if (!editData.discount) newErrors.discount = 'Discount is required';
-    else if (isNaN(editData.discount) || editData.discount < 0) newErrors.discount = 'Discount must be a valid number';
-  
+    if (isNaN(editData.discount) || editData.discount < 0) newErrors.discount = 'Discount must be a valid number';
     if (!editData.numberOfDays) newErrors.numberOfDays = 'Number of Days is required';
     else if (isNaN(editData.numberOfDays) || editData.numberOfDays <= 0) newErrors.numberOfDays = 'Number of Days must be a valid positive number';
   
@@ -234,6 +234,13 @@ const SubscriptType = () => {
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
               <DataGrid
+                pageSizeOptions={[5, 10, 25]}
+                initialState={{
+                  pagination: {
+                    paginationModel: { pageSize: 10, page: 0 }
+                  }
+                }}
+                pagination
                 rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
                 getRowId={(row) => row.id}
@@ -288,8 +295,8 @@ const SubscriptType = () => {
                 helperText={errors.numberOfDays}
                 inputProps={{ maxLength: 3 }}
               />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary" style={{ marginLeft: '16px' }}>
-                Save
+              <Button onClick={handleSaveEdit} variant="contained" color="primary" style={{ marginLeft: '16px' }} disabled={isloading}>
+              {isloading ? 'Submitting...' : 'Submit'}
               </Button>
               <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
                 Cancel

@@ -676,6 +676,13 @@ const EmailTemplates = () => {
             (bookAllotmentData.length > 0 ? (
               <Box sx={{ height: 'auto', overflow: 'auto', backgroundColor: 'white' }}>
                 <DataGrid
+                  pageSizeOptions={[5, 10, 25]}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { pageSize: 10, page: 0 }
+                    }
+                  }}
+                  pagination
                   rows={bookAllotmentData.map((row, index) => ({ ...row, sNo: index + 1 }))}
                   columns={columnsForBookAllotment}
                   pageSize={5}
@@ -694,6 +701,13 @@ const EmailTemplates = () => {
             (purchaseData.length > 0 ? (
               <Card sx={{ height: 'auto' }}>
                 <DataGrid
+                  pageSizeOptions={[5, 10, 25]}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { pageSize: 10, page: 0 }
+                    }
+                  }}
+                  pagination
                   rows={purchaseData.map((row, index) => ({ ...row, sNo: index + 1 }))}
                   columns={columnsForPurchase}
                   pageSize={5}
@@ -710,6 +724,13 @@ const EmailTemplates = () => {
             (submissionData.length > 0 ? (
               <Card sx={{ height: 'auto' }}>
                 <DataGrid
+                  pageSizeOptions={[5, 10, 25]}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { pageSize: 10, page: 0 }
+                    }
+                  }}
+                  pagination
                   rows={submissionData.map((row, index) => ({ ...row, sNo: index + 1 }))}
                   columns={columnsForSubmission}
                   getRowId={(row) => row.id}
