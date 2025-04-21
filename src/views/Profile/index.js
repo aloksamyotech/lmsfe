@@ -4,33 +4,33 @@ import {
   TextField,
   Button,
   Avatar,
-  Typography,
   Grid,
   Container,
   Paper,
-  FormLabel,
   FormControl,
   InputAdornment,
-  FormHelperText,
   Select,
   MenuItem,
-  InputLabel
+  InputLabel,
+  Tabs,
+  Tab,
+  FormGroup,
+  FormControlLabel,
+  Switch,
+  Breadcrumbs,
+  Link as MuiLink
 } from '@mui/material';
-import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
-import { createAdmin, editAdmin, loginAdmin, uploadLogoAdmin } from 'core/helperFurtion';
-const formatDate = (date: string) => {
-  const d = new Date(date);
-  const day = d.getDate().toString().padStart(2, '0');
-  const month = (d.getMonth() + 1).toString().padStart(2, '0');
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+import { editAdmin } from 'core/helperFurtion';
+
+const currencySymbols = { USD: '$', EUR: '€', INR: '₹', GBP: '£' };
+
 const View = () => {
+  const [tabIndex, setTabIndex] = useState(0);
   const [formData, setFormData] = useState({
     student_Name: '',
     mobile_Number: '',
@@ -39,18 +39,42 @@ const View = () => {
     select_identity: '',
     logo: null,
     currency: '',
-    currencySymbol: ''
+    currencySymbol: '',
+    id: ''
   });
-  const [formErrors,SetFormErrors]=useState({
-    mobile_Number: '',
+
+  const [emailPrefs, setEmailPrefs] = useState({
+    registrationEmail: true,
+    allotmentEmail: true,
+    purchesEmail: true,
+    submissionEmail: true
   });
-  const currencySymbols = {
-    USD: '$',
-    EUR: '€',
-    INR: '₹',
-    GBP: '£'
+
+  const handleToggle = async (field) => {
+    const updatedPrefs = {
+      ...emailPrefs,
+      [field]: !emailPrefs[field]
+    };
+
+    setEmailPrefs(updatedPrefs);
+    try {
+      await axios.put(url.admin.updateEmailContorller, {
+        adminId: formData.id,
+        ...updatedPrefs
+      });
+
+      toast.success('Preferences updated');
+    } catch (error) {
+      console.error('Toggle update error:', error);
+      toast.error('Failed to update preference');
+    }
   };
-  const handleChange = (e: React.ChangeEvent<any>) => {
+
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -72,34 +96,18 @@ const View = () => {
     window.location.reload();
   }
   const handleSaveEdit = async () => {
-    const phone = formData.mobile_Number;
-    const email = formData.email;
-    let hasError = false;
-    if (!/^\d{10}$/.test(phone)) {
-      hasError = true;
-    } 
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      hasError = true;
-    }
-    if (hasError) {
-      return; 
-    }
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append('student_Name', formData.student_Name);
-      formDataToSend.append('mobile_Number', formData.mobile_Number);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('register_Date', formData.register_Date);
-      formDataToSend.append('select_identity', formData.select_identity);
-      formDataToSend.append('currencyCode', formData.currency);
-      formDataToSend.append('currencySymbol', formData.currencySymbol);
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== null && value !== undefined && key !== 'id') {
+          formDataToSend.append(key, value);
+        }
+      });
 
-      if (formData.logo) {
-        formDataToSend.append('logo', formData.logo);
-      }
       const response = await editAdmin(`${url.admin.edit}${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+
       const updatedUser = {
         _id: formData.id,
         email: formData.email,
@@ -116,18 +124,14 @@ const View = () => {
       toast.error('Something went wrong while updating profile');
     }
   };
-  const [studentId, setStudentId] = useState(null);
+
   useEffect(() => {
-    const urlWindow = window.location.href;
-    const parts = urlWindow.split('/');
-    const extractedId = parts[parts.length - 1];
-    setStudentId(extractedId);
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(url.admin.adminProfile);
         if (response.data.status) {
           const student = response.data.students[0];
-          const formattedDate = formatDate(student.register_Date);
+          const formattedDate = new Date(student.register_Date).toLocaleDateString('en-GB');
           const currency = student.currencyCode || 'INR';
           setFormData({
             id: student._id,
@@ -140,135 +144,153 @@ const View = () => {
             currency: currency,
             currencySymbol: currencySymbols[currency]
           });
+
+          setEmailPrefs({
+            registrationEmail: student.registrationEmail,
+            allotmentEmail: student.allotmentEmail,
+            purchesEmail: student.purchesEmail,
+            submissionEmail: student.submissionEmail
+          });
         }
       } catch (error) {
         console.error('Error fetching profile data:', error);
       }
     };
-    if (extractedId) {
-      fetchProfileData();
-    }
+
+    fetchProfileData();
   }, []);
   return (
     <>
       <Box
-        sx={{
-          backgroundColor: 'white',
-          padding: '10px 20px',
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          height: '50px',
-          marginBottom: '-10px',
-          width: '85%',
-          marginLeft: '5%'
-        }}
+        sx={{ backgroundColor: 'white', padding: '10px 20px', borderRadius: '8px', marginBottom: '10px', marginLeft: '5%', width: '85%' }}
       >
-        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+        <Breadcrumbs separator="/" aria-label="breadcrumb">
           <MuiLink component={Link} to="/dashboard/default" color="inherit">
-            <HomeIcon sx={{ color: '#5e35b1' }} />
+            <HomeIcon />
           </MuiLink>
           <MuiLink component={Link} to="/dashboard/profile" color="inherit" underline="none">
             Admin Profile
           </MuiLink>
         </Breadcrumbs>
       </Box>
-      <Container>
-        <Paper
-          elevation={3}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '20px',
-            maxWidth: '800px',
-            margin: 'auto',
-            boxShadow: 3,
-            borderRadius: '10px',
-            marginTop: '30px',
-            marginLeft: '30px'
-          }}
-        >
-          <Avatar src={formData.logo ? formData.logo : 'profile.logoUrl'} alt="Profile" sx={{ width: 100, height: 100, mb: 2 }} />
-          <Typography variant="caption" color="textSecondary"></Typography>
-          <Grid container spacing={2} sx={{ mt: 2 }}>
-            <Grid item xs={6}>
-              <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} inputProps={{ maxLength: 30 ,readOnly: true }}/>
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="mobile_Number"
-                value={formData.mobile_Number}
-                onChange={handleChange}
-                inputProps={{ maxLength: 10  ,readOnly: true }}
-                error={formData.mobile_Number.length > 0 && formData.mobile_Number.length !== 10}
-                helperText={
-                  formData.mobile_Number.length > 0 && formData.mobile_Number.length !== 10 ? 'Phone number must be exactly 10 digits' : ''
-                }
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField fullWidth label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} inputProps={{ maxLength: 30 ,readOnly: true }}/>
-            </Grid>
-            <Grid item xs={6}>
-              <TextField fullWidth label="Register Date" name="register_Date" value={formData.register_Date} onChange={handleChange} inputProps={{ maxLength: 30 ,readOnly: true }}/>
-            </Grid>
-            <Grid item xs={6}>
-              <TextField fullWidth label="Select Identity" name="select_identity" value={formData.select_identity} onChange={handleChange}inputProps={{readOnly: true }} />
-            </Grid>
-            <Grid item xs={6}>
-              <FormControl fullWidth>
-                <TextField
-                  label="Select Logo"
-                  name="logo"
-                  value={formData.logo ? formData.logo.name : ''}
-                  onClick={() => document.getElementById('file-input').click()}
-                  InputProps={{
-                    readOnly: true,
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button>Choose File</Button>
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
-              </FormControl>
-            </Grid>
-            {/* Currency Dropdown */}
-            <Grid item xs={6}>
-              <FormControl fullWidth>
-                <InputLabel id="currency-label">Currency</InputLabel>
-                <Select
-                  labelId="currency-label"
-                  name="currency"
-                  value={formData.currency}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="USD">USD</MenuItem>
-                  <MenuItem value="EUR">EUR</MenuItem>
-                  <MenuItem value="INR">INR</MenuItem>
-                  <MenuItem value="GBP">GBP</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
 
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                label="Currency Symbol"
-                name="currencySymbol"
-                value={formData.currencySymbol}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-          </Grid>
-          <Button variant="contained" color="primary" onClick={handleSaveEdit} sx={{ mt: 3 }}>
-            Update
-          </Button>
+      <Container>
+        <Paper sx={{ p: 3, mt: 2, borderRadius: '10px', maxWidth: '850px', margin: 'auto' }}>
+          <Tabs value={tabIndex} onChange={handleTabChange} centered>
+            <Tab label="Admin Profile" />
+            <Tab label="Update Password" />
+            <Tab label="Email Controller" />
+          </Tabs>
+
+          {tabIndex === 0 && (
+            <>
+              <Avatar src={logoPreview} sx={{ width: 100, height: 100, mt: 2, mx: 'auto' }} />
+              <Grid container spacing={2} sx={{ mt: 2 }}>
+                <Grid item xs={6}>
+                  <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField fullWidth label="Phone Number" name="mobile_Number" value={formData.mobile_Number} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField fullWidth label="Email" name="email" value={formData.email} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Register Date"
+                    name="register_Date"
+                    value={formData.register_Date}
+                    InputProps={{ readOnly: true }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Select Identity"
+                    name="select_identity"
+                    value={formData.select_identity}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label="Select Logo"
+                      value={formData.logo instanceof File ? formData.logo.name : ''}
+                      onClick={() => document.getElementById('file-input')?.click()}
+                      InputProps={{
+                        readOnly: true,
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Button>Choose File</Button>
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                    <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="currency-label">Currency</InputLabel>
+                    <Select labelId="currency-label" name="currency" value={formData.currency} onChange={handleChange}>
+                      <MenuItem value="USD">USD</MenuItem>
+                      <MenuItem value="EUR">EUR</MenuItem>
+                      <MenuItem value="INR">INR</MenuItem>
+                      <MenuItem value="GBP">GBP</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Currency Symbol"
+                    name="currencySymbol"
+                    value={formData.currencySymbol}
+                    InputProps={{ readOnly: true }}
+                  />
+                </Grid>
+              </Grid>
+              <Button variant="contained" sx={{ mt: 3 }} onClick={handleSaveEdit}>
+                Update
+              </Button>
+            </>
+          )}
+
+          {tabIndex === 1 && (
+            <Box sx={{ mt: 3 }}>
+              <TextField fullWidth label="Old Password" type="password" sx={{ mb: 2 }} />
+              <TextField fullWidth label="New Password" type="password" sx={{ mb: 2 }} />
+              <TextField fullWidth label="Confirm New Password" type="password" sx={{ mb: 2 }} />
+              <Button variant="contained" color="primary">
+                Change Password
+              </Button>
+            </Box>
+          )}
+
+          {tabIndex === 2 && (
+            <Box sx={{ mt: 3 }}>
+              <FormGroup row sx={{ mb: 2, justifyContent: 'space-between' }}>
+                <FormControlLabel
+                  control={<Switch checked={emailPrefs.registrationEmail} onChange={() => handleToggle('registrationEmail')} />}
+                  label="Registration Mail"
+                />
+                <FormControlLabel
+                  control={<Switch checked={emailPrefs.allotmentEmail} onChange={() => handleToggle('allotmentEmail')} />}
+                  label="Book Allotment Mail"
+                />
+                <FormControlLabel
+                  control={<Switch checked={emailPrefs.purchesEmail} onChange={() => handleToggle('purchesEmail')} />}
+                  label="Purchase Mail"
+                />
+                <FormControlLabel
+                  control={<Switch checked={emailPrefs.submissionEmail} onChange={() => handleToggle('submissionEmail')} />}
+                  label="Submission Mail"
+                />
+              </FormGroup>
+            </Box>
+          )}
         </Paper>
       </Container>
     </>

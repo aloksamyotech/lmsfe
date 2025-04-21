@@ -249,10 +249,16 @@ const Call = () => {
     };
     reader.readAsBinaryString(file);
   };
+  const user = JSON.parse(localStorage.getItem('user'));
+  const adminId = user?._id;
   const handleBulkUpload = async () => {
     setIsloading(true);
+    const dataWithAdminId = excelData.map((item) => ({
+      ...item,
+      adminId,
+    }));
     try {
-      const response = await axios.post(url.studentRegister.registerMany, excelData);
+      const response = await axios.post(url.studentRegister.registerMany, dataWithAdminId);
       toast.success(`upload Successfully`);
       setTimeout(() => {
         window.location.reload();

@@ -36,7 +36,8 @@ const AddRegister = (props) => {
     select_identity: yup.string().required('Select Identity is required'),
     upload_identity: yup.mixed().required('Select a file to upload')
   });
-
+  const user = JSON.parse(localStorage.getItem('user'));
+  const adminId = user?._id;
   const formik = useFormik({
     initialValues: {
       student_Name: '',
@@ -58,7 +59,7 @@ const AddRegister = (props) => {
       formData.append('select_identity', values.select_identity);
       formData.append('upload_identity', values.upload_identity);
       formData.append('register_Date', values.register_Date);
-
+      formData.append('adminId',adminId);
       try {
         const response = await addRegister(url.studentRegister.addRegister, formData, {
           headers: {

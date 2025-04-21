@@ -9,7 +9,8 @@ export const url = {
     adminProfile: base_url + 'user/adminProfilePage/',
     edit: base_url + 'user/adminEditProfilePage/',
     logo: base_url + 'user/adminGetLogo/',
-    login: base_url + 'user/login/'
+    login: base_url + 'user/login/',
+    updateEmailContorller :base_url +'user/updateEmailContorller/',
   },
   subscription: {
     Subscription: base_url + 'user/subscriptionType/',

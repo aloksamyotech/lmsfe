@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Container, Grid, Typography, Box, FormLabel, TextField, Button, Tabs, Tab, CardContent, CircularProgress } from '@mui/material';
+import {
+  Card,
+  Container,
+  Grid,
+  Typography,
+  Box,
+  FormLabel,
+  TextField,
+  Button,
+  Tabs,
+  Tab,
+  CardContent,
+  CircularProgress
+} from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Formik, Form } from 'formik';
 import moment from 'moment';
@@ -361,125 +374,13 @@ const EmailTemplates = () => {
           )}
         </Formik>
       </Card>
-      {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-        <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px', paddingBottom: '0' }}>
-          <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
-            <Box
-              sx={{
-                borderRadius: 2,
-                p: 2,
-                mr: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: 60,
-                height: 60,
-                backgroundColor: '#0769b4'
-              }}
-            >
-              <AddShoppingCartIcon sx={{ fontSize: 30, color: 'white' }} />
-            </Box>
-            <Box>
-              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
-                {`Total Purchase`}
-              </Typography>
-              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
-                {currencySymbol}
-                {totalPurchaseAmount ? totalPurchaseAmount.toFixed(2) : '0.00'}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-        <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px' }}>
-          <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
-            <Box
-              sx={{
-                borderRadius: 2,
-                p: 2,
-                mr: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: 60,
-                height: 60,
-                backgroundColor: '#28a745'
-              }}
-            >
-              <MoneyOffCsredIcon sx={{ fontSize: 30, color: 'white' }} />
-            </Box>
-            <Box>
-              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
-                {`Total Fine`}
-              </Typography>
-              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
-                {currencySymbol}
-                {totalfineAmount ? totalfineAmount.toFixed(2) : '0.00'}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-        <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px' }}>
-          <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
-            <Box
-              sx={{
-                borderRadius: 2,
-                p: 2,
-                mr: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: 60,
-                height: 60,
-                backgroundColor: '#ffc107'
-              }}
-            >
-              <BookmarkRemoveIcon sx={{ fontSize: 30, color: 'white' }} />
-            </Box>
-            <Box>
-              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '14px' }}>
-                {`Book Allotment`}
-              </Typography>
-              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
-                {currencySymbol}
-                {totalAllotmetAmount ? totalAllotmetAmount.toFixed(2) : '0.00'}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-        <Card sx={{ width: '22%', minWidth: 200, m: 1, boxShadow: 3, height: '9%', marginTop: '35px' }}>
-          <CardContent sx={{ display: 'flex', alignItems: 'center', padding: '10px', paddingBottom: '10px !important' }}>
-            <Box
-              sx={{
-                borderRadius: 2,
-                p: 2,
-                mr: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: 60,
-                height: 60,
-                backgroundColor: '#dc3545'
-              }}
-            >
-              <BookmarkAddRoundedIcon sx={{ fontSize: 30, color: 'white' }} />
-            </Box>
-            <Box>
-              <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
-                {`Book Recieve`}
-              </Typography>
-              <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
-                {submissionCount ? submissionCount : '0'}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-      </Box> */}
+      
       <Box
         sx={{
           display: 'flex',
-          flexWrap: 'wrap', 
+          flexWrap: 'wrap',
           justifyContent: 'space-between',
-          width: '100%',
+          width: '100%'
         }}
       >
         <Card
@@ -526,7 +427,6 @@ const EmailTemplates = () => {
           </CardContent>
         </Card>
 
-        {/* Total Fine */}
         <Card
           sx={{
             width: { xs: '100%', sm: '48%', md: '22%' },
@@ -571,7 +471,6 @@ const EmailTemplates = () => {
           </CardContent>
         </Card>
 
-        {/* Book Allotment */}
         <Card
           sx={{
             width: { xs: '100%', sm: '48%', md: '22%' },
@@ -668,8 +567,8 @@ const EmailTemplates = () => {
       </Tabs>
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress />
-      </Box>
+          <CircularProgress />
+        </Box>
       ) : (
         <Box sx={{ marginTop: '30px' }}>
           {selectedTab === 0 &&
