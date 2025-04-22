@@ -21,6 +21,8 @@ const CartSummary = ({ summaryData }) => {
     getCurrency();
   }, []);
   const handleCreateInvoice = async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const adminId = user?._id;
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
       studentId: studentId,
@@ -29,6 +31,7 @@ const CartSummary = ({ summaryData }) => {
       paymentType: item.submissionType,
       quantity: item.quantity,
       amount: item.amount || 0,
+      adminId
     }));
 
     try {
