@@ -421,7 +421,7 @@ const ReceiveBook = () => {
       setFineloading(false);
       setOpen(false);
     } else {
-      console.log('Please fix validation errors before saving.');
+      console.error('Please fix validation errors before saving.');
     }
   };
 
@@ -733,7 +733,7 @@ const ReceiveBook = () => {
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
       <TableStyle>
-        <Box width="100%" backgroundColor="white" height="600px">
+        <Box width="100%" backgroundColor="white" height="700px">
           <DataGrid
             pageSizeOptions={[5, 10, 25]}
             initialState={{
