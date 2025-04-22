@@ -23,7 +23,6 @@ const CartSummary = ({ summaryData }) => {
   const handleCreateInvoice = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const adminId = user?._id;
-    console.log('adminId', adminId);
     const invoiceData = cartItems.map((item) => ({
       bookId: item._id,
       studentId: studentId,
