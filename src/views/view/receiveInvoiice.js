@@ -284,7 +284,7 @@ const ReceiveInvoice = () => {
                       <TableRow key={index}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{fine.reason || 'No reason provided'}</TableCell>
-                        <TableCell>{fine.fineAmount ? `${currencySymbol}${fine.fineAmount}` : `${currencySymbol}0.00`}</TableCell>
+                        <TableCell>{fine.amount ? `${currencySymbol}${fine.amount}` : `${currencySymbol}0.00`}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

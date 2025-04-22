@@ -52,7 +52,14 @@ const AddPurchaseBook = (props) => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await purchaseBook(url.purchaseBook.purchaseBook, values);
+        const user = JSON.parse(localStorage.getItem('user'));
+        const adminId = user?._id;
+
+        const dataToSend = {
+          ...values,
+          adminId
+        };
+        const response = await purchaseBook(url.purchaseBook.purchaseBook, dataToSend);
 
         toast.success('Purchase Book added successfully');
         fetchData();
