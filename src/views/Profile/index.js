@@ -31,6 +31,9 @@ const currencySymbols = { USD: '$', EUR: '€', INR: '₹', GBP: '£' };
 
 const View = () => {
   const [tabIndex, setTabIndex] = useState(0);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [formData, setFormData] = useState({
     student_Name: '',
     mobile_Number: '',
@@ -129,8 +132,18 @@ const View = () => {
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(url.admin.adminProfile);
+    
         if (response.data.status) {
-          const student = response.data.students[0];
+          const user = JSON.parse(localStorage.getItem('user'));
+          const adminId = user?._id;
+    
+          const student = response.data.students.find(s => s._id === adminId);
+    
+          if (!student) {
+            console.error("Admin not found with provided ID");
+            return;
+          }
+    
           const formattedDate = new Date(student.register_Date).toLocaleDateString('en-GB');
           const currency = student.currencyCode || 'INR';
           setFormData({
@@ -144,7 +157,7 @@ const View = () => {
             currency: currency,
             currencySymbol: currencySymbols[currency]
           });
-
+    
           setEmailPrefs({
             registrationEmail: student.registrationEmail,
             allotmentEmail: student.allotmentEmail,
@@ -156,9 +169,54 @@ const View = () => {
         console.error('Error fetching profile data:', error);
       }
     };
-
+    
     fetchProfileData();
   }, []);
+  const logoPreview =
+    formData.logo instanceof File ? URL.createObjectURL(formData.logo) : formData.logo ? `${url.publicImage}${formData.logo}` : '';
+
+  const handlePassword = async () => {
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      toast.error("All fields are required");
+      return;
+    }
+
+    if (oldPassword === newPassword) {
+      toast.error("Old and new password should not be the same");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New and confirm passwords do not match");
+      return;
+    }
+   const token = localStorage.getItem('loginToken');    
+  if (!token) {
+    toast.error("You are not logged in.");
+    return;
+  }
+   
+    try {
+      const response = await axios.put(`${url.admin.updatepassword}`, 
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success(response.data.message || "Password updated successfully");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong");
+    }
+  };
+
+  
   return (
     <>
       <Box
@@ -260,15 +318,35 @@ const View = () => {
 
           {tabIndex === 1 && (
             <Box sx={{ mt: 3 }}>
-              <TextField fullWidth label="Old Password" type="password" sx={{ mb: 2 }} />
-              <TextField fullWidth label="New Password" type="password" sx={{ mb: 2 }} />
-              <TextField fullWidth label="Confirm New Password" type="password" sx={{ mb: 2 }} />
-              <Button variant="contained" color="primary">
+              <TextField
+                fullWidth
+                label="Old Password"
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="New Password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="Confirm New Password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <Button variant="contained" onClick={handlePassword} color="primary">
                 Change Password
               </Button>
             </Box>
           )}
-
           {tabIndex === 2 && (
             <Box sx={{ mt: 3 }}>
               <FormGroup row sx={{ mb: 2, justifyContent: 'space-between' }}>

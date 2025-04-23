@@ -10,7 +10,8 @@ export const url = {
     edit: base_url + 'user/adminEditProfilePage/',
     logo: base_url + 'user/adminGetLogo/',
     login: base_url + 'user/login/',
-    updateEmailContorller :base_url +'user/updateEmailContorller/',
+    updateEmailContorller: base_url + 'user/updateEmailContorller/',
+    updatepassword: base_url + 'user/updatepassword/'
   },
   subscription: {
     Subscription: base_url + 'user/subscriptionType/',
@@ -31,7 +32,7 @@ export const url = {
   booksubmission: {
     submitedBook: base_url + 'user/submitedBook/',
     getsubmitedBook: base_url + 'user/getsubmitedBook/',
-    getsubmitedBookinvoice:base_url+'user/getsubmitedBookinvoice/',
+    getsubmitedBookinvoice: base_url + 'user/getsubmitedBookinvoice/'
   },
   vendorManagement: {
     addVender: base_url + 'user/addVenderBook/',
@@ -99,7 +100,7 @@ export const url = {
     findByStudentId: base_url + 'user/findByStudentId/',
     findFine: base_url + 'user/findFineInvoice/',
     fineDetails: base_url + 'user/findFine/',
-    findFinebyAllotmentIdAndBookId: base_url + 'user/findFinebyAllotmentIdAndBookId',
+    findFinebyAllotmentIdAndBookId: base_url + 'user/findFinebyAllotmentIdAndBookId'
   },
   purchaseBook: {
     purchaseBook: base_url + 'user/purchaseBook/',

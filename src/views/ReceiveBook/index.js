@@ -406,47 +406,37 @@ const ReceiveBook = () => {
     });
   };
 
-  const handleFineSubmit = async () => {
+  const handleFineSubmit = () => {
     setFineloading(true);
-    const idBook = formik.values.bookId;
-    const _id = formik.values._id;
-    try {
-      const data = {
-        amount: amount,
-        reason: reason,
-        bookId: idBook,
-        studentId: selectedStudentId,
-        allotmentId: allotmentId,
-        _id: fineid._id
+    if (!amountError && !reasonError && amount && reason) {
+      const newFine = {
+        amount: amount.trim(),
+        reason: reason.trim()
       };
 
-      const response = await axios.post(url.fine.addFineBook, data);
-      const fine = response?.data?.fines?.map((item) => {
-        const reason = item?.reason;
-        const fineAmount = item?.fineAmount;
-        return { reason, fineAmount };
-      });
-      toast.success('Fine Book successfully added');
-      findFineData();
-    } catch (error) {
-      toast.error('Error Fine submitting form');
-      console.error('Error Fine submitting form:', error);
+      setFineDataa((prev) => [...prev, newFine]);
+
+      setAmount('');
+      setReason('');
+      setFineloading(false);
+      setOpen(false);
+    } else {
+      console.error('Please fix validation errors before saving.');
     }
-    setOpen(false);
-    setFineloading(false);
   };
+
   const handleRemove = async (bookId) => {
     const book = filteredBooks.find((b) => b._id === bookId);
     const quantityToSubmit = submitbookquantity;
-
+    const user = JSON.parse(localStorage.getItem('user'));
+    const adminId = user?._id;
     try {
       const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`, { receivequantity: quantityToSubmit });
 
       toast.success('Book submitted successfully');
       const { submittedBook } = submitResponse.data;
       const updatedBook = submittedBook.books.find((book) => book._id === bookId);
-      const totalFineAmount = (updatedBook.fines || []).reduce((sum, fine) => sum + (fine.fineAmount || 0), 0);
-
+      const totalFineAmount = fineDataa.reduce((sum, fine) => sum + (parseFloat(fine.amount) || 0), 0);
       const payload = {
         allotmentId: submittedBook._id,
         studentId: submittedBook.studentId,
@@ -459,9 +449,9 @@ const ReceiveBook = () => {
         submit: updatedBook.submit,
         fine: updatedBook.fine,
         totalFineAmount: totalFineAmount,
-        fines: updatedBook.fines
+        fines: fineDataa,
+        adminId
       };
-
       const response = await axios.post(`${url.booksubmission.submitedBook}`, payload);
       setLoading(true);
       window.location.reload();
@@ -474,31 +464,6 @@ const ReceiveBook = () => {
   };
   const isSubmitDisabled = !amount || !reason || amountError || reasonError;
 
-  const findFineData = async () => {
-    try {
-      const response = await axios.get(`${url.fine.findFinebyAllotmentIdAndBookId}/${allotmentId}/${book_Id}`);
-
-      const fine = response?.data?.fines?.map((item) => {
-        const reason = item?.reason;
-        const fineAmount = item?.fineAmount;
-        return { reason, fineAmount };
-      });
-
-      setFineDataa(fine);
-    } catch (error) {
-      if (error.response?.status === 404) {
-        setFineDataa([]);
-      } else {
-        console.error('Unexpected error:', error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (book_Id) {
-      findFineData();
-    }
-  }, [book_Id]);
 
   function getUniqueBooks(bookData) {
     return [...new Map(bookData.filter((item) => item.active === true).map((item) => [item.bookId, item])).values()];
@@ -584,7 +549,7 @@ const ReceiveBook = () => {
                 size="small"
                 value={formik.values.bookId}
                 onChange={formik.handleChange}
-                disabled={!formik.values.studentId} 
+                disabled={!formik.values.studentId}
               >
                 {getUniqueBooks(bookData).map((item) => (
                   <MenuItem key={item.bookId} value={item.bookId}>
@@ -687,7 +652,7 @@ const ReceiveBook = () => {
                             <Typography variant="body1">
                               <strong>Reason:</strong> {item?.reason || 'Loading...'}
                               <strong style={{ marginLeft: '50px' }}>Fine Amount:</strong> {currencySymbol}
-                              {item?.fineAmount ?? `${currencySymbol}0.00`}
+                              {item?.amount ?? `${currencySymbol}0.00`}
                             </Typography>
                           </li>
                         ))}
@@ -768,7 +733,7 @@ const ReceiveBook = () => {
         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
       </Box>
       <TableStyle>
-        <Box width="100%" backgroundColor="white" height="600px">
+        <Box width="100%" backgroundColor="white" height="700px">
           <DataGrid
             pageSizeOptions={[5, 10, 25]}
             initialState={{
