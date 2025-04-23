@@ -25,7 +25,6 @@ import { getPublicationsCount } from 'core/helperFurtion';
 import { getApi } from 'core/apiClient';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-  // backgroundColor: theme.palette.secondary.dark,
   color: '#fff',
   overflow: 'hidden',
   position: 'relative',

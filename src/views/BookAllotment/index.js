@@ -116,7 +116,6 @@ const Allotment = () => {
     try {
 
       const response = await getApi(url.studentRegister.getRegisterManagement);
-      console.log(response);
       
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
