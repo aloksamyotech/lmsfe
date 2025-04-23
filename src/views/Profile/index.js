@@ -106,7 +106,7 @@ const View = () => {
           formDataToSend.append(key, value);
         }
       });
-
+      formDataToSend.append('currencyCode', formData.currency);      
       const response = await editAdmin(`${url.admin.edit}${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
@@ -220,7 +220,7 @@ const View = () => {
   return (
     <>
       <Box
-        sx={{ backgroundColor: 'white', padding: '10px 20px', borderRadius: '8px', marginBottom: '10px', marginLeft: '5%', width: '85%' }}
+        sx={{ backgroundColor: 'white', padding: '10px 20px', borderRadius: '8px', marginBottom: '10px', marginLeft: '5%', width: '90%' }}
       >
         <Breadcrumbs separator="/" aria-label="breadcrumb">
           <MuiLink component={Link} to="/dashboard/default" color="inherit">
@@ -231,15 +231,15 @@ const View = () => {
           </MuiLink>
         </Breadcrumbs>
       </Box>
-
-      <Container>
-        <Paper sx={{ p: 3, mt: 2, borderRadius: '10px', maxWidth: '850px', margin: 'auto' }}>
-          <Tabs value={tabIndex} onChange={handleTabChange} centered>
+      <Box sx={{ backgroundColor: 'white', padding: '10px 20px', borderRadius: '8px', marginBottom: '10px', marginLeft: '5%', width: '90%' }}>
+      <Tabs value={tabIndex} onChange={handleTabChange} centered>
             <Tab label="Admin Profile" />
             <Tab label="Update Password" />
             <Tab label="Email Controller" />
           </Tabs>
-
+      </Box>
+      <Container>
+        <Paper sx={{ p: 3, mt: 2, borderRadius: '10px', maxWidth: '850px', margin: 'auto' }}>
           {tabIndex === 0 && (
             <>
               <Avatar src={logoPreview} sx={{ width: 100, height: 100, mt: 2, mx: 'auto' }} />

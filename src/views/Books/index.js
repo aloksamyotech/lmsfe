@@ -172,7 +172,6 @@ const Lead = () => {
     if (!editData.publisherName) newErrors.publisherName = 'Publisher Name is required';
     if (!editData.author) newErrors.author = 'Author Name is required';
 
-    // If there are validation errors, don't proceed
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -231,10 +230,11 @@ const Lead = () => {
   };
 
   const handleBulkUpload = async () => {
-    setIsloading(true)
+    setIsloading(true);
     try {
       if (!excelData || excelData.length === 0) {
         toast.error('No data to upload');
+        setIsloading(false);
         return;
       }
       const response = await addManyBooks(url.bookManagenent.addManyBooks, excelData);
@@ -242,12 +242,10 @@ const Lead = () => {
       setTimeout(() => {
         window.location.reload();
       }, 1000);
-      setIsloading(false)
-
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');
-      setIsloading(false)
+      setIsloading(false);
     }
   };
 
@@ -289,7 +287,7 @@ const Lead = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ paddingTop: '15px' }}>
+            <Card style={{ paddingTop: '15px', height: '700px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{
