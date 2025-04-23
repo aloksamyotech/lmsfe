@@ -61,6 +61,7 @@ import { url } from 'core/url';
 import { deleteBook, editBookAllotment, getBookAllotmentHistory, getBookManagement } from 'core/helperFurtion';
 import ReceiveBook from 'views/ReceiveBook/index';
 import { useCart } from '../Books/CartContext.js';
+import { getApi } from 'core/apiClient.js';
 const Allotment = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [search, setSearch] = useState('');
@@ -99,7 +100,7 @@ const Allotment = () => {
 
   const fetchSubscription = async () => {
     try {
-      const response = await axios.get(url.subscription.findSubscription);
+      const response = await getApi(url.subscription.findSubscription);
       setStudentData(response.data?.SubscriptionType);
     } catch (error) {
       console.error('Error fetching SubscriptionType', error);
@@ -113,8 +114,10 @@ const Allotment = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(url.studentRegister.getRegisterManagement);
 
+      const response = await getApi(url.studentRegister.getRegisterManagement);
+      console.log(response);
+      
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
 
@@ -131,7 +134,7 @@ const Allotment = () => {
 
   const fetchinvoice = async () => {
     try {
-      const response = await getBookAllotmentHistory(url.bookAllotmentHistory.getdataalocated);
+      const response = await getApi(url.bookAllotmentHistory.getdataalocated);
       const formattedData = response.data.response.map((item) => ({
         id: item._id || Math.random().toString(),
         studentName: item.studentName,

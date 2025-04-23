@@ -15,6 +15,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { url } from 'core/url';
 import { createSubscription } from 'core/helperFurtion';
+import { postApi } from 'core/apiClient';
 
 const AddSubscription = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -54,7 +55,7 @@ const AddSubscription = (props) => {
     onSubmit: async (values) => {
       try {
         SetIsloading(true);
-        const response = await createSubscription(url.subscription.Subscription, values);
+        const response = await postApi(url.subscription.Subscription, values);
 
         fetchData();
         handleClose();

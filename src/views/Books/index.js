@@ -15,6 +15,7 @@ import { addManyBooks, deleteBook, editBook, getBookManagement } from 'core/help
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { fontSize } from '@mui/system';
+import { deleteApi, getApi } from 'core/apiClient';
 
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -135,7 +136,7 @@ const Lead = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(url.bookManagenent.bookmanagementTable);
+      const response = await getApi(url.bookManagenent.bookmanagementTable);
       const fetchedData = response?.data?.data?.map((item) => ({
         id: item._id,
         bookName: item.bookName,
@@ -196,7 +197,7 @@ const Lead = () => {
   const confirmDelete = async () => {
     try {
 
-      await deleteBook(`${url.bookManagenent.delete}${bookToDelete}`);
+      await deleteApi(`${url.bookManagenent.delete}${bookToDelete}`);
 
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
@@ -237,7 +238,7 @@ const Lead = () => {
         setIsloading(false);
         return;
       }
-      const response = await addManyBooks(url.bookManagenent.addManyBooks, excelData);
+      const response = await postApi(url.bookManagenent.addManyBooks, excelData);
       toast.success(`Data Uploaded Successfully`);
       setTimeout(() => {
         window.location.reload();

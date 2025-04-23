@@ -6,6 +6,7 @@ import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './AddBooks.js';
 import axios from 'axios';
 import { url } from 'core/url';
+import { deleteApi } from 'core/apiClient';
 
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -113,7 +114,7 @@ const Lead = () => {
   const confirmDelete = async () => {
     try {
 
-      await axios.delete(`${url.bookManagenent.delete}${bookToDelete}`);
+      await deleteApi(`${url.bookManagenent.delete}${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);

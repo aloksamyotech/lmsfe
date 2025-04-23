@@ -11,6 +11,7 @@ import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { getApi } from 'core/apiClient';
 
 const BookInvoice = () => {
   const location = useLocation();
@@ -48,7 +49,7 @@ const BookInvoice = () => {
     setCurrentUrl(urlWindow);
     const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
-    const response = await axios.get(`${url.allotmentManagement.getInvoice}${extractedId}`);
+    const response = await getApi(`${url.allotmentManagement.getInvoice}${extractedId}`);
     setAllInvoiceData(response);
   };
 

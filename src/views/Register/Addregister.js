@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { url } from 'core/url';
 import { addRegister } from 'core/helperFurtion';
+import { postApi } from 'core/apiClient';
 
 const AddRegister = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -61,7 +62,7 @@ const AddRegister = (props) => {
       formData.append('register_Date', values.register_Date);
       formData.append('adminId',adminId);
       try {
-        const response = await addRegister(url.studentRegister.addRegister, formData, {
+        const response = await postApi(url.studentRegister.addRegister, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

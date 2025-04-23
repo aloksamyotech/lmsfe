@@ -16,6 +16,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { url } from 'core/url';
 import { getBookManagement, getPublications, purchaseBook, viewVender } from 'core/helperFurtion';
+import { getApi, postApi } from 'core/apiClient';
 
 const validationSchema = yup.object({
   bookId: yup.string().required('Book is required'),
@@ -59,7 +60,7 @@ const AddPurchaseBook = (props) => {
           ...values,
           adminId
         };
-        const response = await purchaseBook(url.purchaseBook.purchaseBook, dataToSend);
+        const response = await postApi(url.purchaseBook.purchaseBook, dataToSend);
 
         toast.success('Purchase Book added successfully');
         fetchData();
@@ -87,7 +88,7 @@ const AddPurchaseBook = (props) => {
     const fetchVendor = async () => {
       try {
 
-        const response = await viewVender(url.vendorManagement.viewVender);
+        const response = await getApi(url.vendorManagement.viewVender);
         setStudentData(response.data?.VenderManagement);
       } catch (error) {
         console.error('Error fetching vendors:', error);
@@ -96,7 +97,7 @@ const AddPurchaseBook = (props) => {
 
     const fetchPublisher = async () => {
       try {
-        const response = await getPublications(url.publications.getPublications);
+        const response = await getApi(url.publications.getPublications);
         setPublisherData(response.data?.PublicationsManagement);
       } catch (error) {
         console.error('Error fetching publishers:', error);

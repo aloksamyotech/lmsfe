@@ -24,6 +24,7 @@ import { useLocation } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
 import { url } from 'core/url';
+import { getApi } from 'core/apiClient';
 
 
 const StudentInvoice = () => {
@@ -63,7 +64,7 @@ const StudentInvoice = () => {
 
     const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
 
-    const response = await axios.get(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
+    const response = await getApi(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
 
 
     const student_Name = response?.data[0]?.studentDetails?.student_Name;

@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Iconify from '../../ui-component/iconify';
 import { url } from 'core/url';
+import { deleteApi, getApi, postApi } from 'core/apiClient';
 const Call = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -105,8 +106,8 @@ const Call = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get(url.studentRegister.getRegisterManagement);
-      const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
+      const response = await getApi(url.studentRegister.getRegisterManagement);
+      const fetchedData =  response?.data?.RegisterManagement?.map((item) => ({
         id: item._id,
         student_id: item.student_id,
         student_Name: item.student_Name,
@@ -163,7 +164,7 @@ const Call = () => {
   };
   const confirmDelete = async (id) => {
     try {
-      await axios.delete(`${url.studentRegister.deleteRegister}${bookToDelete}`);
+      await deleteApi(`${url.studentRegister.deleteRegister}${bookToDelete}`);
 
       setData((prevData) => prevData.filter((register) => register.id !== bookToDelete));
       toast.success('Register details Deleted successfully');
@@ -198,7 +199,7 @@ const Call = () => {
   };
   const handleFavorite = async (student) => {
     try {
-      const response = await axios.post(`${url.studentRegister.markFavorite}${student.id}`);
+      const response = await postApi(`${url.studentRegister.markFavorite}${student.id}`);
       const updatedStudent = response.data.student;
       setData((prevData) => prevData.map((item) => (item.id === updatedStudent.id ? updatedStudent : item)));
       if (response) {
@@ -221,7 +222,7 @@ const Call = () => {
     try {
       const updatedSubscription = !row.subscription;
 
-      const response = await axios.post(`${url.studentRegister.markSubscription}${row.id}`, {
+      const response = await postApi(`${url.studentRegister.markSubscription}${row.id}`, {
         subscription: updatedSubscription
       });
       if (response.status === 200) {
@@ -253,12 +254,13 @@ const Call = () => {
   const adminId = user?._id;
   const handleBulkUpload = async () => {
     setIsloading(true);
-    const dataWithAdminId = excelData.map((item) => ({
-      ...item,
-      adminId,
-    }));
+
     try {
-      const response = await axios.post(url.studentRegister.registerMany, dataWithAdminId);
+      const dataWithAdminId = excelData.map((item) => ({
+        ...item,
+        adminId
+      }));
+      const response = await postApi(url.studentRegister.registerMany, dataWithAdminId);
       toast.success(`upload Successfully`);
       setTimeout(() => {
         window.location.reload();
@@ -308,7 +310,7 @@ const Call = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: 'auto', paddingTop: '15px' }}>
+            <Card style={{ paddingTop: '15px', height: '750px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{

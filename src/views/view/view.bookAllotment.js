@@ -15,6 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { url } from 'core/url';
+import { getApi } from 'core/apiClient';
 
 const ViewBookAllotment = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -66,7 +67,7 @@ const ViewBookAllotment = () => {
     const sendIdToBackend = async () => {
       try {
 
-        const response = await axios.get(`${url.bookAllotmentHistory.getBookDetailHistoryStudentId}${extractedId}`);
+        const response = await getApi(`${url.bookAllotmentHistory.getBookDetailHistoryStudentId}${extractedId}`);
 
 
 

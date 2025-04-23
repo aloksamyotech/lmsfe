@@ -16,6 +16,7 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { url } from 'core/url.js';
 import { addVender } from 'core/helperFurtion.js';
+import { postApi } from 'core/apiClient';
 
 const AddPolicy = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -48,8 +49,7 @@ const AddPolicy = (props) => {
 
     onSubmit: async (values) => {
       try {
-        const response = await addVender(url.vendorManagement.addVender, values);
-
+        const response = await postApi(url.vendorManagement.addVender, values);
         fetchData();
         handleClose();
       } catch (error) {

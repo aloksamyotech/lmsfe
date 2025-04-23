@@ -12,6 +12,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
 import { url } from 'core/url';
 import { getBookCount } from 'core/helperFurtion';
+import { getApi } from 'core/apiClient';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   color: '#fff',
@@ -66,7 +67,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        const response = await getBookCount(url.bookManagenent.bookCount);
+        const response = await getApi(url.bookManagenent.bookCount);
         setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);

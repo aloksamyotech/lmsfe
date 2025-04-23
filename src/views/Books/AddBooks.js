@@ -15,6 +15,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { url } from 'core/url';
 import { addBook, getPublications } from 'core/helperFurtion';
+import { getApi, postApi } from 'core/apiClient';
 
 const validationSchema = yup.object({
   bookName: yup.string().required('Book Name is required').max(50, 'Book Name must be less than or equal to 50 characters'),
@@ -57,7 +58,7 @@ const AddLead = (props) => {
       }
 
       try {
-        const response = await addBook(url.bookManagenent.addBook, formData, {
+        const response = await postApi(url.bookManagenent.addBook, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -77,7 +78,7 @@ const AddLead = (props) => {
   useEffect(() => {
     const fetchPublisher = async () => {
       try {
-        const response = await getPublications(url.publications.getPublications);
+        const response = await getApi(url.publications.getPublications);
 
         setPublisherData(response.data.PublicationsManagement);
       } catch (error) {

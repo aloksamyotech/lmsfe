@@ -13,6 +13,7 @@ import { getBookAllotmentHistory } from 'core/helperFurtion';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
+import { getApi } from 'core/apiClient.js';
 const History = ({ allotmentId }) => {
   const [students, setStudents] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
@@ -29,7 +30,7 @@ const History = ({ allotmentId }) => {
   }, []);
   const fetchData = async () => {
     try {
-      const response = await getBookAllotmentHistory(url.bookAllotmentHistory.getdataalocated);
+      const response = await getApi(url.bookAllotmentHistory.getdataalocated);
       const formattedData = response.data.response.map((item) => ({
         id: item._id || Math.random().toString(),
         studentName: item.studentName,

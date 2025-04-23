@@ -13,6 +13,7 @@ import moment from 'moment';
 import axios from 'axios';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
+import { getApi } from 'core/apiClient';
 
 const ReceiveInvoice = () => {
   const location = useLocation();
@@ -60,7 +61,7 @@ const ReceiveInvoice = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get(url.booksubmission.getsubmitedBookinvoice);
+      const response = await getApi(url.booksubmission.getsubmitedBookinvoice);
       const allData = response?.data?.data || [];
 
       const filteredSubmission = allData.find((item) => item._id === submissionId);

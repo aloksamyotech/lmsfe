@@ -32,6 +32,7 @@ import BookmarkAddRoundedIcon from '@mui/icons-material/BookmarkAddRounded';
 import MoneyOffCsredIcon from '@mui/icons-material/MoneyOffCsred';
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 import { height } from '@mui/system';
+import { getApi } from 'core/apiClient';
 
 const EmailTemplates = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -85,9 +86,9 @@ const EmailTemplates = () => {
 
     try {
       const [bookAllotmentResult, purchaseResult, submissionResult] = await Promise.allSettled([
-        bookAllotmentReport(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`),
-        axios.get(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`),
-        axios.get(`${url.booksubmission.getsubmitedBook}`)
+        getApi(`${url.allotmentManagement.bookAllotmentReport}${startDate}/${endDate}`),
+        getApi(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`),
+        getApi(`${url.booksubmission.getsubmitedBook}`)
       ]);
 
       if (bookAllotmentResult.status === 'fulfilled') {

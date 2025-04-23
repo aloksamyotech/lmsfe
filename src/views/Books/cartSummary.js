@@ -7,6 +7,7 @@ import { url } from 'core/url';
 import { allotmentManagement } from 'core/helperFurtion';
 import { fetchCurrency } from 'core/comman';
 import { toast } from 'react-toastify';
+import { postApi } from 'core/apiClient';
 
 const CartSummary = ({ summaryData }) => {
   const { studentName, studentEmail, studentId, cartItems, totalAmount } = summaryData;
@@ -33,17 +34,11 @@ const CartSummary = ({ summaryData }) => {
       amount: item.amount || 0,
       adminId
     }));
-
     try {
-      const response = await fetch(url.allotmentManagement.manyBookAllotment, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(invoiceData)
-      });
-      if (response.ok) {
-        const result = await response.json();
+      const response = await postApi(url.allotmentManagement.manyBookAllotment, invoiceData);
+
+      if (response.status === 200 || response.status === 201) {
+        const result = response.data;
 
         setCartcontextItems([]);
         localStorage.setItem('librarycart', JSON.stringify([]));
@@ -60,12 +55,10 @@ const CartSummary = ({ summaryData }) => {
           }
         });
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to allot books. Please try again.');
+        toast.error(response.data?.message || 'Failed to allot books. Please try again.');
       }
     } catch (error) {
-      console.error('Error allotting books:', error);
-      toast.error('An unexpected error occurred. Please try again.');
+      console.error('Error while allotting books:', error);
     }
   };
   const formattedTotalAmount = !isNaN(totalAmount) ? totalAmount.toFixed(2) : '0.00';
@@ -111,7 +104,10 @@ const CartSummary = ({ summaryData }) => {
                   <Typography variant="body2">{item.quantity || 0}</Typography>
                 </TableCell>
                 <TableCell sx={{ padding: 1 }}>
-                  <Typography variant="body2">{currencySymbol}{(item.amount || 0).toFixed(2)}</Typography>
+                  <Typography variant="body2">
+                    {currencySymbol}
+                    {(item.amount || 0).toFixed(2)}
+                  </Typography>
                 </TableCell>
                 <TableCell sx={{ padding: 1 }}>
                   <Typography variant="body2">{item.submissionTypeName || 'N/A'}</Typography>

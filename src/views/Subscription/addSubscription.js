@@ -15,6 +15,7 @@ import { FormLabel, FormControl, MenuItem, Select } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { url } from 'core/url';
+import { postApi } from 'core/apiClient';
 
 const AddRegister = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -58,7 +59,7 @@ const AddRegister = (props) => {
 
       try {
 
-        const response = await axios.post(url.studentRegister.a, formData, {
+        const response = await postApi(url.studentRegister.a, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

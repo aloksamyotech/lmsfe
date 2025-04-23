@@ -16,6 +16,7 @@ import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 
 import { deleteSubscription, findSubscription, updateSubscription } from 'core/helperFurtion';
+import { getApi } from 'core/apiClient';
 
 const SubscriptType = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -107,8 +108,7 @@ const SubscriptType = () => {
   const fetchData = async () => {
     try {
       SetIsloading(true)
-      const response = await axios.get(url.subscription.findSubscription);
-
+      const response = await getApi(url.subscription.findSubscription);
 
       const fetchedData = response?.data?.SubscriptionType?.map((item) => ({
         id: item._id,
