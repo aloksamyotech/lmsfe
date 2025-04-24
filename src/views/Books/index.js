@@ -15,7 +15,7 @@ import { addManyBooks, deleteBook, editBook, getBookManagement } from 'core/help
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { fontSize } from '@mui/system';
-import { deleteApi, getApi } from 'core/apiClient';
+import { deleteApi, getApi, updateApi, postApi } from 'core/apiClient';
 
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -178,7 +178,7 @@ const Lead = () => {
       return;
     }
     try {
-      const response = await editBook(`${url.bookManagenent.editBook}${editData.id}`, editData);
+      const response = await updateApi(`${url.bookManagenent.editBook}${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);

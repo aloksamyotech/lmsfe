@@ -62,8 +62,6 @@ const StudentInvoice = () => {
 
   const fetchData = async () => {
 
-    const Url = `${url.allotmentManagement.getInvoice}${rowData?.id}`;
-
     const response = await getApi(`${url.allotmentManagement.getInvoice}${rowData?.id}`);
 
 

@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 import { url } from 'core/url';
-import { getApi } from 'core/apiClient';
+import { getApi, postApi } from 'core/apiClient';
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
@@ -190,7 +190,7 @@ const FinePerDay = () => {
     try {
       setLoading(true);
 
-      const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
+      const removeResponse = await postApi(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
 
       toast.success('Book removed successfully');
 

@@ -26,6 +26,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
 import { editAdmin } from 'core/helperFurtion';
+import { getApi, updateApi } from 'core/apiClient';
 
 const currencySymbols = { USD: '$', EUR: '€', INR: '₹', GBP: '£' };
 
@@ -61,7 +62,7 @@ const View = () => {
 
     setEmailPrefs(updatedPrefs);
     try {
-      await axios.put(url.admin.updateEmailContorller, {
+      await updateApi(url.admin.updateEmailContorller, {
         adminId: formData.id,
         ...updatedPrefs
       });
@@ -107,7 +108,7 @@ const View = () => {
         }
       });
       formDataToSend.append('currencyCode', formData.currency);      
-      const response = await editAdmin(`${url.admin.edit}${formData.id}`, formDataToSend, {
+      const response = await updateApi(`${url.admin.edit}${formData.id}`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -131,7 +132,7 @@ const View = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(url.admin.adminProfile);
+        const response = await getApi(url.admin.adminProfile);
     
         if (response.data.status) {
           const user = JSON.parse(localStorage.getItem('user'));
@@ -197,14 +198,11 @@ const View = () => {
   }
    
     try {
-      const response = await axios.put(`${url.admin.updatepassword}`, 
+      const response = await updateApi(`${url.admin.updatepassword}`, 
         {
           oldPassword,
           newPassword,
         },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
       );
 
       toast.success(response.data.message || "Password updated successfully");

@@ -78,7 +78,7 @@ const AddPurchaseBook = (props) => {
     const fetchBooks = async () => {
       try {
 
-        const response = await axios.get(url.bookManagenent.bookmanagementTable);
+        const response = await getApi(url.bookManagenent.bookmanagementTable);
         setBookData(response.data?.data);
       } catch (error) {
         console.error('Error fetching books:', error);

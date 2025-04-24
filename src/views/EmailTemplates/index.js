@@ -90,7 +90,8 @@ const EmailTemplates = () => {
         getApi(`${url.purchaseBook.purchaseReport}${startDate}/${endDate}`),
         getApi(`${url.booksubmission.getsubmitedBook}`)
       ]);
-
+      console.log("submissionResult",submissionResult);
+      
       if (bookAllotmentResult.status === 'fulfilled') {
         const responseData = bookAllotmentResult.value?.data;
         const isArray = Array.isArray(responseData);

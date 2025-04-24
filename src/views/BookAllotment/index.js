@@ -94,7 +94,7 @@ const Allotment = () => {
     setShowModal(false);
   };
   const fetchCategory = async () => {
-    const response = await axios.get(url.bookManagenent.bookmanagementTable);
+    const response = await getApi(url.bookManagenent.bookmanagementTable);
     setCategoryData(response.data.data);
   };
 
@@ -341,7 +341,7 @@ const Allotment = () => {
 
   const getBookCount = async (bookId) => {
     try {
-      const response = await getBookManagement(url.bookManagenent.bookManagement);
+      const response = await getapi(url.bookManagenent.bookManagement);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,

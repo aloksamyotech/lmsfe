@@ -6,7 +6,7 @@ import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './AddBooks.js';
 import axios from 'axios';
 import { url } from 'core/url';
-import { deleteApi } from 'core/apiClient';
+import { deleteApi, updateApi } from 'core/apiClient';
 
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -97,7 +97,7 @@ const Lead = () => {
   const handleSaveEdit = async () => {
     try {
 
-      const response = await axios.put(`${url.bookManagenent.editBook}${editData.id}`, editData);
+      const response = await updateApi(`${url.bookManagenent.editBook}${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);

@@ -218,7 +218,6 @@ const ReceiveBook = () => {
     const getAllSubmitBookDetails = async () => {
       try {
         const submitResponse = await getApi(`${url.booksubmission.getsubmitedBookinvoice}`);
-
         const fetchedData = submitResponse?.data?.data?.map((item, index) => {
           const fines = item?.fines || [];
 
@@ -447,8 +446,7 @@ const ReceiveBook = () => {
         paymentType: updatedBook.paymentType,
         quantity: quantityToSubmit,
         amount: updatedBook.amount,
-        submit: updatedBook.submit,
-        fine: updatedBook.fine,
+        fine: fineDataa.length > 0,
         totalFineAmount: totalFineAmount,
         fines: fineDataa,
         adminId

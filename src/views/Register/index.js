@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Iconify from '../../ui-component/iconify';
 import { url } from 'core/url';
-import { deleteApi, getApi, postApi } from 'core/apiClient';
+import { deleteApi, getApi, postApi, updateApi } from 'core/apiClient';
 const Call = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -145,8 +145,7 @@ const Call = () => {
       return;
     }
     try {
-      const response = await axios.put(`${url.studentRegister.editRegister}${editData.id}`, editData);
-
+      const response = await updateApi(`${url.studentRegister.editRegister}${editData.id}`, editData);
       const updatedRegister = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
       setEditData(null);
@@ -181,7 +180,7 @@ const Call = () => {
     window.location.href = `/dashboard/view/${row.id}`;
     const fetchStudent = async () => {
       try {
-        const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${id}`);
+        const response = await getApi(`${url.allotmentManagement.viewBookAllotment}${id}`);
         const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
           id: item._id,
           student_id: item.student_id,

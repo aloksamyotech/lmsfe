@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { deletePurchaseBook, getPurchaseBook, updatePurchaseBook } from 'core/helperFurtion';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
-import { deleteApi, getApi } from 'core/apiClient';
+import { deleteApi, getApi, updateApi ,updateApiPatch} from 'core/apiClient';
 
 const PurchaseBook = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -154,10 +154,8 @@ const PurchaseBook = () => {
   };
 
   const handleSaveEdit = async () => {
-    
-
     try {
-      const response = await updatePurchaseBook(`${url.purchaseBook.updatePurchaseBook}`, editData);
+      const response = await updateApiPatch(`${url.purchaseBook.updatePurchaseBook}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);

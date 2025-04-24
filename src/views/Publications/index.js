@@ -16,7 +16,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { url } from 'core/url';
 import { deletePublications, editPublications, getPublications } from 'core/helperFurtion';
-import { deleteApi, getApi } from 'core/apiClient';
+import { deleteApi, getApi, updateApi } from 'core/apiClient';
 
 const meetingData = [
   {
@@ -144,7 +144,7 @@ const Publications = () => {
       const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; 
 
 
-      const response = await editPublications(`${url.publications.editPublications}${editData.id}`, updatedPublications);
+      const response = await updateApi(`${url.publications.editPublications}${editData.id}`, updatedPublications);
 
       setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
 

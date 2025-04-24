@@ -15,7 +15,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { url } from 'core/url';
 import { deleteVender, editVender, viewVender } from 'core/helperFurtion';
-import { deleteApi, getApi } from 'core/apiClient';
+import { deleteApi, getApi, updateApi } from 'core/apiClient';
 
 const PolicyManagement = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -130,7 +130,7 @@ const PolicyManagement = () => {
       return;
     }
     try {
-      const response = await editVender(`${url.vendorManagement.editVender}${editData.id}`, editData);
+      const response = await updateApi(`${url.vendorManagement.editVender}${editData.id}`, editData);
 
       const updatedVender = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedVender.id ? updatedVender : item)));

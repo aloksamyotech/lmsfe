@@ -27,7 +27,8 @@ export const url = {
     viewBook: base_url + 'user/viewBookUser/',
     bookManagement: base_url + 'user/bookManagement/',
     bookCount: base_url + 'user/getBookCount/',
-    bookmanagementTable: base_url + 'user/bookmangmentTable/'
+    bookmanagementTable: base_url + 'user/bookmangmentTable/',
+    bookData: base_url + 'user/bookData/',
   },
   booksubmission: {
     submitedBook: base_url + 'user/submitedBook/',

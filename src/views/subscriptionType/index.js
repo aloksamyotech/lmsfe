@@ -16,7 +16,7 @@ import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 
 import { deleteSubscription, findSubscription, updateSubscription } from 'core/helperFurtion';
-import { getApi } from 'core/apiClient';
+import { getApi, updateApi } from 'core/apiClient';
 
 const SubscriptType = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -156,7 +156,7 @@ const SubscriptType = () => {
     }
     try {
 
-      const response = await axios.put(`${url.subscription.update}${editData.id}`, editData);
+      const response = await updateApi(`${url.subscription.update}${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) =>
         prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item))
