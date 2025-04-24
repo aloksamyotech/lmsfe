@@ -11,6 +11,7 @@ import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { getApi } from 'core/apiClient';
 
 const BookInvoice = () => {
   const location = useLocation();
@@ -48,7 +49,7 @@ const BookInvoice = () => {
     setCurrentUrl(urlWindow);
     const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
-    const response = await axios.get(`${url.allotmentManagement.getInvoice}${extractedId}`);
+    const response = await getApi(`${url.allotmentManagement.getInvoice}${extractedId}`);
     setAllInvoiceData(response);
   };
 
@@ -140,40 +141,6 @@ const BookInvoice = () => {
             Date: {moment().format('MMMM D, YYYY')}
           </Typography>
           <Typography variant="h4" mb={3} mt={3}>
-            Book Information
-          </Typography>
-          <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
-          {allInvoiceData?.data?.books?.map((book, index) => (
-            <Grid container spacing={1} key={index}>
-              {' '}
-              <Grid item xs={6}>
-                <Typography variant="body1" fontWeight="bold">
-                  Book Name:
-                </Typography>
-                <Typography variant="body2">{book?.bookId?.bookName ?? 'N/A'}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" fontWeight="bold">
-                  Quantity:
-                </Typography>
-                <Typography variant="body2">{book?.quantity ?? '1'}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" fontWeight="bold">
-                  Issue Date:
-                </Typography>
-                <Typography variant="body2">{book?.bookIssueDate ? moment(book.bookIssueDate).format('DD/MM/YY') : 'N/A'}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" fontWeight="bold">
-                  Submission Date:
-                </Typography>
-                <Typography variant="body2">{book?.submissionDate ? moment(book.submissionDate).format('DD/MM/YYYY') : 'N/A'}</Typography>
-              </Grid>
-            </Grid>
-          ))}
-
-          <Typography variant="h4" mb={3} mt={3}>
             Student Information
           </Typography>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
@@ -210,37 +177,61 @@ const BookInvoice = () => {
             </Grid>
           </Grid>
           <Typography variant="h4" mb={3} mt={3}>
+            Book Information
+          </Typography>
+          <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <strong>Book Name</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Quantity</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Issue Date</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Submission Date</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Subscription Type</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Amount</strong>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {allInvoiceData?.data?.books?.map((book, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{book?.bookId?.bookName ?? 'N/A'}</TableCell>
+                    <TableCell>{book?.quantity ?? '1'}</TableCell>
+                    <TableCell>{book?.bookIssueDate ? moment(book.bookIssueDate).format('DD/MM/YY') : 'N/A'}</TableCell>
+                    <TableCell>{book?.submissionDate ? moment(book.submissionDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
+                    <TableCell>{book?.paymentType?.title ?? 'N/A'}</TableCell>
+                    <TableCell>{book?.amount ?? 'N/A'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Typography variant="h4" mb={3} mt={3}>
             Payment Information
           </Typography>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
           <Grid container spacing={1}>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
-                Subscription type:
-              </Typography>
-              <Typography variant="body2">{allInvoiceData?.data?.books?.[0]?.paymentType?.title ?? 'N/A'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Amount:
-              </Typography>
-              <Typography variant="body2">
-                {allInvoiceData?.data?.books?.[0]?.amount != null ? `${currencySymbol}${allInvoiceData.data.books[0].amount}` : 'N/A'}
-              </Typography>
-            </Grid>
-
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Item:
+                Total Item:
               </Typography>
               <Typography variant="body2">
                 {allInvoiceData?.data?.books?.reduce((total, item) => total + (item.quantity || 0), 0)}
               </Typography>{' '}
             </Grid>
-          </Grid>
-
-          <Grid container spacing={1} mt={2} mb={5}>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
                 {totalAmount ? `${currencySymbol}${totalAmount.toFixed(2)}` : `${currencySymbol}0.00`}

@@ -15,6 +15,7 @@ import { addManyBooks, deleteBook, editBook, getBookManagement } from 'core/help
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { fontSize } from '@mui/system';
+import { deleteApi, getApi } from 'core/apiClient';
 
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -135,7 +136,7 @@ const Lead = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(url.bookManagenent.bookmanagementTable);
+      const response = await getApi(url.bookManagenent.bookmanagementTable);
       const fetchedData = response?.data?.data?.map((item) => ({
         id: item._id,
         bookName: item.bookName,
@@ -172,7 +173,6 @@ const Lead = () => {
     if (!editData.publisherName) newErrors.publisherName = 'Publisher Name is required';
     if (!editData.author) newErrors.author = 'Author Name is required';
 
-    // If there are validation errors, don't proceed
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -197,7 +197,7 @@ const Lead = () => {
   const confirmDelete = async () => {
     try {
 
-      await deleteBook(`${url.bookManagenent.delete}${bookToDelete}`);
+      await deleteApi(`${url.bookManagenent.delete}${bookToDelete}`);
 
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
@@ -231,23 +231,22 @@ const Lead = () => {
   };
 
   const handleBulkUpload = async () => {
-    setIsloading(true)
+    setIsloading(true);
     try {
       if (!excelData || excelData.length === 0) {
         toast.error('No data to upload');
+        setIsloading(false);
         return;
       }
-      const response = await addManyBooks(url.bookManagenent.addManyBooks, excelData);
+      const response = await postApi(url.bookManagenent.addManyBooks, excelData);
       toast.success(`Data Uploaded Successfully`);
       setTimeout(() => {
         window.location.reload();
       }, 1000);
-      setIsloading(false)
-
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');
-      setIsloading(false)
+      setIsloading(false);
     }
   };
 
@@ -289,7 +288,7 @@ const Lead = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ paddingTop: '15px' }}>
+            <Card style={{ paddingTop: '15px', height: '700px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{

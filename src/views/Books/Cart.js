@@ -26,6 +26,7 @@ import defaultBook from './bookDummy.jpeg';
 import { fetchCurrency } from 'core/comman';
 import { Link } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { getApi } from 'core/apiClient';
 const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQuantity }) => {
   const [summary, setSummary] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -83,7 +84,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
 
   const fetchData = async () => {
     try {
-      const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
+      const response = await getApi(url.studentRegister.getRegisterManagement);
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
         name: item.student_Name || 'N/A',

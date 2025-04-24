@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { deletePurchaseBook, getPurchaseBook, updatePurchaseBook } from 'core/helperFurtion';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
+import { deleteApi, getApi } from 'core/apiClient';
 
 const PurchaseBook = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -124,7 +125,7 @@ const PurchaseBook = () => {
     try {
 
 
-      const response = await getPurchaseBook(url.purchaseBook.purchaseManagement);
+      const response = await getApi(url.purchaseBook.purchaseManagement);
 
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
@@ -179,7 +180,7 @@ const PurchaseBook = () => {
     const id = bookToDelete?.id;
 
     try {
-      await deletePurchaseBook(`${url.purchaseBook.deletePurchaseBook}${id}`);
+      await deleteApi(`${url.purchaseBook.deletePurchaseBook}${id}`);
       setData((prevData) => prevData.filter((book) => book.id !== id));
       toast.success('Purchase Book add  successfully');
       setOpenDeleteDialog(false);

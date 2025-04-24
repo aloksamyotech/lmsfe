@@ -26,6 +26,7 @@ import {
   getSubscription,
   manyBookAllotment
 } from 'core/helperFurtion';
+import { postApi } from 'core/apiClient';
 
 const AddAllotment = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -64,10 +65,10 @@ const AddAllotment = (props) => {
       };
       try {
 
-        const response = await manyBookAllotment(url.allotmentManagement.manyBookAllotment, dataToSend);
+        const response = await postApi(url.allotmentManagement.manyBookAllotment, dataToSend);
 
         if (response) {
-          const Bookresponse = await bookAllotmentHistory(url.bookAllotmentHistory.bookAllotmentHistory, newData);
+          const Bookresponse = await postApi(url.bookAllotmentHistory.bookAllotmentHistory, newData);
 
           toast.success('Book details added successfully');
           fetchData();
@@ -78,7 +79,7 @@ const AddAllotment = (props) => {
         } else {
           toast.error('please add book');
         }
-        // window.location.reload();
+        window.location.reload();
       } catch (error) {
         setAddBook([]);
         formik.resetForm();

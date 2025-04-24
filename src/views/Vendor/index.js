@@ -15,6 +15,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { url } from 'core/url';
 import { deleteVender, editVender, viewVender } from 'core/helperFurtion';
+import { deleteApi, getApi } from 'core/apiClient';
 
 const PolicyManagement = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -89,7 +90,7 @@ const PolicyManagement = () => {
   const fetchData = async () => {
     try {
 
-      const response = await viewVender(url.vendorManagement.viewVender);
+      const response = await getApi(url.vendorManagement.viewVender);
       const fetchedData = response?.data?.VenderManagement?.map((item) => ({
         id: item._id,
         vendorName: item.vendorName,
@@ -146,7 +147,7 @@ const PolicyManagement = () => {
   };
   const confirmDelete = async () => {
     try {
-      await deleteVender(`${url.vendorManagement.delete}${bookToDelete}`);
+      await deleteApi(`${url.vendorManagement.delete}${bookToDelete}`);
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
       cancelDelete();
       toast.success('Vender details Deleted successfully');

@@ -20,12 +20,12 @@ import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import PersonAddIcon from '@mui/icons-material/PersonAdd'; // Updated import for PersonAddIcon
+import PersonAddIcon from '@mui/icons-material/PersonAdd'; 
 import { url } from 'core/url';
 import { getRegisterStudentCount } from 'core/helperFurtion';
+import { getApi } from 'core/apiClient';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-  // backgroundColor: theme.palette.primary.dark,
   color: '#fff',
   overflow: 'hidden',
   position: 'relative',
@@ -70,7 +70,7 @@ const EarningCard = ({ isLoading }) => {
     const fetchBookCount = async () => {
       try {
 
-        const response = await getRegisterStudentCount(url.studentRegister.getRegisterStudentCount);
+        const response = await getApi(url.studentRegister.getRegisterStudentCount);
         setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);

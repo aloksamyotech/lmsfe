@@ -5,6 +5,7 @@ import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import defaultBook from '../Books/bookDummy.jpeg';
 import { url } from 'core/url';
+import { getApi } from 'core/apiClient';
 
 const ProfileCard = ({ name, role, img, onClick }) => {
   return (
@@ -53,7 +54,7 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(url.allotmentManagement.trendingBooks);
+      const response = await getApi(url.allotmentManagement.trendingBooks);
       const fetchedData = response?.data?.data?.map((item) => ({
         id: item.bookId,
         name: item.title,

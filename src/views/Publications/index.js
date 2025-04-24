@@ -16,6 +16,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { url } from 'core/url';
 import { deletePublications, editPublications, getPublications } from 'core/helperFurtion';
+import { deleteApi, getApi } from 'core/apiClient';
 
 const meetingData = [
   {
@@ -98,7 +99,7 @@ const Publications = () => {
     try {
 
 
-      const response = await getPublications(url.publications.getPublications);
+      const response = await getApi(url.publications.getPublications);
 
       const fetchedData = await response?.data?.PublicationsManagement.map((item) => {
         return {
@@ -162,7 +163,7 @@ const Publications = () => {
   const confirmDelete = async () => {
     try {
 
-      await deletePublications(`${url.publications.delete}${bookToDelete}`);
+      await deleteApi(`${url.publications.delete}${bookToDelete}`);
 
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
       toast.success('Publication details Deleted successfully');

@@ -16,6 +16,7 @@ import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from '
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { url } from 'core/url';
+import { postApi } from 'core/apiClient';
 
 const AddContact = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -53,7 +54,7 @@ const AddContact = (props) => {
     onSubmit: async (values) => {
       try {
 
-        const response = await axios.post(url.favoriteStudents.addContact, values);
+        const response = await postApi(url.favoriteStudents.addContact, values);
         toast.success('Contact added successfully');
         fetchData();
         handleClose();

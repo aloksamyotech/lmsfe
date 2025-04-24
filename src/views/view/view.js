@@ -14,6 +14,7 @@ import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 import BookmarkAddRoundedIcon from '@mui/icons-material/BookmarkAddRounded';
+import { getApi } from 'core/apiClient';
 
 const View = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -164,7 +165,7 @@ const View = () => {
     const sendIdToBackend = async () => {
       try {
 
-        const response = await axios.get(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
+        const response = await getApi(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
         
         setAllData(response.data);
       } catch (error) {
@@ -187,7 +188,7 @@ const View = () => {
     setId(extractedId);
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${url.allotmentManagement.findHistory}${extractedId}`);
+        const response = await getApi(`${url.allotmentManagement.findHistory}${extractedId}`);
       
         let totalAllottedCount = 0;
         let totalSubmittedCount = 0;

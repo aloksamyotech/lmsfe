@@ -40,6 +40,7 @@ import { fetchCurrency } from 'core/comman';
 import { IconButton } from '@mui/material';
 
 import { Add, Remove } from '@mui/icons-material';
+import { getApi, postApi } from 'core/apiClient';
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
@@ -216,7 +217,7 @@ const ReceiveBook = () => {
   useEffect(() => {
     const getAllSubmitBookDetails = async () => {
       try {
-        const submitResponse = await axios.get(`${url.booksubmission.getsubmitedBookinvoice}`);
+        const submitResponse = await getApi(`${url.booksubmission.getsubmitedBookinvoice}`);
 
         const fetchedData = submitResponse?.data?.data?.map((item, index) => {
           const fines = item?.fines || [];
@@ -244,7 +245,7 @@ const ReceiveBook = () => {
     getAllSubmitBookDetails();
     const fetchSubscription = async () => {
       try {
-        const response = await axios.get(url.subscription.findSubscription);
+        const response = await getApi(url.subscription.findSubscription);
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
@@ -252,7 +253,7 @@ const ReceiveBook = () => {
     };
     const fetchReceiveBook = async () => {
       try {
-        const response = await axios.get(url.allotmentManagement.receiveBook);
+        const response = await getApi(url.allotmentManagement.receiveBook);
         setFetchReceiveBook(response.data.books);
         setFetchReceiveBooks(response.data.books || []);
       } catch (error) {
@@ -262,7 +263,7 @@ const ReceiveBook = () => {
 
     const fetchStudents = async () => {
       try {
-        const response = await axios.get(url.studentRegister.getRegisterManagement);
+        const response = await getApi(url.studentRegister.getRegisterManagement);
 
         setAllData(response?.data?.RegisterManagement);
 
@@ -279,7 +280,7 @@ const ReceiveBook = () => {
 
     const BookAllotments = async () => {
       try {
-        const response = await axios.get(url.allotmentManagement.allotmentManagementData);
+        const response = await getApi(url.allotmentManagement.allotmentManagementData);
         const data = response?.data;
         setFetchReceiveBook(data);
 
@@ -305,7 +306,7 @@ const ReceiveBook = () => {
 
     const NewReceiveBook = async () => {
       try {
-        const response = await axios.get(url.allotmentManagement.getReceiveBook);
+        const response = await getApi(url.allotmentManagement.getReceiveBook);
 
         setFetchReceiveBook(response.data);
       } catch (error) {
@@ -327,7 +328,7 @@ const ReceiveBook = () => {
     },
     onSubmit: async (values) => {
       try {
-        const response = await axios.post(url.allotmentManagement.postReceiveBook, values);
+        const response = await postApi(url.allotmentManagement.postReceiveBook, values);
         toast.success('Details Book successfully');
         fetchData();
         handleClose();
@@ -356,7 +357,7 @@ const ReceiveBook = () => {
     }
 
     try {
-      const submitResponse = await axios.get(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
+      const submitResponse = await getApi(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
@@ -431,7 +432,7 @@ const ReceiveBook = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const adminId = user?._id;
     try {
-      const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`, { receivequantity: quantityToSubmit });
+      const submitResponse = await postApi(`${url.allotmentManagement.submitBook}${bookId}`, { receivequantity: quantityToSubmit });
 
       toast.success('Book submitted successfully');
       const { submittedBook } = submitResponse.data;
@@ -452,7 +453,7 @@ const ReceiveBook = () => {
         fines: fineDataa,
         adminId
       };
-      const response = await axios.post(`${url.booksubmission.submitedBook}`, payload);
+      const response = await postApi(`${url.booksubmission.submitedBook}`, payload);
       setLoading(true);
       window.location.reload();
       setLoading(false);

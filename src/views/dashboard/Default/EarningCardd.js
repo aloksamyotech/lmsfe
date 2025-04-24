@@ -22,9 +22,9 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { url } from 'core/url';
 import { getPublicationsCount } from 'core/helperFurtion';
+import { getApi } from 'core/apiClient';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-  // backgroundColor: theme.palette.secondary.dark,
   color: '#fff',
   overflow: 'hidden',
   position: 'relative',
@@ -81,7 +81,7 @@ const EarningCardd = ({ isLoading }) => {
     const fetchBookCount = async () => {
       try {
 
-        const response = await getPublicationsCount(url.publications.getPublicationsCount);
+        const response = await getApi(url.publications.getPublicationsCount);
         setBookCount(response.data.count);
       } catch (error) {
         console.error('Error fetching book count:', error);

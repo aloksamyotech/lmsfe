@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 import { url } from 'core/url';
+import { getApi } from 'core/apiClient';
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
@@ -99,7 +100,7 @@ const FinePerDay = () => {
     const fetchStudents = async () => {
       try {
 
-        const response = await axios.get(url.studentRegister.getRegisterManagement);
+        const response = await getApi(url.studentRegister.getRegisterManagement);
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -109,7 +110,7 @@ const FinePerDay = () => {
     const fetchAllStudents = async () => {
 
       try {
-        const response = await axios.get(url.fine.getAllFineBooks);
+        const response = await getApi(url.fine.getAllFineBooks);
 
         setAllData(response?.data);
         const fetchedData = response?.data?.map((item) => ({
@@ -151,7 +152,7 @@ const FinePerDay = () => {
     }
 
     try {
-      const fineResponse = await axios.get(`${url.fine.getFineBook}${selectedStudentId}`);
+      const fineResponse = await getApi(`${url.fine.getFineBook}${selectedStudentId}`);
 
 
       const fetchedData = fineResponse?.data?.map((item) => ({

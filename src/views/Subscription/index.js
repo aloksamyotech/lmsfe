@@ -16,6 +16,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 import { Box, Container } from '@mui/system';
 import { url } from 'core/url';
+import { getApi } from 'core/apiClient';
 
 
 const Contact = () => {
@@ -49,7 +50,8 @@ const Contact = () => {
   const fetchData = async () => {
     try {
 
-      const response = await axios.get(url.studentRegister.getSubscription);
+      const response = await getApi(url.studentRegister.getSubscription);
+      
       const fetchedData = response?.data?.students?.map((item) => ({
         id: item._id,
         student_id: item.student_id,

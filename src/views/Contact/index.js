@@ -27,6 +27,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { url } from 'core/url';
 import { deleteMarkFavorite, getMarkFavorite, markFavorite } from 'core/helperFurtion';
+import { deleteApi, postApi } from 'core/apiClient';
 
 // ----------------------------------------------------------------------
 
@@ -132,7 +133,7 @@ const Contact = () => {
   const handleConfirmDelete = async () => {
     try {
       if (contactToDelete) {
-        await deleteMarkFavorite(`${url.favoriteStudents.delete}${contactToDelete}`);
+        await deleteApi(`${url.favoriteStudents.delete}${contactToDelete}`);
         setData((prevData) => prevData.filter((item) => item.id !== contactToDelete));
         setContactToDelete(null);
       }
@@ -150,7 +151,7 @@ const Contact = () => {
     try {
 
 
-      const response = await markFavorite(`${url.studentRegister.markFavorite}${student}`);
+      const response = await postApi(`${url.studentRegister.markFavorite}${student}`);
       const updatedStudent = response.data.student;
 
       if (response) {

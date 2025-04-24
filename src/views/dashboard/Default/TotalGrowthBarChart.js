@@ -19,6 +19,7 @@ import { gridSpacing } from 'store/constant';
 import chartData from './chart-data/total-growth-bar-chart';
 import { url } from 'core/url';
 import { allotmentManagement } from 'core/helperFurtion';
+import { getApi } from 'core/apiClient';
 const status = [
   {
     value: 'today',
@@ -56,7 +57,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
   useEffect(() => {
     const fetchBookAllotmentCount = async () => {
       try {
-        const response = await axios.get(url.allotmentManagement.getBookAllotedCount);
+        const response = await getApi(url.allotmentManagement.getBookAllotedCount);
 
         setBookCount(response.data.count);
       } catch (error) {

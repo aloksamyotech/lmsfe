@@ -29,6 +29,7 @@ import moment from 'moment';
 import axios from 'axios';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
+import { getApi } from 'core/apiClient';
 
 
 const PurchaseInvoice = () => {
@@ -73,7 +74,7 @@ const PurchaseInvoice = () => {
     getCurrency();
   }, []);
   const fetchData = async () => {
-    const response = await axios.get(`${url.purchaseBook.getPurchaseInvoice}${rowData?.id}`);
+    const response = await getApi(`${url.purchaseBook.getPurchaseInvoice}${rowData?.id}`);
 
     const student_Name = response?.data[0]?.vendorDetails?.vendorName;
 
