@@ -21,7 +21,6 @@ import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { url } from 'core/url';
-import { getPublicationsCount } from 'core/helperFurtion';
 import { getApi } from 'core/apiClient';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({

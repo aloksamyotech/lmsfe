@@ -4,7 +4,6 @@ import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, T
 import { useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
 import { url } from 'core/url';
-import { allotmentManagement } from 'core/helperFurtion';
 import { fetchCurrency } from 'core/comman';
 import { toast } from 'react-toastify';
 import { postApi } from 'core/apiClient';

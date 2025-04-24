@@ -58,7 +58,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import { array } from 'prop-types';
 import BookInvoice from './Invoice';
 import { url } from 'core/url';
-import { deleteBook, editBookAllotment, getBookAllotmentHistory, getBookManagement } from 'core/helperFurtion';
 import ReceiveBook from 'views/ReceiveBook/index';
 import { useCart } from '../Books/CartContext.js';
 import { getApi } from 'core/apiClient.js';
@@ -341,7 +340,7 @@ const Allotment = () => {
 
   const getBookCount = async (bookId) => {
     try {
-      const response = await getapi(url.bookManagenent.bookManagement);
+      const response = await getApi(url.bookManagenent.bookManagement);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,

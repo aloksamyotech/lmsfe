@@ -16,7 +16,6 @@ import { FormLabel, FormControl, MenuItem, Select } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { url } from 'core/url';
-import { addRegister } from 'core/helperFurtion';
 import { postApi } from 'core/apiClient';
 
 const AddRegister = (props) => {

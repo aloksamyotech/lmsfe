@@ -28,7 +28,6 @@ import Google from 'assets/images/icons/social-google.svg';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
-import {admin} from 'core/helperFurtion';
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();

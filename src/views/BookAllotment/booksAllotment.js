@@ -17,15 +17,6 @@ import { useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from '@mui/material/IconButton';
 import { url } from 'core/url';
-import {
-  bookAllotmentCount,
-  bookAllotmentHistory,
-  findHistoryBookAllotment,
-  getBookManagement,
-  getRegisterManagement,
-  getSubscription,
-  manyBookAllotment
-} from 'core/helperFurtion';
 import { getApi, postApi } from 'core/apiClient';
 
 const AddAllotment = (props) => {

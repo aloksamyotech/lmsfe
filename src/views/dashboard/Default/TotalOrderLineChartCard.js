@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
 import { url } from 'core/url';
-import { getBookCount } from 'core/helperFurtion';
 import { getApi } from 'core/apiClient';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({

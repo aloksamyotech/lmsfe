@@ -26,7 +26,6 @@ import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { url } from 'core/url';
-import { deleteMarkFavorite, getMarkFavorite, markFavorite } from 'core/helperFurtion';
 import { deleteApi, getApi, postApi } from 'core/apiClient';
 
 // ----------------------------------------------------------------------

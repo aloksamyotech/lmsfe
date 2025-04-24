@@ -15,7 +15,6 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { url } from 'core/url.js';
-import { addVender } from 'core/helperFurtion.js';
 import { postApi } from 'core/apiClient';
 
 const AddPolicy = (props) => {

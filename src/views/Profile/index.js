@@ -25,7 +25,6 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
-import { editAdmin } from 'core/helperFurtion';
 import { getApi, updateApi } from 'core/apiClient';
 
 const currencySymbols = { USD: '$', EUR: '€', INR: '₹', GBP: '£' };

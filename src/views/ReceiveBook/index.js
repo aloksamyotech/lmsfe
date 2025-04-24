@@ -35,7 +35,6 @@ import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { allotmentManagement } from 'core/helperFurtion';
 import { fetchCurrency } from 'core/comman';
 import { IconButton } from '@mui/material';
 

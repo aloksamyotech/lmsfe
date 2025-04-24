@@ -23,7 +23,6 @@ import TotalOrderLineChartCardd from './TotalOrderLineChaetCardd';
 import EarningCardd from './EarningCardd';
 import BookIssued from './BookIssued';
 import ListedCategories from './ListedCategories';
-import FinePerDay from './FinePerDay';
 import App from 'views/Card';
 import TrandingBook from 'views/Card/trandingBook';
 import Book2 from 'views/Card/book2';

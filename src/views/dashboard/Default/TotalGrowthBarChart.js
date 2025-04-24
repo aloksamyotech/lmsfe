@@ -18,7 +18,6 @@ import { gridSpacing } from 'store/constant';
 
 import chartData from './chart-data/total-growth-bar-chart';
 import { url } from 'core/url';
-import { allotmentManagement } from 'core/helperFurtion';
 import { getApi } from 'core/apiClient';
 const status = [
   {
