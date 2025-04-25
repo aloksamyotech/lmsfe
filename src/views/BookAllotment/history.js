@@ -141,7 +141,7 @@ const History = ({ allotmentId }) => {
       </Box>
       <TableContainer component={Paper}sx={{marginTop:'40px'}}>
         <Box width="100%" mt={3}>
-          <Card style={{ height: '700px' }}>
+          <Card style={{ height: '750px' }}>
             <DataGrid
               pageSizeOptions={[5, 10, 25]}
               initialState={{

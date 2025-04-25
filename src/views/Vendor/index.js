@@ -197,7 +197,7 @@ const PolicyManagement = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
+            <Card style={{ height: '750px', paddingTop: '15px' }}>
               <DataGrid
                 rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
@@ -273,7 +273,7 @@ const PolicyManagement = () => {
         )}
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>
-            <Typography variant="h6">Are you sure you want to delete this book?</Typography>
+            <Typography variant="h6">Are you sure you want to delete this Vander?</Typography>
             <Stack direction="row" spacing={2} justifyContent="flex-end" mt={3}>
               <Button onClick={cancelDelete} variant="outlined" color="secondary">
                 Cancel

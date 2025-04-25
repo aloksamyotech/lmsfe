@@ -116,7 +116,6 @@ const ReceiveBook = () => {
       field: 'bookName',
       headerName: 'Book Name',
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize'
     },
     {
       field: 'quantity',
@@ -302,21 +301,23 @@ const ReceiveBook = () => {
       }
     };
 
-    const NewReceiveBook = async () => {
-      try {
-        const response = await getApi(url.allotmentManagement.getReceiveBook);
+    // const NewReceiveBook = async () => {
+    //   try {
+    //     const response = await getApi(url.allotmentManagement.getReceiveBook);
 
-        setFetchReceiveBook(response.data);
-      } catch (error) {
-        console.error('Error fetching Receive Book', error);
-      }
-    };
+    //     setFetchReceiveBook(response.data);
+    //   } catch (error) {
+    //     console.error('Error fetching Receive Book', error);
+    //   }
+    // };
     filterData();
     fetchStudents();
     fetchSubscription();
     fetchReceiveBook();
-    NewReceiveBook();
+    // NewReceiveBook();
     BookAllotments();
+    console.log(bookData);
+    
   }, []);
   const formik = useFormik({
     initialValues: {
@@ -356,6 +357,7 @@ const ReceiveBook = () => {
 
     try {
       const submitResponse = await getApi(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
+      console.log(submitResponse);
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
@@ -385,7 +387,7 @@ const ReceiveBook = () => {
 
   useEffect(() => {
     const result = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
-
+    
     setFilteredBooks(result);
     const bookQuantity = result[0]?.quantity || 0;
     setBookqunatity(bookQuantity);
@@ -551,7 +553,7 @@ const ReceiveBook = () => {
               >
                 {getUniqueBooks(bookData).map((item) => (
                   <MenuItem key={item.bookId} value={item.bookId}>
-                    {item?.bookTitle}
+                    {item?.bookName}
                   </MenuItem>
                 ))}
               </Select>
@@ -571,7 +573,7 @@ const ReceiveBook = () => {
               }}
             >
               <Typography variant="h4" sx={{ fontSize: '22px', textAlign: 'center', mb: 2, color: 'text.primary' }}>
-                {book?.bookTitle || 'Loading...'}
+                {book?.bookName || 'Loading...'}
               </Typography>
               <Divider sx={{ marginY: 2 }} />
               <Grid container spacing={2}>

@@ -32,6 +32,7 @@ export const getApi = async (url, params = {}, headers = {}) => {
     return response;
   } catch (error) {
     const errorMessage = error.response?.data?.message || 'Error fetching';
+    // toast.error(errorMessage);
     throw errorMessage;
   }
 };

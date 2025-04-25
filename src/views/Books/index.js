@@ -51,7 +51,6 @@ const Lead = () => {
       field: 'bookName',
       headerName: 'Book Name',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'upload_Book',
@@ -82,7 +81,6 @@ const Lead = () => {
       field: 'title',
       headerName: 'Book Title',
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize'
     },
     {
       field: 'publisherName',
@@ -287,7 +285,7 @@ const Lead = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ paddingTop: '15px', height: '700px' }}>
+            <Card style={{ paddingTop: '15px', height: '750px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{

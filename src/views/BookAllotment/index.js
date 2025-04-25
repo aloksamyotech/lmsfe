@@ -416,7 +416,7 @@ const Allotment = () => {
       <Grid container spacing={0}>
         {' '}
         <Grid item xs={12} md={9} lg={12}>
-          <Box sx={{ height: '70vh' }}>
+          <Box sx={{ height: 'auto' }}>
             <Grid container spacing={0}>
               {' '}
               {currentBooks.map((product) => (
@@ -522,8 +522,8 @@ const Allotment = () => {
         sx={{
           mt: 2,
           display: 'flex',
-          justifyContent: 'flex-end', 
-          alignItems: 'flex-end' 
+          justifyContent: 'flex-end',
+          alignItems: 'flex-end'
         }}
       >
         <Pagination

@@ -380,7 +380,7 @@ const Call = () => {
         )}
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>
-            <Typography variant="h6">Are you sure you want to delete this book?</Typography>
+            <Typography variant="h6">Are you sure you want to delete this Student?</Typography>
             <Stack direction="row" spacing={2} justifyContent="flex-end" mt={3}>
               <Button onClick={cancelDelete} variant="outlined" color="secondary" disabled={isloading}>
                 Cancel

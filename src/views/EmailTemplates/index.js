@@ -573,7 +573,7 @@ const EmailTemplates = () => {
         <Box sx={{ marginTop: '30px' }}>
           {selectedTab === 0 &&
             (bookAllotmentData.length > 0 ? (
-              <Box sx={{ height: 'auto', overflow: 'auto', backgroundColor: 'white' }}>
+              <Box sx={{ height: '750px', overflow: 'auto', backgroundColor: 'white' }}>
                 <DataGrid
                   pageSizeOptions={[5, 10, 25]}
                   initialState={{
@@ -598,7 +598,7 @@ const EmailTemplates = () => {
 
           {selectedTab === 1 &&
             (purchaseData.length > 0 ? (
-              <Card sx={{ height: 'auto' }}>
+              <Card sx={{ height: '750px' }}>
                 <DataGrid
                   pageSizeOptions={[5, 10, 25]}
                   initialState={{
@@ -621,7 +621,7 @@ const EmailTemplates = () => {
 
           {selectedTab === 2 &&
             (submissionData.length > 0 ? (
-              <Card sx={{ height: 'auto' }}>
+              <Card sx={{ height: '750px' }}>
                 <DataGrid
                   pageSizeOptions={[5, 10, 25]}
                   initialState={{

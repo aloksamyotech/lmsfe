@@ -213,7 +213,7 @@ const AddPurchaseBook = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Price Par Book</FormLabel>
+                  <FormLabel>Price Per Book</FormLabel>
                   <TextField
                     id="price"
                     name="price"
