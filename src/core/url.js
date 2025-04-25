@@ -94,15 +94,15 @@ export const url = {
     trendingBooks: base_url + 'user/trendingBooks/',
     submissionReport: base_url + 'user/submissionReport/'
   },
-  // fine: {
-  //   addFineBook: base_url + 'user/addFineBook/',
-  //   getFineBook: base_url + 'user/getFineBook/',
-  //   getAllFineBooks: base_url + 'user/getAllFineBooks/',
-  //   findByStudentId: base_url + 'user/findByStudentId/',
-  //   findFine: base_url + 'user/findFineInvoice/',
-  //   fineDetails: base_url + 'user/findFine/',
-  //   findFinebyAllotmentIdAndBookId: base_url + 'user/findFinebyAllotmentIdAndBookId'
-  // },
+  fine: {
+    addFineBook: base_url + 'user/addFineBook/',
+    getFineBook: base_url + 'user/getFineBook/',
+    getAllFineBooks: base_url + 'user/getAllFineBooks/',
+    findByStudentId: base_url + 'user/findByStudentId/',
+    findFine: base_url + 'user/findFineInvoice/',
+    fineDetails: base_url + 'user/findFine/',
+    findFinebyAllotmentIdAndBookId: base_url + 'user/findFinebyAllotmentIdAndBookId'
+  },
   purchaseBook: {
     purchaseBook: base_url + 'user/purchaseBook/',
     deletePurchaseBook: base_url + 'user/deletePurchaseBook/',
