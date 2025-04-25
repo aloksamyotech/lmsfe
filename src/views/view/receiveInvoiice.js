@@ -91,7 +91,6 @@ const ReceiveInvoice = () => {
 
       setIssueDate(formatDate(filteredSubmission?.bookIssueDate));
       setSubmissionDate(formatDate(filteredSubmission?.submissionDate));
-
     } catch (error) {
       console.error('Error fetching submission data:', error);
     }
@@ -292,7 +291,7 @@ const ReceiveInvoice = () => {
                 </Table>
               </TableContainer>
             ) : (
-              <Typography variant="body2" color="text.secondary" sx={{ marginTop:'50px'}}>
+              <Typography variant="body2" color="text.secondary" sx={{ marginTop: '50px' }}>
                 No fines applied.
               </Typography>
             )}
@@ -303,9 +302,9 @@ const ReceiveInvoice = () => {
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
                 {`${currencySymbol}${(
-                  studentAmount * (bookQuantity || 1) +
-                  fineData?.reduce((acc, item) => acc + (item.fineAmount || 0), 0)
-                ).toFixed(2)}` || `${currencySymbol}0.00`}
+                  (studentAmount || 0) * (bookQuantity || 1) +
+                  (fineData?.reduce((acc, item) => acc + Number(item?.amount || 0), 0) || 0)
+                ).toFixed(2)}`}
               </Typography>
             </Grid>
           </Grid>

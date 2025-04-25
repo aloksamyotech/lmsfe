@@ -58,7 +58,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import { array } from 'prop-types';
 import BookInvoice from './Invoice';
 import { url } from 'core/url';
-import { deleteBook, editBookAllotment, getBookAllotmentHistory, getBookManagement } from 'core/helperFurtion';
 import ReceiveBook from 'views/ReceiveBook/index';
 import { useCart } from '../Books/CartContext.js';
 import { getApi } from 'core/apiClient.js';
@@ -94,7 +93,7 @@ const Allotment = () => {
     setShowModal(false);
   };
   const fetchCategory = async () => {
-    const response = await axios.get(url.bookManagenent.bookmanagementTable);
+    const response = await getApi(url.bookManagenent.bookmanagementTable);
     setCategoryData(response.data.data);
   };
 
@@ -341,7 +340,7 @@ const Allotment = () => {
 
   const getBookCount = async (bookId) => {
     try {
-      const response = await getBookManagement(url.bookManagenent.bookManagement);
+      const response = await getApi(url.bookManagenent.bookManagement);
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
@@ -417,7 +416,7 @@ const Allotment = () => {
       <Grid container spacing={0}>
         {' '}
         <Grid item xs={12} md={9} lg={12}>
-          <Box sx={{ height: '70vh' }}>
+          <Box sx={{ height: 'auto' }}>
             <Grid container spacing={0}>
               {' '}
               {currentBooks.map((product) => (
@@ -523,8 +522,8 @@ const Allotment = () => {
         sx={{
           mt: 2,
           display: 'flex',
-          justifyContent: 'flex-end', 
-          alignItems: 'flex-end' 
+          justifyContent: 'flex-end',
+          alignItems: 'flex-end'
         }}
       >
         <Pagination

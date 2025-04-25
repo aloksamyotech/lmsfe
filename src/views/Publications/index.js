@@ -15,8 +15,7 @@ import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { url } from 'core/url';
-import { deletePublications, editPublications, getPublications } from 'core/helperFurtion';
-import { deleteApi, getApi } from 'core/apiClient';
+import { deleteApi, getApi, updateApi } from 'core/apiClient';
 
 const meetingData = [
   {
@@ -144,7 +143,7 @@ const Publications = () => {
       const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; 
 
 
-      const response = await editPublications(`${url.publications.editPublications}${editData.id}`, updatedPublications);
+      const response = await updateApi(`${url.publications.editPublications}${editData.id}`, updatedPublications);
 
       setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
 
@@ -218,7 +217,7 @@ const Publications = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
+            <Card style={{ height: '750px', paddingTop: '15px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{

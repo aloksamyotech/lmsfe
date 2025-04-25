@@ -14,10 +14,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
-import { deletePurchaseBook, getPurchaseBook, updatePurchaseBook } from 'core/helperFurtion';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
-import { deleteApi, getApi } from 'core/apiClient';
+import { deleteApi, getApi, updateApi ,updateApiPatch} from 'core/apiClient';
 
 const PurchaseBook = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -154,10 +153,8 @@ const PurchaseBook = () => {
   };
 
   const handleSaveEdit = async () => {
-    
-
     try {
-      const response = await updatePurchaseBook(`${url.purchaseBook.updatePurchaseBook}`, editData);
+      const response = await updateApiPatch(`${url.purchaseBook.updatePurchaseBook}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
@@ -241,7 +238,7 @@ const PurchaseBook = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
+            <Card style={{ height: '750px', paddingTop: '15px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{
@@ -306,7 +303,7 @@ const PurchaseBook = () => {
 
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>
-            <Typography variant="h6">Are you sure you want to delete this book?</Typography>
+            <Typography variant="h6">Are you sure you want to delete this Purchase Entry?</Typography>
             <Stack direction="row" spacing={2} justifyContent="flex-end" mt={3}>
               <Button onClick={cancelDelete} variant="outlined" color="secondary">
                 Cancel

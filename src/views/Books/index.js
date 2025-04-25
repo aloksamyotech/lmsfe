@@ -11,11 +11,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import defaultBook from './bookDummy.jpeg';
 import { url } from 'core/url';
-import { addManyBooks, deleteBook, editBook, getBookManagement } from 'core/helperFurtion';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { fontSize } from '@mui/system';
-import { deleteApi, getApi } from 'core/apiClient';
+import { deleteApi, getApi, updateApi, postApi } from 'core/apiClient';
 
 const Lead = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -52,7 +51,6 @@ const Lead = () => {
       field: 'bookName',
       headerName: 'Book Name',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'upload_Book',
@@ -83,7 +81,6 @@ const Lead = () => {
       field: 'title',
       headerName: 'Book Title',
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize'
     },
     {
       field: 'publisherName',
@@ -178,7 +175,7 @@ const Lead = () => {
       return;
     }
     try {
-      const response = await editBook(`${url.bookManagenent.editBook}${editData.id}`, editData);
+      const response = await updateApi(`${url.bookManagenent.editBook}${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
       setEditData(null);
@@ -288,7 +285,7 @@ const Lead = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ paddingTop: '15px', height: '700px' }}>
+            <Card style={{ paddingTop: '15px', height: '750px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{

@@ -32,8 +32,8 @@ export const getApi = async (url, params = {}, headers = {}) => {
     return response;
   } catch (error) {
     const errorMessage = error.response?.data?.message || 'Error fetching';
-    toast.error(errorMessage);
-    throw error;
+    // toast.error(errorMessage);
+    throw errorMessage;
   }
 };
 
@@ -46,7 +46,7 @@ export const updateApi = async (url, data, headers = {}) => {
       ...(isFormData ? { 'Content-Type': 'multipart/form-data' } : { 'Content-Type': 'application/json' })
     };
     const response = await axios.put(url, data, { headers: defaultHeaders });
-    return response?.data;
+    return response;
   } catch (error) {
     const errorMessage = error.response?.data?.message || 'Error fetching';
     toast.error(errorMessage);
@@ -63,7 +63,7 @@ export const updateApiPatch = async (url, data, headers = {}) => {
       ...(isFormData ? { 'Content-Type': 'multipart/form-data' } : { 'Content-Type': 'application/json' })
     };
     const response = await axios.patch(url, data, { headers: defaultHeaders });
-    return response?.data;
+    return response;
   } catch (error) {
     const errorMessage = error.response?.data?.message || 'Error fetching';
     toast.error(errorMessage);

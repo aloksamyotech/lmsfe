@@ -1,270 +1,270 @@
-import { useState, useEffect } from 'react';
-import { Stack, Button, Container, Typography, Box, Card, Divider, Avatar, Dialog, TextField } from '@mui/material';
-import { Grid, FormLabel, FormControl, Select, MenuItem, FormHelperText } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import TableStyle from 'ui-component/TableStyle';
-import axios from 'axios';
-import Iconic from 'ui-component/iconify/Iconify';
-import { Breadcrumbs, Link } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useFormik } from 'formik';
-import { toast } from 'react-toastify';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import { useNavigate } from 'react-router-dom';
-import { url } from 'core/url';
-import { getApi } from 'core/apiClient';
+// import { useState, useEffect } from 'react';
+// import { Stack, Button, Container, Typography, Box, Card, Divider, Avatar, Dialog, TextField } from '@mui/material';
+// import { Grid, FormLabel, FormControl, Select, MenuItem, FormHelperText } from '@mui/material';
+// import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+// import TableStyle from 'ui-component/TableStyle';
+// import axios from 'axios';
+// import Iconic from 'ui-component/iconify/Iconify';
+// import { Breadcrumbs, Link } from '@mui/material';
+// import HomeIcon from '@mui/icons-material/Home';
+// import EditIcon from '@mui/icons-material/Edit';
+// import DeleteIcon from '@mui/icons-material/Delete';
+// import { useFormik } from 'formik';
+// import { toast } from 'react-toastify';
+// import ReceiptIcon from '@mui/icons-material/Receipt';
+// import { useNavigate } from 'react-router-dom';
+// import { url } from 'core/url';
+// import { getApi, postApi } from 'core/apiClient';
 
-const formatDate = (dateString) => {
-  if (!dateString) return 'N/A';
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear().toString().slice(-2);
-  return `${day}/${month}/${year}`;
-};
-const paymentTypeMapping = {
-  1: 'Credit Card',
-  2: 'Cash',
-  3: 'Bank Transfer'
-};
+// const formatDate = (dateString) => {
+//   if (!dateString) return 'N/A';
+//   const date = new Date(dateString);
+//   const day = String(date.getDate()).padStart(2, '0');
+//   const month = String(date.getMonth() + 1).padStart(2, '0');
+//   const year = date.getFullYear().toString().slice(-2);
+//   return `${day}/${month}/${year}`;
+// };
+// const paymentTypeMapping = {
+//   1: 'Credit Card',
+//   2: 'Cash',
+//   3: 'Bank Transfer'
+// };
 
-const FinePerDay = () => {
-  const [selectedStudentId, setSelectedStudentId] = useState(null);
-  const [data, setData] = useState([]);
-  const [editData, setEditData] = useState(null);
-  const [bookData, setBookData] = useState([]);
-  const [studentData, setStudentData] = useState([]);
-  const [allData, setAllData] = useState([]);
-  const [fetchReceiveBook, setFetchReceiveBook] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [studentId, setStudentId] = useState(null);
-  const navigate = useNavigate();
+// const FinePerDay = () => {
+//   const [selectedStudentId, setSelectedStudentId] = useState(null);
+//   const [data, setData] = useState([]);
+//   const [editData, setEditData] = useState(null);
+//   const [bookData, setBookData] = useState([]);
+//   const [studentData, setStudentData] = useState([]);
+//   const [allData, setAllData] = useState([]);
+//   const [fetchReceiveBook, setFetchReceiveBook] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [studentId, setStudentId] = useState(null);
+//   const navigate = useNavigate();
 
-  const columns = [
-    {
-      field: 'student_Name',
-      headerName: 'Student Name',
-      flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
-    },
-    {
-      field: 'bookName',
-      headerName: 'Book Name',
-      flex: 1,
-      cellClassName: 'name-column--cell--capitalize'
-    },
-    {
-      field: 'amount',
-      headerName: 'Amount',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center'
-    },
-    {
-      field: 'bookIssueDate',
-      headerName: 'Book Issue Date',
-      flex: 1
-    },
-    {
-      field: 'submissionDate',
-      headerName: 'Submission Date',
-      flex: 1
-    },
-    {
-      field: 'fineAmount',
-      headerName: 'Fine Amount',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center'
-    }
-  ];
+//   const columns = [
+//     {
+//       field: 'student_Name',
+//       headerName: 'Student Name',
+//       flex: 1,
+//       cellClassName: 'name-column--cell name-column--cell--capitalize'
+//     },
+//     {
+//       field: 'bookName',
+//       headerName: 'Book Name',
+//       flex: 1,
+//       cellClassName: 'name-column--cell--capitalize'
+//     },
+//     {
+//       field: 'amount',
+//       headerName: 'Amount',
+//       flex: 1,
+//       align: 'center',
+//       headerAlign: 'center'
+//     },
+//     {
+//       field: 'bookIssueDate',
+//       headerName: 'Book Issue Date',
+//       flex: 1
+//     },
+//     {
+//       field: 'submissionDate',
+//       headerName: 'Submission Date',
+//       flex: 1
+//     },
+//     {
+//       field: 'fineAmount',
+//       headerName: 'Fine Amount',
+//       flex: 1,
+//       align: 'center',
+//       headerAlign: 'center'
+//     }
+//   ];
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
+//   const formatDate = (dateString) => {
+//     const date = new Date(dateString);
+//     const day = String(date.getDate()).padStart(2, '0');
+//     const month = String(date.getMonth() + 1).padStart(2, '0');
+//     const year = date.getFullYear();
+//     return `${day}/${month}/${year}`;
+//   };
 
-  useEffect(() => {
-    const url = window.location.href;
-    const parts = url.split('/');
-    const extractedId = parts[parts.length - 1];
-    setStudentId(extractedId);
-  }, []);
+//   useEffect(() => {
+//     const url = window.location.href;
+//     const parts = url.split('/');
+//     const extractedId = parts[parts.length - 1];
+//     setStudentId(extractedId);
+//   }, []);
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
+//   useEffect(() => {
+//     const fetchStudents = async () => {
+//       try {
 
-        const response = await getApi(url.studentRegister.getRegisterManagement);
-        setAllData(response?.data?.RegisterManagement);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
+//         const response = await getApi(url.studentRegister.getRegisterManagement);
+//         setAllData(response?.data?.RegisterManagement);
+//       } catch (error) {
+//         console.error('Error fetching students:', error);
+//       }
+//     };
 
-    const fetchAllStudents = async () => {
+//     const fetchAllStudents = async () => {
 
-      try {
-        const response = await getApi(url.fine.getAllFineBooks);
+//       try {
+//         const response = await getApi(url.fine.getAllFineBooks);
 
-        setAllData(response?.data);
-        const fetchedData = response?.data?.map((item) => ({
-          id: item._id,
-          student_Name: item?.studentDetails?.student_Name,
-          bookName: item?.bookDetails?.bookName,
-          amount: item?.paymentTypeDetails?.amount,
-          fineAmount: item?.fineAmount,
-          bookIssueDate: formatDate(item?.bookAllotmentsDetails?.bookIssueDate),
-          submissionDate: formatDate(item?.bookAllotmentsDetails?.submissionDate)
-        }));
+//         setAllData(response?.data);
+//         const fetchedData = response?.data?.map((item) => ({
+//           id: item._id,
+//           student_Name: item?.studentDetails?.student_Name,
+//           bookName: item?.bookDetails?.bookName,
+//           amount: item?.paymentTypeDetails?.amount,
+//           fineAmount: item?.fineAmount,
+//           bookIssueDate: formatDate(item?.bookAllotmentsDetails?.bookIssueDate),
+//           submissionDate: formatDate(item?.bookAllotmentsDetails?.submissionDate)
+//         }));
 
-        setData(fetchedData);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
-    fetchStudents();
-    fetchAllStudents();
-  }, []);
+//         setData(fetchedData);
+//       } catch (error) {
+//         console.error('Error fetching students:', error);
+//       }
+//     };
+//     fetchStudents();
+//     fetchAllStudents();
+//   }, []);
 
-  const formik = useFormik({
-    initialValues: {
-      studentId: studentId,
-      email: '',
-      bookId: []
-    }
-  });
+//   const formik = useFormik({
+//     initialValues: {
+//       studentId: studentId,
+//       email: '',
+//       bookId: []
+//     }
+//   });
 
-  const handleStudentChange = async (event) => {
-    const selectedStudentId = event.target.value;
+//   const handleStudentChange = async (event) => {
+//     const selectedStudentId = event.target.value;
 
-    setSelectedStudentId(selectedStudentId);
-    formik.setFieldValue('studentId', selectedStudentId);
+//     setSelectedStudentId(selectedStudentId);
+//     formik.setFieldValue('studentId', selectedStudentId);
 
-    const selectedStudent = allData.find((student) => student._id === selectedStudentId);
-    if (selectedStudent) {
-      formik.setFieldValue('email', selectedStudent.email);
-    }
+//     const selectedStudent = allData.find((student) => student._id === selectedStudentId);
+//     if (selectedStudent) {
+//       formik.setFieldValue('email', selectedStudent.email);
+//     }
 
-    try {
-      const fineResponse = await getApi(`${url.fine.getFineBook}${selectedStudentId}`);
+//     try {
+//       const fineResponse = await getApi(`${url.fine.getFineBook}${selectedStudentId}`);
 
 
-      const fetchedData = fineResponse?.data?.map((item) => ({
-        id: item._id,
-        student_Name: item?.studentDetails?.student_Name,
-        bookName: item?.bookDetails?.bookName,
-        amount: item?.paymentTypeDetails?.amount,
-        fineAmount: item?.fineAmount,
-        bookIssueDate: formatDate(item?.bookAllotmentsDetails?.bookIssueDate),
-        submissionDate: formatDate(item?.bookAllotmentsDetails?.submissionDate)
-      }));
+//       const fetchedData = fineResponse?.data?.map((item) => ({
+//         id: item._id,
+//         student_Name: item?.studentDetails?.student_Name,
+//         bookName: item?.bookDetails?.bookName,
+//         amount: item?.paymentTypeDetails?.amount,
+//         fineAmount: item?.fineAmount,
+//         bookIssueDate: formatDate(item?.bookAllotmentsDetails?.bookIssueDate),
+//         submissionDate: formatDate(item?.bookAllotmentsDetails?.submissionDate)
+//       }));
 
-      setData(fetchedData);
-      fetchAllStudents();
-    } catch (error) {
-      console.error('Error fetching submit book data:', error);
-    }
+//       setData(fetchedData);
+//       fetchAllStudents();
+//     } catch (error) {
+//       console.error('Error fetching submit book data:', error);
+//     }
 
-    formik.handleChange(event);
-  };
-  useEffect(() => {
-    if (selectedStudentId) {
-      const filteredBooks = fetchReceiveBook.filter((receiveBookItem) => receiveBookItem.studentId === selectedStudentId);
+//     formik.handleChange(event);
+//   };
+//   useEffect(() => {
+//     if (selectedStudentId) {
+//       const filteredBooks = fetchReceiveBook.filter((receiveBookItem) => receiveBookItem.studentId === selectedStudentId);
 
-      setBookData(filteredBooks);
-    }
-  }, [selectedStudentId, fetchReceiveBook]);
+//       setBookData(filteredBooks);
+//     }
+//   }, [selectedStudentId, fetchReceiveBook]);
 
-  const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book._id));
-  const handleInvoice = (row) => {
-    navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
-  };
-  const handleRemove = async (bookId) => {
+//   const filteredBooks = bookData.filter((book) => formik.values.bookId.includes(book._id));
+//   const handleInvoice = (row) => {
+//     navigate(`/dashboard/receiveInvoice/${row.id}`, { state: { rowData: row } });
+//   };
+//   const handleRemove = async (bookId) => {
 
-    try {
-      setLoading(true);
+//     try {
+//       setLoading(true);
 
-      const removeResponse = await axios.post(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
+//       const removeResponse = await postApi(`${url.allotmentManagement.removeReceiveBook}${bookId}`);
 
-      toast.success('Book removed successfully');
+//       toast.success('Book removed successfully');
 
-      setLoading(false);
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('An error occurred');
-      setLoading(false);
-    }
+//       setLoading(false);
+//     } catch (error) {
+//       console.error('Error:', error);
+//       toast.error('An error occurred');
+//       setLoading(false);
+//     }
 
-    const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
+//     const submitResponse = await axios.post(`${url.allotmentManagement.submitBook}${bookId}`);
 
-  };
-  return (
-    <Container>
-      <Box
-        sx={{
-          backgroundColor: 'white',
-          padding: '10px 20px',
-          borderRadius: '8px',
-          height: '50px',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          marginBottom: '-18px'
-        }}
-      >
-        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '-12px' }}>
-          <Link href="/" underline="hover" color="inherit">
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-          </Link>
-          <Link href="/account-profile" underline="hover" color="inherit">
-            <h4>Books Management / Manage Fine</h4>
-          </Link>
-        </Breadcrumbs>
-        <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
-      </Box>
-      <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
-      <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
+//   };
+//   return (
+//     <Container>
+//       <Box
+//         sx={{
+//           backgroundColor: 'white',
+//           padding: '10px 20px',
+//           borderRadius: '8px',
+//           height: '50px',
+//           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+//           marginBottom: '-18px'
+//         }}
+//       >
+//         <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '-12px' }}>
+//           <Link href="/" underline="hover" color="inherit">
+//             <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
+//           </Link>
+//           <Link href="/account-profile" underline="hover" color="inherit">
+//             <h4>Books Management / Manage Fine</h4>
+//           </Link>
+//         </Breadcrumbs>
+//         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
+//       </Box>
+//       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
+//       <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
 
-      <Box
-        sx={{
-          backgroundColor: 'white',
-          padding: '10px 20px',
-          borderRadius: '8px',
-          height: '50px',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          marginBottom: '-18px',
-          marginTop: '-42px'
-        }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
-      </Box>
-      <TableStyle>
-        <Box width="100%">
-          <Card style={{ height: '600px', paddingTop: '15px' }}>
-            <DataGrid
-              pageSizeOptions={[5, 10, 25]}
-              initialState={{
-                pagination: {
-                  paginationModel: { pageSize: 10, page: 0 }
-                }
-              }}
-              pagination
-              rows={data}
-              columns={columns}
-              checkboxSelection
-              getRowId={(row) => row.id}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{ toolbar: { showQuickFilter: true } }}
-            />
-          </Card>
-        </Box>
-      </TableStyle>
-    </Container>
-  );
-};
+//       <Box
+//         sx={{
+//           backgroundColor: 'white',
+//           padding: '10px 20px',
+//           borderRadius: '8px',
+//           height: '50px',
+//           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+//           marginBottom: '-18px',
+//           marginTop: '-42px'
+//         }}
+//       >
+//         <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}></Stack>
+//       </Box>
+//       <TableStyle>
+//         <Box width="100%">
+//           <Card style={{ height: '600px', paddingTop: '15px' }}>
+//             <DataGrid
+//               pageSizeOptions={[5, 10, 25]}
+//               initialState={{
+//                 pagination: {
+//                   paginationModel: { pageSize: 10, page: 0 }
+//                 }
+//               }}
+//               pagination
+//               rows={data}
+//               columns={columns}
+//               checkboxSelection
+//               getRowId={(row) => row.id}
+//               slots={{ toolbar: GridToolbar }}
+//               slotProps={{ toolbar: { showQuickFilter: true } }}
+//             />
+//           </Card>
+//         </Box>
+//       </TableStyle>
+//     </Container>
+//   );
+// };
 
-export default FinePerDay;
+// export default FinePerDay;

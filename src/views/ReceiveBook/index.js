@@ -35,7 +35,6 @@ import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { allotmentManagement } from 'core/helperFurtion';
 import { fetchCurrency } from 'core/comman';
 import { IconButton } from '@mui/material';
 
@@ -117,7 +116,6 @@ const ReceiveBook = () => {
       field: 'bookName',
       headerName: 'Book Name',
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize'
     },
     {
       field: 'quantity',
@@ -218,7 +216,6 @@ const ReceiveBook = () => {
     const getAllSubmitBookDetails = async () => {
       try {
         const submitResponse = await getApi(`${url.booksubmission.getsubmitedBookinvoice}`);
-
         const fetchedData = submitResponse?.data?.data?.map((item, index) => {
           const fines = item?.fines || [];
 
@@ -304,21 +301,23 @@ const ReceiveBook = () => {
       }
     };
 
-    const NewReceiveBook = async () => {
-      try {
-        const response = await getApi(url.allotmentManagement.getReceiveBook);
+    // const NewReceiveBook = async () => {
+    //   try {
+    //     const response = await getApi(url.allotmentManagement.getReceiveBook);
 
-        setFetchReceiveBook(response.data);
-      } catch (error) {
-        console.error('Error fetching Receive Book', error);
-      }
-    };
+    //     setFetchReceiveBook(response.data);
+    //   } catch (error) {
+    //     console.error('Error fetching Receive Book', error);
+    //   }
+    // };
     filterData();
     fetchStudents();
     fetchSubscription();
     fetchReceiveBook();
-    NewReceiveBook();
+    // NewReceiveBook();
     BookAllotments();
+    console.log(bookData);
+    
   }, []);
   const formik = useFormik({
     initialValues: {
@@ -358,6 +357,7 @@ const ReceiveBook = () => {
 
     try {
       const submitResponse = await getApi(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
+      console.log(submitResponse);
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
@@ -387,7 +387,7 @@ const ReceiveBook = () => {
 
   useEffect(() => {
     const result = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
-
+    
     setFilteredBooks(result);
     const bookQuantity = result[0]?.quantity || 0;
     setBookqunatity(bookQuantity);
@@ -447,8 +447,7 @@ const ReceiveBook = () => {
         paymentType: updatedBook.paymentType,
         quantity: quantityToSubmit,
         amount: updatedBook.amount,
-        submit: updatedBook.submit,
-        fine: updatedBook.fine,
+        fine: fineDataa.length > 0,
         totalFineAmount: totalFineAmount,
         fines: fineDataa,
         adminId
@@ -554,7 +553,7 @@ const ReceiveBook = () => {
               >
                 {getUniqueBooks(bookData).map((item) => (
                   <MenuItem key={item.bookId} value={item.bookId}>
-                    {item?.bookTitle}
+                    {item?.bookName}
                   </MenuItem>
                 ))}
               </Select>
@@ -574,7 +573,7 @@ const ReceiveBook = () => {
               }}
             >
               <Typography variant="h4" sx={{ fontSize: '22px', textAlign: 'center', mb: 2, color: 'text.primary' }}>
-                {book?.bookTitle || 'Loading...'}
+                {book?.bookName || 'Loading...'}
               </Typography>
               <Divider sx={{ marginY: 2 }} />
               <Grid container spacing={2}>

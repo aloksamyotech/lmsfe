@@ -1,11 +1,40 @@
-import React from 'react';
-import { Box, Grid, Paper, Typography, Divider, Breadcrumbs, Link } from '@mui/material';
-import { useLocation } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home'; 
+import React, { useEffect, useState } from 'react';
+import { Box, Grid, Paper, Typography, Divider } from '@mui/material';
+import { useParams, useLocation } from 'react-router-dom';
+import { Breadcrumbs, Link as MuiLink } from '@mui/material';
+import { Link } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
+import { getApi } from 'core/apiClient';
+import { url } from 'core/url';
+import defaultBook from './bookDummy.jpeg';
 
 const ImageGallery = () => {
+  const { id } = useParams();
+  const [bookData, setBookData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const location = useLocation();
-  const rowData = location.state?.rowData;
+  const fallbackData = location.state?.rowData;
+
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const response = await getApi(`${url.bookManagenent.bookData}${id}`);
+        setBookData(response?.data?.data);
+      } catch (error) {
+        console.error('Error fetching book data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchBook();
+  }, [id]);
+
+  const data = bookData || fallbackData;
+
+  if (loading) return <Typography>Loading...</Typography>;
+  if (!data) return <Typography>No book data found.</Typography>;
 
   return (
     <Box sx={{ padding: 2 }}>
@@ -18,47 +47,33 @@ const ImageGallery = () => {
           alignItems: 'center',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           height: '50px',
-          // marginBottom: '-10px',
           width: '97%',
           marginLeft: '2%'
         }}
       >
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link href="/" underline="hover" color="inherit">
-            <HomeIcon sx={{ mr: 0.5, color: '#6a1b9a' }} />
-          </Link>
-          <Link href="/dashboard/default" underline="hover" color="inherit">
-            <h4> Book Details</h4>
-          </Link>
+        <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
+          <MuiLink component={Link} to="/dashboard/default" color="inherit">
+            <HomeIcon sx={{ color: '#5e35b1' }} />
+          </MuiLink>
         </Breadcrumbs>
       </Box>
- 
+
       <Box sx={{ display: 'flex', padding: 2 }}>
         <Paper
           sx={{
             width: 300,
             marginRight: 2,
             padding: 2,
-            backgroundImage: `url(${rowData?.img?.replace(/\\+/g, '/')})`,
+            backgroundImage: `url(${
+              bookData?.upload_Book ? `${url.baseurl.baseurl.replace(/\/$/, '')}/${bookData.upload_Book.replace(/\\/g, '/')}` : defaultBook
+            })`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            color: 'white'
+            color: 'white',
+            minHeight: '300px'
           }}
-        >
-          <Typography
-            variant="h5"
-            sx={{
-              position: 'absolute',
-              bottom: 20,
-              left: 20,
-              color: 'white',
-              fontWeight: 'bold',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)'
-            }}
-          >
-            {/* The Adventures of a Dreamer */}
-          </Typography>
-        </Paper>
+        />
+
         <Paper sx={{ flex: 1, padding: 2 }}>
           <Typography variant="h6" gutterBottom>
             Book Details
@@ -69,31 +84,25 @@ const ImageGallery = () => {
               <Typography variant="body1" fontWeight="bold">
                 Book Name:
               </Typography>
-              <Typography variant="body2"> {rowData?.name}</Typography>
+              <Typography variant="body2">{data?.bookName}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" fontWeight="bold">
                 Book Title:
               </Typography>
-              <Typography variant="body2">Fantasy, Adventure</Typography>
+              <Typography variant="body2">{data?.title || 'Fantasy, Adventure'}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" fontWeight="bold">
                 Author:
               </Typography>
-              <Typography variant="body2">{rowData?.role}</Typography>
+              <Typography variant="body2">{data?.author}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" fontWeight="bold">
                 Description:
               </Typography>
-              <Typography variant="body2">
-                The Adventures of a Dreamer is a captivating fantasy novel that follows the journey of a young hero, Elara, as she embarks
-                on a quest to uncover the mysteries of a hidden realm. Set in a world where magic is both a blessing and a curse, Elara’s
-                journey takes her through enchanted forests, ancient ruins, and into the heart of dark kingdoms. Along the way, she forms
-                unlikely alliances and faces challenges that test her courage, loyalty, and strength. Will she be able to save her world
-                from a looming dark force, or will the secrets of the dreamers be lost forever?
-              </Typography>
+              <Typography variant="body2">{data?.bookDistribution || 'No description available.'}</Typography>
             </Grid>
           </Grid>
         </Paper>

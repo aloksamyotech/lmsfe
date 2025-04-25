@@ -20,7 +20,6 @@ import CartSummary from './cartSummary';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useCart } from './CartContext';
-import { getRegisterManagement } from 'core/helperFurtion';
 import { url } from 'core/url';
 import defaultBook from './bookDummy.jpeg';
 import { fetchCurrency } from 'core/comman';

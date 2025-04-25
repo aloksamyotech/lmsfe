@@ -14,9 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddSubscription from './addSubscriptionType';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
-
-import { deleteSubscription, findSubscription, updateSubscription } from 'core/helperFurtion';
-import { getApi } from 'core/apiClient';
+import { getApi, updateApi } from 'core/apiClient';
 
 const SubscriptType = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -156,7 +154,7 @@ const SubscriptType = () => {
     }
     try {
 
-      const response = await axios.put(`${url.subscription.update}${editData.id}`, editData);
+      const response = await updateApi(`${url.subscription.update}${editData.id}`, editData);
       const updatedBook = response.data;
       setData((prevData) =>
         prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item))
@@ -232,7 +230,7 @@ const SubscriptType = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
+            <Card style={{ height: '750px', paddingTop: '15px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{
@@ -307,7 +305,7 @@ const SubscriptType = () => {
 
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>
-            <Typography variant="h6">Are you sure you want to delete this book?</Typography>
+            <Typography variant="h6">Are you sure you want to delete this Subscription Type?</Typography>
             <Stack direction="row" spacing={2} justifyContent="flex-end" mt={3}>
               <Button onClick={cancelDelete} variant="outlined" color="secondary">
                 Cancel

@@ -26,8 +26,7 @@ import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { url } from 'core/url';
-import { deleteMarkFavorite, getMarkFavorite, markFavorite } from 'core/helperFurtion';
-import { deleteApi, postApi } from 'core/apiClient';
+import { deleteApi, getApi, postApi } from 'core/apiClient';
 
 // ----------------------------------------------------------------------
 
@@ -104,7 +103,7 @@ const Contact = () => {
   const fetchData = async () => {
     try {
 
-      const response = await getMarkFavorite(url.studentRegister.getMarkFavorite);
+      const response = await getApi(url.studentRegister.getMarkFavorite);
       const fetchedData = response?.data?.students?.map((item) => ({
         id: item._id,
         student_id: item.student_id,
@@ -198,7 +197,7 @@ const Contact = () => {
         <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}></Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
+            <Card style={{ height: '750px', paddingTop: '15px' }}>
               <DataGrid
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{

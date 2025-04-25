@@ -6,6 +6,7 @@ import { MENU_OPEN } from 'store/actions';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { url } from 'core/url';
+import { getApi } from 'core/apiClient';
 // ==============================|| MAIN LOGO ||============================== //
 const LogoSection = () => {
   const defaultId = useSelector((state) => state.customization.defaultId);
@@ -13,7 +14,7 @@ const LogoSection = () => {
   const [logoImg, setLogoImg] = useState('/Screenshot.png');
   const logoData = async () => {
     try {
-      const response = await axios.get(url.admin.adminProfile);
+      const response = await getApi(url.admin.adminProfile);
       const logo = response.data.students[0].logo ? `${url.baseurl.baseurl}${response.data.students[0].logo}` : '';
       if (logo) {
         setLogoImg(logo);

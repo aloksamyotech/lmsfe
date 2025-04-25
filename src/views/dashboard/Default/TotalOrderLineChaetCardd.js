@@ -9,7 +9,6 @@ import GroupsIcon from '@mui/icons-material/Groups'; // Import the GroupsIcon
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
 import { url } from 'core/url';
-import { getVenderCount } from 'core/helperFurtion';
 import { getApi } from 'core/apiClient';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({

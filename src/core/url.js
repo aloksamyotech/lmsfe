@@ -27,7 +27,8 @@ export const url = {
     viewBook: base_url + 'user/viewBookUser/',
     bookManagement: base_url + 'user/bookManagement/',
     bookCount: base_url + 'user/getBookCount/',
-    bookmanagementTable: base_url + 'user/bookmangmentTable/'
+    bookmanagementTable: base_url + 'user/bookmangmentTable/',
+    bookData: base_url + 'user/bookData/',
   },
   booksubmission: {
     submitedBook: base_url + 'user/submitedBook/',
@@ -71,7 +72,6 @@ export const url = {
     bookAllotment: base_url + 'user/bookAllotment/',
     manyBookAllotment: base_url + 'user/manyBookAllotment',
     allotmentManagementData: base_url + 'user/allotmentManagement/',
-    getReceiveBook: base_url + 'user/getReceiveBook/',
     removeReceiveBook: base_url + 'user/removeReceiveBook/',
     submitBook: base_url + 'user/submitBook/',
     getSubmitBook: base_url + 'user/getSubmitBook/',
@@ -81,26 +81,13 @@ export const url = {
     receiveBook: base_url + 'user/receiveBook/',
     postReceiveBook: base_url + 'user/postReceiveBook/',
     newReceiveBook: base_url + 'user/newReceiveBook/',
-    reBookAllotment: base_url + 'user/reBookAllotment/',
-    editBookAllotment: base_url + 'user/editBookAllotment/',
-    getBookAllotmentById: base_url + 'user/getBookAllotmentById/',
     viewBookAllotment: base_url + 'user/viewBookAllotmentUser/',
-    deleteAllotmentBook: base_url + 'user/deleteAllotmentBook/',
+
     bookAllotmentCount: base_url + 'user/bookAllotmentCount/',
-    getBookMonthVise: base_url + 'user/getBookMonthVise/',
     getBookAllotedCount: base_url + 'user/getBookAllotedCount/',
     bookAllotmentReport: base_url + 'user/bookAllotmentReport/',
     trendingBooks: base_url + 'user/trendingBooks/',
     submissionReport: base_url + 'user/submissionReport/'
-  },
-  fine: {
-    addFineBook: base_url + 'user/addFineBook/',
-    getFineBook: base_url + 'user/getFineBook/',
-    getAllFineBooks: base_url + 'user/getAllFineBooks/',
-    findByStudentId: base_url + 'user/findByStudentId/',
-    findFine: base_url + 'user/findFineInvoice/',
-    fineDetails: base_url + 'user/findFine/',
-    findFinebyAllotmentIdAndBookId: base_url + 'user/findFinebyAllotmentIdAndBookId'
   },
   purchaseBook: {
     purchaseBook: base_url + 'user/purchaseBook/',

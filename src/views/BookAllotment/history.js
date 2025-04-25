@@ -9,7 +9,6 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import IconButton from '@mui/material/IconButton';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
-import { getBookAllotmentHistory } from 'core/helperFurtion';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
@@ -142,7 +141,7 @@ const History = ({ allotmentId }) => {
       </Box>
       <TableContainer component={Paper}sx={{marginTop:'40px'}}>
         <Box width="100%" mt={3}>
-          <Card style={{ height: '700px' }}>
+          <Card style={{ height: '750px' }}>
             <DataGrid
               pageSizeOptions={[5, 10, 25]}
               initialState={{

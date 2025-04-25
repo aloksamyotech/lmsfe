@@ -93,15 +93,15 @@ const View = () => {
       flex: 1
     },
     {
-      field:'time',
-      headerName:'Issue Time',
-      flex:1
+      field: 'time',
+      headerName: 'Issue Time',
+      flex: 1
     },
     {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 1
-    },
+    }
   ];
 
   const formatDate = (dateString) => {
@@ -121,7 +121,6 @@ const View = () => {
 
   const handleSaveEdit = async () => {
     try {
-
       const updatedRegister = response.data;
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
       setEditData(null);
@@ -164,9 +163,8 @@ const View = () => {
     setId(extractedId);
     const sendIdToBackend = async () => {
       try {
-
         const response = await getApi(`${url.allotmentManagement.viewBookAllotment}${extractedId}`);
-        
+
         setAllData(response.data);
       } catch (error) {
         console.error('Error sending ID to backend:', error);
@@ -189,33 +187,33 @@ const View = () => {
     const fetchData = async () => {
       try {
         const response = await getApi(`${url.allotmentManagement.findHistory}${extractedId}`);
-      
+
         let totalAllottedCount = 0;
         let totalSubmittedCount = 0;
-      
+
         const fetchedData = response?.data?.map((item) => {
           const dateObj = new Date(item.createdAt);
           const istTime = dateObj.toLocaleTimeString('en-IN', {
             timeZone: 'Asia/Kolkata',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true, 
+            hour12: true
           });
-      
+
           const bookNames = item.books
-            ?.map(book => book.bookId?.bookName)
+            ?.map((book) => book.bookId?.bookName)
             .filter(Boolean)
             .join(', ');
-      
+
           const totalAmount = item.books?.reduce((sum, book) => {
             const quantity = book.quantity || 1;
             const amountPerBook = book.amount || 0;
             return sum + quantity * amountPerBook;
           }, 0);
-      
+
           let totalQuantity = 0;
           let submittedQuantity = 0;
-      
+
           item.books?.forEach((book) => {
             const quantity = book.quantity || 1;
             totalQuantity += quantity;
@@ -223,12 +221,12 @@ const View = () => {
               submittedQuantity += quantity;
             }
           });
-      
+
           totalAllottedCount += totalQuantity;
           totalSubmittedCount += submittedQuantity;
-      
-          const allSubmitted = item.books?.every(book => book.submit === true);
-      
+
+          const allSubmitted = item.books?.every((book) => book.submit === true);
+
           return {
             id: item._id,
             bookName: bookNames,
@@ -242,7 +240,7 @@ const View = () => {
             isSubmit: allSubmitted
           };
         });
-      
+
         setData(fetchedData);
         setTotalAllotted(totalAllottedCount);
         setTotalSubmitted(totalSubmittedCount);
@@ -253,7 +251,6 @@ const View = () => {
     fetchData();
   }, []);
 
-  
   return (
     <>
       <Box
@@ -288,39 +285,73 @@ const View = () => {
         <Paper
           style={{
             padding: '20px',
-            display: 'flex',
-            maxWidth: '400px',
-            marginTop:'20px',
-            marginBottom:'20px'
+            maxWidth: '800px',
+            marginTop: '20px',
+            marginBottom: '20px',
+            backgroundColor: 'transparent'
           }}
         >
-          <Avatar
-            src={student.logoUrl}
-            alt={student.student_Name}
+          <Box
             sx={{
-              width: 100,
-              height: 100,
-              marginRight: '40px'
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 3,
+              alignItems: 'flex-start'
             }}
-          />
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: 'white',
+                borderRadius: 2,
+                padding: '12px'
+              }}
+            >
+              <Avatar
+                src={student.logoUrl}
+                alt={student.student_Name}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  marginRight: { xs: 2, md: 4 },
+                  marginBottom: { xs: 2, md: 0 }
+                }}
+              />
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap'}}>
-            <Box sx={{ flex: 1, minWidth: 250, maxWidth: 400, lineHeight: 2, mr: 3, }}>
-              <Typography variant="h5" gutterBottom>
-                {allData?.user?.student_Name}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                <strong>Email -: {allData?.user?.email}</strong>
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                <strong>Phone Number -: {allData?.user?.mobile_Number}</strong>
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                <strong>Register Date -: {formatDate(allData?.user?.register_Date)}</strong>
-              </Typography>
+              <Box
+                sx={{
+                  flex: 1,
+                  minWidth: 250,
+                  maxWidth: 400,
+                  lineHeight: 2
+                }}
+              >
+                <Typography variant="h5" gutterBottom>
+                  {allData?.user?.student_Name}
+                </Typography>
+                <Typography variant="body1" color="textSecondary">
+                  <strong>Email -: {allData?.user?.email}</strong>
+                </Typography>
+                <Typography variant="body1" color="textSecondary">
+                  <strong>Phone Number -: {allData?.user?.mobile_Number}</strong>
+                </Typography>
+                <Typography variant="body1" color="textSecondary">
+                  <strong>Register Date -: {formatDate(allData?.user?.register_Date)}</strong>
+                </Typography>
+              </Box>
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            {/* Cards Section */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 2
+              }}
+            >
+              {/* Books Allotted Card */}
               <Card sx={{ width: 220, boxShadow: 3 }}>
                 <CardContent sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
                   <Box
@@ -340,14 +371,16 @@ const View = () => {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '14px' }}>
-                      Books Allotmented
+                      Books Allotment
                     </Typography>
                     <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
-                       {totalAllotted ? totalAllotted : '0'}
+                      {totalAllotted ? totalAllotted : '0'}
                     </Typography>
                   </Box>
                 </CardContent>
               </Card>
+
+              {/* Book Received Card */}
               <Card sx={{ width: 220, boxShadow: 3 }}>
                 <CardContent sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
                   <Box
@@ -367,7 +400,7 @@ const View = () => {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
-                      Book Recieved
+                      Book Received
                     </Typography>
                     <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
                       {totalSubmitted ? totalSubmitted : '0'}
@@ -378,6 +411,7 @@ const View = () => {
             </Box>
           </Box>
         </Paper>
+
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>

@@ -17,16 +17,7 @@ import { useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from '@mui/material/IconButton';
 import { url } from 'core/url';
-import {
-  bookAllotmentCount,
-  bookAllotmentHistory,
-  findHistoryBookAllotment,
-  getBookManagement,
-  getRegisterManagement,
-  getSubscription,
-  manyBookAllotment
-} from 'core/helperFurtion';
-import { postApi } from 'core/apiClient';
+import { getApi, postApi } from 'core/apiClient';
 
 const AddAllotment = (props) => {
   const { open, handleClose, fetchData } = props;
@@ -91,7 +82,7 @@ const AddAllotment = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await getBookManagement(url.bookManagenent.bookManagement);
+        const response = await getApi(url.bookManagenent.bookManagement);
         const filteredBooks = response.data?.BookManagement.filter((book) => book.quantity > 0);
         setBookData(filteredBooks);
       } catch (error) {
@@ -100,7 +91,7 @@ const AddAllotment = (props) => {
     };
     const fetchStudents = async () => {
       try {
-        const response = await getRegisterManagement(url.studentRegister.getRegisterManagement);
+        const response = await getApi(url.studentRegister.getRegisterManagement);
         setAllData(response?.data?.RegisterManagement);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -108,7 +99,7 @@ const AddAllotment = (props) => {
     };
     const fetchSubscription = async () => {
       try {
-        const response = await getSubscription(url.subscription.findSubscription);
+        const response = await getApi(url.subscription.findSubscription);
         setStudentData(response.data?.SubscriptionType);
       } catch (error) {
         console.error('Error fetching SubscriptionType', error);
@@ -127,7 +118,7 @@ const AddAllotment = (props) => {
     formik.setFieldValue('studentId', studentId);
     try {
 
-      const response = await bookAllotmentCount(`${url.allotmentManagement.bookAllotmentCount}${studentId}`);
+      const response = await getApi(`${url.allotmentManagement.bookAllotmentCount}${studentId}`);
       const count = response?.data?.allotmentsCount || 0;
 
       setBookNumber(count);

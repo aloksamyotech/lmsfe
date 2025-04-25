@@ -15,7 +15,6 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState } from 'react';
 import { url } from 'core/url';
-import { getBookManagement, getPublications, purchaseBook, viewVender } from 'core/helperFurtion';
 import { getApi, postApi } from 'core/apiClient';
 
 const validationSchema = yup.object({
@@ -78,7 +77,7 @@ const AddPurchaseBook = (props) => {
     const fetchBooks = async () => {
       try {
 
-        const response = await axios.get(url.bookManagenent.bookmanagementTable);
+        const response = await getApi(url.bookManagenent.bookmanagementTable);
         setBookData(response.data?.data);
       } catch (error) {
         console.error('Error fetching books:', error);
@@ -214,7 +213,7 @@ const AddPurchaseBook = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Price Par Book</FormLabel>
+                  <FormLabel>Price Per Book</FormLabel>
                   <TextField
                     id="price"
                     name="price"
