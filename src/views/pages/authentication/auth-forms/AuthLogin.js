@@ -65,7 +65,6 @@ const FirebaseLogin = ({ ...others }) => {
               } else if (response?.data?.message === 'Admin not found') {
                 toast.error('Admin not Found');
               } else if (response?.data?.statusCode === 200) {
-
                 toast.success('Login Successfully');
                 const loginToken = response?.data.userToken;
 
@@ -109,16 +108,18 @@ const FirebaseLogin = ({ ...others }) => {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 label="Email Address / Username"
-                inputProps={{}}
+                inputProps={{ maxLength: 30 }}
               />
-              {touched.email && errors.email && (
-                <FormHelperText error id="standard-weight-helper-text-email-login">
-                  {errors.email}
-                </FormHelperText>
-              )}
+              <FormHelperText error id="standard-weight-helper-text-email-login">
+                {touched.email && errors.email ? errors.email : ' '}
+              </FormHelperText>
             </FormControl>
 
-            <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
+            <FormControl
+              fullWidth
+              error={Boolean(touched.password && errors.password)}
+              sx={{ ...theme.typography.customInput, marginTop: '-1%', marginBottom: '2%' }}
+            >
               <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password-login"
@@ -134,21 +135,23 @@ const FirebaseLogin = ({ ...others }) => {
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
-                      size="large"
                     >
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 }
                 label="Password"
-                inputProps={{}}
+                inputProps={{ maxLength: 30 }}
               />
-              {touched.password && errors.password && (
+              {touched.password && errors.password ? (
                 <FormHelperText error id="standard-weight-helper-text-password-login">
                   {errors.password}
                 </FormHelperText>
+              ) : (
+                <FormHelperText id="standard-weight-helper-text-password-login"> </FormHelperText>
               )}
             </FormControl>
+
             <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
               <FormControlLabel
                 control={
@@ -163,9 +166,17 @@ const FirebaseLogin = ({ ...others }) => {
               </Box>
             )}
 
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
               <AnimateButton>
-                <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                <Button
+                  disableElevation
+                  disabled={isSubmitting}
+                  size="small"
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{ width: '90px', borderRadius: '10px' }}
+                >
                   Sign in
                 </Button>
               </AnimateButton>
