@@ -130,13 +130,13 @@ const AddPolicy = (props) => {
                   <FormLabel>Phone Number</FormLabel>
                   <TextField
                     name="phoneNumber"
-                    type="text" // Use "text" instead of "number"
+                    type="text"
                     size="small"
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
                     error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
                     helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                    inputProps={{ maxLength: 10 }} // This will limit input to 10 characters
+                    inputProps={{ maxLength: 10 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>

@@ -109,13 +109,12 @@ const ReceiveBook = () => {
     {
       field: 'student_Name',
       headerName: 'Student Name',
-      flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
+      flex: 1
     },
     {
       field: 'bookName',
       headerName: 'Book Name',
-      flex: 1,
+      flex: 1
     },
     {
       field: 'quantity',
@@ -316,8 +315,6 @@ const ReceiveBook = () => {
     fetchReceiveBook();
     // NewReceiveBook();
     BookAllotments();
-    console.log(bookData);
-    
   }, []);
   const formik = useFormik({
     initialValues: {
@@ -357,7 +354,6 @@ const ReceiveBook = () => {
 
     try {
       const submitResponse = await getApi(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
-      console.log(submitResponse);
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
@@ -387,7 +383,7 @@ const ReceiveBook = () => {
 
   useEffect(() => {
     const result = bookData.filter((book) => formik.values.bookId.includes(book.bookId) && book.active === true);
-    
+
     setFilteredBooks(result);
     const bookQuantity = result[0]?.quantity || 0;
     setBookqunatity(bookQuantity);
@@ -463,7 +459,6 @@ const ReceiveBook = () => {
     }
   };
   const isSubmitDisabled = !amount || !reason || amountError || reasonError;
-
 
   function getUniqueBooks(bookData) {
     return [...new Map(bookData.filter((item) => item.active === true).map((item) => [item.bookId, item])).values()];
