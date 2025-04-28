@@ -315,7 +315,6 @@ const ReceiveBook = () => {
     fetchReceiveBook();
     // NewReceiveBook();
     BookAllotments();
-    console.log(bookData);
   }, []);
   const formik = useFormik({
     initialValues: {
@@ -355,7 +354,6 @@ const ReceiveBook = () => {
 
     try {
       const submitResponse = await getApi(`${url.allotmentManagement.getAllSubmitBookDetails}${selectedStudentId}`);
-      console.log(submitResponse);
       const fetchedData = submitResponse?.data?.submittedBooks?.map((item) => ({
         id: item._id,
         student_Name: item?.studentDetails?.[0]?.student_Name,
