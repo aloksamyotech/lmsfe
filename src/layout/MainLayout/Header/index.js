@@ -85,16 +85,6 @@ const Header = ({ handleLeftDrawerToggle }) => {
           </Avatar>
         </ButtonBase>
       </Box>
-
-      {/* <Box sx={{ flexGrow: 1, paddingLeft: '40px' }}>
-        <h2 style={{ marginBottom: 0 }}>Hi, welcome back!</h2>
-        <p style={{ marginTop: 0 }}>Don’t forget to smile today :)</p>
-      </Box>
-
-      <Box sx={{ flexGrow: 1, marginRight: '30px' }}>
-        <p style={{ marginBottom: 0 }}>Today is -</p>
-        <h2 style={{ marginTop: 0 }}>{currentDate}</h2>
-      </Box> */}
       <Box sx={{ flexGrow: 1, pl: 5 }}>
         <Typography variant="h2" sx={{ mb: 0 }}>
           Hi, welcome back!
