@@ -74,12 +74,11 @@ const EarningCardd = ({ isLoading }) => {
     setAnchorEl(null);
   };
   const handleCardClick = () => {
-    navigate('/dashboard/meeting');
+    navigate('/dashboard/Publications');
   };
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-
         const response = await getApi(url.publications.getPublicationsCount);
         setBookCount(response.data.count);
       } catch (error) {
@@ -97,7 +96,7 @@ const EarningCardd = ({ isLoading }) => {
       ) : (
         <CardWrapper border={false} content={false} sx={{ height: '80%' }}>
           <Box sx={{ p: 2.25, cursor: 'pointer' }} onClick={handleCardClick}>
-          <Grid container direction="column">
+            <Grid container direction="column">
               <Grid item>
                 <Grid container justifyContent="space-between">
                   <Grid item></Grid>

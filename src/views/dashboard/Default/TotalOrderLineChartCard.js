@@ -61,7 +61,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
     setTimeValue(newValue);
   };
   const handleCardClick = () => {
-    navigate('/dashboard/lead');
+    navigate('/dashboard/BookManagement');
   };
   useEffect(() => {
     const fetchBookCount = async () => {

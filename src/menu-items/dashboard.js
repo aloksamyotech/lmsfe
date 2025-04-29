@@ -61,14 +61,14 @@ const dashboard = {
       id: '01',
       title: 'Books Management',
       type: 'collapse',
-      url: '/dashboard/lead',
+      url: '/dashboard/BookManagement',
       icon: icons.IconAntennaBars5,
       children: [
         {
           id: 'manage-Books',
           title: 'Manage Books',
           type: 'item',
-          url: '/dashboard/lead',
+          url: '/dashboard/BookManagement',
           breadcrumbs: false
         },
         {
@@ -98,7 +98,7 @@ const dashboard = {
       id: '02',
       title: 'Student Management',
       type: 'item',
-      url: '/dashboard/call',
+      url: '/dashboard/Register',
       icon: icons.IconUserCheck,
       breadcrumbs: false
     },
@@ -107,7 +107,7 @@ const dashboard = {
       id: '04',
       title: 'Favorite Students',
       type: 'item',
-      url: '/dashboard/contact',
+      url: '/dashboard/Favorite',
       icon: icons.IconHeart,
       breadcrumbs: false
     },
@@ -123,7 +123,7 @@ const dashboard = {
       id: '06',
       title: ' Vendor Management',
       type: 'item',
-      url: '/dashboard/policy',
+      url: '/dashboard/Vendor',
       icon: icons.IconNotebook,
       breadcrumbs: false
     },
@@ -132,9 +132,8 @@ const dashboard = {
       id: '07',
       title: 'Publications',
       type: 'item',
-      url: '/dashboard/meeting',
+      url: '/dashboard/Publications',
       icon: icons.IconUsers
-
     },
 
     {
@@ -149,7 +148,7 @@ const dashboard = {
       id: '10',
       title: 'Reports',
       type: 'item',
-      url: '/dashboard/emailtemplate',
+      url: '/dashboard/Report',
       icon: icons.IconFileInvoice,
       breadcrumbs: false
     },

@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import Iconify from '../../ui-component/iconify';
 import { url } from 'core/url';
 import { deleteApi, getApi, postApi, updateApi } from 'core/apiClient';
-const Call = () => {
+const Register = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
   const [editData, setEditData] = useState(null);
@@ -293,7 +293,7 @@ const Call = () => {
             <MuiLink component={Link} to="/dashboard/default" color="inherit">
               <HomeIcon sx={{ color: '#5e35b1' }} />
             </MuiLink>
-            <MuiLink component={Link} to="/dashboard/call" color="inherit" underline="none">
+            <MuiLink component={Link} to="/dashboard/Register" color="inherit" underline="none">
               Student Management
             </MuiLink>
           </Breadcrumbs>
@@ -424,4 +424,4 @@ const Call = () => {
     </>
   );
 };
-export default Call;
+export default Register;

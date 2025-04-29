@@ -50,7 +50,7 @@ const AddEmailTemplates = () => {
   // };
 
   const back = () => {
-    navigate('/dashboard/emailtemplate');
+    navigate('/dashboard/Report');
   };
 
   return (

@@ -210,7 +210,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
           </Grid>
 
           <Grid item xs={12} sm={4}>
-            <Button variant="contained" color="primary" sx={{ width: 120 }} onClick={() => (window.location.href = '/dashboard/bookAllotment')}>
+            <Button variant="contained" color="primary" sx={{ width: 120 }} onClick={() => (window.location.href = '/dashboard/BookManagement')}>
               Add Books
             </Button>
           </Grid>

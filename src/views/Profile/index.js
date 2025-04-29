@@ -242,13 +242,13 @@ const View = () => {
               <Avatar src={logoPreview} sx={{ width: 100, height: 100, mt: 2, mx: 'auto' }} />
               <Grid container spacing={2} sx={{ mt: 2 }}>
                 <Grid item xs={6}>
-                  <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} />
+                  <TextField fullWidth label="Full Name" name="student_Name" value={formData.student_Name} onChange={handleChange} InputProps={{ readOnly: true }}/>
                 </Grid>
                 <Grid item xs={6}>
-                  <TextField fullWidth label="Phone Number" name="mobile_Number" value={formData.mobile_Number} onChange={handleChange} />
+                  <TextField fullWidth label="Phone Number" name="mobile_Number" value={formData.mobile_Number} onChange={handleChange} InputProps={{ readOnly: true }}/>
                 </Grid>
                 <Grid item xs={6}>
-                  <TextField fullWidth label="Email" name="email" value={formData.email} onChange={handleChange} />
+                  <TextField fullWidth label="Email" name="email" value={formData.email} onChange={handleChange} InputProps={{ readOnly: true }}/>
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
@@ -266,6 +266,7 @@ const View = () => {
                     name="select_identity"
                     value={formData.select_identity}
                     onChange={handleChange}
+                    InputProps={{ readOnly: true }}
                   />
                 </Grid>
                 <Grid item xs={6}>

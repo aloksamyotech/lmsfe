@@ -131,7 +131,7 @@ const History = ({ allotmentId }) => {
           <MuiLink component={Link} to="/dashboard/default" color="inherit">
             <HomeIcon sx={{ color: '#5e35b1' }} />
           </MuiLink>
-          <MuiLink component={Link} to="/dashboard/lead" color="inherit" underline="none">
+          <MuiLink component={Link} to="/dashboard/BookManagement" color="inherit" underline="none">
             Book Managment
           </MuiLink>
           <MuiLink component={Link} to="/dashboard/History" color="inherit" underline="none">

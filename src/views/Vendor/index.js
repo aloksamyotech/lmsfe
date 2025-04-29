@@ -32,7 +32,7 @@ const PolicyManagement = () => {
     {
       field: 'vendorName',
       headerName: 'Vendor Name',
-      flex: 1,
+      flex: 1
     },
     {
       field: 'companyName',
@@ -40,7 +40,7 @@ const PolicyManagement = () => {
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
- 
+
     {
       field: 'date',
       headerName: 'Date',
@@ -88,7 +88,6 @@ const PolicyManagement = () => {
   };
   const fetchData = async () => {
     try {
-
       const response = await getApi(url.vendorManagement.viewVender);
       const fetchedData = response?.data?.VenderManagement?.map((item) => ({
         id: item._id,
@@ -175,15 +174,11 @@ const PolicyManagement = () => {
             marginBottom: '-18px'
           }}
         >
-          <Breadcrumbs
-           separator="/"
-           aria-label="breadcrumb"
-           sx={{ display: 'flex', alignItems: 'center' }}
-          >
+          <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
             <MuiLink component={Link} to="/dashboard/default" color="inherit">
               <HomeIcon sx={{ color: '#5e35b1' }} />
             </MuiLink>
-            <MuiLink component={Link} to="/dashboard/policy" color="inherit" underline="none">
+            <MuiLink component={Link} to="/dashboard/Vendor" color="inherit" underline="none">
               Vander Management
             </MuiLink>
           </Breadcrumbs>
