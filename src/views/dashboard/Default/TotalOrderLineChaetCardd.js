@@ -62,12 +62,11 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
     setTimeValue(newValue);
   };
   const handleCardClick = () => {
-    navigate('/dashboard/policy');
+    navigate('/dashboard/Vendor');
   };
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-
         const response = await getApi(url.vendorManagement.venderCount);
         setBookCount(response.data.count);
       } catch (error) {
@@ -85,7 +84,7 @@ const TotalOrderLineChartCardd = ({ isLoading }) => {
       ) : (
         <CardWrapper border={false} content={false} sx={{ height: '80%' }}>
           <Box sx={{ p: 2.25, cursor: 'pointer' }} onClick={handleCardClick}>
-          <Grid container direction="column">
+            <Grid container direction="column">
               <Grid item>
                 <Grid container justifyContent="space-between">
                   <Grid item></Grid>

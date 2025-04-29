@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import { fontSize } from '@mui/system';
 import { deleteApi, getApi, updateApi, postApi } from 'core/apiClient';
 
-const Lead = () => {
+const BookManagement = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
   const [editData, setEditData] = useState(null);
@@ -268,7 +268,7 @@ const Lead = () => {
             <MuiLink component={Link} to="/dashboard/default" color="inherit">
               <HomeIcon sx={{ color: '#5e35b1' }} />
             </MuiLink>
-            <MuiLink component={Link} to="/dashboard/lead" color="inherit" underline="none">
+            <MuiLink component={Link} to="/dashboard/BookManagement" color="inherit" underline="none">
               Book Management
             </MuiLink>
           </Breadcrumbs>
@@ -406,4 +406,4 @@ const Lead = () => {
   );
 };
 
-export default Lead;
+export default BookManagement;

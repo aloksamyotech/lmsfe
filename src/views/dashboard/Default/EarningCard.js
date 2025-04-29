@@ -79,7 +79,7 @@ const EarningCard = ({ isLoading }) => {
     fetchBookCount();
   }, []);
   const handleCardClick = () => {
-    navigate('/dashboard/call');
+    navigate('/dashboard/Register');
   };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

@@ -314,7 +314,7 @@ const EmailTemplates = () => {
           <MuiLink component={Link} to="/dashboard/default" color="inherit">
             <HomeIcon sx={{ color: '#5e35b1' }} />
           </MuiLink>
-          <MuiLink component={Link} to="/dashboard/emailtemplate" color="inherit" underline="none">
+          <MuiLink component={Link} to="/dashboard/Report" color="inherit" underline="none">
             Report
           </MuiLink>
         </Breadcrumbs>

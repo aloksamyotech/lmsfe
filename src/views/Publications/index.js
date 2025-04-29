@@ -58,7 +58,7 @@ const Publications = () => {
     {
       field: 'publisherName',
       headerName: 'Publisher Name',
-      flex: 1,
+      flex: 1
     },
     {
       field: 'address',
@@ -96,8 +96,6 @@ const Publications = () => {
 
   const fetchData = async () => {
     try {
-
-
       const response = await getApi(url.publications.getPublications);
 
       const fetchedData = await response?.data?.PublicationsManagement.map((item) => {
@@ -125,7 +123,6 @@ const Publications = () => {
     setErrors({});
     setEditData(publications);
   };
- 
 
   const handleSaveEdit = async () => {
     setErrors({});
@@ -134,14 +131,13 @@ const Publications = () => {
     if (!editData.publisherName) newErrors.publisherName = 'Publisher Name is required';
     if (!editData.address) newErrors.address = 'Address is required';
     if (!editData.description) newErrors.description = 'Description is required';
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
     try {
-      const updatedPublications = { ...editData, startDate: new Date(editData.startDate) }; 
-
+      const updatedPublications = { ...editData, startDate: new Date(editData.startDate) };
 
       const response = await updateApi(`${url.publications.editPublications}${editData.id}`, updatedPublications);
 
@@ -161,7 +157,6 @@ const Publications = () => {
 
   const confirmDelete = async () => {
     try {
-
       await deleteApi(`${url.publications.delete}${bookToDelete}`);
 
       setData((prevData) => prevData.filter((item) => item.id !== bookToDelete));
@@ -180,7 +175,6 @@ const Publications = () => {
     <>
       <AddMeetings open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
       <Container>
- 
         <Box
           sx={{
             backgroundColor: 'white',
@@ -194,15 +188,11 @@ const Publications = () => {
             marginBottom: '-18px'
           }}
         >
-           <Breadcrumbs
-           separator="/"
-           aria-label="breadcrumb"
-           sx={{ display: 'flex', alignItems: 'center' }}
-          >
+          <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ display: 'flex', alignItems: 'center' }}>
             <MuiLink component={Link} to="/dashboard/default" color="inherit">
               <HomeIcon sx={{ color: '#5e35b1' }} />
             </MuiLink>
-            <MuiLink component={Link} to="/dashboard/meeting" color="inherit" underline="none">
+            <MuiLink component={Link} to="/dashboard/Publications" color="inherit" underline="none">
               Publication Management
             </MuiLink>
           </Breadcrumbs>
@@ -251,7 +241,7 @@ const Publications = () => {
                 helperText={errors.publisherName}
                 inputProps={{ maxLength: 50 }}
               />
-             
+
               <TextField
                 label="Address"
                 value={editData.address}

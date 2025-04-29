@@ -85,7 +85,7 @@ const ActionCalenderDropDown = (props) => {
 
           <MenuItem onClick={props.handleOpenMeeting} disableRipple>
             <AddIcon />
-            Add Meeting
+            Add Publications
           </MenuItem>
           <MenuItem onClick={props.handleOpenCall} disableRipple>
             <AddIcon />

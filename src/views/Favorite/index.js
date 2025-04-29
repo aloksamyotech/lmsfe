@@ -30,7 +30,7 @@ import { deleteApi, getApi, postApi } from 'core/apiClient';
 
 // ----------------------------------------------------------------------
 
-const Contact = () => {
+const Favorite = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
   const [editData, setEditData] = useState(null);
@@ -234,4 +234,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default Favorite;

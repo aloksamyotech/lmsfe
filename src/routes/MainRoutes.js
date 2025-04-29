@@ -1,4 +1,4 @@
- import { lazy } from 'react';
+import { lazy } from 'react';
 
 // project imports
 import MainLayout from 'layout/MainLayout';
@@ -19,14 +19,14 @@ import BookInvoice from 'views/BookAllotment/Invoice';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
-const LeadManagement = Loadable(lazy(() => import('views/Books')));
-const ContactManagement = Loadable(lazy(() => import('views/Contact')));
-const Call = Loadable(lazy(() => import('views/Register')));
-const Policy = Loadable(lazy(() => import('views/Vendor')));
-const Metting = Loadable(lazy(() => import('views/Publications')));
+const BookManagement = Loadable(lazy(() => import('views/Books')));
+const Favorite = Loadable(lazy(() => import('views/Favorite')));
+const Register = Loadable(lazy(() => import('views/Register')));
+const Vendor = Loadable(lazy(() => import('views/Vendor')));
+const Publications = Loadable(lazy(() => import('views/Publications')));
 const Email = Loadable(lazy(() => import('views/Email')));
 const Task = Loadable(lazy(() => import('views/Task')));
-const EmailTemplates = Loadable(lazy(() => import('views/EmailTemplates')));
+const Report = Loadable(lazy(() => import('views/EmailTemplates')));
 const Document = Loadable(lazy(() => import('views/Documents')));
 const Calender = Loadable(lazy(() => import('views/Calender')));
 const AddTemplates = Loadable(lazy(() => import('views/EmailTemplates/AddTemplates')));
@@ -66,8 +66,8 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'lead',
-              element: <LeadManagement />
+              path: 'BookManagement',
+              element: <BookManagement />
             }
           ]
         },
@@ -112,8 +112,8 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'contact',
-              element: <ContactManagement />
+              path: 'Favorite',
+              element: <Favorite />
             }
           ]
         },
@@ -130,8 +130,8 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'call',
-              element: <Call />
+              path: 'Register',
+              element: <Register />
             }
           ]
         },
@@ -139,8 +139,8 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'policy',
-              element: <Policy />
+              path: 'Vendor',
+              element: <Vendor />
             }
           ]
         },
@@ -148,8 +148,8 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'policy',
-              element: <Policy />
+              path: 'Vendor',
+              element: <Vendor />
             }
           ]
         },
@@ -175,8 +175,8 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'meeting',
-              element: <Metting />
+              path: 'Publications',
+              element: <Publications />
             }
           ]
         },
@@ -258,8 +258,8 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'emailtemplate',
-              element: <EmailTemplates />
+              path: 'Report',
+              element: <Report />
             }
           ]
         },
@@ -309,10 +309,9 @@ const MainRoutes = {
             }
           ]
         }
-
       ]
     }
-  ] 
+  ]
 };
 
 export default MainRoutes;

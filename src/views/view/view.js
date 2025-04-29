@@ -62,19 +62,11 @@ const View = () => {
       field: 'bookName',
       headerName: 'Book Name',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'quantity',
       headerName: 'Quantity',
       flex: 0.5,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
-    },
-    {
-      field: 'student_Name',
-      headerName: 'Student Name',
-      flex: 1,
-      cellClassName: 'name-column--cell--capitalize'
     },
     {
       field: 'amount',
@@ -217,11 +209,9 @@ const View = () => {
           item.books?.forEach((book) => {
             const quantity = book.quantity || 1;
             totalQuantity += quantity;
-            if (book.submit) {
-              submittedQuantity += quantity;
-            }
+            const submitCount=book.submitCount||1;
+            submittedQuantity += submitCount;
           });
-
           totalAllottedCount += totalQuantity;
           totalSubmittedCount += submittedQuantity;
 
@@ -233,8 +223,8 @@ const View = () => {
             student_Name: item.studentId?.student_Name,
             paymentType: item.paymentType?.title,
             amount: totalAmount,
-            bookIssueDate: formatDate(item.books?.[0]?.bookIssueDate), // Assuming same for all
-            submissionDate: formatDate(item.books?.[0]?.submissionDate), // Assuming same for all
+            bookIssueDate: formatDate(item.books?.[0]?.bookIssueDate),
+            submissionDate: formatDate(item.books?.[0]?.submissionDate),
             time: istTime,
             quantity: totalQuantity,
             isSubmit: allSubmitted
