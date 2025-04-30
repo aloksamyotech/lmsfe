@@ -37,6 +37,7 @@ const AddPurchaseBook = (props) => {
   const [bookData, setBookData] = useState([]);
   const [studentData, setStudentData] = useState([]);
   const [publisherData, setPublisherData] = useState([]);
+  const [isloading, setIsloading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -51,6 +52,8 @@ const AddPurchaseBook = (props) => {
     },
     validationSchema,
     onSubmit: async (values) => {
+      setIsloading(true);
+
       try {
         const user = JSON.parse(localStorage.getItem('user'));
         const adminId = user?._id;
@@ -67,6 +70,7 @@ const AddPurchaseBook = (props) => {
       } catch (error) {
         toast.error(error?.response?.data?.message);
         console.error('Error submitting form:', error);
+        setIsloading(false);
       }
       formik.resetForm();
       handleClose();
@@ -76,7 +80,6 @@ const AddPurchaseBook = (props) => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-
         const response = await getApi(url.bookManagenent.bookmanagementTable);
         setBookData(response.data?.data);
       } catch (error) {
@@ -86,7 +89,6 @@ const AddPurchaseBook = (props) => {
 
     const fetchVendor = async () => {
       try {
-
         const response = await getApi(url.vendorManagement.viewVender);
         setStudentData(response.data?.VenderManagement);
       } catch (error) {
@@ -264,11 +266,18 @@ const AddPurchaseBook = (props) => {
                 type="submit"
                 variant="contained"
                 onClick={formik.handleSubmit}
-                style={{ textTransform: 'capitalize' }}
                 color="secondary"
+                disabled={isloading}
+                style={{
+                  textTransform: 'capitalize',
+                  backgroundColor: isloading ? '#ccc' : '',
+                  color: isloading ? '#666' : '',
+                  pointerEvents: isloading ? 'none' : 'auto'
+                }}
               >
-                Save
+                {isloading ? 'Saving...' : 'Save'}
               </Button>
+
               <Button
                 onClick={() => {
                   formik.resetForm();

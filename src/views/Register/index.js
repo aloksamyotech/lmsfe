@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Stack, Typography, Button, Box, Card, Dialog, TextField } from '@mui/material';
+import { Container, Stack, Typography, Button, Box, Card, Dialog, TextField, IconButton } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TableStyle from '../../ui-component/TableStyle';
@@ -71,30 +71,36 @@ const Register = () => {
       flex: 1
     },
     {
-      field: 'action',
-      headerName: 'Action',
-      align: 'center',
-      headerAlign: 'center',
-      flex: 1,
-      renderCell: (params) => (
-        <div>
-          <Button onClick={() => handleView(params.row)} color="secondary" style={{ margin: '-15px' }}>
-            <VisibilityIcon />
-          </Button>
-          <Button color="primary" onClick={() => handleEdit(params.row)} style={{ margin: '-9px' }}>
-            <EditIcon />
-          </Button>
-          <Button
-            onClick={() => handleFavorite(params.row)}
-            style={{ color: params.row.favorite ? 'red' : 'gray', margin: '-9px', fontSize: '21px', padding: '10px' }}
-          >
-            <Icon icon="mdi:heart" />
-          </Button>
-          <Button color="secondary" onClick={() => handleDelete(params.row.id)} style={{ margin: '-9px' }}>
-            <DeleteIcon />
-          </Button>
-        </div>
-      )
+      field: 'actions',
+      headerName: 'Actions',
+      width: 220,
+      sortable: false,
+      disableClickEventBubbling: true,
+      renderCell: (params) => {
+        return (
+          <Stack direction="row" spacing={1}>
+            <IconButton  color="secondary"onClick={() => handleView(params.row)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton  color="primary" onClick={() => handleEdit(params.row)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              onMouseDown={(e) => e.stopPropagation()} 
+              onClick={() => {
+                handleFavorite(params.row);
+              }}
+              sx={{ color: params.row.favorite ? 'red' : 'gray' }}
+            >
+              <Icon icon="mdi:heart" />
+            </IconButton>
+
+            <IconButton  color="secondary" onClick={() => handleDelete(params.row.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Stack>
+        );
+      }
     }
   ];
   const formatDate = (dateString) => {
@@ -107,7 +113,7 @@ const Register = () => {
   const fetchData = async () => {
     try {
       const response = await getApi(url.studentRegister.getRegisterManagement);
-      const fetchedData =  response?.data?.RegisterManagement?.map((item) => ({
+      const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
         id: item._id,
         student_id: item.student_id,
         student_Name: item.student_Name,
@@ -150,8 +156,8 @@ const Register = () => {
       setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
       setEditData(null);
       fetchData();
+      setOpenBulkUploadDialog(false);
       toast.success('Register details Edit successfully');
-      setIsloading(false);
     } catch (error) {
       console.error('Error updating Register:', error);
     }
@@ -197,22 +203,24 @@ const Register = () => {
     fetchStudent();
   };
   const handleFavorite = async (student) => {
+    const newFavorite = !student.favorite;
+
+    setData((prevData) => prevData.map((item) => (item.id === student.id ? { ...item, favorite: newFavorite } : item)));
+
     try {
       const response = await postApi(`${url.studentRegister.markFavorite}${student.id}`);
-      const updatedStudent = response.data.student;
-      setData((prevData) => prevData.map((item) => (item.id === updatedStudent.id ? updatedStudent : item)));
-      if (response) {
-        fetchData();
-      }
-      if (response?.data?.student?.favorite == true) {
-        toast.success('add to Favorite successfully');
+      if (response?.data?.student?.favorite === true) {
+        toast.success('Added to Favorite successfully');
       } else {
-        toast.error('Remove to Favorite successfully');
+        toast.error('Removed from Favorite successfully');
       }
     } catch (error) {
-      console.error('Error marking as favorite:', error);
+      console.error('Error updating favorite:', error);
+      setData((prevData) => prevData.map((item) => (item.id === student.id ? { ...item, favorite: student.favorite } : item)));
+      toast.error('Failed to update favorite status.');
     }
   };
+
   const cancelFavorite = () => {
     setOpenFavoriteDialog(false);
     setFavoriteStudent(null);
@@ -264,12 +272,10 @@ const Register = () => {
       setTimeout(() => {
         window.location.reload();
       }, 1000);
-      setIsloading(false);
     } catch (error) {
       console.error('Error uploading data:', error);
       alert('Error uploading data');
       setIsloading(false);
-
     }
   };
   return (
@@ -369,9 +375,21 @@ const Register = () => {
                 error={!!errors.mobile_Number}
                 helperText={errors.mobile_Number}
               />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary" disabled={isloading}>
-                Save
+              <Button
+                onClick={handleSaveEdit}
+                variant="contained"
+                color="primary"
+                disabled={isloading}
+                style={{
+                  textTransform: 'capitalize',
+                  backgroundColor: isloading ? '#ccc' : '',
+                  color: isloading ? '#666' : '',
+                  pointerEvents: isloading ? 'none' : 'auto'
+                }}
+              >
+                {isloading ? 'Saving...' : 'Save'}
               </Button>
+
               <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
                 Cancel
               </Button>
