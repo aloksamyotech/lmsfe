@@ -102,10 +102,8 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
   }, []);
 
   const handleRemoveFromCart = (id, submissionType) => {
-    const updatedCartItems = cartItems.filter(
-      (item) => !(item._id === id && item.submissionType === submissionType)
-    );
-  
+    const updatedCartItems = cartItems.filter((item) => !(item._id === id && item.submissionType === submissionType));
+
     setCartItems(updatedCartItems);
     setCartcontextItems(updatedCartItems);
     localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
@@ -240,7 +238,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                     <TableCell sx={{ textAlign: 'center', width: '20%' }}>Title</TableCell>
                     <TableCell sx={{ textAlign: 'center', width: '15%' }}>Submission</TableCell>
                     <TableCell sx={{ textAlign: 'center', width: '10%' }}>Quantity</TableCell>
-                    <TableCell sx={{ textAlign: 'center', width: '15%' }}>Amount</TableCell>
+                    <TableCell sx={{ textAlign: 'center', width: '15%' }}>Rate</TableCell>
                     <TableCell sx={{ textAlign: 'center', width: '15%' }}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -276,10 +274,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
                               justifyContent: 'center',
                               alignItems: 'center'
                             }}
-                            disabled={
-                              item.quantity >= item.bookQuantity || // book-level quantity limit
-                              cartItems.reduce((acc, i) => acc + i.quantity, 0) >= 5 // total cart quantity limit
-                            }
+                            disabled={item.quantity >= item.bookQuantity || cartItems.reduce((acc, i) => acc + i.quantity, 0) >= 5}
                           >
                             +
                           </Button>
@@ -326,9 +321,7 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
             justifyContent: 'space-between',
             padding: '10px 20px',
             backgroundColor: 'white',
-            // borderTop: '1px solid #ccc',
             borderRadius: '8px',
-            // boxShadow: '0 -2px 6px rgba(0, 0, 0, 0.1)',
             height: '30vh',
             width: '55vh',
             marginTop: '10px'
@@ -346,19 +339,25 @@ const Cart = ({ onRemoveFromCart, onClearCart, onIncreaseQuantity, onDeacrmentQu
             {cartItems.reduce((total, item) => total + item.amount * item.quantity, 0).toFixed(2)}
           </Typography>
           <hr></hr>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            sx={{
-              width: '35%',
-              fontSize: '16px',
-              padding: '5px',
-              borderRadius: '8px'
-            }}
-          >
-            Confirm
-          </Button>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+            <Typography color="error" fontSize="13px" sx={{ minHeight: '18px' }}>
+              {cartItems.reduce((acc, i) => acc + i.quantity, 0) >= 5 ? 'You can only add 5 books' : ''}
+            </Typography>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              sx={{
+                width: '35%',
+                fontSize: '14px',
+                padding: '4px',
+                borderRadius: '8px'
+              }}
+            >
+              Confirm
+            </Button>
+          </Box>
         </Box>
         <Dialog open={isPopupOpen} onClose={handleClosePopup} maxWidth="sm" fullWidth>
           <DialogTitle>

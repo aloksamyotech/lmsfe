@@ -37,7 +37,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { fetchCurrency } from 'core/comman';
 import { IconButton } from '@mui/material';
-
+import ClearIcon from '@mui/icons-material/Clear';
 import { Add, Remove } from '@mui/icons-material';
 import { getApi, postApi } from 'core/apiClient';
 
@@ -672,7 +672,11 @@ const ReceiveBook = () => {
                   Add Fine
                 </Button>
                 <Dialog open={open} onClose={handleClose}>
-                  <DialogTitle>Book Fine</DialogTitle>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" px={3} pt={2}>
+                    <DialogTitle sx={{ p: 0 }}>Book Fine</DialogTitle>
+                    <ClearIcon onClick={() => setOpen(false)} style={{ cursor: 'pointer' }} />
+                  </Box>
+
                   <DialogContent>
                     <p>Please Pay Fine</p>
                     <TextField

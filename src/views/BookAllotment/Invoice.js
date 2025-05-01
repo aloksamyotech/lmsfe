@@ -64,7 +64,7 @@ const BookInvoice = () => {
     const element = containerRef.current;
     const options = {
       margin: 10,
-      filename: `invoice_${allBookingData?.bookingData?.[0]?.customer?.[0]?.name}${moment().format('DD-MM_YYYY')}.pdf`,
+      filename: `invoice_${moment().format('DD-MM_YYYY')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -165,15 +165,9 @@ const BookInvoice = () => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">
-                Select Identity:
+                Identity:
               </Typography>
               <Typography variant="body2">{allInvoiceData?.data?.studentId?.select_identity ?? 'N/A'}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" fontWeight="bold">
-                Register Date:
-              </Typography>
-              <Typography variant="body2">{formatDate(allInvoiceData?.data?.studentId?.register_Date ?? 'N/A')}</Typography>
             </Grid>
           </Grid>
           <Typography variant="h4" mb={3} mt={3}>
@@ -194,7 +188,7 @@ const BookInvoice = () => {
                     <strong>Issue Date</strong>
                   </TableCell>
                   <TableCell>
-                    <strong>Submission Date</strong>
+                    <strong>Expected Submission Date</strong>
                   </TableCell>
                   <TableCell>
                     <strong>Subscription Type</strong>
@@ -209,7 +203,7 @@ const BookInvoice = () => {
                   <TableRow key={index}>
                     <TableCell>{book?.bookId?.bookName ?? 'N/A'}</TableCell>
                     <TableCell>{book?.quantity ?? '1'}</TableCell>
-                    <TableCell>{book?.bookIssueDate ? moment(book.bookIssueDate).format('DD/MM/YY') : 'N/A'}</TableCell>
+                    <TableCell>{book?.bookIssueDate ? moment(book.bookIssueDate).format('DD/MM/YY, hh:mm A') : 'N/A'}</TableCell>
                     <TableCell>{book?.submissionDate ? moment(book.submissionDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
                     <TableCell>{book?.paymentType?.title ?? 'N/A'}</TableCell>
                     <TableCell>

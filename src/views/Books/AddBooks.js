@@ -73,7 +73,7 @@ const AddLead = (props) => {
 
       } catch (error) {
         console.error('Error submitting form:', error);
-        toast.error('Error submitting the form');
+        toast.error(error);
         setIsloading(false);
 
       }

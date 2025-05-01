@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddSubscription from './addSubscriptionType';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
-import { getApi, updateApi } from 'core/apiClient';
+import { deleteApi, getApi, updateApi } from 'core/apiClient';
 
 const SubscriptType = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -177,7 +177,7 @@ const SubscriptType = () => {
     try {
 
 
-      await axios.delete(`${url.subscription.delete}${bookToDelete}`);
+      await deleteApi(`${url.subscription.delete}${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
       setBookToDelete(null);

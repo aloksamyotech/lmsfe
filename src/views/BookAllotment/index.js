@@ -39,19 +39,7 @@ import BooksModal from './viewbooks.js';
 import { Stack } from '@mui/material';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import Pagination from '@mui/material/Pagination';
-import Iconify from '../../ui-component/iconify';
-import TableStyle from '../../ui-component/TableStyle';
-import AddLead from './booksAllotment';
-
-import ReceiptIcon from '@mui/icons-material/Receipt';
-
-import IconButton from '@mui/material/IconButton';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { fetchCurrency } from 'core/comman';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
@@ -61,6 +49,8 @@ import { url } from 'core/url';
 import ReceiveBook from 'views/ReceiveBook/index';
 import { useCart } from '../Books/CartContext.js';
 import { getApi } from 'core/apiClient.js';
+import ClearIcon from '@mui/icons-material/Clear';
+
 const Allotment = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [search, setSearch] = useState('');
@@ -84,7 +74,15 @@ const Allotment = () => {
   const { setCartcontextItems } = useCart();
   const [currentPage, setCurrentPage] = useState(1);
   const [booksPerPage] = useState(12);
+  const [currencySymbol, setCurrencySymbol] = useState('');
 
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
@@ -336,7 +334,7 @@ const Allotment = () => {
     }, 0);
   };
 
-  const filteredProducts = categoryData.filter((product) => product.title.toLowerCase().includes(search.toLowerCase()));
+  const filteredProducts = categoryData.filter((product) => product.title && product.title.toLowerCase().includes(search.toLowerCase()));
 
   const getBookCount = async (bookId) => {
     try {
@@ -406,12 +404,11 @@ const Allotment = () => {
         }}
       >
         <SearchIcon />
-        <InputBase placeholder="Search Product..." sx={{ flex: 1, ml: 1 }} onChange={handleSearch} value={search} />
+        <InputBase placeholder="Search Book..." sx={{ flex: 1, ml: 1 }} onChange={handleSearch} value={search} />
       </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'row', mb: 2 }}>
-        <Grid container spacing={4}>
-        </Grid>
+        <Grid container spacing={4}></Grid>
       </Box>
       <Grid container spacing={0}>
         {' '}
@@ -535,7 +532,10 @@ const Allotment = () => {
       </Stack>
 
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogTitle>Enter Submission Details</DialogTitle>
+        <Box display="flex" justifyContent="space-between" alignItems="center" px={3} pt={2}>
+          <DialogTitle sx={{ p: 0 }}>Enter Submission Details</DialogTitle>
+          <ClearIcon onClick={() => setOpenModal(false)} style={{ cursor: 'pointer' }} />
+        </Box>
         <DialogContent>
           <FormControl fullWidth sx={{ marginBottom: 2 }}>
             <FormLabel>Submission Type</FormLabel>
@@ -564,7 +564,8 @@ const Allotment = () => {
           />
 
           <Typography variant="h6" color="primary" sx={{ fontSize: '18px' }}>
-            Amount: ₹{calculatedAmount}
+            Amount: {currencySymbol}
+            {calculatedAmount}
           </Typography>
         </DialogContent>
         <DialogActions>
