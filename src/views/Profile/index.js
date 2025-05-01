@@ -374,7 +374,6 @@ const View = () => {
           {tabIndex === 3 && (
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} alignItems="center">
-                {/* Left: Current Logo */}
                 <Grid item xs={6}>
                   <Typography variant="subtitle1" sx={{ mb: 1 }}>
                     Current Logo
