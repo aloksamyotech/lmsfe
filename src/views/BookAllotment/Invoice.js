@@ -212,7 +212,10 @@ const BookInvoice = () => {
                     <TableCell>{book?.bookIssueDate ? moment(book.bookIssueDate).format('DD/MM/YY') : 'N/A'}</TableCell>
                     <TableCell>{book?.submissionDate ? moment(book.submissionDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
                     <TableCell>{book?.paymentType?.title ?? 'N/A'}</TableCell>
-                    <TableCell>{book?.amount ?? 'N/A'}</TableCell>
+                    <TableCell>
+                      {currencySymbol}
+                      {book?.amount ?? 'N/A'}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -19,10 +19,10 @@ import { postApi } from 'core/apiClient';
 
 const AddPolicy = (props) => {
   const { open, handleClose, fetchData } = props;
+  const [isloading, setIsloading] = useState(false);
 
   const todayDate = new Date().toISOString().split('T')[0];
 
-  // -----------  validationSchema
   const validationSchema = yup.object({
     vendorName: yup.string().required('vendor Name is required'),
     companyName: yup.string().required('Company Name is required'),
@@ -47,6 +47,8 @@ const AddPolicy = (props) => {
     validationSchema,
 
     onSubmit: async (values) => {
+      setIsloading(true);
+
       try {
         const response = await postApi(url.vendorManagement.addVender, values);
         fetchData();
@@ -56,6 +58,8 @@ const AddPolicy = (props) => {
       }
       toast.success('Vendor details added successfully');
       formik.resetForm();
+      setIsloading(false);
+
       handleClose();
     }
   });
@@ -172,9 +176,22 @@ const AddPolicy = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-            Save
+          <Button
+            type="submit"
+            variant="contained"
+            onClick={formik.handleSubmit}
+            color="secondary"
+            disabled={isloading}
+            style={{
+              textTransform: 'capitalize',
+              backgroundColor: isloading ? '#ccc' : '',
+              color: isloading ? '#666' : '',
+              pointerEvents: isloading ? 'none' : 'auto'
+            }}
+          >
+            {isloading ? 'Saving...' : 'Save'}
           </Button>
+
           <Button
             type="reset"
             variant="outlined"

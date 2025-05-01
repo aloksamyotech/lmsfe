@@ -31,10 +31,11 @@ const validationSchema = yup.object({
 const AddLead = (props) => {
   const { open, handleClose, fetchData } = props;
   const [publisherData, setPublisherData] = useState([]);
+  const [isloading, setIsloading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
-      bookName: '',
+      bookName: '', 
       title: '',
       author: '',
       bookIssueDate: '',
@@ -44,6 +45,7 @@ const AddLead = (props) => {
     },
     validationSchema,
     onSubmit: async (values) => {
+      setIsloading(true);
       const formData = new FormData();
 
       Object.keys(values).forEach((key) => {
@@ -67,9 +69,13 @@ const AddLead = (props) => {
         toast.success('Book details added successfully');
         formik.resetForm();
         handleClose();
+        setIsloading(false);
+
       } catch (error) {
         console.error('Error submitting form:', error);
         toast.error('Error submitting the form');
+        setIsloading(false);
+
       }
     }
   });
@@ -220,8 +226,8 @@ const AddLead = (props) => {
             </Grid>
           </DialogContentText>
           <DialogActions>
-            <Button type="submit" variant="contained" color="primary" disabled={formik.isSubmitting}>
-              Save
+            <Button type="submit" variant="contained" color="primary" disabled={isloading}>
+            {isloading ? 'Saving...' : 'Save'}
             </Button>
             <Button
               onClick={() => {

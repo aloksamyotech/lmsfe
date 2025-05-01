@@ -205,6 +205,18 @@ const ReceiveInvoice = () => {
               </Typography>
               <Typography variant="body2">{submissionDate}</Typography>
             </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Subscription Type:
+              </Typography>
+              <Typography variant="body2">{studentTitle || 'N/A'}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Subscription Price:
+              </Typography>
+              <Typography variant="body2">{`${currencySymbol}${studentAmount}` || `${currencySymbol}0.00`}</Typography>
+            </Grid>
           </Grid>
           <Typography variant="h4" mb={3} mt={3}>
             Student Information
@@ -247,20 +259,7 @@ const ReceiveInvoice = () => {
           </Typography>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
           <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Subscription Type:
-              </Typography>
-              <Typography variant="body2">{studentTitle || 'N/A'}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Subscription Price:
-              </Typography>
-              <Typography variant="body2">{`${currencySymbol}${studentAmount}` || `${currencySymbol}0.00`}</Typography>
-            </Grid>
-
-            <Typography variant="h4" mb={3} mt={3}>
+            <Typography variant="body1" fontWeight="bold" mb={3} mt={3} ml={1.125}>
               Fine Details
             </Typography>
             {fineData && fineData.length > 0 ? (
@@ -298,7 +297,13 @@ const ReceiveInvoice = () => {
           </Grid>
           <Divider sx={{ mb: 3, borderBottomWidth: 2 }} />
           <Grid container spacing={1} mt={2} mb={5}>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight="bold">
+                Total items:
+              </Typography>
+              <Typography variant="body2">{bookQuantity || 'N/A'}</Typography>
+            </Grid>
+            <Grid item xs={6}>
               <Typography variant="h4">Total Amount:</Typography>
               <Typography variant="body2" fontSize="1.1rem">
                 {`${currencySymbol}${(

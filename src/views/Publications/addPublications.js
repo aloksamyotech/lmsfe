@@ -21,9 +21,9 @@ import axios from 'axios';
 import { url } from 'core/url';
 import { postApi } from 'core/apiClient';
 
-
 const AddPublications = (props) => {
   const { open, handleClose, fetchData } = props;
+  const [isloading, setIsloading] = useState(false);
 
   const validationSchema = yup.object({
     publisherName: yup.string().required('Book Title is required'),
@@ -42,6 +42,8 @@ const AddPublications = (props) => {
     validationSchema,
 
     onSubmit: async (values) => {
+      setIsloading(true);
+
       try {
         const response = await postApi(url.publications.addPublications, values);
         fetchData();
@@ -51,6 +53,8 @@ const AddPublications = (props) => {
       }
       toast.success('Publications details added successfully');
       formik.resetForm();
+      setIsloading(false);
+
       handleClose();
     }
   });
@@ -133,11 +137,18 @@ const AddPublications = (props) => {
               type="submit"
               variant="contained"
               onClick={formik.handleSubmit}
-              style={{ textTransform: 'capitalize' }}
               color="secondary"
+              disabled={isloading}
+              style={{
+                textTransform: 'capitalize',
+                backgroundColor: isloading ? '#ccc' : '',
+                color: isloading ? '#666' : '',
+                pointerEvents: isloading ? 'none' : 'auto'
+              }}
             >
-              Save
+              {isloading ? 'Saving...' : 'Save'}
             </Button>
+
             <Button
               type="reset"
               variant="outlined"

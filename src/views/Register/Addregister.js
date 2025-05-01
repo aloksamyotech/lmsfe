@@ -21,13 +21,12 @@ import { postApi } from 'core/apiClient';
 const AddRegister = (props) => {
   const { open, handleClose, fetchData } = props;
   const userid = localStorage.getItem('user_id');
+  const [isloading, setIsloading] = useState(false);
 
   const todayDate = new Date().toISOString().split('T')[0];
 
   const validationSchema = yup.object({
-    student_Name: yup
-      .string()
-      .required('Student Name is required'),
+    student_Name: yup.string().required('Student Name is required'),
     email: yup.string().email('Invalid email').required('Email is required'),
     mobile_Number: yup
       .string()
@@ -50,6 +49,7 @@ const AddRegister = (props) => {
     validationSchema,
 
     onSubmit: async (values) => {
+      setIsloading(true);
 
       const formData = new FormData();
       formData.append('student_id', values.student_id);
@@ -59,7 +59,7 @@ const AddRegister = (props) => {
       formData.append('select_identity', values.select_identity);
       formData.append('upload_identity', values.upload_identity);
       formData.append('register_Date', values.register_Date);
-      formData.append('adminId',adminId);
+      formData.append('adminId', adminId);
       try {
         const response = await postApi(url.studentRegister.addRegister, formData, {
           headers: {
@@ -68,11 +68,15 @@ const AddRegister = (props) => {
         });
         toast.success('Register details added successfully');
         fetchData();
+        setIsloading(false);
+
         handleClose();
+
         formik.resetForm();
       } catch (error) {
         console.error('Error submitting form:', error);
         toast.error('Failed to add register details');
+        setIsloading(false);
       }
     }
   });
@@ -193,8 +197,19 @@ const AddRegister = (props) => {
             </Grid>
           </DialogContentText>
           <DialogActions>
-            <Button type="submit" variant="contained" color="primary">
-              Save
+          <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isloading}
+              style={{
+                textTransform: 'capitalize',
+                backgroundColor: isloading ? '#ccc' : '',
+                color: isloading ? '#666' : '',
+                pointerEvents: isloading ? 'none' : 'auto'
+              }}
+            >
+              {isloading ? 'Saving...' : 'Save'}
             </Button>
             <Button
               onClick={() => {
