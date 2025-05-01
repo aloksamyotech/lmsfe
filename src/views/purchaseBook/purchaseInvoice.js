@@ -124,7 +124,7 @@ const PurchaseInvoice = () => {
     const element = containerRef.current;
     const options = {
       margin: 10,
-      filename: `invoice_${allBookingData?.bookingData?.[0]?.customer?.[0]?.name}${moment().format('DD-MM_YYYY')}.pdf`,
+      filename: `invoice_${moment().format('DD-MM_YYYY')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }

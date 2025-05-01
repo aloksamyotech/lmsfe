@@ -75,7 +75,7 @@ const AddRegister = (props) => {
         formik.resetForm();
       } catch (error) {
         console.error('Error submitting form:', error);
-        toast.error('Failed to add register details');
+        toast.error(error);
         setIsloading(false);
       }
     }

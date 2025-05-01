@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Iconify from '../../ui-component/iconify';
 import { url } from 'core/url';
+import ClearIcon from '@mui/icons-material/Clear';
 import { deleteApi, getApi, postApi, updateApi } from 'core/apiClient';
 const Register = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -274,7 +275,7 @@ const Register = () => {
       }, 1000);
     } catch (error) {
       console.error('Error uploading data:', error);
-      alert('Error uploading data');
+      toast.error('Error uploading data');
       setIsloading(false);
     }
   };
@@ -409,21 +410,15 @@ const Register = () => {
             </Stack>
           </Box>
         </Dialog>
-        <Dialog open={openBulkUploadDialog} onClose={() => setOpenBulkUploadDialog(false)}>
+         <Dialog open={openBulkUploadDialog} onClose={() => setOpenBulkUploadDialog(false)}>
           <Box p={3} width={400}>
-            <Typography variant="h6" gutterBottom>
-              Upload Excel File
-            </Typography>
+            <ClearIcon onClick={() => setOpenBulkUploadDialog(false)} style={{ cursor: 'pointer', float: 'right' }} />
 
-            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} style={{ marginBottom: '16px' }} />
-
-            <Box display="flex" justifyContent="space-between" gap={2}>
-              <Button variant="contained" color="primary" onClick={handleBulkUpload} fullWidth disabled={isloading}>
-                Upload Data
-              </Button>
-
+            <Box alignItems="center" mb={2}>
+              <Typography variant="h5">Upload Excel File</Typography>
               <Button
                 variant="outlined"
+                size="small"
                 startIcon={<Iconify icon="eva:file-download-fill" />}
                 onClick={() => {
                   const link = document.createElement('a');
@@ -431,9 +426,17 @@ const Register = () => {
                   link.download = 'SampleFile.xlsx';
                   link.click();
                 }}
-                fullWidth
+                sx={{ mr: '11px' ,mt:'10px'}}
               >
-                Download
+                <Typography fontSize="13px">Download Sample File</Typography>
+              </Button>
+            </Box>
+
+            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} style={{ marginBottom: '16px' }} />
+
+            <Box display="flex" justifyContent="right" gap={2}>
+              <Button variant="contained" color="primary" onClick={handleBulkUpload} disabled={isloading}>
+                Upload 
               </Button>
             </Box>
           </Box>

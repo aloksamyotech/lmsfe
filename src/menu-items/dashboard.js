@@ -18,7 +18,8 @@ import {
   IconUserCheck,
   IconUser,
   IconCreditCard,
-  IconHeart
+  IconHeart,
+  IconLogout
 } from '@tabler/icons';
 
 // constant
@@ -40,7 +41,8 @@ const icons = {
   IconUserCheck,
   IconUser,
   IconCreditCard,
-  IconHeart
+  IconHeart,
+  IconLogout
 };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
@@ -87,7 +89,7 @@ const dashboard = {
         },
         {
           id: 'Receive',
-          title: 'Receive',
+          title: 'Submmission',
           type: 'item',
           url: '/dashboard/Receive',
           breadcrumbs: false
@@ -159,6 +161,13 @@ const dashboard = {
       url: '/dashboard/profile',
       icon: icons.IconUser,
       breadcrumbs: false
+    },
+    {
+      id: '13',
+      title: 'Logout',
+      type: 'item',
+      url: '/login',
+      icon: icons.IconLogout
     }
   ]
 };

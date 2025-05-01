@@ -19,8 +19,7 @@ const handleAuthError = (error) => {
     window.location.href = '/login';
     return;
   }
-  console.error(errorMessage);
-  // toast.error(errorMessage);
+  toast.error(errorMessage);
 };
 
 export const getApi = async (url, params = {}, headers = {}) => {
@@ -45,7 +44,7 @@ export const getApi = async (url, params = {}, headers = {}) => {
 
     return response;
   } catch (error) {
-    handleAuthError(error);
+    console.error(error);
     throw error;
   }
 };
