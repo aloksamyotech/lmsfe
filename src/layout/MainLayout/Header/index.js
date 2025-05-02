@@ -108,7 +108,6 @@ const Header = ({ handleLeftDrawerToggle }) => {
         </Badge>
       </IconButton>
 
-      {/* <ProfileSection /> */}
     </>
   );
 };

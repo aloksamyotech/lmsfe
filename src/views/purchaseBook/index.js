@@ -136,7 +136,6 @@ const PurchaseBook = () => {
 
 
       const response = await getApi(url.purchaseBook.purchaseManagement);
-      console.log(response);
       
 
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
