@@ -29,12 +29,16 @@ const AddPolicy = (props) => {
     address: yup.string().required('Address is required'),
     phoneNumber: yup
       .string()
-      .matches(/^[0-9]{10}$/, 'Phone number is invalid')
+      .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
+      .test('not-repeated', 'Phone number is invalid', (value) => {
+        if (!value) return false;
+        return !/^(\d)\1{9}$/.test(value);
+      })
       .required('Phone number is required'),
+
     email: yup.string().email('Invalid email').required('Email is required')
   });
 
-  // -----------   initialValues
   const formik = useFormik({
     initialValues: {
       vendorName: '',
@@ -51,12 +55,12 @@ const AddPolicy = (props) => {
 
       try {
         const response = await postApi(url.vendorManagement.addVender, values);
+        toast.success('Vendor details added successfully');
         fetchData();
         handleClose();
       } catch (error) {
         console.error('Error submitting form:', error);
       }
-      toast.success('Vendor details added successfully');
       formik.resetForm();
       setIsloading(false);
 
@@ -136,6 +140,7 @@ const AddPolicy = (props) => {
                     name="phoneNumber"
                     type="text"
                     size="small"
+                    fullWidth
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
                     error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}

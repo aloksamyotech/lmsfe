@@ -59,6 +59,11 @@ const View = () => {
 
   const columns = [
     {
+      field: 'sNo',
+      headerName: 'sNo.',
+      flex: 0.5
+    },
+    {
       field: 'bookName',
       headerName: 'Book Name',
       flex: 1,
@@ -91,7 +96,7 @@ const View = () => {
     },
     {
       field: 'submissionDate',
-      headerName: 'Submission Date',
+      headerName: 'Expacted Submission Date',
       flex: 1
     }
   ];
@@ -303,9 +308,9 @@ const View = () => {
                 src={student.logoUrl}
                 alt={student.student_Name}
                 sx={{
-                  width: 100,
-                  height: 100,
-                  marginRight: { xs: 2, md: 4 },
+                  width: 60,
+                  height: 60,
+                  marginRight: { xs: 1, md: 2 },
                   marginBottom: { xs: 2, md: 0 }
                 }}
               />
@@ -333,7 +338,6 @@ const View = () => {
               </Box>
             </Box>
 
-            {/* Cards Section */}
             <Box
               sx={{
                 display: 'flex',
@@ -341,7 +345,6 @@ const View = () => {
                 gap: 2
               }}
             >
-              {/* Books Allotted Card */}
               <Card sx={{ width: 220, boxShadow: 3 }}>
                 <CardContent sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
                   <Box
@@ -413,7 +416,7 @@ const View = () => {
                   }
                 }}
                 pagination
-                rows={data}
+                rows={data.map((row, index) => ({ ...row, sNo: index + 1 }))}
                 columns={columns}
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}

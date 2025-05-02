@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Box, Badge, ButtonBase, IconButton ,Typography} from '@mui/material';
+import { Avatar, Box, Badge, ButtonBase, IconButton, Typography } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router';
 import { IconMenu2 } from '@tabler/icons';
@@ -102,13 +102,13 @@ const Header = ({ handleLeftDrawerToggle }) => {
           {currentDate}
         </Typography>
       </Box>
-      <IconButton onClick={handleCartClick}>
+      <IconButton onClick={handleCartClick} sx={{ mr: '80px' }}>
         <Badge badgeContent={getCartLength()} color="secondary" invisible={getCartLength() === 0}>
           <ShoppingCartIcon />
         </Badge>
       </IconButton>
 
-      <ProfileSection />
+      {/* <ProfileSection /> */}
     </>
   );
 };

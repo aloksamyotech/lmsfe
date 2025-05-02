@@ -82,7 +82,7 @@ const History = ({ allotmentId }) => {
     },
     {
       field: 'totalAmount',
-      headerName: 'Total Amount',
+      headerName: 'Paid Amount',
       width: 120,
       valueFormatter: ({ value }) => {
         if (value != null) {
@@ -93,7 +93,7 @@ const History = ({ allotmentId }) => {
     },
     {
       field: 'generateInvoice',
-      headerName: 'Generate Invoice',
+      headerName: 'Invoice',
       flex: 1,
       align: 'center',
       headerAlign: 'center',

@@ -6,6 +6,7 @@ import Loadable from 'ui-component/Loadable';
 import FinePerDay from 'views/Books/fine';
 import BookAlloment from 'views/BookAllotment';
 import View from 'views/view/view';
+import VendorView from 'views/view/viewVender';
 import PurchaseBook from 'views/purchaseBook/index';
 import Profile from 'views/Profile';
 import ViewBookAllotment from 'views/view/view.bookAllotment';
@@ -148,15 +149,6 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'Vendor',
-              element: <Vendor />
-            }
-          ]
-        },
-        {
-          path: 'dashboard',
-          children: [
-            {
               path: 'task',
               element: <Task />
             }
@@ -198,7 +190,15 @@ const MainRoutes = {
             }
           ]
         },
-
+        {
+          path: 'dashboard',
+          children: [
+            {
+              path: 'viewVender/:id',
+              element: <VendorView />
+            }
+          ]
+        },
         {
           path: 'dashboard',
           children: [

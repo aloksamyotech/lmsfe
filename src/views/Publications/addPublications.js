@@ -46,12 +46,12 @@ const AddPublications = (props) => {
 
       try {
         const response = await postApi(url.publications.addPublications, values);
+        toast.success('Publications details added successfully');
         fetchData();
         handleClose();
       } catch (error) {
         console.error('Error submitting form:', error);
       }
-      toast.success('Publications details added successfully');
       formik.resetForm();
       setIsloading(false);
 
@@ -126,7 +126,7 @@ const AddPublications = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.description && Boolean(formik.errors.description)}
                     helperText={formik.touched.description && formik.errors.description}
-                    inputProps={{ maxLength: 300 }}
+                    inputProps={{ maxLength: 100 }}
                   />
                 </Grid>
               </Grid>

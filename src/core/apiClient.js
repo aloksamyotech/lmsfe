@@ -44,10 +44,15 @@ export const getApi = async (url, params = {}, headers = {}) => {
 
     return response;
   } catch (error) {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('loginToken');
+      window.location.href = '/login';
+    }
     console.error(error);
     throw error;
   }
 };
+
 
 export const postApi = async (url, data, headers = {}) => {
   try {

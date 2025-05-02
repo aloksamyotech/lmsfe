@@ -55,13 +55,12 @@ const AddSubscription = (props) => {
       try {
         SetIsloading(true);
         const response = await postApi(url.subscription.Subscription, values);
-
+        toast.success('Subscription Type details added successfully');
         fetchData();
         handleClose();
       } catch (error) {
         console.error('Error submitting form:', error);
       }
-      toast.success('Subscription Type details added successfully');
       SetIsloading(false);
       formik.resetForm();
       handleClose();
@@ -86,8 +85,8 @@ const AddSubscription = (props) => {
       <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-            <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-              <Grid item xs={12} sm={5} md={5}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
                 <FormLabel>Title</FormLabel>
                 <TextField
                   id="title"
@@ -101,7 +100,8 @@ const AddSubscription = (props) => {
                   inputProps={{ maxLength: 30 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={5} md={5}>
+
+              <Grid item xs={12} sm={6}>
                 <FormLabel>Amount</FormLabel>
                 <TextField
                   id="amount"
@@ -115,7 +115,8 @@ const AddSubscription = (props) => {
                   inputProps={{ maxLength: 6 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={5} md={5}>
+
+              <Grid item xs={12} sm={6}>
                 <FormLabel>Discount</FormLabel>
                 <TextField
                   id="discount"
@@ -129,7 +130,8 @@ const AddSubscription = (props) => {
                   inputProps={{ maxLength: 2 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={5} md={5}>
+
+              <Grid item xs={12} sm={6}>
                 <FormLabel>Number Of Days</FormLabel>
                 <TextField
                   id="numberOfDays"
@@ -143,14 +145,15 @@ const AddSubscription = (props) => {
                   inputProps={{ maxLength: 3 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={12}>
+
+              <Grid item xs={12}>
                 <FormLabel>Description</FormLabel>
                 <TextField
                   id="desc"
                   name="desc"
                   size="small"
                   multiline
-                  rows={5}
+                  rows={4}
                   fullWidth
                   value={formik.values.desc}
                   onChange={formik.handleChange}
@@ -161,10 +164,12 @@ const AddSubscription = (props) => {
               </Grid>
             </Grid>
           </DialogContentText>
+
           <DialogActions>
             <Button type="submit" variant="contained" color="primary" disabled={isloading}>
               {isloading ? 'Saving...' : 'Save'}
             </Button>
+
             <Button
               onClick={() => {
                 formik.resetForm();
