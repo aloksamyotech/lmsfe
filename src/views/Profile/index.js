@@ -28,6 +28,7 @@ import { toast } from 'react-toastify';
 import { url } from 'core/url';
 import { getApi, updateApi } from 'core/apiClient';
 import Logo from 'ui-component/Logo';
+import { width } from '@mui/system';
 
 const currencySymbols = { USD: '$', EUR: '€', INR: '₹', GBP: '£' };
 
@@ -220,7 +221,7 @@ const View = () => {
       >
         <Breadcrumbs separator="/" aria-label="breadcrumb">
           <MuiLink component={Link} to="/dashboard/default" color="inherit">
-            <HomeIcon />
+          <HomeIcon sx={{ color: '#5e35b1' }} />
           </MuiLink>
           <MuiLink component={Link} to="/dashboard/profile" color="inherit" underline="none">
             Admin Profile
@@ -370,7 +371,7 @@ const View = () => {
               </FormGroup>
             </Box>
           )}
-          
+
           {tabIndex === 3 && (
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} alignItems="center">
@@ -416,9 +417,11 @@ const View = () => {
                     />
                     <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
 
-                    <Button variant="contained" sx={{ mt: 2 }} onClick={handleSaveEdit} disabled={!formData.logo}>
-                      Update
-                    </Button>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                      <Button variant="contained" sx={{ width: '80px' }} onClick={handleSaveEdit} disabled={!formData.logo}>
+                        Update
+                      </Button>
+                    </Box>
                   </FormControl>
                 </Grid>
               </Grid>

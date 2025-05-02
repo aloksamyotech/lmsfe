@@ -130,7 +130,7 @@ const CartSummary = ({ summaryData }) => {
           paddingTop: 2
         }}
       >
-        Total Amount: ₹{totalAmount.toFixed(2)}
+        Total Amount: {currencySymbol}{totalAmount.toFixed(2)}
       </Typography>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>

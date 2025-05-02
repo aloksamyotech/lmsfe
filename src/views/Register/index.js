@@ -44,23 +44,39 @@ const Register = () => {
       flex: 0.5
     },
     {
-      field: 'email',
-      headerName: 'Student Email',
+      field: 'nameEmail',
+      headerName: 'Student Info',
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize',
       renderCell: (params) => {
+        const { student_Name, email } = params.row;
         return (
-          <a href="#!" onClick={() => handleView(params.row)} style={{ textDecoration: 'none', color: 'inherit' }}>
-            {params.value}
-          </a>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => handleView(params.row)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleView(params.row);
+              }
+            }}
+            style={{
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              outline: 'none',
+            }}
+          >
+            <div style={{ fontWeight: 'bold', textTransform: 'capitalize' }}>
+              {student_Name}
+            </div>
+            <div style={{ fontSize: '0.85em', color: '#555' }}>
+              {email}
+            </div>
+          </div>
         );
       }
-    },
-    {
-      field: 'student_Name',
-      headerName: 'Student Name',
-      flex: 1
-    },
+    },    
+    
     {
       field: 'mobile_Number',
       headerName: 'Mobile Number',
@@ -86,16 +102,6 @@ const Register = () => {
             <IconButton  color="primary" onClick={() => handleEdit(params.row)}>
               <EditIcon />
             </IconButton>
-            <IconButton
-              onMouseDown={(e) => e.stopPropagation()} 
-              onClick={() => {
-                handleFavorite(params.row);
-              }}
-              sx={{ color: params.row.favorite ? 'red' : 'gray' }}
-            >
-              <Icon icon="mdi:heart" />
-            </IconButton>
-
             <IconButton  color="secondary" onClick={() => handleDelete(params.row.id)}>
               <DeleteIcon />
             </IconButton>
@@ -202,48 +208,6 @@ const Register = () => {
       }
     };
     fetchStudent();
-  };
-  const handleFavorite = async (student) => {
-    const newFavorite = !student.favorite;
-
-    setData((prevData) => prevData.map((item) => (item.id === student.id ? { ...item, favorite: newFavorite } : item)));
-
-    try {
-      const response = await postApi(`${url.studentRegister.markFavorite}${student.id}`);
-      if (response?.data?.student?.favorite === true) {
-        toast.success('Added to Favorite successfully');
-      } else {
-        toast.error('Removed from Favorite successfully');
-      }
-    } catch (error) {
-      console.error('Error updating favorite:', error);
-      setData((prevData) => prevData.map((item) => (item.id === student.id ? { ...item, favorite: student.favorite } : item)));
-      toast.error('Failed to update favorite status.');
-    }
-  };
-
-  const cancelFavorite = () => {
-    setOpenFavoriteDialog(false);
-    setFavoriteStudent(null);
-  };
-  const handleSubscription = async (row) => {
-    try {
-      const updatedSubscription = !row.subscription;
-
-      const response = await postApi(`${url.studentRegister.markSubscription}${row.id}`, {
-        subscription: updatedSubscription
-      });
-      if (response.status === 200) {
-        setData((prevData) => prevData.map((item) => (item.id === row.id ? { ...item, subscription: updatedSubscription } : item)));
-      }
-      if (response?.data?.student?.subscription == true) {
-        toast.success('add to Subscription successfully');
-      } else {
-        toast.error('Remove to Subscription successfully');
-      }
-    } catch (error) {
-      console.error('Error toggling subscription:', error);
-    }
   };
   const handleFileUpload = (e) => {
     const file = e.target.files[0];

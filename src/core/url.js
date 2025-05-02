@@ -27,7 +27,7 @@ export const url = {
     bookManagement: base_url + 'user/bookManagement/',
     bookCount: base_url + 'user/getBookCount/',
     bookmanagementTable: base_url + 'user/bookmangmentTable/',
-    bookData: base_url + 'user/bookData/',
+    bookData: base_url + 'user/bookData/'
   },
   booksubmission: {
     submitedBook: base_url + 'user/submitedBook/',
@@ -39,7 +39,8 @@ export const url = {
     viewVender: base_url + 'user/venderManagement/',
     delete: base_url + 'user/deleteVender/',
     editVender: base_url + 'user/editVender/',
-    venderCount: base_url + 'user/getVenderCount/'
+    venderCount: base_url + 'user/getVenderCount/',
+    viewVendorDetails: base_url + 'user/viewVendorDetails/'
   },
   favoriteStudents: {
     addContact: base_url + 'user/addContact/',

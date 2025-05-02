@@ -124,13 +124,13 @@ const ReceiveBook = () => {
     },
     {
       field: 'title',
-      headerName: 'Payment Type',
+      headerName: 'Subscription Type',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
     },
     {
-      field: 'amount',
-      headerName: 'Amount',
+      field: 'totalAmount',
+      headerName: 'Paid Amount',
       width: 120,
       valueFormatter: ({ value }) => {
         if (value != null) {
@@ -217,7 +217,7 @@ const ReceiveBook = () => {
         const submitResponse = await getApi(`${url.booksubmission.getsubmitedBookinvoice}`);
         const fetchedData = submitResponse?.data?.data?.map((item, index) => {
           const fines = item?.fines || [];
-
+          const totalAmount= (item.amount)*(item.quantity)||0
           return {
             serial: index + 1,
             id: item?._id,
@@ -228,8 +228,9 @@ const ReceiveBook = () => {
             amount: item?.subscriptiontypes?.[0]?.amount || 0,
             quantity: item?.quantity || 0,
             bookIssueDate: formatDate(item?.bookIssueDate),
-            submissionDate: formatDate(item?.submissionDate),
-            fines: fines
+            submissionDate: formatDate(item?.updatedAt),
+            fines: fines,
+            totalAmount:totalAmount,
           };
         });
 

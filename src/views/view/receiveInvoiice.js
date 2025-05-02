@@ -90,7 +90,7 @@ const ReceiveInvoice = () => {
       setDiscount(subscription?.discount || 0);
 
       setIssueDate(formatDate(filteredSubmission?.bookIssueDate));
-      setSubmissionDate(formatDate(filteredSubmission?.submissionDate));
+      setSubmissionDate(formatDate(filteredSubmission?.updatedAt));
     } catch (error) {
       console.error('Error fetching submission data:', error);
     }

@@ -30,7 +30,11 @@ const AddRegister = (props) => {
     email: yup.string().email('Invalid email').required('Email is required'),
     mobile_Number: yup
       .string()
-      .matches(/^[0-9]{10}$/, 'Phone number is invalid')
+      .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
+      .test('not-repeated', 'Phone number is invalid', (value) => {
+        if (!value) return false;
+        return !/^(\d)\1{9}$/.test(value);
+      })
       .required('Phone number is required'),
     select_identity: yup.string().required('Select Identity is required'),
     upload_identity: yup.mixed().required('Select a file to upload')
@@ -197,7 +201,7 @@ const AddRegister = (props) => {
             </Grid>
           </DialogContentText>
           <DialogActions>
-          <Button
+            <Button
               type="submit"
               variant="contained"
               color="primary"

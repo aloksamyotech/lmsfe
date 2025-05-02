@@ -89,7 +89,7 @@ const dashboard = {
         },
         {
           id: 'Receive',
-          title: 'Submmission',
+          title: 'Submission',
           type: 'item',
           url: '/dashboard/Receive',
           breadcrumbs: false
@@ -102,15 +102,6 @@ const dashboard = {
       type: 'item',
       url: '/dashboard/Register',
       icon: icons.IconUserCheck,
-      breadcrumbs: false
-    },
-
-    {
-      id: '04',
-      title: 'Favorite Students',
-      type: 'item',
-      url: '/dashboard/Favorite',
-      icon: icons.IconHeart,
       breadcrumbs: false
     },
     {

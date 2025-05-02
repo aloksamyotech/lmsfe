@@ -163,12 +163,6 @@ const BookInvoice = () => {
               </Typography>
               <Typography variant="body2">{allInvoiceData?.data?.studentId?.email ?? 'N/A'}</Typography>
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" fontWeight="bold">
-                Identity:
-              </Typography>
-              <Typography variant="body2">{allInvoiceData?.data?.studentId?.select_identity ?? 'N/A'}</Typography>
-            </Grid>
           </Grid>
           <Typography variant="h4" mb={3} mt={3}>
             Book Information

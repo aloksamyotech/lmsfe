@@ -32,8 +32,24 @@ const PolicyManagement = () => {
     {
       field: 'vendorName',
       headerName: 'Vendor Name',
-      flex: 1
+      flex: 1,
+      renderCell: (params) => {
+        return (
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={() => handleView(params.row)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') handleView(params.row);
+            }}
+            style={{ cursor: 'pointer', color: '#1976d2', textDecoration: 'underline' }}
+          >
+            {params.value}
+          </span>
+        );
+      }
     },
+    
     {
       field: 'companyName',
       headerName: 'Company Name',
@@ -71,7 +87,9 @@ const PolicyManagement = () => {
     event.preventDefault();
   };
   const [studentId, setStudentId] = useState(null);
-
+  const handleView = (row) => {
+      window.location.href = `/dashboard/viewVender/${row.id}`;
+    };
   useEffect(() => {
     const url = window.location.href;
     const parts = url.split('/');

@@ -66,6 +66,7 @@ const AddPurchaseBook = (props) => {
 
         toast.success('Purchase Book added successfully');
         fetchData();
+        setIsloading(false);
         handleClose();
       } catch (error) {
         toast.error(error?.response?.data?.message);
@@ -137,53 +138,52 @@ const AddPurchaseBook = (props) => {
         <DialogContent dividers>
           <form onSubmit={formik.handleSubmit}>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-              <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-                <Grid item xs={12} sm={5} md={5}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
                   <FormLabel>Books</FormLabel>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      id="bookId"
-                      name="bookId"
-                      size="small"
-                      value={bookData.find((book) => book._id === formik.values.bookId) || null}
-                      onChange={(event, newValue) => formik.setFieldValue('bookId', newValue ? newValue._id : '')}
-                      options={bookData}
-                      getOptionLabel={(option) => option.bookName}
-                      isOptionEqualToValue={(option, value) => option._id === value._id}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          error={formik.touched.bookId && Boolean(formik.errors.bookId)}
-                          helperText={formik.touched.bookId && formik.errors.bookId}
-                        />
-                      )}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={5} md={5}>
-                  <FormLabel>Vendor</FormLabel>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      id="vendorId"
-                      name="vendorId"
-                      size="small"
-                      value={studentData.find((item) => item._id === formik.values.vendorId) || null}
-                      onChange={(event, newValue) => formik.setFieldValue('vendorId', newValue?._id || '')}
-                      options={studentData}
-                      getOptionLabel={(option) => option.vendorName}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          error={formik.touched.vendorId && Boolean(formik.errors.vendorId)}
-                          helperText={formik.touched.vendorId && formik.errors.vendorId}
-                        />
-                      )}
-                      isOptionEqualToValue={(option, value) => option._id === value}
-                    />
-                  </FormControl>
+                  <Autocomplete
+                    id="bookId"
+                    name="bookId"
+                    size="small"
+                    fullWidth
+                    value={bookData.find((book) => book._id === formik.values.bookId) || null}
+                    onChange={(event, newValue) => formik.setFieldValue('bookId', newValue ? newValue._id : '')}
+                    options={bookData}
+                    getOptionLabel={(option) => option.bookName}
+                    isOptionEqualToValue={(option, value) => option._id === value._id}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        error={formik.touched.bookId && Boolean(formik.errors.bookId)}
+                        helperText={formik.touched.bookId && formik.errors.bookId}
+                      />
+                    )}
+                  />
                 </Grid>
 
-                <Grid item xs={12} sm={5} md={5}>
+                <Grid item xs={12} sm={6}>
+                  <FormLabel>Vendor</FormLabel>
+                  <Autocomplete
+                    id="vendorId"
+                    name="vendorId"
+                    size="small"
+                    fullWidth
+                    value={studentData.find((item) => item._id === formik.values.vendorId) || null}
+                    onChange={(event, newValue) => formik.setFieldValue('vendorId', newValue ? newValue._id : '')}
+                    options={studentData}
+                    getOptionLabel={(option) => option.vendorName}
+                    isOptionEqualToValue={(option, value) => option._id === value}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        error={formik.touched.vendorId && Boolean(formik.errors.vendorId)}
+                        helperText={formik.touched.vendorId && formik.errors.vendorId}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
                   <FormLabel>Date</FormLabel>
                   <TextField
                     name="bookIssueDate"
@@ -192,15 +192,10 @@ const AddPurchaseBook = (props) => {
                     fullWidth
                     value={formik.values.bookIssueDate}
                     onChange={formik.handleChange}
-                    inputProps={{
-                      min: new Date().toISOString().slice(0, 10),
-                      readOnly: true
-
-                    }}
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={5} md={5}>
+                <Grid item xs={12} sm={6}>
                   <FormLabel>Total Quantity</FormLabel>
                   <TextField
                     id="quantity"
@@ -214,7 +209,8 @@ const AddPurchaseBook = (props) => {
                     inputProps={{ maxLength: 3 }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={5} md={5}>
+
+                <Grid item xs={12} sm={6}>
                   <FormLabel>Price Per Book</FormLabel>
                   <TextField
                     id="price"
@@ -229,7 +225,7 @@ const AddPurchaseBook = (props) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={5} md={5}>
+                <Grid item xs={12} sm={6}>
                   <FormLabel>Total Amount</FormLabel>
                   <TextField
                     id="totalPrice"
@@ -244,14 +240,14 @@ const AddPurchaseBook = (props) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={12}>
+                <Grid item xs={12}>
                   <FormLabel>Comment</FormLabel>
                   <TextField
                     id="bookComment"
                     name="bookComment"
                     size="small"
                     multiline
-                    rows={5}
+                    rows={4}
                     fullWidth
                     value={formik.values.bookComment}
                     onChange={formik.handleChange}
@@ -261,11 +257,11 @@ const AddPurchaseBook = (props) => {
                 </Grid>
               </Grid>
             </DialogContentText>
+
             <DialogActions>
               <Button
                 type="submit"
                 variant="contained"
-                onClick={formik.handleSubmit}
                 color="secondary"
                 disabled={isloading}
                 style={{

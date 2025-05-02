@@ -515,7 +515,6 @@ const EmailTemplates = () => {
           </CardContent>
         </Card>
 
-        {/* Book Receive */}
         <Card
           sx={{
             width: { xs: '100%', sm: '48%', md: '22%' },
