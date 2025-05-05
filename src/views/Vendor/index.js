@@ -5,7 +5,7 @@ import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
 import AddLead from './vendor.js';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -23,6 +23,9 @@ const PolicyManagement = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
+ 
   const columns = [
     {
       field: 'sNo',
@@ -86,10 +89,10 @@ const PolicyManagement = () => {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
   };
-  const [studentId, setStudentId] = useState(null);
   const handleView = (row) => {
-      window.location.href = `/dashboard/viewVender/${row.id}`;
-    };
+    navigate(`/dashboard/viewVender/${row.id}`);
+  };
+  const [studentId, setStudentId] = useState(null);
   useEffect(() => {
     const url = window.location.href;
     const parts = url.split('/');
@@ -136,8 +139,18 @@ const PolicyManagement = () => {
     setErrors({});
     const newErrors = {};
 
-    if (!editData.vendorName) newErrors.vendorName = 'Vendor Name is required';
-    if (!editData.companyName) newErrors.companyName = 'Company Name is required';
+    if (!editData.vendorName) {
+      newErrors.vendorName = 'Vendor Name is required';
+    } else if (editData.vendorName.length < 3) {
+      newErrors.vendorName = 'Vendor Name must be at least 3 characters';
+    }
+    
+    if (!editData.companyName) {
+      newErrors.companyName = 'Company Name is required';
+    } else if (editData.companyName.length < 3) {
+      newErrors.companyName = 'Company Name must be at least 3 characters';
+    }
+    
     if (!editData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
     if (!editData.address) newErrors.address = 'Address is required';
 
@@ -224,7 +237,7 @@ const PolicyManagement = () => {
         {editData && (
           <Dialog open={true} onClose={() => setEditData(null)}>
             <Box p={3}>
-              <Typography variant="h6">Edit Book</Typography>
+              <Typography variant="h6">Edit vender</Typography>
               <TextField
                 label="Vendor Name"
                 value={editData.vendorName}

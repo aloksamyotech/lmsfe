@@ -24,9 +24,19 @@ const AddPolicy = (props) => {
   const todayDate = new Date().toISOString().split('T')[0];
 
   const validationSchema = yup.object({
-    vendorName: yup.string().required('vendor Name is required'),
-    companyName: yup.string().required('Company Name is required'),
-    address: yup.string().required('Address is required'),
+    vendorName: yup
+      .string()
+      .required('vendor Name is required')
+      .min(3, 'Vender Name must be at least 3 characters')
+      .max(30, 'vender Name must be less than or equal to 50 characters'),
+    companyName: yup
+      .string()
+      .required('Company Name is required')
+      .min(3, 'Company Name must be at least 3 characters')
+      .max(30, 'Company Name must be less than or equal to 50 characters'),
+    address: yup.string().required('Address is required')
+      .min(5, 'Address must be at least 3 characters')
+      .max(30, 'Address Name must be less than or equal to 50 characters'),
     phoneNumber: yup
       .string()
       .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
@@ -57,16 +67,24 @@ const AddPolicy = (props) => {
         const response = await postApi(url.vendorManagement.addVender, values);
         toast.success('Vendor details added successfully');
         fetchData();
+        setIsloading(false);
+        formik.resetForm();
         handleClose();
       } catch (error) {
-        console.error('Error submitting form:', error);
-      }
-      formik.resetForm();
-      setIsloading(false);
+        const errorMessage = error?.response?.data?.message;
 
-      handleClose();
+        if (errorMessage === 'Email already exists') {
+          formik.setFieldError('email', 'Email already exists');
+        } else {
+          console.error('Error submitting form:', error);
+          toast.error('Something went wrong');
+        }
+      }
+
+      setIsloading(false);
     }
   });
+
   useEffect(() => {
     if (open) {
       formik.resetForm();
@@ -119,21 +137,6 @@ const AddPolicy = (props) => {
                     inputProps={{ maxLength: 30 }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>Date</FormLabel>
-                  <TextField
-                    name="date"
-                    type="date"
-                    size="small"
-                    fullWidth
-                    value={formik.values.date}
-                    onChange={formik.handleChange}
-                    error={formik.touched.date && Boolean(formik.errors.date)}
-                    helperText={formik.touched.date && formik.errors.date}
-                    inputProps={{ min: todayDate }}
-                  />
-                </Grid>
-
                 <Grid item xs={12} sm={6} md={6}>
                   <FormLabel>Phone Number</FormLabel>
                   <TextField

@@ -17,14 +17,32 @@ import { url } from 'core/url';
 import { getApi, postApi } from 'core/apiClient';
 
 const validationSchema = yup.object({
-  bookName: yup.string().required('Book Name is required').max(50, 'Book Name must be less than or equal to 50 characters'),
-  title: yup.string().required('Title is required').max(50, 'Title must be less than or equal to 50 characters'),
-  author: yup.string().required('Author is required').max(50, 'Author Name must be less than or equal to 50 characters'),
-  publisherName: yup.string().required('Publisher is required'),
+  bookName: yup
+    .string()
+    .required('Book Name is required')
+    .min(3, 'Book Name must be at least 3 characters')
+    .max(30, 'Book Name must be less than or equal to 50 characters'),
+
+  title: yup
+    .string()
+    .required('Title is required')
+    .min(3, 'Title must be at least 3 characters')
+    .max(30, 'Title must be less than or equal to 50 characters'),
+
+  author: yup
+    .string()
+    .required('Author is required')
+    .min(3, 'Author must be at least 3 characters')
+    .max(30, 'Author Name must be less than or equal to 50 characters'),
+
+  publisherName: yup.string().required('Publisher is required').min(3, 'Publisher must be at least 3 characters'),
+
   upload_Book: yup.mixed().required('Book Image is required'),
+
   bookDistribution: yup
     .string()
     .required('Book Description is required')
+    .min(10, 'Description must be at least 10 characters')
     .max(400, 'Description must be less than or equal to 400 characters')
 });
 
@@ -35,7 +53,7 @@ const AddLead = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      bookName: '', 
+      bookName: '',
       title: '',
       author: '',
       bookIssueDate: '',
@@ -69,13 +87,24 @@ const AddLead = (props) => {
         toast.success('Book details added successfully');
         formik.resetForm();
         handleClose();
-        setIsloading(false);
-
       } catch (error) {
         console.error('Error submitting form:', error);
-        toast.error(error);
-        setIsloading(false);
 
+        // Check if it's a known 400 response with a custom message
+        if (error.response && error.response.status === 400) {
+          const errorMessage = error.response.data.message;
+
+          if (errorMessage.includes('already exists')) {
+            formik.setFieldError('bookName', 'Book already exists with this title and author');
+            formik.setFieldError('author', 'Author already has a book with this name');
+          } else {
+            toast.error(errorMessage);
+          }
+        } else {
+          toast.error('Something went wrong. Please try again.');
+        }
+      } finally {
+        setIsloading(false);
       }
     }
   });
@@ -138,7 +167,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.title && Boolean(formik.errors.title)}
                   helperText={formik.touched.title && formik.errors.title}
-                  inputProps={{ maxLength: 30 }}
+                  inputProps={{  maxLength: 30 }}
                 />
               </Grid>
 
@@ -227,7 +256,7 @@ const AddLead = (props) => {
           </DialogContentText>
           <DialogActions>
             <Button type="submit" variant="contained" color="primary" disabled={isloading}>
-            {isloading ? 'Saving...' : 'Save'}
+              {isloading ? 'Saving...' : 'Save'}
             </Button>
             <Button
               onClick={() => {

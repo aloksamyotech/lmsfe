@@ -128,10 +128,22 @@ const Publications = () => {
     setErrors({});
     const newErrors = {};
 
-    if (!editData.publisherName) newErrors.publisherName = 'Publisher Name is required';
-    if (!editData.address) newErrors.address = 'Address is required';
-    if (!editData.description) newErrors.description = 'Description is required';
-
+    if (!editData.publisherName) {
+      newErrors.publisherName = 'Publisher Name is required';
+    } else if (editData.publisherName.length < 3) {
+      newErrors.publisherName = 'Publisher Name must be at least 3 characters';
+    }
+  
+    if (!editData.address) {
+      newErrors.address = 'Address is required';
+    } else if (editData.address.length < 3) {
+      newErrors.address = 'Address must be at least 3 characters';
+    }
+  
+    if (!editData.description) {
+      newErrors.description = 'Description is required';
+    }
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -199,7 +211,7 @@ const Publications = () => {
 
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              New Publication
+              Add New Publication
             </Button>
           </Stack>
         </Box>

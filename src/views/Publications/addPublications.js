@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/prop-types */
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
@@ -26,9 +24,18 @@ const AddPublications = (props) => {
   const [isloading, setIsloading] = useState(false);
 
   const validationSchema = yup.object({
-    publisherName: yup.string().required('Book Title is required'),
+    publisherName: yup
+      .string()
+      .required('Publisher Name is required')
+      .min(3, 'Publisher Name must be at least 3 characters')
+      .max(30, 'Publisher Name must be less than or equal to 50 characters'),
 
-    address: yup.string().required('Address is required'),
+    address: yup
+      .string()
+      .required('Address is required')
+      .min(5, 'Address Name must be at least 5 characters')
+      .max(30, 'Address Name must be less than or equal to 50 characters'),
+
     description: yup.string().required('Description is required')
   });
 
@@ -48,14 +55,21 @@ const AddPublications = (props) => {
         const response = await postApi(url.publications.addPublications, values);
         toast.success('Publications details added successfully');
         fetchData();
+        formik.resetForm();
         handleClose();
       } catch (error) {
-        console.error('Error submitting form:', error);
-      }
-      formik.resetForm();
-      setIsloading(false);
+        const errorMessage = error?.response?.data?.message;
 
-      handleClose();
+        if (errorMessage === 'This already exists') {
+          formik.setFieldTouched('publisherName', true, false);
+          formik.setFieldError('publisherName', 'Name already exists');
+        } else {
+          console.error('Error submitting form:', error);
+          toast.error('Something went wrong');
+        }
+      }
+
+      setIsloading(false);
     }
   });
   useEffect(() => {
@@ -89,10 +103,10 @@ const AddPublications = (props) => {
                     id="publisherName"
                     name="publisherName"
                     size="small"
-                    maxRows={10}
                     fullWidth
                     value={formik.values.publisherName}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}
                     helperText={formik.touched.publisherName && formik.errors.publisherName}
                     inputProps={{ maxLength: 30 }}

@@ -68,13 +68,6 @@ const SubscriptType = () => {
       }
     },
     {
-      field: 'discount',
-      headerName: 'Discount',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center'
-    },
-    {
       field: 'numberOfDays',
 
       align: 'center',
@@ -139,8 +132,12 @@ const SubscriptType = () => {
     setErrors({});
     const newErrors = {};
 
-    if (!editData.title) newErrors.title = 'Title is required';
-    if (!editData.amount) newErrors.amount = 'Amount is required';
+    if (!editData.title) {
+      newErrors.title = 'Title is required';
+    } else if (editData.title.length < 3) {
+      newErrors.title = 'Title must be at least 3 characters';
+    }
+        if (!editData.amount) newErrors.amount = 'Amount is required';
     else if (isNaN(editData.amount) || editData.amount <= 0) newErrors.amount = 'Amount must be a valid positive number';
   
     if (isNaN(editData.discount) || editData.discount < 0) newErrors.discount = 'Discount must be a valid number';
@@ -272,16 +269,6 @@ const SubscriptType = () => {
                 error={!!errors.amount}
                 helperText={errors.amount}
                 inputProps={{ maxLength: 6 }}
-              />
-              <TextField
-                label="Discount"
-                value={editData.discount}
-                onChange={(e) => setEditData({ ...editData, discount: e.target.value })}
-                fullWidth
-                margin="normal"
-                error={!!errors.discount}
-                helperText={errors.discount}
-                inputProps={{ maxLength: 2 }}
               />
               <TextField
                 label="Number Of Days"

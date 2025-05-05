@@ -1,4 +1,6 @@
-const base_url = process.env.REACT_APP_BASE_URL;
+// const base_url = process.env.REACT_APP_BASE_URL;
+const base_url = 'http://localhost:4300/';
+
 export const url = {
   baseurl: {
     baseurl: base_url
@@ -10,7 +12,8 @@ export const url = {
     logo: base_url + 'user/adminGetLogo/',
     login: base_url + 'user/login/',
     updateEmailContorller: base_url + 'user/updateEmailContorller/',
-    updatepassword: base_url + 'user/updatepassword/'
+    updatepassword: base_url + 'user/updatepassword/',
+    emailInfo: base_url + 'user/emailInfo/'
   },
   subscription: {
     Subscription: base_url + 'user/subscriptionType/',
