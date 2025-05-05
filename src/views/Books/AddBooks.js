@@ -90,7 +90,6 @@ const AddLead = (props) => {
       } catch (error) {
         console.error('Error submitting form:', error);
 
-        // Check if it's a known 400 response with a custom message
         if (error.response && error.response.status === 400) {
           const errorMessage = error.response.data.message;
 

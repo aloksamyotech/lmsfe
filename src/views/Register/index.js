@@ -181,7 +181,7 @@ const Register = () => {
       console.error('Error updating Register:', error);
       toast.error('Failed to update register details');
     } finally {
-      setIsloading(false); // Always reset loading state
+      setIsloading(false); 
     }
   };  
   const handleDelete = (id) => {
