@@ -426,28 +426,6 @@ const View = () => {
               </Button>
             </Box>
           )}
-          {/* {tabIndex === 3 && (
-            <Box sx={{ mt: 3 }}>
-              <FormGroup row sx={{ mb: 2, justifyContent: 'space-between' }}>
-                <FormControlLabel
-                  control={<Switch checked={emailPrefs.registrationEmail} onChange={() => handleToggle('registrationEmail')} />}
-                  label="Registration Mail"
-                />
-                <FormControlLabel
-                  control={<Switch checked={emailPrefs.allotmentEmail} onChange={() => handleToggle('allotmentEmail')} />}
-                  label="Book Allotment Mail"
-                />
-                <FormControlLabel
-                  control={<Switch checked={emailPrefs.purchesEmail} onChange={() => handleToggle('purchesEmail')} />}
-                  label="Purchase Mail"
-                />
-                <FormControlLabel
-                  control={<Switch checked={emailPrefs.submissionEmail} onChange={() => handleToggle('submissionEmail')} />}
-                  label="Submission Mail"
-                />
-              </FormGroup>
-            </Box>
-          )} */}
           {tabIndex === 3 && (
              <Box sx={{ mt: 3 }}>
              <FormGroup row sx={{ mb: 2, justifyContent: 'space-between' }}>
@@ -480,7 +458,7 @@ const View = () => {
                  margin="normal"
                  size="small"
                  value={smtpCode}
-                 onChange={(e) => setSmtpCode(e.target.value)}  // Update state on input change
+                 onChange={(e) => setSmtpCode(e.target.value)}  
                />
        
                <TextField
@@ -489,7 +467,7 @@ const View = () => {
                  margin="normal"
                  size="small"
                  value={email}
-                 onChange={(e) => setEmail(e.target.value)}  // Update state on input change
+                 onChange={(e) => setEmail(e.target.value)}  
                />
        
                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
