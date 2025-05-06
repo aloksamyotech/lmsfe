@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
+import { totalSoldQuantity } from 'apis/api.js';
 import { Box, Typography, Grid, Paper } from '@mui/material';
-import { postApi } from 'core/apiClient';
-import { url } from 'core/url';
+import { getUserId } from 'apis/constant.js';
 
 const SoldQuantityDisplay = () => {
   const [soldQuantities, setSoldQuantities] = useState([]);
@@ -28,24 +28,30 @@ const SoldQuantityDisplay = () => {
   const fetchSoldQuantities = async () => {
     setLoading(true);
     try {
+      const userId = getUserId();
       const today = new Date();
       const year = today.getFullYear();
       const currentMonth = today.getMonth();
 
-      const lastThreeMonths = [currentMonth, currentMonth === 0 ? 11 : currentMonth - 1, currentMonth <= 1 ? 10 : currentMonth - 2];
+      const promises = [0, 1, 2].map(async (offset) => {
+        const month = currentMonth - offset >= 0 ? currentMonth - offset : 12 + (currentMonth - offset);
+        const yearToFetch = currentMonth - offset >= 0 ? year : year - 1;
 
-      const response = await postApi(url.allotmentManagement.monthviseData, { year });
-      if (response.data.success) {
-        const result = response.data.data;
+        const response = await totalSoldQuantity({
+          month: month + 1,
+          year: yearToFetch,
+          userId
+        });
 
-        const formattedData = lastThreeMonths.map((month) => ({
+        return {
           month: month,
-          year: month >= currentMonth ? year - 1 : year,
-          quantity: result[month] || 0
-        }));
+          year: yearToFetch,
+          quantity: response?.data?.data?.[month] || 0
+        };
+      });
 
-        setSoldQuantities(formattedData.reverse());
-      }
+      const results = await Promise.all(promises);
+      setSoldQuantities(results.reverse());
     } catch (error) {
       console.error('Error fetching sold quantities:', error);
     } finally {
@@ -122,7 +128,7 @@ const SoldQuantityDisplay = () => {
                         color: '#555'
                       }}
                     >
-                      Books Alloted
+                      Units Sold
                     </Typography>
                   </Box>
                 </Paper>
