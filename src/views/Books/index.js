@@ -163,11 +163,30 @@ const BookManagement = () => {
     setErrors({});
     const newErrors = {};
 
-    if (!editData.bookName) newErrors.bookName = 'Book Name is required';
-    if (!editData.title) newErrors.title = 'Book Title is required';
-    if (!editData.publisherName) newErrors.publisherName = 'Publisher Name is required';
-    if (!editData.author) newErrors.author = 'Author Name is required';
-
+    if (!editData.bookName) {
+      newErrors.bookName = 'Book Name is required';
+    } else if (editData.bookName.length < 3) {
+      newErrors.bookName = 'Book Name must be at least 3 characters';
+    }
+    
+    if (!editData.title) {
+      newErrors.title = 'Book Title is required';
+    } else if (editData.title.length < 3) {
+      newErrors.title = 'Book Title must be at least 3 characters';
+    }
+    
+    if (!editData.publisherName) {
+      newErrors.publisherName = 'Publisher Name is required';
+    } else if (editData.publisherName.length < 3) {
+      newErrors.publisherName = 'Publisher Name must be at least 3 characters';
+    }
+    
+    if (!editData.author) {
+      newErrors.author = 'Author Name is required';
+    } else if (editData.author.length < 3) {
+      newErrors.author = 'Author Name must be at least 3 characters';
+    }
+    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;

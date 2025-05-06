@@ -28,6 +28,7 @@ import Google from 'assets/images/icons/social-google.svg';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
+import { color } from '@mui/system';
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
@@ -151,18 +152,19 @@ const FirebaseLogin = ({ ...others }) => {
                 <FormHelperText id="standard-weight-helper-text-password-login"> </FormHelperText>
               )}
             </FormControl>
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-              <Button
-                variant="outlined"
-                color="secondary"
+            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <Typography
+                variant="body2"
+                color="primary"
+                sx={{ cursor: 'pointer', color: 'black' }}
                 onClick={() => {
                   setFieldValue('email', 'admin@gmail.com');
                   setFieldValue('password', 'admin123');
-                  handleSubmit;
+                  handleSubmit();
                 }}
               >
-                Admin Login
-              </Button>
+                User Credentials
+              </Typography>
             </Box>
 
             {errors.submit && (
@@ -170,19 +172,25 @@ const FirebaseLogin = ({ ...others }) => {
                 <FormHelperText error>{errors.submit}</FormHelperText>
               </Box>
             )}
-
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <AnimateButton>
                 <Button
                   disableElevation
                   disabled={isSubmitting}
-                  size="small"
+                  size="large"
                   type="submit"
                   variant="contained"
-                  color="primary"
-                  sx={{ width: '90px', borderRadius: '10px' }}
+                  color="secondary"
+                  sx={{
+                    background: 'linear-gradient(45deg, #441572, #7c4bad)',
+                    borderRadius: '50px',
+                    '&:hover': {
+                      background: 'linear-gradient(to right, #4b6cb7, #182848)',
+                      boxShadow: '2'
+                    }
+                  }}
                 >
-                  Sign in
+                  {isSubmitting ? 'Logging in...' : 'Sign in'}
                 </Button>
               </AnimateButton>
             </Box>

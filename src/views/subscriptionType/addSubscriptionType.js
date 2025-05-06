@@ -32,11 +32,6 @@ const AddSubscription = (props) => {
       .required('Number Of Days is required')
       .positive('Number Of Days must be a positive number')
       .typeError('Number Of Days must be a valid number'),
-    discount: Yup.number()
-      .required('Discount is required')
-      .min(0, 'Discount must be at least 0')
-      .max(100, 'Discount cannot be more than 100')
-      .typeError('Discount must be a valid number'),
     desc: Yup.string().max(500, 'Comment cannot exceed 500 characters').required('Discription  is required')
   });
 
@@ -44,7 +39,6 @@ const AddSubscription = (props) => {
     initialValues: {
       title: '',
       amount: '',
-      discount: '',
       desc: '',
       numberOfDays: ''
     },
@@ -53,18 +47,26 @@ const AddSubscription = (props) => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        SetIsloading(true);
         const response = await postApi(url.subscription.Subscription, values);
         toast.success('Subscription Type details added successfully');
         fetchData();
+        formik.resetForm();
         handleClose();
       } catch (error) {
-        console.error('Error submitting form:', error);
+        const errorMessage = error?.response?.data?.message;
+
+        if (errorMessage === 'Title already exists') {
+          formik.setFieldTouched('title', true, false);
+          formik.setFieldError('title', 'Title already exists');
+        } else {
+          console.error('Error submitting form:', error);
+          toast.error('Something went wrong');
+        }
       }
+
       SetIsloading(false);
-      formik.resetForm();
-      handleClose();
     }
+
   });
   useEffect(() => {
     if (open) {
@@ -113,21 +115,6 @@ const AddSubscription = (props) => {
                   error={formik.touched.amount && Boolean(formik.errors.amount)}
                   helperText={formik.touched.amount && formik.errors.amount}
                   inputProps={{ maxLength: 6 }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <FormLabel>Discount</FormLabel>
-                <TextField
-                  id="discount"
-                  name="discount"
-                  size="small"
-                  fullWidth
-                  value={formik.values.discount}
-                  onChange={formik.handleChange}
-                  error={formik.touched.discount && Boolean(formik.errors.discount)}
-                  helperText={formik.touched.discount && formik.errors.discount}
-                  inputProps={{ maxLength: 2 }}
                 />
               </Grid>
 

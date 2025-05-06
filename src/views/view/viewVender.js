@@ -39,7 +39,7 @@ const VendorView = () => {
             bookName: item.bookDetails?.bookName || 'N/A',
             price: item.price,
             quantity: item.quantity,
-            bookIssueDate: item.bookIssueDate?.split('T')[0],
+            bookIssueDate: item.bookIssueDate ? new Date(item.bookIssueDate).toLocaleDateString('en-GB') : '',
             totalAmount: item.price * item.quantity
           }))
         );

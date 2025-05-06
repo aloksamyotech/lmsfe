@@ -26,7 +26,11 @@ const AddRegister = (props) => {
   const todayDate = new Date().toISOString().split('T')[0];
 
   const validationSchema = yup.object({
-    student_Name: yup.string().required('Student Name is required'),
+    student_Name: yup
+      .string()
+      .required('Student Name is required')
+      .min(3, 'Student Name must be at least 3 characters')
+      .max(30, 'Student Name must be less than or equal to 50 characters'),
     email: yup.string().email('Invalid email').required('Email is required'),
     mobile_Number: yup
       .string()
@@ -51,7 +55,6 @@ const AddRegister = (props) => {
       register_Date: todayDate
     },
     validationSchema,
-
     onSubmit: async (values) => {
       setIsloading(true);
 
@@ -64,24 +67,33 @@ const AddRegister = (props) => {
       formData.append('upload_identity', values.upload_identity);
       formData.append('register_Date', values.register_Date);
       formData.append('adminId', adminId);
+
       try {
         const response = await postApi(url.studentRegister.addRegister, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
+
         toast.success('Register details added successfully');
         fetchData();
-        setIsloading(false);
-
-        handleClose();
-
         formik.resetForm();
+        handleClose();
       } catch (error) {
-        console.error('Error submitting form:', error);
-        toast.error(error);
-        setIsloading(false);
+        const errorMessage = error?.response?.data?.message;
+
+        if (errorMessage && errorMessage.toLowerCase().includes('email')) {
+          if (errorMessage && errorMessage.toLowerCase().includes('email')) {
+            formik.setFieldTouched('email', true, false);
+            formik.setFieldError('email', 'Email already exists');
+          }
+        } else {
+          toast.error('Something went wrong');
+          console.error('Error submitting form:', error);
+        }
       }
+
+      setIsloading(false);
     }
   });
   const handleFileChange = (event) => {
@@ -134,9 +146,9 @@ const AddRegister = (props) => {
                   fullWidth
                   value={formik.values.email}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
-                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>

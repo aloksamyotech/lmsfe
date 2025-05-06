@@ -333,7 +333,7 @@ const View = () => {
                   <strong>Phone Number -: {allData?.user?.mobile_Number}</strong>
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
-                  <strong>Register Date -: {formatDate(allData?.user?.register_Date)}</strong>
+                  <strong>Registration Date -: {formatDate(allData?.user?.register_Date)}</strong>
                 </Typography>
               </Box>
             </Box>

@@ -63,20 +63,16 @@ const Register = () => {
               cursor: 'pointer',
               display: 'flex',
               flexDirection: 'column',
-              outline: 'none',
+              outline: 'none'
             }}
           >
-            <div style={{ fontWeight: 'bold', textTransform: 'capitalize' }}>
-              {student_Name}
-            </div>
-            <div style={{ fontSize: '0.85em', color: '#555' }}>
-              {email}
-            </div>
+            <div style={{ fontWeight: 'bold', textTransform: 'capitalize' }}>{student_Name}</div>
+            <div style={{ fontSize: '0.85em', color: '#555' }}>{email}</div>
           </div>
         );
       }
-    },    
-    
+    },
+
     {
       field: 'mobile_Number',
       headerName: 'Mobile Number',
@@ -84,7 +80,7 @@ const Register = () => {
     },
     {
       field: 'register_Date',
-      headerName: 'Register Date',
+      headerName: 'Registration  Date',
       flex: 1
     },
     {
@@ -96,13 +92,13 @@ const Register = () => {
       renderCell: (params) => {
         return (
           <Stack direction="row" spacing={1}>
-            <IconButton  color="secondary"onClick={() => handleView(params.row)}>
+            <IconButton color="secondary" onClick={() => handleView(params.row)}>
               <VisibilityIcon />
             </IconButton>
-            <IconButton  color="primary" onClick={() => handleEdit(params.row)}>
+            <IconButton color="primary" onClick={() => handleEdit(params.row)}>
               <EditIcon />
             </IconButton>
-            <IconButton  color="secondary" onClick={() => handleDelete(params.row.id)}>
+            <IconButton color="secondary" onClick={() => handleDelete(params.row.id)}>
               <DeleteIcon />
             </IconButton>
           </Stack>
@@ -148,27 +144,46 @@ const Register = () => {
     setIsloading(true);
     setErrors({});
     const newErrors = {};
-
-    if (!editData.email) newErrors.email = 'Email is required';
-    if (!editData.student_Name) newErrors.student_Name = 'Student Name is required';
-    if (!editData.mobile_Number) newErrors.mobile_Number = 'Mobile Numberis required';
-
+  
+    if (!editData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editData.email)) {
+      newErrors.email = 'Enter a valid email address';
+    }
+  
+    if (!editData.student_Name) {
+      newErrors.student_Name = 'Student Name is required';
+    } else if (editData.student_Name.length < 3) {
+      newErrors.student_Name = 'Student Name must be at least 3 characters';
+    }
+  
+    if (!editData.mobile_Number) {
+      newErrors.mobile_Number = 'Mobile Number is required';
+    }
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setIsloading(false); 
       return;
     }
+  
     try {
       const response = await updateApi(`${url.studentRegister.editRegister}${editData.id}`, editData);
       const updatedRegister = response.data;
-      setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
+      setData((prevData) =>
+        prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item))
+      );
       setEditData(null);
       fetchData();
       setOpenBulkUploadDialog(false);
-      toast.success('Register details Edit successfully');
+      toast.success('Register details updated successfully');
     } catch (error) {
       console.error('Error updating Register:', error);
+      toast.error('Failed to update register details');
+    } finally {
+      setIsloading(false); 
     }
-  };
+  };  
   const handleDelete = (id) => {
     setBookToDelete(id);
     setOpenDeleteDialog(true);
@@ -273,7 +288,7 @@ const Register = () => {
               <Typography sx={{ fontSize: '16px' }}>Bulk Upload</Typography>
             </Button>
             <Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              <Typography sx={{ fontSize: '14px' }}>Register Student</Typography>
+              <Typography sx={{ fontSize: '16px' }}>Add Student</Typography>
             </Button>
           </Stack>
         </Box>
@@ -301,7 +316,18 @@ const Register = () => {
         {editData && (
           <Dialog open={true} onClose={() => setEditData(null)}>
             <Box p={3}>
-              <Typography variant="h6">Edit Register</Typography>
+              <Typography variant="h6">Edit Student</Typography>
+              <IconButton
+                onClick={() => setEditData(null)}
+                sx={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  color: (theme) => theme.palette.grey[500]
+                }}
+              >
+                <ClearIcon />
+              </IconButton>
               <TextField
                 label=" Email"
                 value={editData.email}
@@ -374,7 +400,7 @@ const Register = () => {
             </Stack>
           </Box>
         </Dialog>
-         <Dialog open={openBulkUploadDialog} onClose={() => setOpenBulkUploadDialog(false)}>
+        <Dialog open={openBulkUploadDialog} onClose={() => setOpenBulkUploadDialog(false)}>
           <Box p={3} width={400}>
             <ClearIcon onClick={() => setOpenBulkUploadDialog(false)} style={{ cursor: 'pointer', float: 'right' }} />
 
@@ -390,7 +416,7 @@ const Register = () => {
                   link.download = 'SampleFile.xlsx';
                   link.click();
                 }}
-                sx={{ mr: '11px' ,mt:'10px'}}
+                sx={{ mr: '11px', mt: '10px' }}
               >
                 <Typography fontSize="13px">Download Sample File</Typography>
               </Button>
@@ -400,7 +426,7 @@ const Register = () => {
 
             <Box display="flex" justifyContent="right" gap={2}>
               <Button variant="contained" color="primary" onClick={handleBulkUpload} disabled={isloading}>
-                Upload 
+                Upload
               </Button>
             </Box>
           </Box>

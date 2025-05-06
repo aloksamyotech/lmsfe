@@ -26,7 +26,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
-import { getApi, updateApi } from 'core/apiClient';
+import { getApi, updateApi,updateApiPatch } from 'core/apiClient';
 import Logo from 'ui-component/Logo';
 import { width } from '@mui/system';
 
@@ -37,6 +37,29 @@ const View = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [smtpCode, setSmtpCode] = useState('');
+  const [email, setEmail] = useState('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const user = JSON.parse(localStorage.getItem('user'));
+    const adminId = user?._id;
+    if (!smtpCode || !email || !adminId) {
+      alert('SMTP Code, Email, and Admin ID are required!');
+      return;
+    }
+   
+    try {
+      const response = await updateApiPatch(`${url.admin.emailInfo}`, { 
+        smtpCode,
+        email,
+        adminId
+      });      
+      toast.success('Email settings updated successfully');
+    } catch (error) {
+      toast.error('There was an error updating email settings.');
+    }
+  };
+
   const [formData, setFormData] = useState({
     student_Name: '',
     mobile_Number: '',
@@ -221,7 +244,7 @@ const View = () => {
       >
         <Breadcrumbs separator="/" aria-label="breadcrumb">
           <MuiLink component={Link} to="/dashboard/default" color="inherit">
-          <HomeIcon sx={{ color: '#5e35b1' }} />
+            <HomeIcon sx={{ color: '#5e35b1' }} />
           </MuiLink>
           <MuiLink component={Link} to="/dashboard/profile" color="inherit" underline="none">
             Admin Profile
@@ -240,9 +263,9 @@ const View = () => {
       >
         <Tabs value={tabIndex} onChange={handleTabChange}>
           <Tab label="Admin Profile" />
+          <Tab label="Update Logo" />
           <Tab label="Update Password" />
           <Tab label="Manage Emails" />
-          <Tab label="Update Logo" />
         </Tabs>
       </Box>
 
@@ -317,62 +340,7 @@ const View = () => {
               </Button>
             </>
           )}
-
           {tabIndex === 1 && (
-            <Box sx={{ mt: 3 }}>
-              <TextField
-                fullWidth
-                label="Old Password"
-                type="password"
-                value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="New Password"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="Confirm New Password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-              <Button variant="contained" onClick={handlePassword} color="primary">
-                Change Password
-              </Button>
-            </Box>
-          )}
-          {tabIndex === 2 && (
-            <Box sx={{ mt: 3 }}>
-              <FormGroup row sx={{ mb: 2, justifyContent: 'space-between' }}>
-                <FormControlLabel
-                  control={<Switch checked={emailPrefs.registrationEmail} onChange={() => handleToggle('registrationEmail')} />}
-                  label="Registration Mail"
-                />
-                <FormControlLabel
-                  control={<Switch checked={emailPrefs.allotmentEmail} onChange={() => handleToggle('allotmentEmail')} />}
-                  label="Book Allotment Mail"
-                />
-                <FormControlLabel
-                  control={<Switch checked={emailPrefs.purchesEmail} onChange={() => handleToggle('purchesEmail')} />}
-                  label="Purchase Mail"
-                />
-                <FormControlLabel
-                  control={<Switch checked={emailPrefs.submissionEmail} onChange={() => handleToggle('submissionEmail')} />}
-                  label="Submission Mail"
-                />
-              </FormGroup>
-            </Box>
-          )}
-
-          {tabIndex === 3 && (
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={6}>
@@ -426,6 +394,88 @@ const View = () => {
                 </Grid>
               </Grid>
             </Box>
+          )}
+          {tabIndex === 2 && (
+            <Box sx={{ mt: 3 }}>
+              <TextField
+                fullWidth
+                label="Old Password"
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="New Password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="Confirm New Password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <Button variant="contained" onClick={handlePassword} color="primary">
+                Change Password
+              </Button>
+            </Box>
+          )}
+          {tabIndex === 3 && (
+             <Box sx={{ mt: 3 }}>
+             <FormGroup row sx={{ mb: 2, justifyContent: 'space-between' }}>
+               <FormControlLabel
+                 control={<Switch checked={!!emailPrefs?.registrationEmail} onChange={() => handleToggle('registrationEmail')} />}
+                 label="Registration Mail"
+               />
+               <FormControlLabel
+                 control={<Switch checked={!!emailPrefs?.allotmentEmail} onChange={() => handleToggle('allotmentEmail')} />}
+                 label="Book Allotment Mail"
+               />
+               <FormControlLabel
+                 control={<Switch checked={!!emailPrefs?.purchesEmail} onChange={() => handleToggle('purchesEmail')} />}
+                 label="Purchase Mail"
+               />
+               <FormControlLabel
+                 control={<Switch checked={!!emailPrefs?.submissionEmail} onChange={() => handleToggle('submissionEmail')} />}
+                 label="Submission Mail"
+               />
+             </FormGroup>
+       
+             <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+               Update Mail Settings
+             </Typography>
+       
+             <Box sx={{ maxWidth: 400, backgroundColor: '#f9f9f9', p: 2, borderRadius: 2, boxShadow: 1 }}>
+               <TextField
+                 label="SMTP Code"
+                 fullWidth
+                 margin="normal"
+                 size="small"
+                 value={smtpCode}
+                 onChange={(e) => setSmtpCode(e.target.value)}  
+               />
+       
+               <TextField
+                 label="Email"
+                 fullWidth
+                 margin="normal"
+                 size="small"
+                 value={email}
+                 onChange={(e) => setEmail(e.target.value)}  
+               />
+       
+               <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
+                 Update
+               </Button>
+             </Box>
+           </Box>
+         
           )}
         </Paper>
       </Container>

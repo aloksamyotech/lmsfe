@@ -12,7 +12,7 @@ const Login = () => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <AuthWrapper1>
-      <Grid container sx={{ height: '100vh', backgroundColor: '#441572' }}>
+      <Grid container sx={{ minHeight: '100vh', backgroundColor: '#441572' }}>
         <Grid
           item
           xs={12}
@@ -20,8 +20,7 @@ const Login = () => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#4b8bc0 '
+            justifyContent: 'center'
           }}
         >
           <AuthCardWrapper
@@ -46,13 +45,15 @@ const Login = () => {
                 >
                   <Logo />
                 </Box>
-              </Grid>
+              </Grid>{' '}
               <Grid item xs={12} sx={{ marginTop: '-20px' }}>
                 <Stack alignItems="center">
                   <Typography variant="h3" sx={{ fontWeight: 700, textAlign: 'center', color: '#240046' }}>
                     Welcome to Library Management System
                   </Typography>
-                  <Typography textAlign="center" variant="body2" sx={{ color: 'black' }}></Typography>
+                  <Typography textAlign="center" variant="body2" sx={{ color: 'black' }}>
+                    Login to use the platform
+                  </Typography>
                 </Stack>
               </Grid>
               <Grid item xs={12}>
@@ -63,7 +64,7 @@ const Login = () => {
               </Grid>
             </Grid>
           </AuthCardWrapper>
-        </Grid>
+        </Grid>{' '}
         <Grid
           item
           xs={12}
@@ -81,9 +82,9 @@ const Login = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              backgroundColor: '#2F124C',
               padding: '4px',
-              flexDirection: 'column',
-              backgroundColor: '#4b8bc0 '
+              flexDirection: 'column'
             }}
           >
             <Box
@@ -94,8 +95,7 @@ const Login = () => {
                 maxWidth: '60%',
                 maxHeight: '60%',
                 objectFit: 'contain',
-                boxShadow: theme.shadows[3],
-                borderRadius: 2
+                borderRadius: '20px'
               }}
             />
             <Typography
@@ -104,12 +104,12 @@ const Login = () => {
                 color: 'white',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                marginTop: '3%'
+                marginTop: '16px'
               }}
             >
               Library Management System <br />
+              <span style={{ fontSize: '12px' }}>Manage Books, Members, and More — All in One Place.</span>
             </Typography>
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center', marginTop: '1%' }}>Manage Books, Members, and More — All in One Place.</Typography>
           </Box>
         </Grid>
       </Grid>

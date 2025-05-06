@@ -58,6 +58,12 @@ const CartSummary = ({ summaryData }) => {
       }
     } catch (error) {
       console.error('Error while allotting books:', error);
+
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Something went wrong while allotting books.');
+      }
     }
   };
   const formattedTotalAmount = !isNaN(totalAmount) ? totalAmount.toFixed(2) : '0.00';
@@ -130,7 +136,8 @@ const CartSummary = ({ summaryData }) => {
           paddingTop: 2
         }}
       >
-        Total Amount: {currencySymbol}{totalAmount.toFixed(2)}
+        Total Amount: {currencySymbol}
+        {totalAmount.toFixed(2)}
       </Typography>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
