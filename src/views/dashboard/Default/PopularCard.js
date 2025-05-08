@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import { postApi } from 'core/apiClient';
 import { url } from 'core/url';
+import { Padding } from '@mui/icons-material';
 
 const SoldQuantityDisplay = () => {
   const [soldQuantities, setSoldQuantities] = useState([]);
@@ -58,13 +59,13 @@ const SoldQuantityDisplay = () => {
   }, []);
 
   return (
-    <Box sx={{ p: 0.25 }}>
+    <Box>
       {loading ? (
         <Typography variant="h6" sx={{ textAlign: 'center', mt: 3 }}>
           Loading...
         </Typography>
       ) : (
-        <Grid container spacing={2} sx={{ pl: 2 }}>
+        <Grid container spacing={2} sx={{ }}>
           {soldQuantities.map((data, index) => {
             const colors = ['#2196F3', '#673ab7', '#4CAF50'];
 
@@ -76,7 +77,8 @@ const SoldQuantityDisplay = () => {
                     borderRadius: 2,
                     backgroundColor: '#fff',
                     overflow: 'hidden',
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)'
+                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                    PaddingTop:'10px',
                   }}
                 >
                   <Box

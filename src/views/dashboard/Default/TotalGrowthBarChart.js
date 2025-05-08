@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
-import { Grid, MenuItem, TextField, Typography } from '@mui/material';
+import { Grid, MenuItem, TextField, Typography,Box } from '@mui/material';
 
 import Chart from 'react-apexcharts';
 
@@ -11,7 +11,7 @@ import SkeletonTotalGrowthBarChart from 'ui-component/cards/Skeleton/TotalGrowth
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import { url } from 'core/url';
-import { postApi} from 'core/apiClient';
+import { postApi } from 'core/apiClient';
 
 const dataTypes = [
   { value: 'allotment', label: 'Book Allotment' },
@@ -71,64 +71,103 @@ const TotalGrowthBarChart = ({ isLoading }) => {
       ) : (
         <MainCard>
           <Grid container spacing={gridSpacing}>
-            <Grid item xs={12} sx={{width:'620px'}}>
+            <Grid item xs={12} sx={{ width: '620px'}}>
               <Grid container alignItems="center" justifyContent="space-between">
                 <Grid container direction="column" spacing={1}>
                   <Grid item>
-                    <Typography variant="subtitle2">Total {dataTypes.find((d) => d.value === dataType)?.label}</Typography>
+                    <Typography variant="subtitle2" bold>
+                      Total {dataTypes.find((d) => d.value === dataType)?.label}
+                    </Typography>
                   </Grid>
                 </Grid>
 
-                <Grid item>
-                  <TextField
-                    select
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    label="Select Year"
-                    variant="outlined"
-                    size="small"
-                    sx={{ width: 120 }}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                      mt: 2
+                    }}
                   >
-                    {[2022, 2023, 2024, 2025].map((optionYear) => (
-                      <MenuItem key={optionYear} value={optionYear}>
-                        {optionYear}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    <TextField
+                      select
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                      label="Select Year"
+                      variant="outlined"
+                      size="small"
+                      sx={{ width: 120 }}
+                    >
+                      {[2022, 2023, 2024, 2025].map((optionYear) => (
+                        <MenuItem key={optionYear} value={optionYear}>
+                          {optionYear}
+                        </MenuItem>
+                      ))}
+                    </TextField>
 
-                  <TextField
-                    select
-                    value={dataType}
-                    onChange={(e) => setDataType(e.target.value)}
-                    label="Select Data Type"
-                    variant="outlined"
-                    size="small"
-                    sx={{ width: 180, ml: 2 }}
-                  >
-                    {dataTypes.map((item) => (
-                      <MenuItem key={item.value} value={item.value}>
-                        {item.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    <TextField
+                      select
+                      value={dataType}
+                      onChange={(e) => setDataType(e.target.value)}
+                      label="Select Data Type"
+                      variant="outlined"
+                      size="small"
+                      sx={{ width: 180, ml: 2 }}
+                    >
+                      {dataTypes.map((item) => (
+                        <MenuItem key={item.value} value={item.value}>
+                          {item.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Box>
                 </Grid>
               </Grid>
             </Grid>
-
             <Grid item xs={12}>
               <Chart
                 options={{
-                  chart: { id: 'bar-chart', type: 'bar' },
+                  chart: {
+                    id: 'bar-chart',
+                    type: 'bar',
+                    animations: { enabled: false }
+                  },
+                  states: {
+                    normal: {
+                      filter: { type: 'none' }
+                    },
+                    hover: {
+                      filter: { type: 'none' }
+                    },
+                    active: {
+                      filter: { type: 'none' }
+                    }
+                  },
                   xaxis: {
                     categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    labels: { style: { colors: new Array(12).fill(primary) } }
+                    labels: {
+                      style: { colors: new Array(12).fill(primary) }
+                    }
                   },
                   yaxis: {
-                    labels: { style: { colors: [primary] } }
+                    labels: {
+                      style: { colors: [primary] }
+                    }
+                  },
+                  tooltip: {
+                    enabled: false
+                  },
+                  plotOptions: {
+                    bar: {
+                      horizontal: false,
+                      columnWidth: '50%'
+                    }
                   },
                   colors: [primary200],
-                  grid: { borderColor: grey200 },
-                  tooltip: { theme: 'light' },
+                  grid: {
+                    borderColor: grey200
+                  },
                   legend: {
                     labels: { colors: grey500 }
                   }

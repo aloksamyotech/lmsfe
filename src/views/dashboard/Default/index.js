@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-
 import EarningCard from './EarningCard';
 import PopularCard from './PopularCard';
 
@@ -21,9 +20,10 @@ import EarningCardd from './EarningCardd';
 import BookIssued from './BookIssued';
 import ListedCategories from './ListedCategories';
 import App from 'views/Card';
-import TrandingBook from 'views/Card/trandingBook';
+import TrandingBook from 'views/dashboard/Default/trandingBook';
 import Book2 from 'views/Card/book2';
-import NewBook from 'views/Card/trandingBook';
+import NewBook from 'views/dashboard/Default/trandingBook';
+import { margin } from '@mui/system';
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
@@ -58,12 +58,12 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Grid>
-
-      <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={12} md={6} lg={6}>
-            <TotalGrowthBarChart />
-          </Grid>
+      <Grid container spacing={2} sx={{ marginTop: '20px', marginLeft: '10px' }}>
+        <Grid item xs={12} md={6} lg={8}>
+          <TotalGrowthBarChart height={100} />
+        </Grid>
+        <Grid item xs={12} md={6} lg={4}>
+          <TrandingBook isLoading={isLoading} />
         </Grid>
       </Grid>
     </Grid>

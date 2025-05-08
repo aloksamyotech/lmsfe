@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Card, CardContent, CardMedia, Typography, Box, Grid } from '@mui/material';
 import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -11,8 +10,9 @@ const ProfileCard = ({ name, role, img, onClick }) => {
   return (
     <Card
       sx={{
-        width: '60%',
-        height: '80%',
+        width: '100%',
+        maxWidth: '300px',
+        height: '70%',
         marginTop: 4,
         borderRadius: 2,
         overflow: 'hidden',
@@ -30,19 +30,11 @@ const ProfileCard = ({ name, role, img, onClick }) => {
       role="button"
       tabIndex={0}
     >
-      <CardMedia component="img" height="100" padding="5" image={img} alt={`${name} background`} />
-      <CardContent sx={{ textAlign: 'center', marginTop:'-15px' }}>
+      <CardMedia component="img" height="100" image={img} alt={`${name} background`} />
+      <CardContent sx={{ textAlign: 'center', marginTop: '-15px' }}>
         <Typography variant="h6" component="div">
           {name}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {/* {role} */}
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 2 }}>
-          <Facebook sx={{ color: '#3b5998', cursor: 'pointer' }} />
-          <Twitter sx={{ color: '#1da1f2', cursor: 'pointer' }} />
-          <LinkedIn sx={{ color: '#0077b5', cursor: 'pointer' }} />
-        </Box>
       </CardContent>
     </Card>
   );
@@ -76,10 +68,10 @@ const App = () => {
   };
 
   return (
-    <Box sx={{ padding: 2, marginTop: '-1%' }}>
-      <Grid container spacing={4} justifyContent="center">
+    <Box sx={{ p: 2, mt: 2 }}>
+      <Grid container spacing={2} justifyContent="center">
         {data.map((profile, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <ProfileCard {...profile} onClick={() => handleImage(profile)} />
           </Grid>
         ))}
