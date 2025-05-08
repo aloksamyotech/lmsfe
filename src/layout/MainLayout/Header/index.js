@@ -10,6 +10,7 @@ import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
 import ProfileSection from './ProfileSection';
 import NotificationSection from './NotificationSection';
+import { fontSize } from '@mui/system';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -104,10 +105,9 @@ const Header = ({ handleLeftDrawerToggle }) => {
       </Box>
       <IconButton onClick={handleCartClick} sx={{ mr: '80px' }}>
         <Badge badgeContent={getCartLength()} color="secondary" invisible={getCartLength() === 0}>
-          <ShoppingCartIcon />
+          <ShoppingCartIcon sx={{ fontSize: '30px' }} />
         </Badge>
       </IconButton>
-
     </>
   );
 };

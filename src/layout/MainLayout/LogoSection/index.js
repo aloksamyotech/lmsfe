@@ -34,7 +34,7 @@ const LogoSection = () => {
       component={Link}
       to={config.defaultPath}
     >
-      <img alt="Logo" src={logoImg} style={{ height: '80px', width: '120px', marginLeft: '45px', marginTop: '5px' }} />
+      <img alt="Logo" src={logoImg} style={{ height: '80px', width: '210px', marginLeft: '72px', marginTop: '5px' }} />
     </ButtonBase>
   );
 };

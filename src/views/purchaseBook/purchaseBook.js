@@ -16,6 +16,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import { url } from 'core/url';
 import { getApi, postApi } from 'core/apiClient';
+import { fetchCurrency } from 'core/comman';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const validationSchema = yup.object({
   bookId: yup.string().required('Book is required'),
@@ -38,7 +40,15 @@ const AddPurchaseBook = (props) => {
   const [studentData, setStudentData] = useState([]);
   const [publisherData, setPublisherData] = useState([]);
   const [isloading, setIsloading] = useState(false);
+  const [currencySymbol, setCurrencySymbol] = useState('');
 
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
   const formik = useFormik({
     initialValues: {
       bookIssueDate: new Date().toISOString().split('T')[0],
@@ -214,7 +224,6 @@ const AddPurchaseBook = (props) => {
                   <FormLabel>Price Per Book</FormLabel>
                   <TextField
                     id="price"
-                    name="price"
                     size="small"
                     fullWidth
                     value={formik.values.price}
@@ -222,6 +231,9 @@ const AddPurchaseBook = (props) => {
                     error={formik.touched.price && Boolean(formik.errors.price)}
                     helperText={formik.touched.price && formik.errors.price}
                     inputProps={{ maxLength: 5 }}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
+                    }}
                   />
                 </Grid>
 
@@ -237,6 +249,9 @@ const AddPurchaseBook = (props) => {
                     helperText={formik.touched.totalPrice && formik.errors.totalPrice}
                     inputProps={{ maxLength: 5 }}
                     disabled
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
+                    }}
                   />
                 </Grid>
 

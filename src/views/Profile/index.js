@@ -451,7 +451,7 @@ const View = () => {
                Update Mail Settings
              </Typography>
        
-             <Box sx={{ maxWidth: 400, backgroundColor: '#f9f9f9', p: 2, borderRadius: 2, boxShadow: 1 }}>
+             <Box sx={{ maxWidth: 800, backgroundColor: '#f9f9f9', p: 2, borderRadius: 2, boxShadow: 1 }}>
                <TextField
                  label="SMTP Code"
                  fullWidth
