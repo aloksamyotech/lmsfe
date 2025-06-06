@@ -45,13 +45,13 @@ const View = () => {
       [name]: value
     }));
   };
-    useEffect(() => {
-      const getCurrency = async () => {
-        const symbol = await fetchCurrency();
-        setCurrencySymbol(symbol);
-      };
-      getCurrency();
-    }, []);
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
@@ -66,12 +66,12 @@ const View = () => {
     {
       field: 'bookName',
       headerName: 'Book Name',
-      flex: 1,
+      flex: 1
     },
     {
       field: 'quantity',
       headerName: 'Quantity',
-      flex: 0.5,
+      flex: 0.5
     },
     {
       field: 'amount',
@@ -214,7 +214,7 @@ const View = () => {
           item.books?.forEach((book) => {
             const quantity = book.quantity || 1;
             totalQuantity += quantity;
-            const submitCount=book.submitCount||1;
+            const submitCount = book.submitCount || 1;
             submittedQuantity += submitCount;
           });
           totalAllottedCount += totalQuantity;
@@ -266,7 +266,7 @@ const View = () => {
           <MuiLink component={Link} to="/dashboard/default" color="inherit">
             <HomeIcon sx={{ color: '#5e35b1' }} />
           </MuiLink>
-          <MuiLink component={Link} to="/dashboard/call" color="inherit" underline="none">
+          <MuiLink component={Link} to="/dashboard/Register" color="inherit" underline="none">
             Student Managment
           </MuiLink>
           <MuiLink component={Link} to="" color="inherit" underline="none">

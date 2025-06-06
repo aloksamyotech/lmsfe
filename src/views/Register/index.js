@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Stack, Typography, Button, Box, Card, Dialog, TextField, IconButton } from '@mui/material';
+import { Container, Stack, Typography, Button, Box, Card, Dialog, TextField, IconButton, MenuItem } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TableStyle from '../../ui-component/TableStyle';
-import axios from 'axios';
 import AddRegister from './Addregister';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -116,17 +115,19 @@ const Register = () => {
   const fetchData = async () => {
     try {
       const response = await getApi(url.studentRegister.getRegisterManagement);
+
       const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
         id: item._id,
-        student_id: item.student_id,
         student_Name: item.student_Name,
         email: item.email,
         mobile_Number: item.mobile_Number,
         register_Date: formatDate(item.register_Date),
-        favorite: item.favorite || false,
-        subscription: item.subscription || false
+        subscription: item.subscription || false,
+        select_identity: item.select_identity,
+        image: item.upload_identity
       }));
       setData(fetchedData);
+      console.log(fetchedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -144,35 +145,47 @@ const Register = () => {
     setIsloading(true);
     setErrors({});
     const newErrors = {};
-  
+
     if (!editData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editData.email)) {
       newErrors.email = 'Enter a valid email address';
     }
-  
+
     if (!editData.student_Name) {
       newErrors.student_Name = 'Student Name is required';
     } else if (editData.student_Name.length < 3) {
       newErrors.student_Name = 'Student Name must be at least 3 characters';
     }
-  
+
     if (!editData.mobile_Number) {
       newErrors.mobile_Number = 'Mobile Number is required';
     }
-  
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      setIsloading(false); 
+      setIsloading(false);
       return;
     }
-  
+
     try {
-      const response = await updateApi(`${url.studentRegister.editRegister}${editData.id}`, editData);
-      const updatedRegister = response.data;
-      setData((prevData) =>
-        prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item))
-      );
+      const formData = new FormData();
+      formData.append('email', editData.email);
+      formData.append('student_Name', editData.student_Name);
+      formData.append('mobile_Number', editData.mobile_Number);
+      formData.append('select_identity', editData.select_identity);
+      formData.append('register_Date', editData.register_Date);
+      if (editData.upload_identity) {
+        formData.append('upload_identity', editData.upload_identity);
+      }
+
+      const response = updateApi(`${url.studentRegister.editRegister}${editData.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log(response);
+
       setEditData(null);
       fetchData();
       setOpenBulkUploadDialog(false);
@@ -181,9 +194,10 @@ const Register = () => {
       console.error('Error updating Register:', error);
       toast.error('Failed to update register details');
     } finally {
-      setIsloading(false); 
+      setIsloading(false);
     }
-  };  
+  };
+
   const handleDelete = (id) => {
     setBookToDelete(id);
     setOpenDeleteDialog(true);
@@ -211,7 +225,6 @@ const Register = () => {
         const response = await getApi(`${url.allotmentManagement.viewBookAllotment}${id}`);
         const fetchedData = response?.data?.RegisterManagement?.map((item) => ({
           id: item._id,
-          student_id: item.student_id,
           student_Name: item.student_Name,
           email: item.email,
           mobile_Number: item.mobile_Number,
@@ -258,6 +271,22 @@ const Register = () => {
       setIsloading(false);
     }
   };
+  const convertToISODate = (dateStr) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('/');
+    if (parts.length !== 3) return '';
+
+    const [day, month, year] = parts;
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  };
+  const formatDateForBackend = (dateStr) => {
+    if (!dateStr) return '';
+    if (dateStr.includes('-')) return dateStr;
+
+    const [day, month, year] = dateStr.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  };
+
   return (
     <>
       <AddRegister open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
@@ -366,6 +395,42 @@ const Register = () => {
                 error={!!errors.mobile_Number}
                 helperText={errors.mobile_Number}
               />
+              <TextField
+                select
+                label="Select Identity"
+                id="select_identity"
+                name="select_identity"
+                value={editData.select_identity}
+                onChange={(e) => setEditData({ ...editData, select_identity: e.target.value })}
+                fullWidth
+                size="small"
+                margin="normal"
+              >
+                <MenuItem value="Aadhar Card">Aadhar Card</MenuItem>
+                <MenuItem value="Pan Card">Pan Card</MenuItem>
+                <MenuItem value="Voter Id Card">Voter Id Card</MenuItem>
+                <MenuItem value="Driving Licence">Driving Licence</MenuItem>
+              </TextField>
+              <TextField
+                label="Register Date"
+                type="date"
+                value={editData.register_Date || ''}
+                onChange={(e) => setEditData({ ...editData, register_Date: e.target.value })}
+                fullWidth
+                margin="normal"
+                size="small"
+                InputLabelProps={{ shrink: true }}
+              />
+
+              <TextField
+                type="file"
+                onChange={(e) => setEditData({ ...editData, upload_identity: e.target.files[0] })}
+                fullWidth
+                margin="normal"
+                size="small"
+                InputLabelProps={{ shrink: true }}
+              />
+
               <Button
                 onClick={handleSaveEdit}
                 variant="contained"
