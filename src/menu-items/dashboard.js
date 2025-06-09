@@ -19,8 +19,10 @@ import {
   IconUser,
   IconCreditCard,
   IconHeart,
-  IconLogout
+  IconLogout,
+  IconBookmarkPlus
 } from '@tabler/icons';
+import { IconBookmarkFilled } from '@tabler/icons-react';
 
 // constant
 const icons = {
@@ -42,7 +44,8 @@ const icons = {
   IconUser,
   IconCreditCard,
   IconHeart,
-  IconLogout
+  IconLogout,
+  IconBookmarkFilled
 };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
@@ -60,6 +63,14 @@ const dashboard = {
       breadcrumbs: false
     },
     {
+      id: 'book-Allotment',
+      title: 'Books Allotment',
+      type: 'item',
+      url: '/dashboard/bookAllotment',
+      icon: icons.IconBookmarkFilled,
+      breadcrumbs: false
+    },
+    {
       id: '01',
       title: 'Books Management',
       type: 'collapse',
@@ -71,13 +82,6 @@ const dashboard = {
           title: 'Manage Books',
           type: 'item',
           url: '/dashboard/BookManagement',
-          breadcrumbs: false
-        },
-        {
-          id: 'book-Allotment',
-          title: 'Books Allotment',
-          type: 'item',
-          url: '/dashboard/bookAllotment',
           breadcrumbs: false
         },
         {

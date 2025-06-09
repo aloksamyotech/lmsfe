@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField } from '@mui/material';
+import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField, Autocomplete ,Grid} from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
@@ -28,20 +28,33 @@ const BookManagement = () => {
   const [errors, setErrors] = useState({});
   const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
   const [isloading, setIsloading] = useState(false);
+  const [publisherData, setPublisherData] = useState([]);
+
   const XLSX = require('xlsx');
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
   };
   const [studentId, setStudentId] = useState(null);
+  useEffect(() => {
+    const fetchPublisher = async () => {
+      try {
+        const response = await getApi(url.publications.getPublications);
 
+        setPublisherData(response.data.PublicationsManagement);
+      } catch (error) {
+        console.error('Error fetching Publisher:', error);
+      }
+    };
+    fetchPublisher();
+  }, []);
   useEffect(() => {
     const urlWindow = window.location.href;
     const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
     setStudentId(extractedId);
   }, []);
-
+  useEffect(() => {});
   const columns = [
     {
       field: 'sNo',
@@ -51,7 +64,7 @@ const BookManagement = () => {
     {
       field: 'bookName',
       headerName: 'Book Name',
-      flex: 1,
+      flex: 1
     },
     {
       field: 'upload_Book',
@@ -62,23 +75,23 @@ const BookManagement = () => {
         const imageUrl = uploadBook ? `${url.baseurl.baseurl.replace(/\/$/, '')}/${uploadBook.replace(/\\/g, '/')}` : defaultBook;
 
         return (
-          <img 
-            src={imageUrl} 
-            alt="Book" 
+          <img
+            src={imageUrl}
+            alt="Book"
             style={{
               width: '40px',
-              height: '40px',  
-              objectFit: 'cover', 
-              borderRadius: '50%', 
-            }} 
+              height: '40px',
+              objectFit: 'cover',
+              borderRadius: '50%'
+            }}
           />
         );
       }
-    },    
+    },
     {
       field: 'title',
       headerName: 'Book Title',
-      flex: 1,
+      flex: 1
     },
     {
       field: 'publisherName',
@@ -103,15 +116,15 @@ const BookManagement = () => {
           <Typography
             sx={{
               color: quantity === 'Not Available' ? 'red' : 'black',
-              fontWeight: quantity === 'Not Available' ? 'bold' : 'normal',
+              fontWeight: quantity === 'Not Available' ? 'bold' : 'normal'
             }}
           >
             {quantity}
           </Typography>
         );
-      },
+      }
     },
-    
+
     {
       field: 'action',
       headerName: 'Action',
@@ -133,13 +146,15 @@ const BookManagement = () => {
     try {
       const response = await getApi(url.bookManagenent.bookmanagementTable);
       const fetchedData = response?.data?.data?.map((item) => ({
-        id: item._id,
-        bookName: item.bookName,
-        upload_Book: item.upload_Book,
-        title: item.title,
-        publisherName: item.publisherName,
-        author: item.author,
-        quantity: item.bookQuantity > 0 ? item.bookQuantity : 'Not Available'
+        id: item?._id,
+        bookName: item?.bookName,
+        upload_Book: item?.upload_Book,
+        title: item?.title,
+        publisherName: item?.publisher?.publisherName,
+        publisherId: item?.publisher?._id,
+        author: item?.author,
+        quantity: item?.bookQuantity > 0 ? item?.bookQuantity : 'Not Available',
+        bookDistribution: item?.bookDistribution
       }));
       setData(fetchedData);
     } catch (error) {
@@ -150,7 +165,6 @@ const BookManagement = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
@@ -168,39 +182,70 @@ const BookManagement = () => {
     } else if (editData.bookName.length < 3) {
       newErrors.bookName = 'Book Name must be at least 3 characters';
     }
-    
+
     if (!editData.title) {
       newErrors.title = 'Book Title is required';
     } else if (editData.title.length < 3) {
       newErrors.title = 'Book Title must be at least 3 characters';
     }
-    
+
     if (!editData.publisherName) {
       newErrors.publisherName = 'Publisher Name is required';
     } else if (editData.publisherName.length < 3) {
       newErrors.publisherName = 'Publisher Name must be at least 3 characters';
     }
-    
+
     if (!editData.author) {
       newErrors.author = 'Author Name is required';
     } else if (editData.author.length < 3) {
       newErrors.author = 'Author Name must be at least 3 characters';
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
     try {
-      const response = await updateApi(`${url.bookManagenent.editBook}${editData.id}`, editData);
-      const updatedBook = response.data;
-      setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
+      const formData = new FormData();
+
+      formData.append('bookName', editData.bookName);
+      formData.append('title', editData.title);
+      formData.append('author', editData.author);
+      formData.append('description', editData.description || '');
+      formData.append('publisherId', editData.publisherId);
+      formData.append('bookIssueDate', editData.bookIssueDate || '');
+      formData.append('bookDistribution', editData.bookDistribution || '');
+
+      if (editData.upload_Book instanceof File) {
+        formData.append('upload_Book', editData.upload_Book);
+      }
+
+      const response = await updateApi(`${url.bookManagenent.editBook}${editData.id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      const updatedBook = response.data.updatedBook;
+
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === updatedBook._id
+            ? {
+                ...updatedBook,
+                id: updatedBook._id, // 🔴 this is required by DataGrid
+                publisherName: editData.publisherName,
+                publisherId: editData.publisherId,
+                quantity: updatedBook.bookQuantity > 0 ? updatedBook.bookQuantity : 'Not Available'
+              }
+            : item
+        )
+      );
+
       setEditData(null);
-      toast.success('Book details Edit successfully');
+      fetchData();
+      toast.success('Book details updated successfully');
     } catch (error) {
       console.error('Error updating book:', error);
     }
-    fetchData();
   };
 
   const handleDelete = (id) => {
@@ -210,7 +255,6 @@ const BookManagement = () => {
 
   const confirmDelete = async () => {
     try {
-
       await deleteApi(`${url.bookManagenent.delete}${bookToDelete}`);
 
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
@@ -291,10 +335,10 @@ const BookManagement = () => {
           </Breadcrumbs>
           <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenBulkUploadDialog(true)}>
-              <Typography sx={{ fontSize: '16px' }}>Bulk Upload</Typography>              
+              <Typography sx={{ fontSize: '16px' }}>Bulk Upload</Typography>
             </Button>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-            <Typography sx={{ fontSize: '15px' }}>Add New Book</Typography>              
+              <Typography sx={{ fontSize: '15px' }}>Add New Book</Typography>
             </Button>
           </Stack>
         </Box>
@@ -323,55 +367,113 @@ const BookManagement = () => {
 
         {editData && (
           <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3}>
-              <Typography variant="h6">Edit Book</Typography>
-              <TextField
-                label="Book Name"
-                value={editData.bookName}
-                onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
-                fullWidth
-                margin="normal"
-                error={!!errors.bookName}
-                helperText={errors.bookName}
-                inputProps={{ maxLength: 50 }}
-              />
-              <TextField
-                label="Book Title"
-                value={editData.title}
-                onChange={(e) => setEditData({ ...editData, title: e.target.value })}
-                fullWidth
-                margin="normal"
-                error={!!errors.title}
-                helperText={errors.title}
-                inputProps={{ maxLength: 50 }}
-              />
-              <TextField
-                label="Publisher Name"
-                value={editData.publisherName}
-                onChange={(e) => setEditData({ ...editData, publisherName: e.target.value })}
-                fullWidth
-                margin="normal"
-                error={!!errors.publisherName}
-                helperText={errors.publisherName}
-                inputProps={{ maxLength: 50 }}
-              />
-              <TextField
-                label="Author Name"
-                value={editData.author}
-                onChange={(e) => setEditData({ ...editData, author: e.target.value })}
-                fullWidth
-                margin="normal"
-                error={!!errors.author}
-                helperText={errors.author}
-                inputProps={{ maxLength: 50 }}
-              />
+            <Box p={3} sx={{ minWidth: 600 }}>
+              <Typography variant="h6" gutterBottom>
+                Edit Book
+              </Typography>
 
-              <Button onClick={handleSaveEdit} variant="contained" color="primary">
-                Save
-              </Button>
-              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
-                Cancel
-              </Button>
+              {/* Row 1: Book Name, Title, Author */}
+              <Grid container spacing={2}>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Book Name"
+                    value={editData.bookName}
+                    onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
+                    fullWidth
+                    error={!!errors.bookName}
+                    helperText={errors.bookName}
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Book Title"
+                    value={editData.title}
+                    onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+                    fullWidth
+                    error={!!errors.title}
+                    helperText={errors.title}
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Author Name"
+                    value={editData.author}
+                    onChange={(e) => setEditData({ ...editData, author: e.target.value })}
+                    fullWidth
+                    error={!!errors.author}
+                    helperText={errors.author}
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* Row 2: Publisher + Upload */}
+              <Grid container spacing={2} mt={2}>
+                <Grid item xs={6}>
+                  <Autocomplete
+                    options={publisherData || []}
+                    getOptionLabel={(option) => option.publisherName || ''}
+                    value={publisherData.find((pub) => pub._id === editData.publisherId) || null}
+                    onChange={(e, newValue) => {
+                      setEditData({
+                        ...editData,
+                        publisherName: newValue ? newValue.publisherName : '',
+                        publisherId: newValue ? newValue._id : ''
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Publisher"
+                        fullWidth
+                        error={Boolean(errors.publisherId)}
+                        helperText={errors.publisherId}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Upload Book Image
+                  </Typography>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setEditData({ ...editData, upload_Book: e.target.files[0] });
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* Description - Full Width */}
+              <Box mt={2}>
+                <TextField
+                  label="Book Description"
+                  value={editData.bookDistribution || ''}
+                  onChange={(e) => setEditData({ ...editData, bookDistribution: e.target.value })}
+                  fullWidth
+                  multiline
+                  rows={4}
+                  error={!!errors.bookDistribution}
+                  helperText={errors.bookDistribution}
+                  inputProps={{ maxLength: 500 }}
+                />
+              </Box>
+
+              {/* Buttons */}
+              <Box mt={3} display="flex" justifyContent="flex-start">
+                <Button onClick={handleSaveEdit} variant="contained" color="primary">
+                  Save
+                </Button>
+                <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" sx={{ ml: 2 }}>
+                  Cancel
+                </Button>
+              </Box>
             </Box>
           </Dialog>
         )}
@@ -405,7 +507,7 @@ const BookManagement = () => {
                   link.download = 'SampleFile.xlsx';
                   link.click();
                 }}
-                sx={{ mr: '11px' ,mt:'10px'}}
+                sx={{ mr: '11px', mt: '10px' }}
               >
                 <Typography fontSize="13px">Download Sample File</Typography>
               </Button>
@@ -415,7 +517,7 @@ const BookManagement = () => {
 
             <Box display="flex" justifyContent="right" gap={2}>
               <Button variant="contained" color="primary" onClick={handleBulkUpload} disabled={isloading}>
-                Upload 
+                Upload
               </Button>
             </Box>
           </Box>

@@ -65,7 +65,7 @@ const AddRegister = (props) => {
       formData.append('mobile_Number', values.mobile_Number);
       formData.append('select_identity', values.select_identity);
       formData.append('upload_identity', values.upload_identity);
-      formData.append('register_Date', values.register_Date);
+      formData.append('register_Date', values.date);
       formData.append('adminId', adminId);
 
       try {

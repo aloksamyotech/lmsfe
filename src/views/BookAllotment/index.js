@@ -150,11 +150,6 @@ const Allotment = () => {
       console.error('Error fetching data:', error);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-    fetchinvoice();
-  }, []);
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('librarycart')) || [];
     setCartItems(storedCartItems);
@@ -169,6 +164,8 @@ const Allotment = () => {
   useEffect(() => {
     fetchCategory();
     fetchSubscription();
+    fetchData();
+    fetchinvoice();
   }, []);
 
   const handleSearch = (event) => {
@@ -230,22 +227,6 @@ const Allotment = () => {
     }
   ];
 
-  const rows = [
-    {
-      id: 1,
-      studentName: 'John Doe',
-      quantity: 2,
-      books: [
-        { bookName: 'Book A', quantity: 1 },
-        { bookName: 'Book B', quantity: 1 }
-      ]
-    }
-  ];
-
-  const handleClearCart = () => {
-    setCartItems([]);
-  };
-
   const handleTypeChange = (event) => {
     const newType = event.target.value;
     setSubmissionType(newType);
@@ -273,13 +254,6 @@ const Allotment = () => {
   };
 
   const handleSubmitCart = () => {
-    const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
-    if (totalQuantity >= 10) {
-      toast.error('You can only add up to 10 books to your cart.');
-      setOpenModal(false);
-      return;
-    }
-
     if (!submissionDate || !submissionType) {
       toast.error('Please select both submission date and type.');
       return;
@@ -349,7 +323,7 @@ const Allotment = () => {
         author: item.author,
         quantity: item.quantity > 0 ? item.quantity : 'Not Available'
       }));
-      const book = fetchedData.find((item) => item.id === bookId); 
+      const book = fetchedData.find((item) => item.id === bookId);
 
       if (book) {
         return book.quantity;
@@ -363,7 +337,56 @@ const Allotment = () => {
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
   const currentBooks = filteredProducts.slice(indexOfFirstBook, indexOfLastBook);
+  const handleRemoveFromCart = (id, submissionType) => {
+    const updatedCartItems = cartItems.filter((item) => !(item._id === id && item.submissionType === submissionType));
 
+    setCartItems(updatedCartItems);
+    setCartcontextItems(updatedCartItems);
+    localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
+
+    const totalQuantity = updatedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    localStorage.setItem('librarycartCount', totalQuantity);
+  };
+
+  const handleIncreaseQuantity = (id, submissionType) => {
+    const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    if (totalQuantity >= 5) {
+      toast.error('You can only add up to 5 books in your cart!');
+      return;
+    }
+
+    const updatedCartItems = cartItems.map((item) => {
+      if (item._id === id && item.submissionType === submissionType) {
+        if (item.quantity >= item.bookQuantity) {
+          toast.error('Book quantity limit reached or out of stock!');
+          return item;
+        }
+        return { ...item, quantity: item.quantity + 1 };
+      }
+      return item;
+    });
+
+    setCartItems(updatedCartItems);
+    localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
+
+    const newTotalQuantity = updatedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    localStorage.setItem('librarycartCount', newTotalQuantity);
+  };
+
+  const handleDecrementQuantity = (id, submissionType) => {
+    const updatedCartItems = cartItems.map((item) => {
+      if (item._id === id && item.submissionType === submissionType && item.quantity > 1) {
+        return { ...item, quantity: item.quantity - 1 };
+      }
+      return item;
+    });
+
+    setCartItems(updatedCartItems);
+    localStorage.setItem('librarycart', JSON.stringify(updatedCartItems));
+    const totalQuantity = updatedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    localStorage.setItem('librarycartCount', totalQuantity);
+  };
   return (
     <Container maxWidth="xl">
       <Box
@@ -412,105 +435,212 @@ const Allotment = () => {
       </Box>
       <Grid container spacing={0}>
         {' '}
-        <Grid item xs={12} md={9} lg={12}>
-          <Box sx={{ height: 'auto' }}>
-            <Grid container spacing={0}>
-              {' '}
-              {currentBooks.map((product) => (
-                <Grid item xs={12} sm={6} md={2} key={product._id}>
-                  <Card
-                    sx={{
-                      transition: 'box-shadow 0.3s, transform 0.3s',
-                      border: '1px solid #ccc',
-                      height: '25vh',
-                      '&:hover': { transform: 'scale(1.05)', boxShadow: 4 },
-                      cursor: 'pointer',
-                      width: '90%', 
-                      position: 'relative',
-                      margin: '0',
-                      marginBottom:'20px'
-                    }}
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    <CardMedia
-                      component="img"
-                      image={product.upload_Book ? `${url.baseurl.baseurl}${product.upload_Book}` : ''}
+        <Grid container spacing={2}>
+          {/* Books Section */}
+          <Grid item xs={12} md={8}>
+            <Box sx={{ height: 'auto' }}>
+              <Grid container spacing={2}>
+                {currentBooks.map((product) => (
+                  <Grid item xs={12} sm={6} md={3} key={product._id}>
+                    <Card
                       sx={{
-                        objectFit: 'cover',
-                        height: '80px',
-                        padding: '5px',
-                        borderRadius: '10px',
-                        display: product.upload_Book ? 'block' : 'none' 
+                        transition: 'box-shadow 0.3s, transform 0.3s',
+                        border: '1px solid #ccc',
+                        height: '25vh',
+                        '&:hover': { transform: 'scale(1.05)', boxShadow: 4 },
+                        cursor: 'pointer',
+                        width: '90%',
+                        position: 'relative',
+                        marginBottom: '20px'
                       }}
-                    />
-                    {!product.upload_Book && (
-                      <Box
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={product.upload_Book ? `${url.baseurl.baseurl}${product.upload_Book}` : ''}
                         sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
+                          objectFit: 'cover',
                           height: '80px',
-                          backgroundColor: '#f0f0f0'
+                          padding: '5px',
+                          borderRadius: '10px',
+                          display: product.upload_Book ? 'block' : 'none'
                         }}
-                      >
-                        <LibraryBooksIcon sx={{ fontSize: '50px', color: '#757575' }} />
-                      </Box>
-                    )}
-
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontSize: '10px',
-                          marginTop: '7px',
-                          display: 'inline-block'
-                        }}
-                      >
-                        {product.bookName}
-                      </Typography>
-
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center', 
-                          alignItems: 'center', 
-                          height: '100%' 
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
+                      />
+                      {!product.upload_Book && (
+                        <Box
                           sx={{
-                            fontSize: '12px',
-                            color: product.bookQuantity === 0 ? 'red' : 'green',
-                            fontWeight: product.bookQuantity === 0 ? 'bold' : 'normal'
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '80px',
+                            backgroundColor: '#f0f0f0'
                           }}
                         >
-                          {product.bookQuantity === 0 ? 'Out of Stock' : `In Stock: ${product.bookQuantity}`}
-                        </Typography>
-                      </Box>
-                    </Box>
+                          <LibraryBooksIcon sx={{ fontSize: '50px', color: '#757575' }} />
+                        </Box>
+                      )}
 
-                    {product.bookQuantity === 0 && (
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          top: '0',
-                          left: '0',
-                          right: '0',
-                          bottom: '0',
-                          color: 'white',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          borderRadius: '10px'
-                        }}
-                      ></Box>
-                    )}
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontSize: '10px',
+                            marginTop: '7px',
+                            display: 'inline-block'
+                          }}
+                        >
+                          {product.bookName}
+                        </Typography>
+
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '100%'
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: '12px',
+                              color: product.bookQuantity === 0 ? 'red' : 'green',
+                              fontWeight: product.bookQuantity === 0 ? 'bold' : 'normal'
+                            }}
+                          >
+                            {product.bookQuantity === 0 ? 'Out of Stock' : `In Stock: ${product.bookQuantity}`}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {product.bookQuantity === 0 && (
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: '0',
+                            left: '0',
+                            right: '0',
+                            bottom: '0',
+                            color: 'white',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: '10px'
+                          }}
+                        />
+                      )}
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <Box
+              sx={{
+                border: '1px solid #ccc',
+                borderRadius: '10px',
+                padding: 2,
+                // height: '350px',
+                height:'auto',
+                backgroundColor: '#f9f9f9',
+                overflowY: 'auto'
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                Cart Summary
+              </Typography>
+              {cartItems.length > 0 ? (
+                <>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <tbody>
+                      {cartItems.map((item) => (
+                        <tr key={`${item._id}-${item.submissionType}`}>
+                          <td style={{ borderBottom: '1px solid #eee', padding: '8px' }}>{item.bookName}</td>
+                          <td style={{ borderBottom: '1px solid #eee', padding: '8px', textAlign: 'center' }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={() => handleIncreaseQuantity(item._id, item.submissionType)}
+                                sx={{
+                                  minWidth: 30,
+                                  height: 30,
+                                  borderRadius: '50%',
+                                  padding: 0,
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center'
+                                }}
+                                disabled={item.quantity >= item.bookQuantity || cartItems.reduce((acc, i) => acc + i.quantity, 0) >= 5}
+                              >
+                                +
+                              </Button>
+                              <Typography variant="body1" sx={{ mx: 1 }}>
+                                {item.quantity || 0}
+                              </Typography>
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={() => handleDecrementQuantity(item._id, item.submissionType)}
+                                disabled={item.quantity === 1}
+                                sx={{
+                                  minWidth: 30,
+                                  height: 30,
+                                  borderRadius: '50%',
+                                  padding: 0,
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center'
+                                }}
+                              >
+                                -
+                              </Button>
+                            </Box>
+                          </td>
+                          <td style={{ borderBottom: '1px solid #eee', padding: '8px' }}>{item.submissionTypeName}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
+                    Total Items: {cartItems.reduce((total, item) => total + (item.quantity || 0), 0)}
+                  </Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    Total Amount: {currencySymbol}
+                    {cartItems.reduce((total, item) => total + item.amount * item.quantity, 0).toFixed(2)}
+                  </Typography>
+
+                  <hr />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate('/dashboard/cart')}
+                    sx={{
+                      width: '50%',
+                      fontSize: '14px',
+                      padding: '4px',
+                      borderRadius: '8px'
+                    }}
+                  >
+                    Go to checkout
+                  </Button>
+
+                  <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+                    <Typography color="error" fontSize="13px" sx={{ minHeight: '18px' }}>
+                      {cartItems.reduce((acc, i) => acc + i.quantity, 0) >= 5 ? 'You can only add 5 books' : ''}
+                    </Typography>
+                  </Box>
+                </>
+              ) : (
+                <Typography variant="body2" color="textSecondary">
+                  Your cart is empty.
+                </Typography>
+              )}
+            </Box>
+          </Grid>
         </Grid>
       </Grid>
 
@@ -524,7 +654,7 @@ const Allotment = () => {
         }}
       >
         <Pagination
-          count={Math.ceil(filteredProducts.length / booksPerPage)} 
+          count={Math.ceil(filteredProducts.length / booksPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           color="primary"

@@ -35,7 +35,7 @@ const validationSchema = yup.object({
     .min(3, 'Author must be at least 3 characters')
     .max(30, 'Author Name must be less than or equal to 50 characters'),
 
-  publisherName: yup.string().required('Publisher is required').min(3, 'Publisher must be at least 3 characters'),
+  publisher: yup.string().required('Publisher is required').min(3, 'Publisher must be at least 3 characters'),
 
   upload_Book: yup.mixed().required('Book Image is required'),
 
@@ -57,7 +57,7 @@ const AddLead = (props) => {
       title: '',
       author: '',
       bookIssueDate: '',
-      publisherName: '',
+      publisher: '',
       upload_Book: null,
       bookDistribution: ''
     },
@@ -166,7 +166,7 @@ const AddLead = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.title && Boolean(formik.errors.title)}
                   helperText={formik.touched.title && formik.errors.title}
-                  inputProps={{  maxLength: 30 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               </Grid>
 
@@ -188,17 +188,20 @@ const AddLead = (props) => {
                 <FormLabel>Publisher Name</FormLabel>
                 <FormControl fullWidth error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}>
                   <Autocomplete
-                    id="publisherName"
-                    name="publisherName"
+                    id="publisher"
+                    name="publisher"
                     size="small"
-                    value={formik.values.publisherName}
-                    onChange={(event, newValue) => formik.setFieldValue('publisherName', newValue)}
-                    options={publisherData.map((item) => item.publisherName)}
+                    options={publisherData}
+                    getOptionLabel={(option) => option.publisherName || ''}
+                    value={publisherData.find((pub) => pub._id === formik.values.publisher) || null}
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue('publisher', newValue ? newValue._id : '');
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        error={formik.touched.publisherName && Boolean(formik.errors.publisherName)}
-                        helperText={formik.touched.publisherName && formik.errors.publisherName}
+                        error={formik.touched.publisher && Boolean(formik.errors.publisher)}
+                        helperText={formik.touched.publisher && formik.errors.publisher}
                       />
                     )}
                     sx={{ height: '40px' }}
