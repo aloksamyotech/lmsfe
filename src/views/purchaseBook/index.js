@@ -16,12 +16,10 @@ import {
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
-import axios from 'axios';
 import AddPurchaseBook from './purchaseBook';
 import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
@@ -38,7 +36,6 @@ const PurchaseBook = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
   const [currencySymbol, setCurrencySymbol] = useState('');
-  const [studentData, setStudentData] = useState([]);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -72,7 +69,7 @@ const PurchaseBook = () => {
       flex: 1
     },
     {
-      field: 'vendorId',
+      field: 'vendorName',
       headerName: 'Vendor',
       flex: 1,
       cellClassName: 'name-column--cell--capitalize'
@@ -140,15 +137,17 @@ const PurchaseBook = () => {
   const fetchData = async () => {
     try {
       const response = await getApi(url.purchaseBook.purchaseManagement);
-
+      
       const fetchedData = response?.data?.BookManagement?.map((item) => ({
         id: item._id,
         bookId: item.bookId,
         bookName: item.bookName,
         vendorId: item.vendorId,
+        vendorName:item.vendorName,
         price: item.price,
         quantity: item.quantity,
-        purchesDate: formatDate(item.bookIssueDate)
+        purchesDate: formatDate(item.bookIssueDate),
+        bookComment:item.bookComment
       }));
       setData(fetchedData);
     } catch (error) {
@@ -158,26 +157,16 @@ const PurchaseBook = () => {
 
   useEffect(() => {
     fetchData();
-    fetchVendor();
   }, []);
 
   const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
-
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+    setEditData(null);
+  };
   const handleEdit = (book) => {
     setEditData(book);
-  };
-
-  const handleSaveEdit = async () => {
-    try {
-      const response = await updateApiPatch(`${url.purchaseBook.updatePurchaseBook}`, editData);
-      const updatedBook = response.data;
-      setData((prevData) => prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item)));
-      setEditData(null);
-      fetchData();
-    } catch (error) {
-      console.error('Error updating book:', error);
-    }
+    setOpenAdd(true);
   };
 
   const handleInvoice = (row) => {
@@ -210,20 +199,9 @@ const PurchaseBook = () => {
     setOpenDeleteDialog(false);
     setBookToDelete(null);
   };
-  const closeEditDailog = () => {
-    setEditData(false);
-  };
-  const fetchVendor = async () => {
-    try {
-      const response = await getApi(url.vendorManagement.viewVender);
-      setStudentData(response.data?.VenderManagement);
-    } catch (error) {
-      console.error('Error fetching vendors:', error);
-    }
-  };
   return (
     <>
-      <AddPurchaseBook open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
+      <AddPurchaseBook open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} editData={editData} />
       <Container>
         <Box
           sx={{
@@ -275,158 +253,6 @@ const PurchaseBook = () => {
             </Card>
           </Box>
         </TableStyle>
-
-        {/* {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3}>
-              <Typography variant="h6">Edit Purchase Book</Typography>
-              <TextField
-                label="Book Name"
-                value={editData.bookName}
-                disabled
-                onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label=" Vendor"
-                value={editData.vendorId}
-                disabled
-                onChange={(e) => setEditData({ ...editData, vendorId: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Quantity"
-                value={editData.quantity}
-                onChange={(e) => setEditData({ ...editData, quantity: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Total Price"
-                value={editData.price}
-                onChange={(e) => setEditData({ ...editData, price: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary" sx={{ marginRight: '10px' }}>
-                Save
-              </Button>
-              <Button onClick={closeEditDailog} variant="outlined" color="secondary">
-                Cancel
-              </Button>
-            </Box>
-          </Dialog>
-        )} */}
-        {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)} maxWidth="md" fullWidth>
-            <Box p={3}>
-              <Typography variant="h6" mb={2}>
-                Edit Purchase Book
-              </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Books</FormLabel>
-                  <TextField
-                    label="Book Name"
-                    value={editData.bookName}
-                    disabled
-                    onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
-                    fullWidth
-                    margin="normal"
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Vendor</FormLabel>
-                  <Autocomplete
-                    id="vendorId"
-                    name="vendorId"
-                    size="small"
-                    fullWidth
-                    options={studentData}
-                    value={studentData.find((item) => item._id === editData.vendorId) || null}
-                    onChange={(event, newValue) => setEditData({ ...editData, vendorId: newValue ? newValue._id : '' })}
-                    getOptionLabel={(option) => option.vendorName}
-                    isOptionEqualToValue={(option, value) => option._id === value._id}
-                    renderInput={(params) => <TextField {...params} label="Vendor" />}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Date</FormLabel>
-                  <TextField
-                    type="date"
-                    size="small"
-                    fullWidth
-                    value={editData.bookIssueDate || ''}
-                    onChange={(e) => setEditData({ ...editData, bookIssueDate: e.target.value })}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Total Quantity</FormLabel>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={editData.quantity}
-                    onChange={(e) => setEditData({ ...editData, quantity: e.target.value })}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Price Per Book</FormLabel>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={editData.price}
-                    onChange={(e) => setEditData({ ...editData, price: e.target.value })}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Total Amount</FormLabel>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={editData.quantity * editData.price || 0}
-                    disabled
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <FormLabel>Comment</FormLabel>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    multiline
-                    rows={4}
-                    value={editData.bookComment || ''}
-                    onChange={(e) => setEditData({ ...editData, bookComment: e.target.value })}
-                  />
-                </Grid>
-
-                <Grid item xs={12} mt={2}>
-                  <Stack direction="row" spacing={2}>
-                    <Button variant="contained" color="primary" onClick={handleSaveEdit}>
-                      Save
-                    </Button>
-                    <Button variant="outlined" color="secondary" onClick={closeEditDailog}>
-                      Cancel
-                    </Button>
-                  </Stack>
-                </Grid>
-              </Grid>
-            </Box>
-          </Dialog>
-        )}
 
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>

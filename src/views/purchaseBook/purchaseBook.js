@@ -1,44 +1,39 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import { FormLabel, Grid, TextField, MenuItem, Select, FormControl, FormHelperText, Autocomplete } from '@mui/material';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Typography from '@mui/material/Typography';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  TextField,
+  FormLabel,
+  Autocomplete,
+  Typography,
+  InputAdornment
+} from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import { useState } from 'react';
-import { url } from 'core/url';
-import { getApi, postApi } from 'core/apiClient';
+import { getApi, postApi, updateApiPatch } from 'core/apiClient';
 import { fetchCurrency } from 'core/comman';
-import InputAdornment from '@mui/material/InputAdornment';
+import { url } from 'core/url';
 
 const validationSchema = yup.object({
   bookId: yup.string().required('Book is required'),
   vendorId: yup.string().required('Vendor is required'),
-  bookIssueDate: yup.date().required('Issue Date is required').max(new Date(), 'Issue date cannot be in the future'),
-  quantity: yup
-    .number()
-    .required('Quantity is required')
-    .positive('Quantity must be a positive number')
-    .integer('Quantity must be an integer')
-    .min(1, 'Minimum quantity is 1')
-    .max(1000, 'Quantity cannot exceed 1000'),
-  price: yup.number().required('Price is required').positive('Price must be a positive number').min(0.1, 'Price must be at least 0.1'),
-  bookComment: yup.string().max(500, 'Comment cannot exceed 500 characters').required('Comment is required')
+  bookIssueDate: yup.date().required('Issue Date is required'),
+  quantity: yup.number().required('Quantity is required').positive().integer().min(1).max(1000),
+  price: yup.number().required('Price is required').positive().min(0.1),
+  bookComment: yup.string().max(500).required('Comment is required')
 });
 
-const AddPurchaseBook = (props) => {
-  const { open, handleClose, fetchData } = props;
+const AddPurchaseBook = ({ open, handleClose, fetchData, editData }) => {
   const [bookData, setBookData] = useState([]);
-  const [studentData, setStudentData] = useState([]);
-  const [publisherData, setPublisherData] = useState([]);
+  const [vendorData, setVendorData] = useState([]);
   const [isloading, setIsloading] = useState(false);
   const [currencySymbol, setCurrencySymbol] = useState('');
 
@@ -49,261 +44,237 @@ const AddPurchaseBook = (props) => {
     };
     getCurrency();
   }, []);
+
+  useEffect(() => {
+    const fetchDropdowns = async () => {
+      try {
+        const books = await getApi(url.bookManagenent.bookmanagementTable);
+        const vendors = await getApi(url.vendorManagement.viewVender);
+
+        setBookData(books.data?.data || []);
+        setVendorData(vendors.data?.VenderManagement || []);
+      } catch (error) {
+        console.error('Error fetching dropdowns:', error);
+      }
+    };
+    fetchDropdowns();
+  }, []);
+
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      bookIssueDate: new Date().toISOString().split('T')[0],
-      quantity: '',
-      bookComment: '',
-      discount: '',
-      price: '',
-      totalPrice: '',
-      bookId: '',
-      vendorId: ''
+      bookId: editData?.bookId || '',
+      vendorId: Array.isArray(editData?.vendorId) ? editData.vendorId[0] : editData?.vendorId || '',
+      bookIssueDate: editData?.bookIssueDate || new Date().toISOString().split('T')[0],
+      quantity: editData?.quantity || '',
+      price: editData?.price || '',
+      totalPrice: editData?.totalPrice || (editData?.quantity && editData?.price ? editData.quantity * editData.price : ''),
+      bookComment: editData?.bookComment || ''
     },
+
     validationSchema,
     onSubmit: async (values) => {
       setIsloading(true);
-
       try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const adminId = user?._id;
-
         const dataToSend = {
           ...values,
-          adminId
+          totalPrice: values.quantity * values.price
         };
-        const response = await postApi(url.purchaseBook.purchaseBook, dataToSend);
 
-        toast.success('Purchase Book added successfully');
+        if (editData?.id) {
+          dataToSend.id = editData.id;
+          dataToSend.previousQuantity = editData.quantity;
+          dataToSend.previousBookId = editData.bookId;
+
+          await updateApiPatch(`${url.purchaseBook.updatePurchaseBook}`, dataToSend);
+          toast.success('Purchase Book updated successfully');
+        } else {
+          await postApi(url.purchaseBook.purchaseBook, dataToSend);
+          toast.success('Purchase Book added successfully');
+        }
+
         fetchData();
-        setIsloading(false);
         handleClose();
+        formik.resetForm();
       } catch (error) {
-        toast.error(error?.response?.data?.message);
-        console.error('Error submitting form:', error);
+        toast.error(error?.response?.data?.message || 'Something went wrong');
+        console.error('Error:', error);
+      } finally {
         setIsloading(false);
       }
-      formik.resetForm();
-      handleClose();
     }
   });
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await getApi(url.bookManagenent.bookmanagementTable);
-        setBookData(response.data?.data);
-      } catch (error) {
-        console.error('Error fetching books:', error);
-      }
-    };
-
-    const fetchVendor = async () => {
-      try {
-        const response = await getApi(url.vendorManagement.viewVender);
-        setStudentData(response.data?.VenderManagement);
-      } catch (error) {
-        console.error('Error fetching vendors:', error);
-      }
-    };
-
-    const fetchPublisher = async () => {
-      try {
-        const response = await getApi(url.publications.getPublications);
-        setPublisherData(response.data?.PublicationsManagement);
-      } catch (error) {
-        console.error('Error fetching publishers:', error);
-      }
-    };
-
-    fetchBooks();
-    fetchVendor();
-    fetchPublisher();
-  }, []);
-
-  const handleQuantityPriceChange = (field, value) => {
-    const newValue = value === '' ? '' : value.replace(/[^0-9.]/g, '');
-    formik.setFieldValue(field, newValue);
+  const handleFieldChange = (field, value) => {
+    const cleanValue = value.replace(/[^0-9.]/g, '');
+    formik.setFieldValue(field, cleanValue);
 
     if (field === 'quantity' || field === 'price') {
-      const quantity = parseFloat(formik.values.quantity) || 0;
-      const price = parseFloat(formik.values.price) || 0;
-
-      const totalPrice = quantity * price;
-      formik.setFieldValue('totalPrice', totalPrice);
+      const quantity = parseFloat(field === 'quantity' ? cleanValue : formik.values.quantity) || 0;
+      const price = parseFloat(field === 'price' ? cleanValue : formik.values.price) || 0;
+      formik.setFieldValue('totalPrice', quantity * price);
     }
   };
-  useEffect(() => {
-    if (open) {
-      formik.resetForm();
-    }
-  }, [open]);
+
   return (
-    <div>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
-        <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6">Purchase New Books</Typography>
-          <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
-        </DialogTitle>
-        <DialogContent dividers>
-          <form onSubmit={formik.handleSubmit}>
-            <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Books</FormLabel>
-                  <Autocomplete
-                    id="bookId"
-                    name="bookId"
-                    size="small"
-                    fullWidth
-                    value={bookData.find((book) => book._id === formik.values.bookId) || null}
-                    onChange={(event, newValue) => formik.setFieldValue('bookId', newValue ? newValue._id : '')}
-                    options={bookData}
-                    getOptionLabel={(option) => option.bookName}
-                    isOptionEqualToValue={(option, value) => option._id === value._id}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        error={formik.touched.bookId && Boolean(formik.errors.bookId)}
-                        helperText={formik.touched.bookId && formik.errors.bookId}
-                      />
-                    )}
-                  />
-                </Grid>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography variant="h6">{editData?.id ? 'Edit Purchase' : 'Add Purchase'}</Typography>
+        <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
+      </DialogTitle>
 
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Vendor</FormLabel>
-                  <Autocomplete
-                    id="vendorId"
-                    name="vendorId"
-                    size="small"
-                    fullWidth
-                    value={studentData.find((item) => item._id === formik.values.vendorId) || null}
-                    onChange={(event, newValue) => formik.setFieldValue('vendorId', newValue ? newValue._id : '')}
-                    options={studentData}
-                    getOptionLabel={(option) => option.vendorName}
-                    isOptionEqualToValue={(option, value) => option._id === value}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        error={formik.touched.vendorId && Boolean(formik.errors.vendorId)}
-                        helperText={formik.touched.vendorId && formik.errors.vendorId}
-                      />
-                    )}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Date</FormLabel>
-                  <TextField
-                    name="bookIssueDate"
-                    type="date"
-                    size="small"
-                    fullWidth
-                    value={formik.values.bookIssueDate}
-                    onChange={formik.handleChange}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Total Quantity</FormLabel>
-                  <TextField
-                    id="quantity"
-                    name="quantity"
-                    size="small"
-                    fullWidth
-                    value={formik.values.quantity}
-                    onChange={(e) => handleQuantityPriceChange('quantity', e.target.value)}
-                    error={formik.touched.quantity && Boolean(formik.errors.quantity)}
-                    helperText={formik.touched.quantity && formik.errors.quantity}
-                    inputProps={{ maxLength: 3 }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Price Per Book</FormLabel>
-                  <TextField
-                    id="price"
-                    size="small"
-                    fullWidth
-                    value={formik.values.price}
-                    onChange={(e) => handleQuantityPriceChange('price', e.target.value)}
-                    error={formik.touched.price && Boolean(formik.errors.price)}
-                    helperText={formik.touched.price && formik.errors.price}
-                    inputProps={{ maxLength: 5 }}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormLabel>Total Amount</FormLabel>
-                  <TextField
-                    id="totalPrice"
-                    name="totalPrice"
-                    size="small"
-                    fullWidth
-                    value={formik.values.price * formik.values.quantity}
-                    error={formik.touched.totalPrice && Boolean(formik.errors.totalPrice)}
-                    helperText={formik.touched.totalPrice && formik.errors.totalPrice}
-                    inputProps={{ maxLength: 5 }}
-                    disabled
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <FormLabel>Comment</FormLabel>
-                  <TextField
-                    id="bookComment"
-                    name="bookComment"
-                    size="small"
-                    multiline
-                    rows={4}
-                    fullWidth
-                    value={formik.values.bookComment}
-                    onChange={formik.handleChange}
-                    error={formik.touched.bookComment && Boolean(formik.errors.bookComment)}
-                    helperText={formik.touched.bookComment && formik.errors.bookComment}
-                  />
-                </Grid>
+      <DialogContent dividers>
+        <form onSubmit={formik.handleSubmit}>
+          <DialogContentText tabIndex={-1}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <FormLabel>Book</FormLabel>
+                <Autocomplete
+                  id="bookId"
+                  name="bookId"
+                  size="small"
+                  fullWidth
+                  value={bookData.find((book) => book._id === formik.values.bookId) || null}
+                  onChange={(e, newVal) => formik.setFieldValue('bookId', newVal ? newVal._id : '')}
+                  options={bookData}
+                  getOptionLabel={(option) => option.bookName}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={formik.touched.bookId && Boolean(formik.errors.bookId)}
+                      helperText={formik.touched.bookId && formik.errors.bookId}
+                    />
+                  )}
+                />
               </Grid>
-            </DialogContentText>
 
-            <DialogActions>
-              <Button
-                type="submit"
-                variant="contained"
-                color="secondary"
-                disabled={isloading}
-                style={{
-                  textTransform: 'capitalize',
-                  backgroundColor: isloading ? '#ccc' : '',
-                  color: isloading ? '#666' : '',
-                  pointerEvents: isloading ? 'none' : 'auto'
-                }}
-              >
-                {isloading ? 'Saving...' : 'Save'}
-              </Button>
+              <Grid item xs={12} sm={6}>
+                <FormLabel>Vendor</FormLabel>
+                <Autocomplete
+                  id="vendorId"
+                  name="vendorId"
+                  size="small"
+                  fullWidth
+                  options={vendorData}
+                  getOptionLabel={(option) => option.vendorName || ''}
+                  value={vendorData.find((v) => v._id === formik.values.vendorId) || null}
+                  onChange={(e, newValue) => {
+                    formik.setFieldValue('vendorId', newValue?._id || '');
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={formik.touched.vendorId && Boolean(formik.errors.vendorId)}
+                      helperText={formik.touched.vendorId && formik.errors.vendorId}
+                    />
+                  )}
+                />
+              </Grid>
 
-              <Button
-                onClick={() => {
-                  formik.resetForm();
-                  handleClose();
-                }}
-                variant="outlined"
-                color="error"
-              >
-                Cancel
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+              <Grid item xs={12} sm={6}>
+                <FormLabel>Date</FormLabel>
+                <TextField
+                  name="bookIssueDate"
+                  type="date"
+                  size="small"
+                  fullWidth
+                  value={formik.values.bookIssueDate}
+                  onChange={(e) => formik.setFieldValue('bookIssueDate', e.target.value)}
+                  onBlur={formik.handleBlur}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormLabel>Quantity</FormLabel>
+                <TextField
+                  id="quantity"
+                  name="quantity"
+                  size="small"
+                  fullWidth
+                  value={formik.values.quantity}
+                  onChange={(e) => handleFieldChange('quantity', e.target.value)}
+                  error={formik.touched.quantity && Boolean(formik.errors.quantity)}
+                  helperText={formik.touched.quantity && formik.errors.quantity}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormLabel>Price per Book</FormLabel>
+                <TextField
+                  id="price"
+                  name="price"
+                  size="small"
+                  fullWidth
+                  value={formik.values.price}
+                  onChange={(e) => handleFieldChange('price', e.target.value)}
+                  error={formik.touched.price && Boolean(formik.errors.price)}
+                  helperText={formik.touched.price && formik.errors.price}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormLabel>Total Amount</FormLabel>
+                <TextField
+                  id="totalPrice"
+                  name="totalPrice"
+                  size="small"
+                  fullWidth
+                  disabled
+                  value={formik.values.totalPrice}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormLabel>Comment</FormLabel>
+                <TextField
+                  id="bookComment"
+                  name="bookComment"
+                  multiline
+                  rows={3}
+                  size="small"
+                  fullWidth
+                  value={formik.values.bookComment}
+                  onChange={formik.handleChange}
+                  error={formik.touched.bookComment && Boolean(formik.errors.bookComment)}
+                  helperText={formik.touched.bookComment && formik.errors.bookComment}
+                />
+              </Grid>
+            </Grid>
+          </DialogContentText>
+
+          <DialogActions sx={{ mt: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="secondary"
+              disabled={isloading}
+              sx={{
+                textTransform: 'capitalize',
+                backgroundColor: isloading ? '#ccc' : undefined
+              }}
+            >
+              {isloading ? (editData?.id ? 'Updating...' : 'Saving...') : editData?.id ? 'Update' : 'Save'}
+            </Button>
+            <Button
+              onClick={() => {
+                formik.resetForm();
+                handleClose();
+              }}
+              variant="outlined"
+              color="error"
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

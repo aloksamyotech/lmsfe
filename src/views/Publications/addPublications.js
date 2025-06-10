@@ -14,13 +14,11 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { FormControl, FormHelperText, FormLabel, MenuItem, Select } from '@mui/material';
 import { toast } from 'react-toastify';
-import dayjs from 'dayjs';
-import axios from 'axios';
 import { url } from 'core/url';
-import { postApi } from 'core/apiClient';
+import { postApi, updateApi } from 'core/apiClient';
 
 const AddPublications = (props) => {
-  const { open, handleClose, fetchData } = props;
+  const { open, handleClose, fetchData, editData } = props;
   const [isloading, setIsloading] = useState(false);
 
   const validationSchema = yup.object({
@@ -38,13 +36,13 @@ const AddPublications = (props) => {
 
     description: yup.string().required('Description is required')
   });
-
   const formik = useFormik({
-    initialValues: {
-      publisherName: '',
+    enableReinitialize: true,
 
-      address: '',
-      description: ''
+    initialValues: {
+      publisherName: editData?.publisherName || '',
+      address: editData?.address || '',
+      description: editData?.description || ''
     },
     validationSchema,
 
@@ -52,8 +50,19 @@ const AddPublications = (props) => {
       setIsloading(true);
 
       try {
-        const response = await postApi(url.publications.addPublications, values);
-        toast.success('Publications details added successfully');
+        const dataToSend = {
+          ...values,
+          ...(editData?.id && { id: editData.id }) // include id only in edit case
+        };
+
+        if (editData?.id) {
+          await updateApi(`${url.publications.editPublications}`, dataToSend);
+          toast.success('Publication updated successfully');
+        } else {
+          await postApi(url.publications.addPublications, dataToSend);
+          toast.success('Publication added successfully');
+        }
+
         fetchData();
         formik.resetForm();
         handleClose();
@@ -72,6 +81,7 @@ const AddPublications = (props) => {
       setIsloading(false);
     }
   });
+
   useEffect(() => {
     if (open) {
       formik.resetForm();
@@ -88,7 +98,8 @@ const AddPublications = (props) => {
               justifyContent: 'space-between'
             }}
           >
-            <Typography variant="h6">Add Publications </Typography>
+            <Typography variant="h6">{editData?.id ? 'Edit Publications' : 'Add Publications'}</Typography>
+
             <Typography>
               <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
             </Typography>
@@ -160,7 +171,7 @@ const AddPublications = (props) => {
                 pointerEvents: isloading ? 'none' : 'auto'
               }}
             >
-              {isloading ? 'Saving...' : 'Save'}
+              {isloading ? (editData?.id ? 'Updating...' : 'Saving...') : editData?.id ? 'Update' : 'Save'}
             </Button>
 
             <Button
