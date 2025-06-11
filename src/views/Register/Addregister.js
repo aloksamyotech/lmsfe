@@ -16,14 +16,15 @@ import { FormLabel, FormControl, MenuItem, Select } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { url } from 'core/url';
-import { postApi } from 'core/apiClient';
+import { postApi, updateApi } from 'core/apiClient';
 
 const AddRegister = (props) => {
-  const { open, handleClose, fetchData } = props;
+  const { open, handleClose, fetchData, editData } = props;
   const userid = localStorage.getItem('user_id');
   const [isloading, setIsloading] = useState(false);
 
   const todayDate = new Date().toISOString().split('T')[0];
+  console.log(editData);
 
   const validationSchema = yup.object({
     student_Name: yup
@@ -40,19 +41,24 @@ const AddRegister = (props) => {
         return !/^(\d)\1{9}$/.test(value);
       })
       .required('Phone number is required'),
-    select_identity: yup.string().required('Select Identity is required'),
-    upload_identity: yup.mixed().required('Select a file to upload')
+    select_identity: yup.string().required('Select Identity is required')
+    // upload_identity: yup.mixed().required('Select a file to upload')
   });
   const user = JSON.parse(localStorage.getItem('user'));
   const adminId = user?._id;
   const formik = useFormik({
+    enableReinitialize: true,
+
     initialValues: {
-      student_Name: '',
-      email: '',
-      mobile_Number: '',
-      select_identity: '',
-      upload_identity: '',
-      register_Date: todayDate
+      student_Name: editData?.student_Name || '',
+      email: editData?.email || '',
+      mobile_Number: editData?.mobile_Number || '',
+      select_identity: editData?.select_identity || '',
+      upload_identity: editData?.upload_identity || '',
+      register_Date:
+        editData?.register_Date && !isNaN(Date.parse(editData.register_Date))
+          ? new Date(editData.register_Date).toISOString().split('T')[0]
+          : todayDate
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -65,17 +71,28 @@ const AddRegister = (props) => {
       formData.append('mobile_Number', values.mobile_Number);
       formData.append('select_identity', values.select_identity);
       formData.append('upload_identity', values.upload_identity);
-      formData.append('register_Date', values.date);
+      formData.append('register_Date', values.register_Date);
       formData.append('adminId', adminId);
 
       try {
-        const response = await postApi(url.studentRegister.addRegister, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        let response;
 
-        toast.success('Register details added successfully');
+        if (editData) {
+          response = await updateApi(`${url.studentRegister.editRegister}${editData.id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          toast.success('Register details updated successfully');
+        } else {
+          response = await postApi(url.studentRegister.addRegister, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          toast.success('Register details added successfully');
+        }
+
         fetchData();
         formik.resetForm();
         handleClose();
@@ -83,23 +100,21 @@ const AddRegister = (props) => {
         const errorMessage = error?.response?.data?.message;
 
         if (errorMessage && errorMessage.toLowerCase().includes('email')) {
-          if (errorMessage && errorMessage.toLowerCase().includes('email')) {
-            formik.setFieldTouched('email', true, false);
-            formik.setFieldError('email', 'Email already exists');
-          }
+          formik.setFieldTouched('email', true, false);
+          formik.setFieldError('email', 'Email already exists');
         } else {
           toast.error('Something went wrong');
           console.error('Error submitting form:', error);
         }
+      } finally {
+        setIsloading(false);
       }
-
-      setIsloading(false);
     }
   });
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    formik.setFieldValue('upload_identity', file);
+  const handleFileChange = (e) => {
+    formik.setFieldValue('upload_identity', e.currentTarget.files[0]);
   };
+
   useEffect(() => {
     if (open) {
       formik.resetForm();
@@ -114,7 +129,8 @@ const AddRegister = (props) => {
           justifyContent: 'space-between'
         }}
       >
-        <Typography variant="h6">Add New Student</Typography>
+        <Typography variant="h6">{editData?.id ? 'Edit Student' : 'Add Student'}</Typography>
+
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
 
@@ -177,7 +193,7 @@ const AddRegister = (props) => {
                     onChange={formik.handleChange}
                     error={formik.touched.select_identity && Boolean(formik.errors.select_identity)}
                   >
-                    <MenuItem value="Aadhar Card">Aadhar Card</MenuItem>
+                    <MenuItem value="Adhar Card">Adhar Card</MenuItem>
                     <MenuItem value="Pan Card">Pan Card</MenuItem>
                     <MenuItem value="Voter Id Card">Voter Id Card</MenuItem>
                     <MenuItem value="Driving Licence">Driving Licence</MenuItem>
@@ -188,14 +204,14 @@ const AddRegister = (props) => {
               <Grid item xs={12} sm={6} md={6}>
                 <FormLabel>Register Date</FormLabel>
                 <TextField
-                  name="date"
+                  name="register_Date"
                   type="date"
                   size="small"
                   fullWidth
-                  value={formik.values.date || todayDate}
+                  value={formik.values.register_Date || todayDate}
                   onChange={formik.handleChange}
-                  error={formik.touched.date && Boolean(formik.errors.date)}
-                  helperText={formik.touched.date && formik.errors.date}
+                  error={formik.touched.register_Date && Boolean(formik.errors.register_Date)}
+                  helperText={formik.touched.register_Date && formik.errors.register_Date}
                   inputProps={{ min: todayDate }}
                 />
               </Grid>
@@ -225,7 +241,7 @@ const AddRegister = (props) => {
                 pointerEvents: isloading ? 'none' : 'auto'
               }}
             >
-              {isloading ? 'Saving...' : 'Save'}
+              {isloading ? (editData?.id ? 'Updating...' : 'Saving...') : editData?.id ? 'Update' : 'Save'}
             </Button>
             <Button
               onClick={() => {

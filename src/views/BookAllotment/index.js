@@ -46,6 +46,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import { array } from 'prop-types';
 import BookInvoice from './Invoice';
 import { url } from 'core/url';
+import { IconTrash } from '@tabler/icons-react';
+
 import ReceiveBook from 'views/ReceiveBook/index';
 import { useCart } from '../Books/CartContext.js';
 import { getApi } from 'core/apiClient.js';
@@ -111,9 +113,8 @@ const Allotment = () => {
 
   const fetchData = async () => {
     try {
-
       const response = await getApi(url.studentRegister.getRegisterManagement);
-      
+
       const fetchedData = response?.data?.RegisterManagement.map((item) => ({
         id: item._id,
 
@@ -436,7 +437,6 @@ const Allotment = () => {
       <Grid container spacing={0}>
         {' '}
         <Grid container spacing={2}>
-          {/* Books Section */}
           <Grid item xs={12} md={8}>
             <Box sx={{ height: 'auto' }}>
               <Grid container spacing={2}>
@@ -542,8 +542,7 @@ const Allotment = () => {
                 border: '1px solid #ccc',
                 borderRadius: '10px',
                 padding: 2,
-                // height: '350px',
-                height:'auto',
+                height: 'auto',
                 backgroundColor: '#f9f9f9',
                 overflowY: 'auto'
               }}
@@ -597,9 +596,11 @@ const Allotment = () => {
                               >
                                 -
                               </Button>
+                              <Button color="error" onClick={() => handleRemoveFromCart(item._id, item.submissionType)}>
+                                <IconTrash stroke={2} size={20} />
+                              </Button>
                             </Box>
                           </td>
-                          <td style={{ borderBottom: '1px solid #eee', padding: '8px' }}>{item.submissionTypeName}</td>
                         </tr>
                       ))}
                     </tbody>

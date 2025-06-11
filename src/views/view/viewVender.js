@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Avatar, Typography, Paper, Box, Card, Stack, CardContent, Breadcrumbs, Link as MuiLink, Grid } from '@mui/material';
+import {
+  Container,
+  Avatar,
+  Typography,
+  Paper,
+  Box,
+  Card,
+  Stack,
+  CardContent,
+  Breadcrumbs,
+  Link as MuiLink,
+  Grid,
+  IconButton
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
@@ -7,12 +20,15 @@ import TableStyle from '../../ui-component/TableStyle';
 import { getApi } from 'core/apiClient';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
+import { useNavigate } from 'react-router-dom';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 const VendorView = () => {
   const [data, setData] = useState([]);
   const [allData, setAllData] = useState({});
   const [currencySymbol, setCurrencySymbol] = useState('');
   const [id, setId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCurrency = async () => {
@@ -54,16 +70,41 @@ const VendorView = () => {
   const columns = [
     { field: 'sNo', headerName: 'S.No.', flex: 0.5 },
     { field: 'bookName', headerName: 'Book Name', flex: 1 },
-    { field: 'quantity', headerName: 'Quantity', flex: 0.5 },
-    { field: 'price', headerName: 'Price per Book', flex: 0.5 },
+    { field: 'quantity', headerName: 'Quantity', flex: 1 },
+    { field: 'price', headerName: 'Price per Book', flex: 1 },
     {
       field: 'totalAmount',
       headerName: 'Total Amount',
-      flex: 0.5,
+      flex: 1,
       valueFormatter: ({ value }) => `${currencySymbol} ${value}`
     },
-    { field: 'bookIssueDate', headerName: 'Purchase Date', flex: 1 }
+    { field: 'bookIssueDate', headerName: 'Purchase Date', flex: 1 },
+    {
+      field: 'generateInvoice',
+      headerName: 'Invoice',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <IconButton
+          style={{
+            color: '#007bff',
+            borderRadius: '50%',
+            padding: '8px'
+          }}
+          onClick={() => handleGenerateInvoice(params.row)}
+        >
+          <ReceiptIcon />
+        </IconButton>
+      )
+    }
   ];
+  const handleGenerateInvoice = (row) => {
+    const purchaseId = row._id;
+    navigate(`/dashboard/purchaseInvoice/${purchaseId}`, {
+      state: { rowData: row }
+    });
+  };
 
   return (
     <>

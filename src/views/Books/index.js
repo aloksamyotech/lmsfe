@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField, Autocomplete ,Grid} from '@mui/material';
+import { Stack, Button, Container, Typography, Box, Card, Dialog, TextField, Autocomplete, Grid } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import { fontSize } from '@mui/system';
 import { deleteApi, getApi, updateApi, postApi } from 'core/apiClient';
 import ClearIcon from '@mui/icons-material/Clear';
-
+import { useNavigate } from 'react-router-dom';
 const BookManagement = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
@@ -29,7 +29,7 @@ const BookManagement = () => {
   const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
   const [isloading, setIsloading] = useState(false);
   const [publisherData, setPublisherData] = useState([]);
-
+  const navigate = useNavigate();
   const XLSX = require('xlsx');
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -166,86 +166,13 @@ const BookManagement = () => {
     fetchData();
   }, []);
   const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
-
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+    setEditData(null);
+  };
   const handleEdit = (book) => {
     setEditData(book);
-    setErrors({});
-  };
-
-  const handleSaveEdit = async () => {
-    setErrors({});
-    const newErrors = {};
-
-    if (!editData.bookName) {
-      newErrors.bookName = 'Book Name is required';
-    } else if (editData.bookName.length < 3) {
-      newErrors.bookName = 'Book Name must be at least 3 characters';
-    }
-
-    if (!editData.title) {
-      newErrors.title = 'Book Title is required';
-    } else if (editData.title.length < 3) {
-      newErrors.title = 'Book Title must be at least 3 characters';
-    }
-
-    if (!editData.publisherName) {
-      newErrors.publisherName = 'Publisher Name is required';
-    } else if (editData.publisherName.length < 3) {
-      newErrors.publisherName = 'Publisher Name must be at least 3 characters';
-    }
-
-    if (!editData.author) {
-      newErrors.author = 'Author Name is required';
-    } else if (editData.author.length < 3) {
-      newErrors.author = 'Author Name must be at least 3 characters';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    try {
-      const formData = new FormData();
-
-      formData.append('bookName', editData.bookName);
-      formData.append('title', editData.title);
-      formData.append('author', editData.author);
-      formData.append('description', editData.description || '');
-      formData.append('publisherId', editData.publisherId);
-      formData.append('bookIssueDate', editData.bookIssueDate || '');
-      formData.append('bookDistribution', editData.bookDistribution || '');
-
-      if (editData.upload_Book instanceof File) {
-        formData.append('upload_Book', editData.upload_Book);
-      }
-
-      const response = await updateApi(`${url.bookManagenent.editBook}${editData.id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-
-      const updatedBook = response.data.updatedBook;
-
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id === updatedBook._id
-            ? {
-                ...updatedBook,
-                id: updatedBook._id, // 🔴 this is required by DataGrid
-                publisherName: editData.publisherName,
-                publisherId: editData.publisherId,
-                quantity: updatedBook.bookQuantity > 0 ? updatedBook.bookQuantity : 'Not Available'
-              }
-            : item
-        )
-      );
-
-      setEditData(null);
-      fetchData();
-      toast.success('Book details updated successfully');
-    } catch (error) {
-      console.error('Error updating book:', error);
-    }
+    setOpenAdd(true);
   };
 
   const handleDelete = (id) => {
@@ -310,7 +237,7 @@ const BookManagement = () => {
 
   return (
     <>
-      <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
+      <AddLead open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} editData={editData} />
       <Container>
         <Box
           sx={{
@@ -364,119 +291,6 @@ const BookManagement = () => {
             </Card>
           </Box>
         </TableStyle>
-
-        {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3} sx={{ minWidth: 600 }}>
-              <Typography variant="h6" gutterBottom>
-                Edit Book
-              </Typography>
-
-              {/* Row 1: Book Name, Title, Author */}
-              <Grid container spacing={2}>
-                <Grid item xs={4}>
-                  <TextField
-                    label="Book Name"
-                    value={editData.bookName}
-                    onChange={(e) => setEditData({ ...editData, bookName: e.target.value })}
-                    fullWidth
-                    error={!!errors.bookName}
-                    helperText={errors.bookName}
-                    inputProps={{ maxLength: 50 }}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField
-                    label="Book Title"
-                    value={editData.title}
-                    onChange={(e) => setEditData({ ...editData, title: e.target.value })}
-                    fullWidth
-                    error={!!errors.title}
-                    helperText={errors.title}
-                    inputProps={{ maxLength: 50 }}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField
-                    label="Author Name"
-                    value={editData.author}
-                    onChange={(e) => setEditData({ ...editData, author: e.target.value })}
-                    fullWidth
-                    error={!!errors.author}
-                    helperText={errors.author}
-                    inputProps={{ maxLength: 50 }}
-                  />
-                </Grid>
-              </Grid>
-
-              {/* Row 2: Publisher + Upload */}
-              <Grid container spacing={2} mt={2}>
-                <Grid item xs={6}>
-                  <Autocomplete
-                    options={publisherData || []}
-                    getOptionLabel={(option) => option.publisherName || ''}
-                    value={publisherData.find((pub) => pub._id === editData.publisherId) || null}
-                    onChange={(e, newValue) => {
-                      setEditData({
-                        ...editData,
-                        publisherName: newValue ? newValue.publisherName : '',
-                        publisherId: newValue ? newValue._id : ''
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Publisher"
-                        fullWidth
-                        error={Boolean(errors.publisherId)}
-                        helperText={errors.publisherId}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Upload Book Image
-                  </Typography>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setEditData({ ...editData, upload_Book: e.target.files[0] });
-                      }
-                    }}
-                  />
-                </Grid>
-              </Grid>
-
-              {/* Description - Full Width */}
-              <Box mt={2}>
-                <TextField
-                  label="Book Description"
-                  value={editData.bookDistribution || ''}
-                  onChange={(e) => setEditData({ ...editData, bookDistribution: e.target.value })}
-                  fullWidth
-                  multiline
-                  rows={4}
-                  error={!!errors.bookDistribution}
-                  helperText={errors.bookDistribution}
-                  inputProps={{ maxLength: 500 }}
-                />
-              </Box>
-
-              {/* Buttons */}
-              <Box mt={3} display="flex" justifyContent="flex-start">
-                <Button onClick={handleSaveEdit} variant="contained" color="primary">
-                  Save
-                </Button>
-                <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" sx={{ ml: 2 }}>
-                  Cancel
-                </Button>
-              </Box>
-            </Box>
-          </Dialog>
-        )}
 
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>

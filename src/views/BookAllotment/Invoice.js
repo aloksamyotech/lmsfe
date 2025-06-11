@@ -6,12 +6,12 @@ import { Stack, Button, Container, Typography, Box, Divider, Paper, Grid, Backdr
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import moment from 'moment';
-import axios from 'axios';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { getApi } from 'core/apiClient';
+import Logo from 'ui-component/Logo';
 
 const BookInvoice = () => {
   const location = useLocation();
@@ -29,6 +29,8 @@ const BookInvoice = () => {
   const [currencySymbol, setCurrencySymbol] = useState('');
 
   const containerRef = useRef();
+  const user = JSON.parse(localStorage.getItem('user'));
+  const CompanyName = user?.company;
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -50,6 +52,7 @@ const BookInvoice = () => {
     const parts = urlWindow.split('/');
     const extractedId = parts[parts.length - 1];
     const response = await getApi(`${url.allotmentManagement.getInvoice}${extractedId}`);
+
     setAllInvoiceData(response);
   };
 
@@ -123,11 +126,11 @@ const BookInvoice = () => {
         >
           <Box display="flex" alignItems="center" justifyContent="center">
             <Box style={{ marginRight: '50px' }}>
-              <img src={invoice} alt="Screenshot" style={{ width: '100px', height: 'auto' }} />
+              <Logo />
             </Box>
             <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
-                SAMYOTECH
+                {CompanyName}
               </Typography>
               <Typography variant="h2" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="10vh">
                 LIBRARY MANAGEMENT SYSTEM

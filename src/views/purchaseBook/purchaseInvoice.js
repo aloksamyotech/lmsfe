@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import invoice from '../view/invoice.png';
 const html2pdf = require('html2pdf.js');
 import HomeIcon from '@mui/icons-material/Home';
+import Logo from 'ui-component/Logo';
 
 import {
   Stack,
@@ -31,19 +32,15 @@ import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import { getApi } from 'core/apiClient';
 
-
 const PurchaseInvoice = () => {
   const location = useLocation();
   const { customerData, row, bookingData } = location.state || {};
   const { rowData } = location.state || {};
 
-  const customerId = customerData?._id ? customerData?._id : bookingData?.customerId;
-  const bookingId = row?._id ? row?._id : bookingData?._id;
-
   let totalPrice = 0;
   const [allBookingData, setAllBookingData] = useState([]);
   const [allItemData, setAllItemData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
   const [studentName, setStudentName] = useState('');
   const [studentMobile_Number, setStudentMobile_Number] = useState('');
   const [studentEmail, setStudentEmail] = useState('');
@@ -66,6 +63,8 @@ const PurchaseInvoice = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+  const user = JSON.parse(localStorage.getItem('user'));
+  const CompanyName = user?.company;
   useEffect(() => {
     const getCurrency = async () => {
       const symbol = await fetchCurrency();
@@ -74,7 +73,7 @@ const PurchaseInvoice = () => {
     getCurrency();
   }, []);
   const fetchData = async () => {
-    const response = await getApi(`${url.purchaseBook.getPurchaseInvoice}${rowData?.id}`);
+    const response = await getApi(`${url.purchaseBook.getPurchaseInvoice}${rowData?.id || rowData?._id}`);
 
     const student_Name = response?.data[0]?.vendorDetails?.vendorName;
 
@@ -109,7 +108,6 @@ const PurchaseInvoice = () => {
     const bookIssueDate = response?.data[0]?.bookIssueDate;
     const submissionDate = response?.data[0]?.bookIssueDate;
     setSubmissionDate(formatDate(submissionDate));
-
   };
 
   useEffect(() => {
@@ -177,12 +175,12 @@ const PurchaseInvoice = () => {
         >
           <Box display="flex" alignItems="center" justifyContent="center">
             <Box style={{ marginRight: '50px' }}>
-              <img src={invoice} alt="Screenshot" style={{ width: '100px', height: 'auto' }} />
+              <Logo />
             </Box>
 
             <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
-                SAMYOTECH
+                {CompanyName}
               </Typography>
               <Typography variant="h2" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="10vh">
                 LIBRARY MANAGEMENT SYSTEM
@@ -262,7 +260,9 @@ const PurchaseInvoice = () => {
               <Typography variant="body1" fontWeight="bold">
                 Discount:
               </Typography>
-              <Typography variant="body2">{discount ? `${currencySymbol}${discount}` : `${currencySymbol}0.00` || `${currencySymbol}0.00`}</Typography>
+              <Typography variant="body2">
+                {discount ? `${currencySymbol}${discount}` : `${currencySymbol}0.00` || `${currencySymbol}0.00`}
+              </Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" fontWeight="bold">

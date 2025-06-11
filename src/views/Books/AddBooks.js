@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { url } from 'core/url';
-import { getApi, postApi } from 'core/apiClient';
+import { getApi, postApi, updateApi } from 'core/apiClient';
 
 const validationSchema = yup.object({
   bookName: yup
@@ -37,8 +37,6 @@ const validationSchema = yup.object({
 
   publisher: yup.string().required('Publisher is required').min(3, 'Publisher must be at least 3 characters'),
 
-  upload_Book: yup.mixed().required('Book Image is required'),
-
   bookDistribution: yup
     .string()
     .required('Book Description is required')
@@ -47,19 +45,21 @@ const validationSchema = yup.object({
 });
 
 const AddLead = (props) => {
-  const { open, handleClose, fetchData } = props;
+  const { open, handleClose, fetchData, editData } = props;
   const [publisherData, setPublisherData] = useState([]);
   const [isloading, setIsloading] = useState(false);
 
   const formik = useFormik({
+    enableReinitialize: true,
+
     initialValues: {
-      bookName: '',
-      title: '',
-      author: '',
+      bookName: editData?.bookName || '',
+      title: editData?.title || '',
+      author: editData?.author || '',
       bookIssueDate: '',
-      publisher: '',
-      upload_Book: null,
-      bookDistribution: ''
+      publisher: editData?.publisherId || '',
+      upload_Book: '',
+      bookDistribution: editData?.bookDistribution || ''
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -77,14 +77,21 @@ const AddLead = (props) => {
       }
 
       try {
-        const response = await postApi(url.bookManagenent.addBook, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        let response;
+
+        if (editData) {
+          response = await updateApi(`${url.bookManagenent.editBook}${editData.id}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          toast.success('Book details updated successfully');
+        } else {
+          response = await postApi(url.bookManagenent.addBook, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          toast.success('Book details added successfully');
+        }
 
         fetchData();
-        toast.success('Book details added successfully');
         formik.resetForm();
         handleClose();
       } catch (error) {
@@ -133,7 +140,8 @@ const AddLead = (props) => {
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
       <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">Books Information</Typography>
+        <Typography variant="h6">{editData?.id ? 'Edit Book' : 'Add Book'}</Typography>
+
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
       <DialogContent dividers>
@@ -258,7 +266,7 @@ const AddLead = (props) => {
           </DialogContentText>
           <DialogActions>
             <Button type="submit" variant="contained" color="primary" disabled={isloading}>
-              {isloading ? 'Saving...' : 'Save'}
+              {isloading ? (editData?.id ? 'Updating...' : 'Saving...') : editData?.id ? 'Update' : 'Save'}
             </Button>
             <Button
               onClick={() => {

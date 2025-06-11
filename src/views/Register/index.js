@@ -136,68 +136,15 @@ const Register = () => {
     fetchData();
   }, []);
   const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+    setEditData(null);
+  };
   const handleEdit = (register) => {
     setErrors({});
     setEditData(register);
+    setOpenAdd(true);
   };
-  const handleSaveEdit = async () => {
-    setIsloading(true);
-    setErrors({});
-    const newErrors = {};
-
-    if (!editData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editData.email)) {
-      newErrors.email = 'Enter a valid email address';
-    }
-
-    if (!editData.student_Name) {
-      newErrors.student_Name = 'Student Name is required';
-    } else if (editData.student_Name.length < 3) {
-      newErrors.student_Name = 'Student Name must be at least 3 characters';
-    }
-
-    if (!editData.mobile_Number) {
-      newErrors.mobile_Number = 'Mobile Number is required';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setIsloading(false);
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append('email', editData.email);
-      formData.append('student_Name', editData.student_Name);
-      formData.append('mobile_Number', editData.mobile_Number);
-      formData.append('select_identity', editData.select_identity);
-      formData.append('register_Date', editData.register_Date);
-      if (editData.upload_identity) {
-        formData.append('upload_identity', editData.upload_identity);
-      }
-
-      const response = updateApi(`${url.studentRegister.editRegister}${editData.id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      console.log(response);
-
-      setEditData(null);
-      fetchData();
-      setOpenBulkUploadDialog(false);
-      toast.success('Register details updated successfully');
-    } catch (error) {
-      console.error('Error updating Register:', error);
-      toast.error('Failed to update register details');
-    } finally {
-      setIsloading(false);
-    }
-  };
-
   const handleDelete = (id) => {
     setBookToDelete(id);
     setOpenDeleteDialog(true);
@@ -271,25 +218,10 @@ const Register = () => {
       setIsloading(false);
     }
   };
-  const convertToISODate = (dateStr) => {
-    if (!dateStr) return '';
-    const parts = dateStr.split('/');
-    if (parts.length !== 3) return '';
-
-    const [day, month, year] = parts;
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-  };
-  const formatDateForBackend = (dateStr) => {
-    if (!dateStr) return '';
-    if (dateStr.includes('-')) return dateStr;
-
-    const [day, month, year] = dateStr.split('/');
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-  };
 
   return (
     <>
-      <AddRegister open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
+      <AddRegister open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} editData={editData} />
       <Container>
         <Box
           sx={{
@@ -342,116 +274,6 @@ const Register = () => {
             </Card>
           </Box>
         </TableStyle>
-        {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3}>
-              <Typography variant="h6">Edit Student</Typography>
-              <IconButton
-                onClick={() => setEditData(null)}
-                sx={{
-                  position: 'absolute',
-                  top: 8,
-                  right: 8,
-                  color: (theme) => theme.palette.grey[500]
-                }}
-              >
-                <ClearIcon />
-              </IconButton>
-              <TextField
-                label=" Email"
-                value={editData.email}
-                onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                inputProps={{ maxLength: 30 }}
-                error={!!errors.email}
-                helperText={errors.email}
-              />
-              <TextField
-                label="Student Name"
-                value={editData.student_Name}
-                onChange={(e) => setEditData({ ...editData, student_Name: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                inputProps={{ maxLength: 30 }}
-                error={!!errors.student_Name}
-                helperText={errors.student_Name}
-              />
-              <TextField
-                label="Mobile Number"
-                value={editData.mobile_Number}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    setEditData({ ...editData, mobile_Number: e.target.value });
-                  }
-                }}
-                fullWidth
-                margin="normal"
-                size="small"
-                inputProps={{ maxLength: 10 }}
-                error={!!errors.mobile_Number}
-                helperText={errors.mobile_Number}
-              />
-              <TextField
-                select
-                label="Select Identity"
-                id="select_identity"
-                name="select_identity"
-                value={editData.select_identity}
-                onChange={(e) => setEditData({ ...editData, select_identity: e.target.value })}
-                fullWidth
-                size="small"
-                margin="normal"
-              >
-                <MenuItem value="Aadhar Card">Aadhar Card</MenuItem>
-                <MenuItem value="Pan Card">Pan Card</MenuItem>
-                <MenuItem value="Voter Id Card">Voter Id Card</MenuItem>
-                <MenuItem value="Driving Licence">Driving Licence</MenuItem>
-              </TextField>
-              <TextField
-                label="Register Date"
-                type="date"
-                value={editData.register_Date || ''}
-                onChange={(e) => setEditData({ ...editData, register_Date: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                InputLabelProps={{ shrink: true }}
-              />
-
-              <TextField
-                type="file"
-                onChange={(e) => setEditData({ ...editData, upload_identity: e.target.files[0] })}
-                fullWidth
-                margin="normal"
-                size="small"
-                InputLabelProps={{ shrink: true }}
-              />
-
-              <Button
-                onClick={handleSaveEdit}
-                variant="contained"
-                color="primary"
-                disabled={isloading}
-                style={{
-                  textTransform: 'capitalize',
-                  backgroundColor: isloading ? '#ccc' : '',
-                  color: isloading ? '#666' : '',
-                  pointerEvents: isloading ? 'none' : 'auto'
-                }}
-              >
-                {isloading ? 'Saving...' : 'Save'}
-              </Button>
-
-              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
-                Cancel
-              </Button>
-            </Box>
-          </Dialog>
-        )}
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>
             <Typography variant="h6">Are you sure you want to delete this Student?</Typography>

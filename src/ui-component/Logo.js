@@ -25,7 +25,7 @@ const Logo = () => {
     fetchLogo();
   }, []);
 
-  return <Box component="img" src={logoData} sx={{ height: 150, width: 150 }} />;
+  return <Box component="img" src={logoData} sx={{ height: 100, width: 100 }} />;
 };
 
 export default Logo;

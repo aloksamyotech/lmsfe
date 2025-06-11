@@ -129,7 +129,7 @@ const PurchaseBook = () => {
         </div>
       )
     }
-  ];
+  ]; 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');

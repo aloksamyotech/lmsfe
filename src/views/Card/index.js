@@ -67,7 +67,7 @@ const App = () => {
     navigate(`/dashboard/imageGallery/${row.id}`, { state: { rowData: row } });
   };
 
-  return (
+  return (  
     <Box sx={{ p: 2, mt: 2 }}>
       <Grid container spacing={2} justifyContent="center">
         {data.map((profile, index) => (
