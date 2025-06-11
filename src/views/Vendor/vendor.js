@@ -15,10 +15,10 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { url } from 'core/url.js';
-import { postApi } from 'core/apiClient';
+import { postApi, updateApi } from 'core/apiClient';
 
 const AddPolicy = (props) => {
-  const { open, handleClose, fetchData } = props;
+  const { open, handleClose, fetchData, editData } = props;
   const [isloading, setIsloading] = useState(false);
 
   const todayDate = new Date().toISOString().split('T')[0];
@@ -34,7 +34,9 @@ const AddPolicy = (props) => {
       .required('Company Name is required')
       .min(3, 'Company Name must be at least 3 characters')
       .max(30, 'Company Name must be less than or equal to 50 characters'),
-    address: yup.string().required('Address is required')
+    address: yup
+      .string()
+      .required('Address is required')
       .min(5, 'Address must be at least 3 characters')
       .max(30, 'Address Name must be less than or equal to 50 characters'),
     phoneNumber: yup
@@ -50,38 +52,45 @@ const AddPolicy = (props) => {
   });
 
   const formik = useFormik({
+    enableReinitialize: true,
+
     initialValues: {
-      vendorName: '',
-      companyName: '',
-      address: '',
-      date: todayDate,
-      phoneNumber: '',
-      email: ''
+      vendorName: editData?.vendorName || '',
+      companyName: editData?.companyName || '',
+      address: editData?.address || '',
+      date: editData?.date || todayDate,
+      phoneNumber: editData?.phoneNumber || '',
+      email: editData?.email || ''
     },
     validationSchema,
 
     onSubmit: async (values) => {
       setIsloading(true);
-
       try {
-        const response = await postApi(url.vendorManagement.addVender, values);
-        toast.success('Vendor details added successfully');
-        fetchData();
-        setIsloading(false);
-        formik.resetForm();
-        handleClose();
-      } catch (error) {
-        const errorMessage = error?.response?.data?.message;
+        const formattedDate = values.date.includes('/') ? values.date.split('/').reverse().join('-') : values.date;
 
-        if (errorMessage === 'Email already exists') {
-          formik.setFieldError('email', 'Email already exists');
+        const dataToSend = {
+          ...values,
+          date: new Date(formattedDate),
+          id: editData?.id
+        };
+        if (editData?.id) {
+          await updateApi(`${url.vendorManagement.editVender}`, dataToSend);
+          toast.success('Vendor updated successfully');
         } else {
-          console.error('Error submitting form:', error);
-          toast.error('Something went wrong');
+          await postApi(url.vendorManagement.addVender, dataToSend);
+          toast.success('Vendor added successfully');
         }
-      }
 
-      setIsloading(false);
+        fetchData();
+        handleClose();
+        formik.resetForm();
+      } catch (error) {
+        toast.error(error?.response?.data?.message || 'Something went wrong');
+        console.error('Error:', error);
+      } finally {
+        setIsloading(false);
+      }
     }
   });
 
@@ -100,7 +109,7 @@ const AddPolicy = (props) => {
             justifyContent: 'space-between'
           }}
         >
-          <Typography variant="h6">Add New Vendor</Typography>
+          <Typography variant="h6">{editData?.id ? 'Edit Vendor' : 'Add Vendor'}</Typography>
           <Typography>
             <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
           </Typography>
@@ -197,7 +206,7 @@ const AddPolicy = (props) => {
               pointerEvents: isloading ? 'none' : 'auto'
             }}
           >
-            {isloading ? 'Saving...' : 'Save'}
+            {isloading ? (editData?.id ? 'Updating...' : 'Saving...') : editData?.id ? 'Update' : 'Save'}
           </Button>
 
           <Button

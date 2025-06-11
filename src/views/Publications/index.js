@@ -117,50 +117,16 @@ const Publications = () => {
     fetchData();
   }, []);
   const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
-
+const handleCloseAdd = () => {
+    setOpenAdd(false);
+    setEditData(null);
+  };
   const handleEdit = (publications) => {
     setErrors({});
     setEditData(publications);
+    setOpenAdd(true);
   };
 
-  const handleSaveEdit = async () => {
-    setErrors({});
-    const newErrors = {};
-
-    if (!editData.publisherName) {
-      newErrors.publisherName = 'Publisher Name is required';
-    } else if (editData.publisherName.length < 3) {
-      newErrors.publisherName = 'Publisher Name must be at least 3 characters';
-    }
-  
-    if (!editData.address) {
-      newErrors.address = 'Address is required';
-    } else if (editData.address.length < 3) {
-      newErrors.address = 'Address must be at least 3 characters';
-    }
-  
-    if (!editData.description) {
-      newErrors.description = 'Description is required';
-    }
-  
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    try {
-      const updatedPublications = { ...editData, startDate: new Date(editData.startDate) };
-
-      const response = await updateApi(`${url.publications.editPublications}${editData.id}`, updatedPublications);
-
-      setData((prevData) => prevData.map((item) => (item.id === updatedPublications.id ? updatedPublications : item)));
-
-      setEditData(null);
-      toast.success('Publication details Edit successfully');
-    } catch (error) {
-      console.error('Error updating Publications:', error);
-    }
-  };
 
   const handleDelete = (id) => {
     setBookToDelete(id);
@@ -185,7 +151,7 @@ const Publications = () => {
 
   return (
     <>
-      <AddMeetings open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
+      <AddMeetings open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd}editData={editData} />
       <Container>
         <Box
           sx={{
@@ -237,55 +203,6 @@ const Publications = () => {
             </Card>
           </Box>
         </TableStyle>
-
-        {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3}>
-              <Typography variant="h6">Edit Publications</Typography>
-              <TextField
-                label="Publisher Name"
-                value={editData.publisherName}
-                onChange={(e) => setEditData({ ...editData, publisherName: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                error={!!errors.publisherName}
-                helperText={errors.publisherName}
-                inputProps={{ maxLength: 50 }}
-              />
-
-              <TextField
-                label="Address"
-                value={editData.address}
-                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                error={!!errors.address}
-                helperText={errors.address}
-                inputProps={{ maxLength: 50 }}
-              />
-              <TextField
-                label="Description"
-                value={editData.description}
-                onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                error={!!errors.description}
-                helperText={errors.description}
-                inputProps={{ maxLength: 50 }}
-              />
-
-              <Button onClick={handleSaveEdit} variant="contained" color="primary">
-                Save
-              </Button>
-              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
-                Cancel
-              </Button>
-            </Box>
-          </Dialog>
-        )}
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>
             <Typography variant="h6">Are you sure you want to delete this Publications?</Typography>
