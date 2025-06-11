@@ -36,7 +36,8 @@ export const url = {
     submitedBook: base_url + 'user/submitedBook/',
     getsubmitedBook: base_url + 'user/getsubmitedBook/',
     getsubmitedBookinvoice: base_url + 'user/getsubmitedBookinvoice/',
-    monthwiseSubmission: base_url + 'user/monthwiseSubmission/'
+    monthwiseSubmission: base_url + 'user/monthwiseSubmission/',
+    getSubmittedBookCount: base_url + 'user/getSubmittedBookCount/'
   },
   vendorManagement: {
     addVender: base_url + 'user/addVenderBook/',
@@ -92,7 +93,8 @@ export const url = {
     bookAllotmentReport: base_url + 'user/bookAllotmentReport/',
     trendingBooks: base_url + 'user/trendingBooks/',
     submissionReport: base_url + 'user/submissionReport/',
-    monthviseData: base_url + 'user/monthviseData/'
+    monthviseData: base_url + 'user/monthviseData/',
+    getTotalEarnings: base_url + 'user/getTotalEarnings/'
   },
   purchaseBook: {
     purchaseBook: base_url + 'user/purchaseBook/',

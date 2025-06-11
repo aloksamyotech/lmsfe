@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Avatar, Typography, Paper, Box, Card, Stack, Button, CardContent } from '@mui/material';
+import { Container, Avatar, Typography, Paper, Box, Card, Stack, Button, CardContent, IconButton, Grid } from '@mui/material';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
@@ -14,15 +14,11 @@ import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 import BookmarkAddRoundedIcon from '@mui/icons-material/BookmarkAddRounded';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import { getApi } from 'core/apiClient';
 
 const View = () => {
-  const [openAdd, setOpenAdd] = useState(false);
   const [data, setData] = useState([]);
-  const [editData, setEditData] = useState(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [bookToDelete, setBookToDelete] = useState(null);
-  const [studentData, setStudentData] = useState(null);
   const [currentUrl, setCurrentUrl] = useState('');
   const [id, setId] = useState(null);
   const [allData, setAllData] = useState([]);
@@ -31,20 +27,6 @@ const View = () => {
   const [totalSubmitted, setTotalSubmitted] = useState(0);
   const navigate = useNavigate();
 
-  const [profile, setProfile] = useState({
-    student_Name: '',
-
-    email: '',
-    mobile_Number: '',
-    register_Date: ''
-  });
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
   useEffect(() => {
     const getCurrency = async () => {
       const symbol = await fetchCurrency();
@@ -52,10 +34,6 @@ const View = () => {
     };
     getCurrency();
   }, []);
-
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    event.preventDefault();
-  };
 
   const columns = [
     {
@@ -85,21 +63,51 @@ const View = () => {
       }
     },
     {
-      field: 'bookIssueDate',
-      headerName: 'Book Issue Date',
-      flex: 1
-    },
-    {
-      field: 'time',
-      headerName: 'Issue Time',
-      flex: 1
+      field: 'bookIssueDateTime',
+      headerName: 'Issue Date',
+      flex: 1,
+      renderCell: (params) => {
+        const date = params.row.bookIssueDate || '';
+        const time = params.row.time || '';
+        return (
+          <div>
+            <div>{date}</div>
+            <div>{time}</div>
+          </div>
+        );
+      }
     },
     {
       field: 'submissionDate',
-      headerName: 'Expacted Submission Date',
+      headerName: 'Expected Submission Date',
       flex: 1
+    },
+    {
+      field: 'generateInvoice',
+      headerName: 'Invoice',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <IconButton
+          style={{
+            color: '#007bff',
+            borderRadius: '50%',
+            padding: '8px'
+          }}
+          onClick={() => handleGenerateInvoice(params.row)}
+        >
+          <ReceiptIcon />
+        </IconButton>
+      )
     }
   ];
+  const handleGenerateInvoice = (row) => {
+    const allotmentId = row.id;
+    navigate(`/dashboard/bookAllotmentInvoice/${allotmentId}`, {
+      state: { allotmentId }
+    });
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -107,39 +115,6 @@ const View = () => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
-  };
-
-  const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
-
-  const handleEdit = (register) => {
-    setEditData(register);
-  };
-
-  const handleSaveEdit = async () => {
-    try {
-      const updatedRegister = response.data;
-      setData((prevData) => prevData.map((item) => (item.id === updatedRegister.id ? updatedRegister : item)));
-      setEditData(null);
-    } catch (error) {
-      console.error('Error updating Register:', error);
-    }
-  };
-  const handleDelete = (id) => {
-    setBookToDelete(id);
-    setOpenDeleteDialog(true);
-  };
-
-  const confirmDelete = async (id) => {
-    try {
-      setData((prevData) => prevData.filter((register) => register.id !== id));
-    } catch (error) {
-      console.error('Error deleting Register:', error);
-    }
-  };
-  const cancelDelete = () => {
-    setOpenDeleteDialog(false);
-    setBookToDelete(null);
   };
 
   const student = {
@@ -274,136 +249,133 @@ const View = () => {
           </MuiLink>
         </Breadcrumbs>
       </Box>
-      <AddRegister open={openAdd} handleClose={handleCloseAdd} />
       <Container>
-        <Card></Card>
-        <Paper
-          style={{
-            padding: '20px',
-            maxWidth: '800px',
-            marginTop: '20px',
-            marginBottom: '20px',
-            backgroundColor: 'transparent'
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column', md: 'row' },
-              gap: 3,
-              alignItems: 'flex-start'
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: 'white',
-                borderRadius: 2,
-                padding: '12px'
-              }}
-            >
-              <Avatar
-                src={student.logoUrl}
-                alt={student.student_Name}
-                sx={{
-                  width: 60,
-                  height: 60,
-                  marginRight: { xs: 1, md: 2 },
-                  marginBottom: { xs: 2, md: 0 }
-                }}
-              />
+        <Grid container spacing={2} sx={{ marginTop: '10px', marginBottom: '20px' }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ width: '100%', boxShadow: 3 }}>
+              <CardContent sx={{ display: 'flex', alignItems: 'center', p: 1 }}>
+                <Box
+                  sx={{
+                    borderRadius: 2,
+                    p: 1,
+                    mr: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minWidth: 60,
+                    height: 60,
+                    backgroundColor: '#90CAF9'
+                  }}
+                >
+                  <Avatar sx={{ fontSize: 30, color: 'white' }} />
+                </Box>
+                <Box sx={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                  <Typography variant="h5" gutterBottom sx={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                    {allData?.user?.student_Name}
+                  </Typography>
 
-              <Box
-                sx={{
-                  flex: 1,
-                  minWidth: 250,
-                  maxWidth: 400,
-                  lineHeight: 2
-                }}
-              >
-                <Typography variant="h5" gutterBottom>
-                  {allData?.user?.student_Name}
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  <strong>Email -: {allData?.user?.email}</strong>
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  <strong>Phone Number -: {allData?.user?.mobile_Number}</strong>
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  <strong>Registration Date -: {formatDate(allData?.user?.register_Date)}</strong>
-                </Typography>
-              </Box>
-            </Box>
+                  <Typography variant="body1" color="textSecondary" sx={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                    <strong>{allData?.user?.email}</strong>
+                  </Typography>
 
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
-                gap: 2
-              }}
-            >
-              <Card sx={{ width: 220, boxShadow: 3 }}>
-                <CardContent sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
-                  <Box
-                    sx={{
-                      borderRadius: 2,
-                      p: 2,
-                      mr: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minWidth: 60,
-                      height: 60,
-                      backgroundColor: '#ffc107'
-                    }}
-                  >
-                    <BookmarkRemoveIcon sx={{ fontSize: 30, color: 'white' }} />
-                  </Box>
-                  <Box>
-                    <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '14px' }}>
-                      Books Allotment
-                    </Typography>
-                    <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
-                      {totalAllotted ? totalAllotted : '0'}
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </Card>
+                  <Typography variant="body1" color="textSecondary" sx={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                    <strong>{allData?.user?.mobile_Number}</strong>
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
 
-              {/* Book Received Card */}
-              <Card sx={{ width: 220, boxShadow: 3 }}>
-                <CardContent sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
-                  <Box
-                    sx={{
-                      borderRadius: 2,
-                      p: 2,
-                      mr: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minWidth: 60,
-                      height: 60,
-                      backgroundColor: '#dc3545'
-                    }}
-                  >
-                    <BookmarkAddRoundedIcon sx={{ fontSize: 30, color: 'white' }} />
-                  </Box>
-                  <Box>
-                    <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
-                      Book Received
-                    </Typography>
-                    <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
-                      {totalSubmitted ? totalSubmitted : '0'}
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Box>
-          </Box>
-        </Paper>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ width: '100%', boxShadow: 3 }}>
+              <CardContent sx={{ display: 'flex', alignItems: 'center', p: 1 }}>
+                <Box
+                  sx={{
+                    borderRadius: 2,
+                    p: 1,
+                    mr: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minWidth: 60,
+                    height: 60,
+                    backgroundColor: '#ffc107'
+                  }}
+                >
+                  <BookmarkRemoveIcon sx={{ fontSize: 30, color: 'white' }} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '14px' }}>
+                    Books Allotment
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                    {totalAllotted ?? '0'}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ width: '100%', boxShadow: 3 }}>
+              <CardContent sx={{ display: 'flex', alignItems: 'center', p: 1 }}>
+                <Box
+                  sx={{
+                    borderRadius: 2,
+                    p: 2,
+                    mr: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minWidth: 60,
+                    height: 60,
+                    backgroundColor: '#dc3545'
+                  }}
+                >
+                  <BookmarkAddRoundedIcon sx={{ fontSize: 30, color: 'white' }} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '15px' }}>
+                    Book Received
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                    {totalSubmitted ?? '0'}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ width: '100%', boxShadow: 3 }}>
+              <CardContent sx={{ display: 'flex', alignItems: 'center', p: 1 }}>
+                <Box
+                  sx={{
+                    borderRadius: 2,
+                    p: 2,
+                    mr: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minWidth: 60,
+                    height: 60,
+                    backgroundColor: '#17a2b8'
+                  }}
+                >
+                  <PendingActionsIcon sx={{ fontSize: 30, color: 'white' }} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" color="textSecondary" sx={{ fontSize: '14px' }}>
+                    Pending Books
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '17px' }}>
+                    {totalAllotted - totalSubmitted}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
 
         <TableStyle>
           <Box width="100%">

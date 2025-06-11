@@ -8,7 +8,7 @@ import { Box, Card, Paper, TableContainer } from '@mui/material';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import IconButton from '@mui/material/IconButton';
 import { url } from 'core/url';
-import { fetchCurrency } from 'core/comman'; 
+import { fetchCurrency } from 'core/comman';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
@@ -27,25 +27,44 @@ const History = ({ allotmentId }) => {
     };
     getCurrency();
   }, []);
+
   const fetchData = async () => {
     try {
       const response = await getApi(url.bookAllotmentHistory.getdataalocated);
-      const formattedData = response.data.response.map((item) => ({
-        id: item._id || Math.random().toString(),
-        studentName: item.studentName,
-        email: item.studentEmail,
-        books: item.books || [],
-        studentEmail: item.studentEmail,
-        totalAmount: item.totalAmount,
-        quantity: item.quantity,
-        studentMobile: item.studentMobile,
-        allotmentId: item.allotmentId
-      }));
+
+      const formattedData = response.data.response.map((item) => {
+        const books = item.books || [];
+        const bookNames = books.map((book) => book.bookName || 'N/A').join(', ');
+        const quantityList = books.map((book) => parseInt(book.quantity) || 0);
+        const totalQuantity = quantityList.reduce((sum, qty) => sum + qty, 0);
+
+        return {
+          id: item._id || Math.random().toString(),
+          studentId: item.studentId,
+          studentName: item.studentName,
+          studentEmail: item.studentEmail,
+          studentMobile: item.studentMobile,
+          totalAmount: item.totalAmount,
+          allotmentId: item.allotmentId,
+
+          bookNames: bookNames,
+          quantityList: quantityList,
+          totalQuantity: totalQuantity,
+
+          books: books.map((book) => ({
+            bookName: book.bookName || 'N/A',
+            quantity: book.quantity || 0,
+            submissionDate: book.submissionDate || 'N/A'
+          }))
+        };
+      });
+
       setStudents(formattedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -58,27 +77,49 @@ const History = ({ allotmentId }) => {
     });
   };
   const columns = [
+    { field: 'sNo', headerName: 'sNo.', flex: 0.5 },
     {
-      field: 'sNo',
-      headerName: 'sNo.',
-      flex: 0.5
+      field: 'studentDetails',
+      headerName: 'Student Details',
+      flex: 1.5,
+      renderCell: (params) => {
+        const handleClick = () => {
+          navigate(`/dashboard/view/${params.row.studentId}`);
+        };
+
+        const handleKeyDown = (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            handleClick();
+          }
+        };
+
+        return (
+          <div
+            onClick={handleClick}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
+            style={{
+              cursor: 'pointer',
+              outline: 'none'
+            }}
+          >
+            <strong>{params.row.studentName}</strong>
+            <br />
+            <span>{params.row.studentEmail}</span>
+          </div>
+        );
+      }
     },
+
     {
-      field: 'studentName',
-      headerName: 'Student Name',
+      field: 'bookNames',
+      headerName: 'Book Name',
       flex: 1
     },
     {
-      field: 'studentEmail',
-      headerName: 'Email',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center'
-    },
-    {
-      field: 'studentMobile',
-      headerName: 'Mobile',
-      flex: 1
+      field: 'totalQuantity',
+      headerName: 'Quantity'
     },
     {
       field: 'totalAmount',
@@ -86,9 +127,9 @@ const History = ({ allotmentId }) => {
       width: 120,
       valueFormatter: ({ value }) => {
         if (value != null) {
-          return ` ${currencySymbol} ${value.toLocaleString()}`;
+          return `₹ ${value.toLocaleString()}`;
         }
-        return '$0';
+        return '₹0';
       }
     },
     {
@@ -98,14 +139,7 @@ const History = ({ allotmentId }) => {
       align: 'center',
       headerAlign: 'center',
       renderCell: (params) => (
-        <IconButton
-          style={{
-            color: '#007bff',
-            borderRadius: '50%',
-            padding: '8px'
-          }}
-          onClick={() => handleGenerateInvoice(params.row)}
-        >
+        <IconButton style={{ color: '#007bff', borderRadius: '50%', padding: '8px' }} onClick={() => handleGenerateInvoice(params.row)}>
           <ReceiptIcon />
         </IconButton>
       )
@@ -139,7 +173,7 @@ const History = ({ allotmentId }) => {
           </MuiLink>
         </Breadcrumbs>
       </Box>
-      <TableContainer component={Paper}sx={{marginTop:'40px'}}>
+      <TableContainer component={Paper} sx={{ marginTop: '40px' }}>
         <Box width="100%" mt={3}>
           <Card style={{ height: '750px' }}>
             <DataGrid

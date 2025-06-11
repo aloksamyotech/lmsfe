@@ -53,7 +53,7 @@ const SubscriptType = () => {
     {
       field: 'title',
       headerName: 'Title',
-      flex: 1,
+      flex: 1
     },
 
     {
@@ -98,7 +98,7 @@ const SubscriptType = () => {
 
   const fetchData = async () => {
     try {
-      SetIsloading(true)
+      SetIsloading(true);
       const response = await getApi(url.subscription.findSubscription);
 
       const fetchedData = response?.data?.SubscriptionType?.map((item) => ({
@@ -110,7 +110,7 @@ const SubscriptType = () => {
         numberOfDays: item.numberOfDays
       }));
       setData(fetchedData);
-      SetIsloading(false)
+      SetIsloading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -120,49 +120,14 @@ const SubscriptType = () => {
   }, []);
 
   const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
-
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+    setEditData(null);
+  };
   const handleEdit = (book) => {
     setErrors({});
     setEditData(book);
-  };
-
-  const handleSaveEdit = async () => {
-
-    setErrors({});
-    const newErrors = {};
-
-    if (!editData.title) {
-      newErrors.title = 'Title is required';
-    } else if (editData.title.length < 3) {
-      newErrors.title = 'Title must be at least 3 characters';
-    }
-        if (!editData.amount) newErrors.amount = 'Amount is required';
-    else if (isNaN(editData.amount) || editData.amount <= 0) newErrors.amount = 'Amount must be a valid positive number';
-  
-    if (isNaN(editData.discount) || editData.discount < 0) newErrors.discount = 'Discount must be a valid number';
-    if (!editData.numberOfDays) newErrors.numberOfDays = 'Number of Days is required';
-    else if (isNaN(editData.numberOfDays) || editData.numberOfDays <= 0) newErrors.numberOfDays = 'Number of Days must be a valid positive number';
-  
-   
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    try {
-
-      const response = await updateApi(`${url.subscription.update}${editData.id}`, editData);
-      const updatedBook = response.data;
-      setData((prevData) =>
-        prevData.map((item) => (item.id === updatedBook.id ? updatedBook : item))
-      );
-      setEditData(null);
-
-      toast.success('Subscription details Edit successfully');
-    } catch (error) {
-      console.error('Error updating subscription:', error);
-    }
-    fetchData();
+    setOpenAdd(true);
   };
 
   const handleDelete = (id) => {
@@ -172,8 +137,6 @@ const SubscriptType = () => {
 
   const confirmDelete = async () => {
     try {
-
-
       await deleteApi(`${url.subscription.delete}${bookToDelete}`);
       setData((prevData) => prevData.filter((book) => book.id !== bookToDelete));
       setOpenDeleteDialog(false);
@@ -194,7 +157,7 @@ const SubscriptType = () => {
 
   return (
     <>
-      <AddSubscription open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} />
+      <AddSubscription open={openAdd} fetchData={fetchData} handleClose={handleCloseAdd} editData={editData} />
       <Container>
         <Box
           sx={{
@@ -245,50 +208,6 @@ const SubscriptType = () => {
             </Card>
           </Box>
         </TableStyle>
-
-        {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3}>
-              <Typography variant="h6">Edit Subscription</Typography>
-              <TextField
-                label="Title"
-                value={editData.title}
-                onChange={(e) => setEditData({ ...editData, title: e.target.value })}
-                fullWidth
-                margin="normal"
-                error={!!errors.title}
-                helperText={errors.title}
-                inputProps={{ maxLength: 50 }}
-              />
-              <TextField
-                label="Amount"
-                value={editData.amount}
-                onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
-                fullWidth
-                margin="normal"
-                error={!!errors.amount}
-                helperText={errors.amount}
-                inputProps={{ maxLength: 6 }}
-              />
-              <TextField
-                label="Number Of Days"
-                value={editData.numberOfDays}
-                onChange={(e) => setEditData({ ...editData, numberOfDays: e.target.value })}
-                fullWidth
-                margin="normal"
-                error={!!errors.numberOfDays}
-                helperText={errors.numberOfDays}
-                inputProps={{ maxLength: 3 }}
-              />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary" style={{ marginLeft: '16px' }} disabled={isloading}>
-              {isloading ? 'Submitting...' : 'Submit'}
-              </Button>
-              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
-                Cancel
-              </Button>
-            </Box>
-          </Dialog>
-        )}
 
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>

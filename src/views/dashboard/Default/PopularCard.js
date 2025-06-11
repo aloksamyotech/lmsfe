@@ -1,62 +1,83 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
-import { postApi } from 'core/apiClient';
+import { getApi, postApi } from 'core/apiClient';
 import { url } from 'core/url';
-import { Padding } from '@mui/icons-material';
+import { fetchCurrency } from 'core/comman';
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
+import BookmarkAddRoundedIcon from '@mui/icons-material/BookmarkAddRounded';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
-const SoldQuantityDisplay = () => {
-  const [soldQuantities, setSoldQuantities] = useState([]);
+const SummaryCards = () => {
+  const [data, setData] = useState({
+    totalAllotted: 0,
+    submittedBooks: 0,
+    pendingBooks: 0,
+    totalEarning: 0
+  });
+  const [currencySymbol, setCurrencySymbol] = useState('');
   const [loading, setLoading] = useState(true);
-
-  const getMonthName = (monthIndex) => {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ];
-    return months[monthIndex];
-  };
-
-  const fetchSoldQuantities = async () => {
-    setLoading(true);
+  useEffect(() => {
+    const getCurrency = async () => {
+      const symbol = await fetchCurrency();
+      setCurrencySymbol(symbol);
+    };
+    getCurrency();
+  }, []);
+  const fetchSummaryData = async () => {
     try {
-      const today = new Date();
-      const year = today.getFullYear();
-      const currentMonth = today.getMonth();
+      setLoading(true);
 
-      const lastThreeMonths = [currentMonth, currentMonth === 0 ? 11 : currentMonth - 1, currentMonth <= 1 ? 10 : currentMonth - 2];
-
-      const response = await postApi(url.allotmentManagement.monthviseData, { year });
-      if (response.data.success) {
-        const result = response.data.data;
-
-        const formattedData = lastThreeMonths.map((month) => ({
-          month: month,
-          year: month >= currentMonth ? year - 1 : year,
-          quantity: result[month] || 0
-        }));
-
-        setSoldQuantities(formattedData.reverse());
-      }
-    } catch (error) {
-      console.error('Error fetching sold quantities:', error);
+      const allotmentResponse = await getApi(url.allotmentManagement.getBookAllotedCount);
+      const totalAllotted = allotmentResponse?.data?.totalQuantity || 0;
+      const submisionRes = await getApi(url.booksubmission.getSubmittedBookCount);
+      const submittedBooks = submisionRes?.data?.totalSubmitted;
+      const pendingBooks = totalAllotted - submittedBooks;
+      const earningRes = await getApi(url.allotmentManagement.getTotalEarnings);
+      const totalEarning = earningRes?.data?.totalEarning;
+      setData({
+        totalAllotted,
+        submittedBooks,
+        pendingBooks,
+        totalEarning
+      });
+    } catch (err) {
+      console.error('Error fetching summary:', err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchSoldQuantities();
+    fetchSummaryData();
   }, []);
+
+  const cardDetails = [
+    {
+      label: 'Total Allotted',
+      value: data.totalAllotted,
+      icon: <BookmarkRemoveIcon fontSize="large" />,
+      color: '#673ab7'
+    },
+    {
+      label: 'Submitted Books',
+      value: data.submittedBooks,
+      icon: <BookmarkAddRoundedIcon fontSize="large" />,
+      color: '#2196f3'
+    },
+    {
+      label: 'Pending Books',
+      value: data.pendingBooks,
+      icon: <PendingActionsIcon fontSize="large" />,
+      color: '#4caf50'
+    },
+    {
+      label: 'Total Earning',
+      value: `${currencySymbol}${data.totalEarning}`,
+      icon: <MonetizationOnIcon fontSize="large" />,
+      color: '#f44336'
+    }
+  ];
 
   return (
     <Box>
@@ -65,76 +86,47 @@ const SoldQuantityDisplay = () => {
           Loading...
         </Typography>
       ) : (
-        <Grid container spacing={2} sx={{ }}>
-          {soldQuantities.map((data, index) => {
-            const colors = ['#2196F3', '#673ab7', '#4CAF50'];
-
-            return (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Paper
+        <Grid container spacing={2}>
+          {cardDetails.map((card, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Paper
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  overflow: 'hidden',
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  height: 60
+                }}
+              >
+                <Box
                   sx={{
+                    width: '30%',
+                    backgroundColor: card.color,
                     display: 'flex',
-                    borderRadius: 2,
-                    backgroundColor: '#fff',
-                    overflow: 'hidden',
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-                    PaddingTop:'10px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    color: '#fff'
                   }}
                 >
-                  <Box
-                    sx={{
-                      width: '30%',
-                      backgroundColor: colors[index % colors.length],
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#fff',
-                      fontWeight: 700
-                    }}
-                  >
-                    <Typography variant="h4" sx={{ textAlign: 'center', color: '#ffff' }}>
-                      {getMonthName(data.month)} {data.year}
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      width: '70%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      p: 2
-                    }}
-                  >
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontSize: '1.5rem',
-                        fontWeight: 600,
-                        color: '#000'
-                      }}
-                    >
-                      {data.quantity}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontSize: '0.9rem',
-                        color: '#555'
-                      }}
-                    >
-                      Books Alloted
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            );
-          })}
+                  {card.icon}
+                </Box>
+                <Box sx={{ width: '70%', p: 2 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {card.value}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: card.labelColor }}>
+                    {card.label}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
       )}
     </Box>
   );
 };
 
-export default SoldQuantityDisplay;
+export default SummaryCards;

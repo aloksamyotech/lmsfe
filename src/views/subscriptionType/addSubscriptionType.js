@@ -14,14 +14,12 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { url } from 'core/url';
-import { postApi } from 'core/apiClient';
+import { postApi, updateApi } from 'core/apiClient';
 
 const AddSubscription = (props) => {
-  const { open, handleClose, fetchData } = props;
-  const [publisherData, setPublisherData] = useState([]);
-  const [borrowedBooksCount, setBorrowedBooksCount] = useState(0);
+  const { open, handleClose, fetchData, editData } = props;
   const [isloading, SetIsloading] = useState(false);
-
+  console.log(editData);
   const validationSchema = Yup.object({
     title: Yup.string().required('Title is required').min(3, 'Title must be at least 3 characters long'),
     amount: Yup.number()
@@ -36,52 +34,52 @@ const AddSubscription = (props) => {
   });
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
-      amount: '',
-      desc: '',
-      numberOfDays: ''
+      title: editData?.title || '',
+      amount: editData?.amount || '',
+      desc: editData?.desc || '',
+      numberOfDays: editData?.numberOfDays || ''
     },
     validationSchema,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
+      SetIsloading(true);
+
       try {
-        const response = await postApi(url.subscription.Subscription, values);
-        toast.success('Subscription Type details added successfully');
+        const dataToSend = {
+          ...values,
+          id: editData?.id
+        };
+        if (editData?.id) {
+          await updateApi(`${url.subscription.update}`, dataToSend);
+          toast.success('Subscription updated successfully');
+        } else {
+          await postApi(url.subscription.Subscription, dataToSend);
+          toast.success('Subscription added successfully');
+        }
         fetchData();
         formik.resetForm();
         handleClose();
       } catch (error) {
-        const errorMessage = error?.response?.data?.message;
-
-        if (errorMessage === 'Title already exists') {
-          formik.setFieldTouched('title', true, false);
-          formik.setFieldError('title', 'Title already exists');
-        } else {
-          console.error('Error submitting form:', error);
-          toast.error('Something went wrong');
-        }
+        toast.error(error?.response?.data?.message || 'Something went wrong');
+        console.error('Error:', error);
+      } finally {
+        SetIsloading(false);
       }
-
-      SetIsloading(false);
     }
-
   });
   useEffect(() => {
     if (open) {
       formik.resetForm();
     }
   }, [open]);
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    formik.setFieldValue('upload_Book', file);
-  };
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
       <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">Subscription Type Information</Typography>
+        <Typography variant="h6">{editData?.id ? 'Edit Subscription Type' : 'Add Subscription Type'}</Typography>
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
       <DialogContent dividers>
@@ -154,7 +152,7 @@ const AddSubscription = (props) => {
 
           <DialogActions>
             <Button type="submit" variant="contained" color="primary" disabled={isloading}>
-              {isloading ? 'Saving...' : 'Save'}
+            {isloading ? (editData?.id ? 'Updating...' : 'Saving...') : editData?.id ? 'Update' : 'Save'}
             </Button>
 
             <Button

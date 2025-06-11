@@ -14,6 +14,7 @@ import axios from 'axios';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import { getApi } from 'core/apiClient';
+import Logo from 'ui-component/Logo';
 
 const ReceiveInvoice = () => {
   const location = useLocation();
@@ -45,6 +46,8 @@ const ReceiveInvoice = () => {
   const submissionId = rowData?.id;
 
   const containerRef = useRef();
+  const user = JSON.parse(localStorage.getItem('user'));
+  const CompanyName = user?.company;
   useEffect(() => {
     const getCurrency = async () => {
       const symbol = await fetchCurrency();
@@ -159,11 +162,11 @@ const ReceiveInvoice = () => {
         >
           <Box display="flex" alignItems="center" justifyContent="center">
             <Box style={{ marginRight: '50px' }}>
-              <img src={invoice} alt="Screenshot" style={{ width: '100px', height: 'auto' }} />
+              <Logo />
             </Box>
             <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
-                SAMYOTECH
+                {CompanyName}
               </Typography>
               <Typography variant="h2" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="10vh">
                 LIBRARY MANAGEMENT SYSTEM
