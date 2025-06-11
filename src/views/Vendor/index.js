@@ -204,69 +204,6 @@ const PolicyManagement = () => {
             </Card>
           </Box>
         </TableStyle>
-        {/* {editData && (
-          <Dialog open={true} onClose={() => setEditData(null)}>
-            <Box p={3}>
-              <Typography variant="h6">Edit vender</Typography>
-              <TextField
-                label="Vendor Name"
-                value={editData.vendorName}
-                onChange={(e) => setEditData({ ...editData, vendorName: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                error={!!errors.vendorName}
-                helperText={errors.vendorName}
-                inputProps={{ maxLength: 50 }}
-              />
-              <TextField
-                label="Company Name"
-                value={editData.companyName}
-                onChange={(e) => setEditData({ ...editData, companyName: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                error={!!errors.companyName}
-                helperText={errors.companyName}
-                inputProps={{ maxLength: 50 }}
-              />
-              <TextField
-                label="Phone Number"
-                value={editData.phoneNumber}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    setEditData({ ...editData, phoneNumber: value });
-                  }
-                }}
-                fullWidth
-                margin="normal"
-                size="small"
-                error={!!errors.phoneNumber}
-                helperText={errors.phoneNumber}
-                inputProps={{ maxLength: 10 }}
-              />
-
-              <TextField
-                label="Address"
-                value={editData.address}
-                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                fullWidth
-                margin="normal"
-                size="small"
-                error={!!errors.address}
-                helperText={errors.address}
-                inputProps={{ maxLength: 50 }}
-              />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary">
-                Save
-              </Button>
-              <Button onClick={() => setEditData(null)} variant="outlined" color="secondary" style={{ marginLeft: '16px' }}>
-                Cancel
-              </Button>
-            </Box>
-          </Dialog>
-        )} */}
         <Dialog open={openDeleteDialog} onClose={cancelDelete}>
           <Box p={3}>
             <Typography variant="h6">Are you sure you want to delete this Vander?</Typography>
