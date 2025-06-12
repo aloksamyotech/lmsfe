@@ -11,7 +11,7 @@ import { fetchCurrency } from 'core/comman';
 import { Breadcrumbs, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { getApi } from 'core/apiClient';
-import Logo from 'ui-component/Logo';
+import LogoSection from 'layout/MainLayout/LogoSection';
 
 const BookInvoice = () => {
   const location = useLocation();
@@ -126,7 +126,7 @@ const BookInvoice = () => {
         >
           <Box display="flex" alignItems="center" justifyContent="center">
             <Box style={{ marginRight: '50px' }}>
-              <Logo />
+              <LogoSection />
             </Box>
             <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">

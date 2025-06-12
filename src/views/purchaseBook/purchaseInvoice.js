@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import invoice from '../view/invoice.png';
 const html2pdf = require('html2pdf.js');
 import HomeIcon from '@mui/icons-material/Home';
-import Logo from 'ui-component/Logo';
+import LogoSection from 'layout/MainLayout/LogoSection';
 
 import {
   Stack,
@@ -175,7 +175,7 @@ const PurchaseInvoice = () => {
         >
           <Box display="flex" alignItems="center" justifyContent="center">
             <Box style={{ marginRight: '50px' }}>
-              <Logo />
+              <LogoSection />
             </Box>
 
             <Box style={{ marginRight: '100px' }}>

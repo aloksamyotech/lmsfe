@@ -26,8 +26,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
-import { getApi, updateApi,updateApiPatch } from 'core/apiClient';
-import Logo from 'ui-component/Logo';
+import { getApi, updateApi, updateApiPatch } from 'core/apiClient';
+import LogoSection from 'layout/MainLayout/LogoSection';
 import { width } from '@mui/system';
 
 const currencySymbols = { USD: '$', EUR: '€', INR: '₹', GBP: '£' };
@@ -47,13 +47,13 @@ const View = () => {
       alert('SMTP Code, Email, and Admin ID are required!');
       return;
     }
-   
+
     try {
-      const response = await updateApiPatch(`${url.admin.emailInfo}`, { 
+      const response = await updateApiPatch(`${url.admin.emailInfo}`, {
         smtpCode,
         email,
         adminId
-      });      
+      });
       toast.success('Email settings updated successfully');
     } catch (error) {
       toast.error('There was an error updating email settings.');
@@ -69,7 +69,8 @@ const View = () => {
     logo: null,
     currency: '',
     currencySymbol: '',
-    id: ''
+    id: '',
+    company:''
   });
 
   const [emailPrefs, setEmailPrefs] = useState({
@@ -142,7 +143,8 @@ const View = () => {
         email: formData.email,
         currencyCode: formData.currency,
         currencySymbol: formData.currencySymbol,
-        logo: response?.data?.updatedRegister?.logo || ''
+        logo: response?.data?.updatedRegister?.logo || '',
+        company:formData.company
       };
 
       localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -169,7 +171,7 @@ const View = () => {
             console.error('Admin not found with provided ID');
             return;
           }
-
+          console.log(student);
           const formattedDate = new Date(student.register_Date).toLocaleDateString('en-GB');
           const currency = student.currencyCode || 'INR';
           setFormData({
@@ -181,7 +183,8 @@ const View = () => {
             select_identity: student.select_identity,
             logo: student.logo,
             currency: currency,
-            currencySymbol: currencySymbols[currency]
+            currencySymbol: currencySymbols[currency],
+            company: student.company
           });
 
           setEmailPrefs({
@@ -314,6 +317,16 @@ const View = () => {
                     InputProps={{ readOnly: true }}
                   />
                 </Grid>
+
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Company name"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleChange}
+                  />
+                </Grid>
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <InputLabel id="currency-label">Currency</InputLabel>
@@ -361,7 +374,7 @@ const View = () => {
                       overflow: 'hidden'
                     }}
                   >
-                    <Logo />
+                    <LogoSection />
                   </Box>
                 </Grid>
 
@@ -427,55 +440,47 @@ const View = () => {
             </Box>
           )}
           {tabIndex === 3 && (
-             <Box sx={{ mt: 3 }}>
-             <FormGroup row sx={{ mb: 2, justifyContent: 'space-between' }}>
-               <FormControlLabel
-                 control={<Switch checked={!!emailPrefs?.registrationEmail} onChange={() => handleToggle('registrationEmail')} />}
-                 label="Registration Mail"
-               />
-               <FormControlLabel
-                 control={<Switch checked={!!emailPrefs?.allotmentEmail} onChange={() => handleToggle('allotmentEmail')} />}
-                 label="Book Allotment Mail"
-               />
-               <FormControlLabel
-                 control={<Switch checked={!!emailPrefs?.purchesEmail} onChange={() => handleToggle('purchesEmail')} />}
-                 label="Purchase Mail"
-               />
-               <FormControlLabel
-                 control={<Switch checked={!!emailPrefs?.submissionEmail} onChange={() => handleToggle('submissionEmail')} />}
-                 label="Submission Mail"
-               />
-             </FormGroup>
-       
-             <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-               Update Mail Settings
-             </Typography>
-       
-             <Box sx={{ maxWidth: 800, backgroundColor: '#f9f9f9', p: 2, borderRadius: 2, boxShadow: 1 }}>
-               <TextField
-                 label="SMTP Code"
-                 fullWidth
-                 margin="normal"
-                 size="small"
-                 value={smtpCode}
-                 onChange={(e) => setSmtpCode(e.target.value)}  
-               />
-       
-               <TextField
-                 label="Email"
-                 fullWidth
-                 margin="normal"
-                 size="small"
-                 value={email}
-                 onChange={(e) => setEmail(e.target.value)}  
-               />
-       
-               <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
-                 Update
-               </Button>
-             </Box>
-           </Box>
-         
+            <Box sx={{ mt: 3 }}>
+              <FormGroup row sx={{ mb: 2, justifyContent: 'space-between' }}>
+                <FormControlLabel
+                  control={<Switch checked={!!emailPrefs?.registrationEmail} onChange={() => handleToggle('registrationEmail')} />}
+                  label="Registration Mail"
+                />
+                <FormControlLabel
+                  control={<Switch checked={!!emailPrefs?.allotmentEmail} onChange={() => handleToggle('allotmentEmail')} />}
+                  label="Book Allotment Mail"
+                />
+                <FormControlLabel
+                  control={<Switch checked={!!emailPrefs?.purchesEmail} onChange={() => handleToggle('purchesEmail')} />}
+                  label="Purchase Mail"
+                />
+                <FormControlLabel
+                  control={<Switch checked={!!emailPrefs?.submissionEmail} onChange={() => handleToggle('submissionEmail')} />}
+                  label="Submission Mail"
+                />
+              </FormGroup>
+
+              <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                Update Mail Settings
+              </Typography>
+
+              <Box sx={{ maxWidth: 800, backgroundColor: '#f9f9f9', p: 2, borderRadius: 2, boxShadow: 1 }}>
+                <TextField
+                  label="SMTP Code"
+                  fullWidth
+                  margin="normal"
+                  size="small"
+                  value={smtpCode}
+                  onChange={(e) => setSmtpCode(e.target.value)}
+                />
+
+                <TextField label="Email" fullWidth margin="normal" size="small" value={email} onChange={(e) => setEmail(e.target.value)} />
+
+                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
+                  Update
+                </Button>
+              </Box>
+            </Box>
           )}
         </Paper>
       </Container>

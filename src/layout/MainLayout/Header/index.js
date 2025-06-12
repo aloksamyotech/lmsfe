@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Box, Badge, ButtonBase, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Badge, ButtonBase, IconButton, Typography, Stack } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router';
 import { IconMenu2 } from '@tabler/icons';
@@ -86,7 +86,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
           </Avatar>
         </ButtonBase>
       </Box>
-      <Box sx={{ flexGrow: 1, pl: 5 }}>
+      {/* <Box sx={{ flexGrow: 1, pl: 5 }}>
         <Typography variant="h2" sx={{ mb: 0 }}>
           Hi, welcome back!
         </Typography>
@@ -102,8 +102,36 @@ const Header = ({ handleLeftDrawerToggle }) => {
         <Typography variant="h2" sx={{ mt: 0 }}>
           {currentDate}
         </Typography>
-      </Box>
-      <IconButton onClick={handleCartClick} sx={{ mr: '80px' }}>
+      </Box> */}
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        justifyContent="space-between"
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        spacing={2}
+        sx={{ px: { xs: 2, sm: 5 }, py: 2 }}
+      >
+        {/* Welcome Message */}
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="h4" sx={{ mb: 0 }}>
+            Hi, welcome back!
+          </Typography>
+          <Typography variant="body1" sx={{ mt: 0 }}>
+            Don’t forget to smile today :)
+          </Typography>
+        </Box>
+
+        {/* Current Date */}
+        <Box sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
+          <Typography variant="body2" sx={{ mb: 0 }}>
+            Today is -
+          </Typography>
+          <Typography variant="h4" sx={{ mt: 0 }}>
+            {currentDate}
+          </Typography>
+        </Box>
+      </Stack>
+
+      <IconButton onClick={handleCartClick} sx={{ mr: '80px', ml: '350px' }}>
         <Badge badgeContent={getCartLength()} color="secondary" invisible={getCartLength() === 0}>
           <ShoppingCartIcon sx={{ fontSize: '30px' }} />
         </Badge>
