@@ -14,7 +14,7 @@ const LogoSection = () => {
   const [logoImg, setLogoImg] = useState('/Screenshot.png');
   const logoData = async () => {
     try {
-      const response = await axios.get(url.admin.adminProfile);
+      const response = await getApi(url.admin.adminProfile);
       const logo = response.data.students[0].logo ? `${url.baseurl.baseurl}${response.data.students[0].logo}` : '';
       if (logo) {
         setLogoImg(logo);

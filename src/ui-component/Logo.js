@@ -11,7 +11,7 @@ const Logo = () => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await axios.get(url.admin.logo)
+        const response = await axios.get(url.admin.logo);
 
         const image = response?.data.students[0]?.logo;
 

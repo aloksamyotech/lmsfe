@@ -14,7 +14,7 @@ import axios from 'axios';
 import { url } from 'core/url';
 import { fetchCurrency } from 'core/comman';
 import { getApi } from 'core/apiClient';
-import Logo from 'ui-component/Logo';
+import LogoSection from 'layout/MainLayout/LogoSection';
 
 const ReceiveInvoice = () => {
   const location = useLocation();
@@ -162,7 +162,7 @@ const ReceiveInvoice = () => {
         >
           <Box display="flex" alignItems="center" justifyContent="center">
             <Box style={{ marginRight: '50px' }}>
-              <Logo />
+              <LogoSection />
             </Box>
             <Box style={{ marginRight: '100px' }}>
               <Typography variant="h1" fontWeight="bold" display="flex" justifyContent="center" alignItems="center" height="5vh">
