@@ -171,7 +171,6 @@ const View = () => {
             console.error('Admin not found with provided ID');
             return;
           }
-          console.log(student);
           const formattedDate = new Date(student.register_Date).toLocaleDateString('en-GB');
           const currency = student.currencyCode || 'INR';
           setFormData({
