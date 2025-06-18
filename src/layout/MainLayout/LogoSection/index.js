@@ -4,7 +4,6 @@ import { ButtonBase } from '@mui/material';
 import config from 'config';
 import { MENU_OPEN } from 'store/actions';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { url } from 'core/url';
 import { getApi } from 'core/apiClient';
 // ==============================|| MAIN LOGO ||============================== //
@@ -15,8 +14,9 @@ const LogoSection = () => {
   const logoData = async () => {
     try {
       const response = await getApi(url.admin.adminProfile);
-      const logo = response.data.students[0].logo ? `${url.baseurl.baseurl}${response.data.students[0].logo}` : '';
-      if (logo) {
+      const logo = response.data.students[0]?.logo ? `${url.baseurl.baseurl}${response.data.students[0].logo}` : '';
+
+      if (logo && logo !== logoImg) {
         setLogoImg(logo);
       }
     } catch (error) {

@@ -159,7 +159,6 @@ const View = () => {
     const fetchData = async () => {
       try {
         const response = await getApi(`${url.allotmentManagement.findHistory}${extractedId}`);
-
         let totalAllottedCount = 0;
         let totalSubmittedCount = 0;
 
@@ -189,7 +188,7 @@ const View = () => {
           item.books?.forEach((book) => {
             const quantity = book.quantity || 1;
             totalQuantity += quantity;
-            const submitCount = book.submitCount || 1;
+            const submitCount = book.submitCount || 0;
             submittedQuantity += submitCount;
           });
           totalAllottedCount += totalQuantity;

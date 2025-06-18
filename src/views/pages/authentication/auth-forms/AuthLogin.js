@@ -99,7 +99,7 @@ const FirebaseLogin = ({ ...others }) => {
           }
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setFieldValue }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setFieldValue, setValues }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
             <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
@@ -160,9 +160,15 @@ const FirebaseLogin = ({ ...others }) => {
                 color="primary"
                 sx={{ cursor: 'pointer', color: 'black' }}
                 onClick={() => {
-                  setFieldValue('email', 'admin@gmail.com');
-                  setFieldValue('password', 'admin123');
-                  handleSubmit();
+                  setValues({
+                    email: 'admin@gmail.com',
+                    password: 'admin123',
+                    submit: null
+                  });
+
+                  setTimeout(() => {
+                    handleSubmit();
+                  }, 0);
                 }}
               >
                 User Credentials
