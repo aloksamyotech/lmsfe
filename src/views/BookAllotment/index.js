@@ -309,7 +309,9 @@ const Allotment = () => {
     }, 0);
   };
 
-  const filteredProducts = categoryData.filter((product) => product.title && product.title.toLowerCase().includes(search.toLowerCase()));
+  const filteredProducts = categoryData.filter(
+    (product) => product.bookName && product.bookName.toLowerCase().includes(search.toLowerCase())
+  );
 
   const getBookCount = async (bookId) => {
     try {
