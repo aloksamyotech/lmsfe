@@ -1,5 +1,6 @@
-const base_url = process.env.REACT_APP_BASE_URL;
+// const base_url = process.env.REACT_APP_BASE_URL;
 // const base_url = 'http://localhost:4300/';
+const base_url = 'https://smartlib.samyotech.in/api/';
 
 export const url = {
   baseurl: {
