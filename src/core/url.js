@@ -1,5 +1,5 @@
-// const base_url = process.env.REACT_APP_BASE_URL;
-const base_url = 'http://localhost:4300/';
+const base_url = process.env.REACT_APP_BASE_URL;
+// const base_url = 'http://localhost:4300/';
 
 export const url = {
   baseurl: {
