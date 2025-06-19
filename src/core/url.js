@@ -4,7 +4,7 @@ const base_url = 'https://smartlib.samyotech.in/api/';
 
 export const url = {
   baseurl: {
-    baseurl: base_url
+    baseurl: 'https://smartlib.samyotech.in/'
   },
   admin: {
     createuser: base_url + 'user/createUser',
