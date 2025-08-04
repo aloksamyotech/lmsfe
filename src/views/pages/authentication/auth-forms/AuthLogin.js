@@ -161,36 +161,32 @@ const FirebaseLogin = ({ ...others }) => {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'flex-start',
                 border: '1px solid #ccc',
                 padding: '8px 12px',
                 borderRadius: '4px',
                 width: 'fit-content',
-                cursor: 'pointer'
+                gap: '8px'
               }}
-              onClick={(event) => setAnchorEl(event.currentTarget)}
             >
-              <Typography variant="body2" color="primary" sx={{ color: 'black', display: 'flex', alignItems: 'center' }}>
+              <Typography variant="body2" sx={{ color: 'black', display: 'flex', alignItems: 'center' }}>
                 User Credentials
-                <ArrowDropDownIcon sx={{ ml: 1 }} />
               </Typography>
 
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
-                <MenuItem
-                  onClick={() => {
-                    setFieldValue('email', 'admin@gmail.com');
-                    setFieldValue('password', 'admin123');
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                  setFieldValue('email', 'admin@gmail.com');
+                  setFieldValue('password', 'admin123');
 
-                    setTimeout(() => {
-                      handleSubmit();
-                    }, 0);
-
-                    setAnchorEl(null);
-                  }}
-                >
-                  Admin Login
-                </MenuItem>
-              </Menu>
+                  setTimeout(() => {
+                    handleSubmit();
+                  }, 0);
+                }}
+              >
+                Click Here
+              </Button>
             </Box>
 
             {errors.submit && (
