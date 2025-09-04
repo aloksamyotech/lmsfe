@@ -16,7 +16,9 @@ import {
   OutlinedInput,
   Stack,
   Typography,
-  useMediaQuery
+  useMediaQuery,
+  MenuItem,
+  Menu
 } from '@mui/material';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -29,13 +31,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from 'core/url';
 import { color } from '@mui/system';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
   const customization = useSelector((state) => state.customization);
   const [checked, setChecked] = useState(true);
-
+  const [anchorEl, setAnchorEl] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -154,19 +157,36 @@ const FirebaseLogin = ({ ...others }) => {
                 <FormHelperText id="standard-weight-helper-text-password-login"> </FormHelperText>
               )}
             </FormControl>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <Typography
-                variant="body2"
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                border: '1px solid #ccc',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                width: 'fit-content',
+                gap: '8px'
+              }}
+            >
+              <Typography variant="body2" sx={{ color: 'black', display: 'flex', alignItems: 'center' }}>
+                User Credentials
+              </Typography>
+
+              <Button
+                variant="contained"
                 color="primary"
-                sx={{ cursor: 'pointer', color: 'black' }}
+                size="small"
                 onClick={() => {
                   setFieldValue('email', 'admin@gmail.com');
                   setFieldValue('password', 'admin123');
-                  handleSubmit();
+
+                  setTimeout(() => {
+                    handleSubmit();
+                  }, 0);
                 }}
               >
-                User Credentials
-              </Typography>
+                Click Here
+              </Button>
             </Box>
 
             {errors.submit && (
@@ -189,7 +209,8 @@ const FirebaseLogin = ({ ...others }) => {
                     '&:hover': {
                       background: 'linear-gradient(to right, #4b6cb7, #182848)',
                       boxShadow: '2'
-                    }
+                    },
+                    marginTop: '10px'
                   }}
                 >
                   {isSubmitting ? 'Logging in...' : 'Sign in'}

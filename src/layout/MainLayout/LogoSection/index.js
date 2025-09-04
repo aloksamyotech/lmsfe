@@ -15,10 +15,11 @@ const LogoSection = () => {
   const logoData = async () => {
     try {
       const response = await getApi(url.admin.adminProfile);
-      const logo = response.data.students[0].logo ? `${url.baseurl.baseurl}${response.data.students[0].logo}` : '';
-      if (logo) {
-        setLogoImg(logo);
-      }
+      const logo = response.data.students[0]?.logo ? `${url.baseurl.baseurl}${response.data.students[0].logo}` : '';
+      setLogoImg(logo);
+      // if (logo && logo !== logoImg) {
+      //   setLogoImg(logo);
+      // }
     } catch (error) {
       console.error('Error fetching profile data:', error);
     }

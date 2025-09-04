@@ -43,7 +43,7 @@ const Login = () => {
                     marginLeft: 12
                   }}
                 >
-                  <Logo />
+                  {/* <Logo /> */}
                 </Box>
               </Grid>{' '}
               <Grid item xs={12} sx={{ marginTop: '-20px' }}>
